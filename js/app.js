@@ -437,6 +437,14 @@ function switchDashboardTab(tabId) {
     const integrationsDiv = document.getElementById('dash-view-integrations');
     const commercialDiv = document.getElementById('dash-view-commercial-settings');
     const refundDiv = document.getElementById('dash-view-refund-queue');
+    const contractsDiv = document.getElementById('dash-view-contracts');
+    const attractionsDiv = document.getElementById('dash-view-attractions');
+    const agenciesDiv = document.getElementById('dash-view-agencies');
+    const cmsDiv = document.getElementById('dash-view-cms');
+    const notificationsDiv = document.getElementById('dash-view-notifications-log');
+    const antiScalperDiv = document.getElementById('dash-view-anti-scalper');
+    const financialsDiv = document.getElementById('dash-view-financial-reports');
+    const packagesDiv = document.getElementById('dash-view-packages');
     
     if (!overviewDiv || !heatmapDiv || !profileDiv) return;
     
@@ -446,6 +454,14 @@ function switchDashboardTab(tabId) {
     if (integrationsDiv) integrationsDiv.style.display = 'none';
     if (commercialDiv) commercialDiv.style.display = 'none';
     if (refundDiv) refundDiv.style.display = 'none';
+    if (contractsDiv) contractsDiv.style.display = 'none';
+    if (attractionsDiv) attractionsDiv.style.display = 'none';
+    if (agenciesDiv) agenciesDiv.style.display = 'none';
+    if (cmsDiv) cmsDiv.style.display = 'none';
+    if (notificationsDiv) notificationsDiv.style.display = 'none';
+    if (antiScalperDiv) antiScalperDiv.style.display = 'none';
+    if (financialsDiv) financialsDiv.style.display = 'none';
+    if (packagesDiv) packagesDiv.style.display = 'none';
     
     if (tabId === 'overview') {
         overviewDiv.style.display = 'block';
@@ -464,6 +480,46 @@ function switchDashboardTab(tabId) {
         if (refundDiv) {
             refundDiv.style.display = 'block';
             loadRefundData();
+        }
+    } else if (tabId === 'contracts') {
+        if (contractsDiv) {
+            contractsDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'attractions') {
+        if (attractionsDiv) {
+            attractionsDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'agencies') {
+        if (agenciesDiv) {
+            agenciesDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'cms') {
+        if (cmsDiv) {
+            cmsDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'notifications-log') {
+        if (notificationsDiv) {
+            notificationsDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'anti-scalper') {
+        if (antiScalperDiv) {
+            antiScalperDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'financial-reports') {
+        if (financialsDiv) {
+            financialsDiv.style.display = 'block';
+            loadSrsData();
+        }
+    } else if (tabId === 'packages') {
+        if (packagesDiv) {
+            packagesDiv.style.display = 'block';
+            loadSrsData();
         }
     }
 }
@@ -1974,6 +2030,801 @@ window.toggleDecisionPanel = toggleDecisionPanel;
 window.updateRejectionPreview = updateRejectionPreview;
 window.updateRejectionPreviewCustom = updateRejectionPreviewCustom;
 window.submitRefundDecision = submitRefundDecision;
+
+// --- CENTRAL SRS DATA STATE ---
+let srsState = {
+    contracts: [],
+    attractions: [],
+    agencies: [],
+    cms: { faq: [], banners: [] },
+    notifications: [],
+    packages: [],
+    commercialConditions: [],
+    financialInfo: [],
+    
+    selectedContractIds: [],
+    currentContractType: 'Contrato de Atração'
+};
+
+// Calculate SLA in days dynamically for any date
+function calculateSlaDays(requestDateStr) {
+    try {
+        const parts = requestDateStr.split('/');
+        const reqDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+        const now = new Date(2026, 6, 20); 
+        const diffTime = Math.max(0, now - reqDate);
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    } catch (e) {
+        return 0;
+    }
+}
+
+// Fetch SRS Data
+async function loadSrsData() {
+    try {
+        const res = await fetch('/api/srs-data');
+        const data = await res.json();
+        
+        srsState.contracts = data.contracts || [];
+        srsState.attractions = data.attractions || [];
+        srsState.agencies = data.agencies || [];
+        srsState.cms = data.cms || { faq: [], banners: [] };
+        srsState.notifications = data.notifications || [];
+        srsState.packages = data.packages || [];
+        srsState.commercialConditions = data.commercialConditions || [];
+        srsState.financialInfo = data.financialInfo || [];
+        
+        // Render panels
+        renderContractsTable();
+        renderAttractionsTable();
+        renderAgenciesTable();
+        renderCmsFaqList();
+        renderNotificationsLog();
+        renderFinancialReports();
+        renderPackagesTable();
+        
+        // Dynamically fill contract condition options
+        populateContractFormOptions();
+    } catch (err) {
+        console.error("Error loading SRS Data:", err);
+    }
+}
+
+// 1. GESTÃO DE CONTRATOS (RF-008 / RF-009)
+function renderContractsTable() {
+    const tbody = document.getElementById('contracts-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    const searchVal = document.getElementById('contract-search').value.toLowerCase().trim();
+    const statusVal = document.getElementById('contract-filter-status').value;
+    const typeVal = document.getElementById('contract-filter-type').value;
+    
+    let list = srsState.contracts;
+    
+    // Filters
+    if (statusVal !== 'Todos') {
+        list = list.filter(c => c.status === statusVal);
+    }
+    if (typeVal !== 'Todos') {
+        list = list.filter(c => c.type === typeVal);
+    }
+    if (searchVal) {
+        list = list.filter(c => {
+            return String(c.id).includes(searchVal) ||
+                   c.partnerName.toLowerCase().includes(searchVal) ||
+                   c.attraction.toLowerCase().includes(searchVal);
+        });
+    }
+    
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 24px; color: var(--text-muted);">Nenhum contrato encontrado.</td></tr>`;
+        return;
+    }
+    
+    list.forEach(c => {
+        const isChecked = srsState.selectedContractIds.includes(c.id);
+        
+        // Status Badge color mapping
+        let statusBg = 'rgba(245, 158, 11, 0.15)';
+        let statusColor = '#F59E0B';
+        if (c.status === 'Ativo') {
+            statusBg = 'rgba(16, 185, 129, 0.15)';
+            statusColor = '#10B981';
+        } else if (c.status === 'Inativo') {
+            statusBg = 'rgba(156, 163, 175, 0.15)';
+            statusColor = '#9CA3AF';
+        } else if (c.status === 'Enviado a Docusign') {
+            statusBg = 'rgba(59, 130, 246, 0.15)';
+            statusColor = '#3B82F6';
+        } else if (c.status === 'Rascunho') {
+            statusBg = 'rgba(107, 114, 128, 0.15)';
+            statusColor = '#6B7280';
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding: 12px 16px;"><span class="expand-arrow" style="cursor:pointer;" onclick="toggleContractRowDetail(${c.id})">▶</span></td>
+            <td style="padding: 12px 16px;"><input type="checkbox" class="contract-row-check" data-id="${c.id}" ${isChecked ? 'checked' : ''} onclick="toggleContractRow(${c.id}, event)"></td>
+            <td style="padding: 12px; font-weight: 700;">#${c.id}</td>
+            <td style="padding: 12px;"><strong>${c.partnerName}</strong></td>
+            <td style="padding: 12px;">${c.type}</td>
+            <td style="padding: 12px;">${c.attraction}</td>
+            <td style="padding: 12px; color: var(--text-muted);">${c.expirationDate}</td>
+            <td style="padding: 12px;">
+                <span style="background: ${statusBg}; color: ${statusColor}; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase;">${c.status}</span>
+            </td>
+        `;
+        tbody.appendChild(tr);
+        
+        // Collapsible nested detail row (RF-008.08 / 09)
+        const detailTr = document.createElement('tr');
+        detailTr.id = `contract-detail-${c.id}`;
+        detailTr.style.display = 'none';
+        detailTr.style.background = 'rgba(255,255,255,0.01)';
+        detailTr.innerHTML = `
+            <td colspan="8" style="padding: 16px; border-bottom: 1px solid var(--glass-border);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 20px; font-size: 11px; line-height: 1.6; color: var(--text-secondary);">
+                    <div>
+                        <strong style="color:var(--primary);">Detalhamento do Contrato:</strong>
+                        <div>Docusign Status: <span style="font-weight:700;">${c.status === 'Ativo' ? 'Assinado' : 'Aguardando Assinaturas'}</span></div>
+                        <div>Regra Comercial Vinculada: ID #${c.linkedConditionId || 1}</div>
+                    </div>
+                    <div>
+                        <strong>Signatários:</strong>
+                        <div>Curitiba360 Representante (Assinado)</div>
+                        <div>${c.partnerName} Responsável (${c.status === 'Ativo' ? 'Assinado' : 'Pendente'})</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button class="btn-secondary" style="padding: 4px 8px; font-size: 10px;" onclick="editContract(${c.id})">Editar Parâmetros</button>
+                        <button class="btn-secondary" style="padding: 4px 8px; font-size: 10px; background: rgba(59,130,246,0.1); color:#3B82F6; border-color:#3B82F6;" onclick="downloadContractPdf(${c.id})">Ver PDF Contrato</button>
+                    </div>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(detailTr);
+    });
+}
+
+function filterContractsTable() {
+    renderContractsTable();
+}
+
+function toggleContractRowDetail(id) {
+    const detail = document.getElementById(`contract-detail-${id}`);
+    if (detail) {
+        detail.style.display = detail.style.display === 'none' ? 'table-row' : 'none';
+    }
+}
+
+function toggleContractRow(id, event) {
+    if (event) event.stopPropagation();
+    const idx = srsState.selectedContractIds.indexOf(id);
+    if (idx === -1) srsState.selectedContractIds.push(id);
+    else srsState.selectedContractIds.splice(idx, 1);
+    
+    updateContractActionBar();
+}
+
+function toggleAllContracts(source) {
+    const checks = document.querySelectorAll('.contract-row-check');
+    srsState.selectedContractIds = [];
+    checks.forEach(c => {
+        c.checked = source.checked;
+        const id = Number(c.getAttribute('data-id'));
+        if (source.checked) srsState.selectedContractIds.push(id);
+    });
+    updateContractActionBar();
+}
+
+function updateContractActionBar() {
+    const bar = document.getElementById('contract-action-bar');
+    const count = document.getElementById('contract-selected-count');
+    if (!bar || !count) return;
+    
+    if (srsState.selectedContractIds.length > 0) {
+        bar.style.display = 'flex';
+        count.textContent = srsState.selectedContractIds.length;
+    } else {
+        bar.style.display = 'none';
+    }
+}
+
+async function handleContractMassAction(action) {
+    if (srsState.selectedContractIds.length === 0) return;
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                collection: 'contracts',
+                action: action,
+                ids: srsState.selectedContractIds
+            })
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast("Contratos atualizados com sucesso!");
+            loadSrsData();
+        }
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+// Populate Conditions dropdown in contract form
+function populateContractFormOptions() {
+    const select = document.getElementById('contract-form-condition');
+    if (!select) return;
+    select.innerHTML = '';
+    srsState.commercialConditions.forEach(cond => {
+        const opt = document.createElement('option');
+        opt.value = cond.id;
+        opt.setAttribute('data-days', cond.daysLimit);
+        opt.textContent = `${cond.nickname} (ID ${cond.id} - ${cond.value}%)`;
+        select.appendChild(opt);
+    });
+}
+
+function handleContractTypeChange() {
+    const type = document.getElementById('contract-form-type').value;
+    const attractionGroup = document.getElementById('contract-form-attraction-group');
+    if (type === 'Contrato de Agência') {
+        attractionGroup.style.display = 'none';
+    } else {
+        attractionGroup.style.display = 'block';
+    }
+    updateContractTemplateLive();
+}
+
+// Live update of contract preview document template (RF-009.08/11/23/24)
+function updateContractTemplateLive() {
+    const partner = document.getElementById('contract-form-partner').value || '[1. Nome Parceiro]';
+    const type = document.getElementById('contract-form-type').value;
+    const attraction = document.getElementById('contract-form-attraction').value;
+    
+    const condSelect = document.getElementById('contract-form-condition');
+    const selectedCondText = condSelect.options[condSelect.selectedIndex]?.textContent || '[3. ID Condição]';
+    const selectedCondDays = condSelect.options[condSelect.selectedIndex]?.getAttribute('data-days') || '[4. Limite Dias]';
+    
+    const exp = document.getElementById('contract-form-exp').value || '____-__-__';
+    const additional = document.getElementById('contract-form-additional').value || '[5. Informações Adicionais...]';
+    
+    document.getElementById('tmpl-partner-name').textContent = partner;
+    document.getElementById('tmpl-attraction').textContent = type === 'Contrato de Agência' ? 'Adesão de Agência / Divulgação Geral' : attraction;
+    document.getElementById('tmpl-condition-id').textContent = selectedCondText;
+    document.getElementById('tmpl-days-limit').textContent = selectedCondDays;
+    document.getElementById('tmpl-additional-info').textContent = additional;
+    document.getElementById('tmpl-current-date').textContent = new Date().toLocaleDateString('pt-BR');
+    
+    // Completeness score
+    let score = 0;
+    if (document.getElementById('contract-form-partner').value.trim()) score += 25;
+    if (document.getElementById('contract-form-exp').value) score += 25;
+    if (document.getElementById('contract-form-condition').value) score += 25;
+    if (document.getElementById('contract-form-type').value) score += 25;
+    
+    document.getElementById('contract-progress-bar').style.width = `${score}%`;
+    document.getElementById('contract-progress-pct').textContent = `${score}%`;
+}
+
+function openContractModal() {
+    document.getElementById('contract-form-id').value = '';
+    document.getElementById('contract-form-partner').value = '';
+    document.getElementById('contract-form-additional').value = '';
+    document.getElementById('contract-form-exp').value = '';
+    document.getElementById('contract-form-type').selectedIndex = 0;
+    
+    handleContractTypeChange();
+    updateContractTemplateLive();
+    
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-contract-form');
+    if (overlay && modal) {
+        overlay.style.display = 'flex';
+        document.querySelectorAll('.modal-card').forEach(m => m.style.display = 'none');
+        modal.style.display = 'block';
+    }
+}
+
+function editContract(id) {
+    const c = srsState.contracts.find(item => item.id === id);
+    if (!c) return;
+    
+    document.getElementById('contract-form-id').value = c.id;
+    document.getElementById('contract-form-partner').value = c.partnerName;
+    document.getElementById('contract-form-type').value = c.type;
+    document.getElementById('contract-form-exp').value = c.expirationDate.split('/').reverse().join('-');
+    document.getElementById('contract-form-condition').value = c.linkedConditionId || 1;
+    
+    handleContractTypeChange();
+    updateContractTemplateLive();
+    
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-contract-form');
+    if (overlay && modal) {
+        overlay.style.display = 'flex';
+        document.querySelectorAll('.modal-card').forEach(m => m.style.display = 'none');
+        modal.style.display = 'block';
+    }
+}
+
+async function saveContractForm(event) {
+    event.preventDefault();
+    const id = document.getElementById('contract-form-id').value;
+    const type = document.getElementById('contract-form-type').value;
+    const partner = document.getElementById('contract-form-partner').value;
+    const attraction = type === 'Contrato de Agência' ? 'N/A' : document.getElementById('contract-form-attraction').value;
+    const condId = Number(document.getElementById('contract-form-condition').value);
+    
+    const expParts = document.getElementById('contract-form-exp').value.split('-');
+    const expFormatted = `${expParts[2]}/${expParts[1]}/${expParts[0]}`;
+    
+    const status = document.getElementById('contract-form-status').value;
+    
+    const payload = {
+        collection: 'contracts',
+        action: id ? 'edit' : 'create',
+        data: {
+            id: id ? Number(id) : undefined,
+            partnerName: partner,
+            partnerId: 10,
+            type: type,
+            status: status,
+            expirationDate: expFormatted,
+            attraction: attraction,
+            linkedConditionId: condId
+        }
+    };
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+            closeModal();
+            loadSrsData();
+            showToast("Contrato salvo com sucesso!");
+        }
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+function downloadContractPdf(id) {
+    const c = srsState.contracts.find(item => item.id === id);
+    if (!c) return;
+    alert(`Iniciando download do PDF assinado para o contrato #${c.id} via Docusign...`);
+}
+
+// 2. GESTÃO DE ATRAÇÕES (RF-012 / RF-013)
+function renderAttractionsTable() {
+    const tbody = document.getElementById('attractions-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    srsState.attractions.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding: 12px 16px; font-weight:700;">#${a.id}</td>
+            <td style="padding: 12px 16px;"><strong>${a.name}</strong></td>
+            <td style="padding: 12px 16px;">${a.category}</td>
+            <td style="padding: 12px 16px;">${a.capacity} scans/dia</td>
+            <td style="padding: 12px 16px;">
+                <span style="color: ${a.scanStatus === 'Crítico' ? '#EF4444' : '#10B981'}; font-weight:700;">● ${a.scanStatus}</span>
+            </td>
+            <td style="padding: 12px 16px;">
+                <span style="background: rgba(16,185,129,0.15); color: #10B981; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700;">${a.status}</span>
+            </td>
+            <td style="padding: 12px 16px;">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:10px; background: rgba(239,68,68,0.1); color:#EF4444; border-color:#EF4444;" onclick="deleteAttraction(${a.id})">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function openAttractionModal() {
+    document.getElementById('attraction-form-id').value = '';
+    document.getElementById('attraction-form-name').value = '';
+    
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-attraction-form');
+    if (overlay && modal) {
+        overlay.style.display = 'flex';
+        document.querySelectorAll('.modal-card').forEach(m => m.style.display = 'none');
+        modal.style.display = 'block';
+    }
+}
+
+async function saveAttractionForm(event) {
+    event.preventDefault();
+    const name = document.getElementById('attraction-form-name').value;
+    const cat = document.getElementById('attraction-form-category').value;
+    const cap = Number(document.getElementById('attraction-form-capacity').value);
+    const policy = document.getElementById('attraction-form-policy').value;
+    
+    const payload = {
+        collection: 'attractions',
+        action: 'create',
+        data: {
+            name: name,
+            category: cat,
+            capacity: cap,
+            scanStatus: 'Normal',
+            status: 'Ativo',
+            policy: policy
+        }
+    };
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if ((await res.json()).success) {
+            closeModal();
+            loadSrsData();
+            showToast("Atração criada com sucesso!");
+        }
+    } catch(e) { console.error(e); }
+}
+
+async function deleteAttraction(id) {
+    if (confirm("Deseja realmente excluir esta atração?")) {
+        try {
+            const res = await fetch('/api/srs-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    collection: 'attractions',
+                    action: 'delete',
+                    id: id
+                })
+            });
+            if ((await res.json()).success) {
+                loadSrsData();
+                showToast("Atração excluída!");
+            }
+        } catch(e) { console.error(e); }
+    }
+}
+
+// 3. GESTÃO DE AGÊNCIAS (RF-026)
+function renderAgenciesTable() {
+    const tbody = document.getElementById('agencies-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    srsState.agencies.forEach(ag => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding: 12px 16px; font-weight:700;">#${ag.id}</td>
+            <td style="padding: 12px 16px;"><strong>${ag.name}</strong></td>
+            <td style="padding: 12px 16px;">${ag.agentsCount} agentes</td>
+            <td style="padding: 12px 16px;">${ag.commissionRate}% comissão</td>
+            <td style="padding: 12px 16px; font-family: monospace;">Contrato #${ag.contractId}</td>
+            <td style="padding: 12px 16px;">
+                <span style="background: rgba(16,185,129,0.15); color: #10B981; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700;">${ag.status}</span>
+            </td>
+            <td style="padding: 12px 16px;">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:10px; background: rgba(239,68,68,0.1); color:#EF4444; border-color:#EF4444;" onclick="deleteAgency(${ag.id})">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function openAgencyModal() {
+    document.getElementById('agency-form-id').value = '';
+    document.getElementById('agency-form-name').value = '';
+    
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-agency-form');
+    if (overlay && modal) {
+        overlay.style.display = 'flex';
+        document.querySelectorAll('.modal-card').forEach(m => m.style.display = 'none');
+        modal.style.display = 'block';
+    }
+}
+
+async function saveAgencyForm(event) {
+    event.preventDefault();
+    const name = document.getElementById('agency-form-name').value;
+    const comm = Number(document.getElementById('agency-form-comm').value);
+    const agents = Number(document.getElementById('agency-form-agents').value);
+    
+    const payload = {
+        collection: 'agencies',
+        action: 'create',
+        data: {
+            name: name,
+            commissionRate: comm,
+            agentsCount: agents,
+            status: 'Ativo',
+            contractId: Math.floor(Math.random() * 5) + 1
+        }
+    };
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if ((await res.json()).success) {
+            closeModal();
+            loadSrsData();
+            showToast("Agência criada com sucesso!");
+        }
+    } catch(e) { console.error(e); }
+}
+
+async function deleteAgency(id) {
+    if (confirm("Deseja excluir esta agência?")) {
+        try {
+            const res = await fetch('/api/srs-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    collection: 'agencies',
+                    action: 'delete',
+                    id: id
+                })
+            });
+            if ((await res.json()).success) {
+                loadSrsData();
+                showToast("Agência excluída!");
+            }
+        } catch(e) { console.error(e); }
+    }
+}
+
+// 4. INSTITUCIONAL & CMS (RF-032)
+function renderCmsFaqList() {
+    const container = document.getElementById('cms-faq-list');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    if (srsState.cms.faq.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-style:italic;">Nenhuma pergunta cadastrada.</div>`;
+        return;
+    }
+    
+    srsState.cms.faq.forEach(f => {
+        const item = document.createElement('div');
+        item.style.borderBottom = '1px solid var(--glass-border)';
+        item.style.padding = '10px 0';
+        item.innerHTML = `
+            <div style="font-weight: 700; color: #FFF; font-size: 13px;">Q: ${f.question}</div>
+            <div style="color: var(--text-secondary); margin-top: 4px; font-size: 12px;">R: ${f.answer}</div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+async function addFaqPrompt() {
+    const q = prompt("Digite a pergunta do FAQ:");
+    if (!q) return;
+    const a = prompt("Digite a resposta do FAQ:");
+    if (!a) return;
+    
+    const newFaq = [...srsState.cms.faq, { id: Date.now(), question: q, answer: a }];
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                collection: 'cms',
+                action: 'edit', 
+                data: {
+                    faq: newFaq,
+                    banners: srsState.cms.banners
+                }
+            })
+        });
+        if ((await res.json()).success) {
+            loadSrsData();
+            showToast("FAQ atualizado!");
+        }
+    } catch(e) { console.error(e); }
+}
+
+// 5. CENTRAL DE NOTIFICAÇÕES LOGS
+function renderNotificationsLog() {
+    const container = document.getElementById('notification-logs-container');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    srsState.notifications.forEach(n => {
+        const log = document.createElement('div');
+        log.style.borderLeft = '3px solid var(--primary)';
+        log.style.padding = '8px 12px';
+        log.style.marginBottom = '8px';
+        log.style.background = 'rgba(255,255,255,0.01)';
+        log.style.borderRadius = '4px';
+        log.style.fontSize = '12px';
+        log.innerHTML = `
+            <strong>[${n.type}]</strong> ${n.message}
+            <span style="float: right; color: var(--text-muted); font-size: 10px;">${n.timestamp}</span>
+        `;
+        container.appendChild(log);
+    });
+}
+
+async function sendMassNotificationPrompt() {
+    const msg = prompt("Digite o alerta geral a ser disparado no painel dos parceiros:");
+    if (!msg) return;
+    
+    const nowStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                collection: 'notifications',
+                action: 'create',
+                data: {
+                    type: 'Global',
+                    message: msg,
+                    timestamp: nowStr
+                }
+            })
+        });
+        if ((await res.json()).success) {
+            loadSrsData();
+            showToast("Alerta disparado!");
+        }
+    } catch(e) { console.error(e); }
+}
+
+// 6. RELATÓRIOS FINANCEIROS GLOBAIS
+function renderFinancialReports() {
+    const grossEl = document.getElementById('fin-rep-gross');
+    const netEl = document.getElementById('fin-rep-net');
+    
+    if (grossEl && srsState.contracts.length > 0) {
+        grossEl.textContent = "R$ 141.975,00"; 
+        netEl.textContent = "R$ 124.228,12";
+    }
+}
+
+// 7. GESTÃO DE PACOTES (RF-040)
+function renderPackagesTable() {
+    const tbody = document.getElementById('packages-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    srsState.packages.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding: 12px 16px; font-weight:700;">#${p.id}</td>
+            <td style="padding: 12px 16px;"><strong>${p.name}</strong></td>
+            <td style="padding: 12px 16px;">${p.attractions.join(', ')}</td>
+            <td style="padding: 12px 16px; font-weight: 700; color:#FFF;">R$ ${p.price.toFixed(2)}</td>
+            <td style="padding: 12px 16px;">
+                <span style="background: rgba(16,185,129,0.15); color: #10B981; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700;">${p.status}</span>
+            </td>
+            <td style="padding: 12px 16px;">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:10px; background: rgba(239,68,68,0.1); color:#EF4444; border-color:#EF4444;" onclick="deletePackage(${p.id})">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function openPackageModal() {
+    document.getElementById('package-form-id').value = '';
+    document.getElementById('package-form-name').value = '';
+    document.getElementById('package-form-attractions').value = '';
+    document.getElementById('package-form-price').value = '';
+    
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-package-form');
+    if (overlay && modal) {
+        overlay.style.display = 'flex';
+        document.querySelectorAll('.modal-card').forEach(m => m.style.display = 'none');
+        modal.style.display = 'block';
+    }
+}
+
+async function savePackageForm(event) {
+    event.preventDefault();
+    const name = document.getElementById('package-form-name').value;
+    const atts = document.getElementById('package-form-attractions').value.split(',').map(s => s.trim());
+    const price = Number(document.getElementById('package-form-price').value);
+    
+    const payload = {
+        collection: 'packages',
+        action: 'create',
+        data: {
+            name: name,
+            attractions: atts,
+            price: price,
+            status: 'Ativo'
+        }
+    };
+    
+    try {
+        const res = await fetch('/api/srs-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if ((await res.json()).success) {
+            closeModal();
+            loadSrsData();
+            showToast("Pacote criado com sucesso!");
+        }
+    } catch(e) { console.error(e); }
+}
+
+async function deletePackage(id) {
+    if (confirm("Deseja excluir este pacote?")) {
+        try {
+            const res = await fetch('/api/srs-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    collection: 'packages',
+                    action: 'delete',
+                    id: id
+                })
+            });
+            if ((await res.json()).success) {
+                loadSrsData();
+                showToast("Pacote excluído!");
+            }
+        } catch(e) { console.error(e); }
+    }
+}
+
+// Anti-cambista helper
+function blockUser(email) {
+    alert(`Usuário ${email} bloqueado preventivamente com sucesso! Chave de segurança atualizada.`);
+}
+function ignoreAlert() {
+    showToast("Alerta desconsiderado.");
+}
+
+// Bind to window to allow direct HTML calls
+window.loadSrsData = loadSrsData;
+window.filterContractsTable = filterContractsTable;
+window.toggleContractRowDetail = toggleContractRowDetail;
+window.toggleContractRow = toggleContractRow;
+window.toggleAllContracts = toggleAllContracts;
+window.handleContractMassAction = handleContractMassAction;
+window.handleContractTypeChange = handleContractTypeChange;
+window.updateContractTemplateLive = updateContractTemplateLive;
+window.openContractModal = openContractModal;
+window.editContract = editContract;
+window.saveContractForm = saveContractForm;
+window.downloadContractPdf = downloadContractPdf;
+
+window.openAttractionModal = openAttractionModal;
+window.saveAttractionForm = saveAttractionForm;
+window.deleteAttraction = deleteAttraction;
+
+window.openAgencyModal = openAgencyModal;
+window.saveAgencyForm = saveAgencyForm;
+window.deleteAgency = deleteAgency;
+
+window.addFaqPrompt = addFaqPrompt;
+window.sendMassNotificationPrompt = sendMassNotificationPrompt;
+
+window.openPackageModal = openPackageModal;
+window.savePackageForm = savePackageForm;
+window.deletePackage = deletePackage;
+
+window.blockUser = blockUser;
+window.ignoreAlert = ignoreAlert;
 
 
 

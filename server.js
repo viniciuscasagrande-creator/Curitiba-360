@@ -432,6 +432,95 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // GET /api/srs-data
+    if (url.pathname === '/api/srs-data' && method === 'GET') {
+        const db = readDatabase();
+        const payload = {
+            contracts: db.contracts || [],
+            attractions: db.attractions || [],
+            agencies: db.agencies || [],
+            cms: db.cms || { faq: [], banners: [] },
+            notifications: db.notifications || [],
+            packages: db.packages || [],
+            commercialConditions: db.commercialConditions || [],
+            financialInfo: db.financialInfo || []
+        };
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(payload));
+        return;
+    }
+
+    // POST /api/srs-data
+    if (url.pathname === '/api/srs-data' && method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const reqData = JSON.parse(body);
+                const db = readDatabase();
+                const col = reqData.collection;
+                const act = reqData.action;
+                const record = reqData.data || {};
+                
+                if (!col || !act) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: "Missing collection or action parameters" }));
+                    return;
+                }
+                
+                db[col] = db[col] || [];
+                
+                // 1. CREATE Action
+                if (act === 'create') {
+                    const nextId = db[col].reduce((max, r) => r.id > max ? r.id : max, 0) + 1;
+                    record.id = nextId;
+                    db[col].push(record);
+                } 
+                // 2. EDIT Action
+                else if (act === 'edit') {
+                    const existing = db[col].find(r => r.id === Number(record.id));
+                    if (!existing) {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: "Record not found" }));
+                        return;
+                    }
+                    Object.assign(existing, record);
+                } 
+                // 3. DELETE Action
+                else if (act === 'delete') {
+                    const idsToDelete = Array.isArray(reqData.ids) ? reqData.ids : [Number(reqData.id)];
+                    db[col] = db[col].filter(r => !idsToDelete.includes(r.id));
+                } 
+                // 4. INACTIVATE Action
+                else if (act === 'inactivate') {
+                    const idsToInactivate = Array.isArray(reqData.ids) ? reqData.ids : [Number(reqData.id)];
+                    db[col].forEach(r => {
+                        if (idsToInactivate.includes(r.id)) {
+                            r.status = 'Inativo';
+                        }
+                    });
+                } 
+                // 5. DOCUSIGN Action (specific to contracts)
+                else if (act === 'send-docusign') {
+                    const idsToSign = Array.isArray(reqData.ids) ? reqData.ids : [Number(reqData.id)];
+                    db[col].forEach(r => {
+                        if (idsToSign.includes(r.id)) {
+                            r.status = 'Enviado a Docusign';
+                        }
+                    });
+                }
+                
+                writeDatabase(db);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Malformed JSON body" }));
+            }
+        });
+        return;
+    }
+
     // POST /api/register
     if (url.pathname === '/api/register' && method === 'POST') {
         let body = '';

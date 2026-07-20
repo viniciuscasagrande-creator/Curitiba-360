@@ -8,7 +8,7 @@
       "reason": "leisure",
       "hotel": "Hotel Pestana Curitiba",
       "packageKey": "gastronomic",
-      "pricePaid": 199.0,
+      "pricePaid": 199,
       "code": "C360-847291",
       "date": "20/07/2026"
     },
@@ -20,7 +20,7 @@
       "reason": "business",
       "hotel": "Radisson Hotel Curitiba",
       "packageKey": "historic",
-      "pricePaid": 99.0,
+      "pricePaid": 99,
       "code": "C360-128492",
       "date": "19/07/2026"
     },
@@ -32,7 +32,7 @@
       "reason": "leisure",
       "hotel": "Hotel Pestana Curitiba",
       "packageKey": "green",
-      "pricePaid": 75.0,
+      "pricePaid": 75,
       "code": "C360-492718",
       "date": "20/07/2026"
     },
@@ -44,7 +44,7 @@
       "reason": "leisure",
       "hotel": "Grand Hotel Rayon",
       "packageKey": "gastronomic",
-      "pricePaid": 199.0,
+      "pricePaid": 199,
       "code": "C360-391827",
       "date": "18/07/2026"
     },
@@ -56,7 +56,7 @@
       "reason": "leisure",
       "hotel": "Novotel Curitiba Batel",
       "packageKey": "green",
-      "pricePaid": 75.0,
+      "pricePaid": 75,
       "code": "C360-928173",
       "date": "20/07/2026"
     }
@@ -67,7 +67,7 @@
       "nickname": "Parceria Padrão Batel",
       "status": "Ativo",
       "type": "Porcentagem",
-      "value": 10.0,
+      "value": 10,
       "ccVista": 2.5,
       "ccParcelado": 3.8,
       "pix": 0.9,
@@ -81,13 +81,13 @@
       "nickname": "Acordo Especial Hard Rock",
       "status": "Ativo",
       "type": "Porcentagem",
-      "value": 15.0,
+      "value": 15,
       "ccVista": 2.2,
       "ccParcelado": 3.5,
       "pix": 0.5,
       "anticipation": 1.2,
       "daysLimit": 15,
-      "international": 4.0,
+      "international": 4,
       "linked": true
     },
     {
@@ -95,13 +95,13 @@
       "nickname": "Taxa Promocional Inverno",
       "status": "Inativo",
       "type": "Porcentagem",
-      "value": 8.0,
+      "value": 8,
       "ccVista": 2.8,
-      "ccParcelado": 4.0,
-      "pix": 1.0,
-      "anticipation": 2.0,
+      "ccParcelado": 4,
+      "pix": 1,
+      "anticipation": 2,
       "daysLimit": 45,
-      "international": 5.0,
+      "international": 5,
       "linked": false
     }
   ],
@@ -112,7 +112,7 @@
       "status": "Ativo",
       "withdrawAllowed": "Sim",
       "withdrawPct": 100,
-      "withdrawMax": 50000.0,
+      "withdrawMax": 50000,
       "withdrawMinDays": 7,
       "pixFee": "Não",
       "tedFee": "Sim (R$ 5,00)",
@@ -124,7 +124,7 @@
       "status": "Ativo",
       "withdrawAllowed": "Sim",
       "withdrawPct": 100,
-      "withdrawMax": 200000.0,
+      "withdrawMax": 200000,
       "withdrawMinDays": 2,
       "pixFee": "Sim (2%)",
       "tedFee": "Não",
@@ -139,7 +139,7 @@
       "touristEmail": "marcos.o@example.com",
       "touristPhone": "(41) 99999-1111",
       "attraction": "Jardim Botânico de Curitiba",
-      "value": 99.00,
+      "value": 99,
       "reason": "Problemas de saúde",
       "origin": "Turista",
       "purchaseDate": "10/07/2026",
@@ -154,7 +154,11 @@
       "policy": "Cancelamento gratuito em até 48h antes da data da atração. Cancelamento solicitado após o evento está sujeito a análise de força maior.",
       "touristComments": "Fiquei doente no dia e não pude comparecer.",
       "history": [
-        { "actor": "Sistema", "action": "Solicitação registrada via Portal do Turista", "date": "18/07/2026 14:32" }
+        {
+          "actor": "Sistema",
+          "action": "Solicitação registrada via Portal do Turista",
+          "date": "18/07/2026 14:32"
+        }
       ]
     },
     {
@@ -164,7 +168,7 @@
       "touristEmail": "john.d@example.com",
       "touristPhone": "+1 (555) 019-2831",
       "attraction": "Linha Turismo Curitiba",
-      "value": 199.00,
+      "value": 199,
       "reason": "Desistência da viagem",
       "origin": "Agência",
       "solicitante": "Agência Batel Turismo (ID 2)",
@@ -181,7 +185,11 @@
       "policy": "Cancelamento sem taxa até 7 dias após a compra.",
       "touristComments": "Cancelamento solicitado via agência por alteração de rota aérea.",
       "history": [
-        { "actor": "Agência (ID 2)", "action": "Solicitação manual criada na Central de Agências", "date": "14/07/2026 10:15" }
+        {
+          "actor": "Agência (ID 2)",
+          "action": "Solicitação manual criada na Central de Agências",
+          "date": "14/07/2026 10:15"
+        }
       ]
     },
     {
@@ -191,7 +199,7 @@
       "touristEmail": "camila.s@example.com",
       "touristPhone": "(47) 98888-2222",
       "attraction": "Parque Jaime Lerner",
-      "value": 75.00,
+      "value": 75,
       "reason": "Condições climáticas (chuva)",
       "origin": "Turista",
       "purchaseDate": "01/07/2026",
@@ -206,8 +214,16 @@
       "policy": "Atrações ao ar livre funcionam mesmo com chuva. Cancelamento não elegível por clima, exceto em caso de tempestades com fechamento oficial do parque.",
       "touristComments": "Choveu muito forte no dia e o passeio ficou inviável para crianças.",
       "history": [
-        { "actor": "Sistema", "action": "Solicitação registrada via Portal do Turista", "date": "08/07/2026 18:40" },
-        { "actor": "Administrador", "action": "Status alterado para Em Análise", "date": "12/07/2026 09:22" }
+        {
+          "actor": "Sistema",
+          "action": "Solicitação registrada via Portal do Turista",
+          "date": "08/07/2026 18:40"
+        },
+        {
+          "actor": "Administrador",
+          "action": "Status alterado para Em Análise",
+          "date": "12/07/2026 09:22"
+        }
       ]
     },
     {
@@ -217,7 +233,7 @@
       "touristEmail": "sofia.silva@example.com",
       "touristPhone": "(11) 97777-3333",
       "attraction": "Ópera de Arame",
-      "value": 199.00,
+      "value": 199,
       "reason": "Erro na data da compra",
       "origin": "Administrador",
       "solicitante": "Admin Antigravity",
@@ -233,12 +249,132 @@
       "scansHistory": [],
       "policy": "Cancelamento gratuito antes do início do evento.",
       "touristComments": "Cliente comprou para segunda em vez de domingo por engano.",
-      "approvedAmount": 199.00,
+      "approvedAmount": 199,
       "returnMethod": "gateway",
       "internalNotes": "Aprovado estorno integral.",
       "history": [
-        { "actor": "Administrador", "action": "Solicitação criada e Aprovada integralmente", "date": "19/07/2026 10:00" }
+        {
+          "actor": "Administrador",
+          "action": "Solicitação criada e Aprovada integralmente",
+          "date": "19/07/2026 10:00"
+        }
       ]
+    }
+  ],
+  "contracts": [
+    {
+      "id": 1,
+      "partnerName": "Batel Turismo",
+      "partnerId": 10,
+      "type": "Contrato de Agência",
+      "status": "Ativo",
+      "expirationDate": "15/12/2027",
+      "attraction": "N/A",
+      "linkedConditionId": 1
+    },
+    {
+      "id": 2,
+      "partnerName": "Parque Jaime Lerner S.A.",
+      "partnerId": 11,
+      "type": "Contrato de Atração",
+      "status": "Ativo",
+      "expirationDate": "30/08/2028",
+      "attraction": "Parque Jaime Lerner",
+      "linkedConditionId": 2
+    },
+    {
+      "id": 3,
+      "partnerName": "Jardim Botânico Operadora",
+      "partnerId": 12,
+      "type": "Contrato de Atração",
+      "status": "Enviado a Docusign",
+      "expirationDate": "01/01/2027",
+      "attraction": "Jardim Botânico de Curitiba",
+      "linkedConditionId": 1
+    }
+  ],
+  "attractions": [
+    {
+      "id": 1,
+      "name": "Jardim Botânico de Curitiba",
+      "category": "Natureza / Parque",
+      "capacity": 5000,
+      "scanStatus": "Normal",
+      "status": "Ativo",
+      "policy": "Cancelamento gratuito em até 48h antes da data da atração."
+    },
+    {
+      "id": 2,
+      "name": "Ópera de Arame",
+      "category": "Cultura / Teatro",
+      "capacity": 1500,
+      "scanStatus": "Crítico",
+      "status": "Ativo",
+      "policy": "Cancelamento gratuito antes do início do evento."
+    },
+    {
+      "id": 3,
+      "name": "Parque Jaime Lerner",
+      "category": "Inovação / Arquitetura",
+      "capacity": 3000,
+      "scanStatus": "Normal",
+      "status": "Ativo",
+      "policy": "Cancelamento sob consulta técnica."
+    }
+  ],
+  "agencies": [
+    {
+      "id": 1,
+      "name": "Batel Turismo",
+      "agentsCount": 12,
+      "commissionRate": 10,
+      "status": "Ativo",
+      "contractId": 1
+    },
+    {
+      "id": 2,
+      "name": "Serra Verde Express",
+      "agentsCount": 25,
+      "commissionRate": 15,
+      "status": "Ativo",
+      "contractId": 2
+    }
+  ],
+  "cms": {
+    "faq": [
+      {
+        "id": 1,
+        "question": "Como funciona o reembolso?",
+        "answer": "Solicitações automáticas em até 7 dias da compra, após isso via triagem manual."
+      }
+    ],
+    "banners": [
+      {
+        "id": 1,
+        "title": "Festival de Inverno 2026",
+        "active": true,
+        "image": "assets/banner_inverno.jpg"
+      }
+    ]
+  },
+  "notifications": [
+    {
+      "id": 1,
+      "type": "Alerta",
+      "message": "Volume de scans acima do limite na Ópera de Arame",
+      "timestamp": "20/07/2026 10:15"
+    }
+  ],
+  "packages": [
+    {
+      "id": 1,
+      "name": "Passaporte Curitiba Cultural",
+      "attractions": [
+        "Ópera de Arame",
+        "Jardim Botânico de Curitiba"
+      ],
+      "price": 150,
+      "status": "Ativo"
     }
   ]
 }
