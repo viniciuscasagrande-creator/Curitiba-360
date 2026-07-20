@@ -21,6 +21,7 @@ import GestaoAtracoes from './pages/GestaoAtracoes';
 import GestaoContratos from './pages/GestaoContratos';
 import ConfiguracoesComerciais from './pages/ConfiguracoesComerciais';
 import CadastroAtracao from './pages/CadastroAtracao';
+import TotaisAtracao from './pages/TotaisAtracao';
 
 function App() {
   return (
@@ -47,7 +48,8 @@ function App() {
           <Route path="/atracoes" element={<GestaoAtracoes />} />
           <Route path="/atracoes/nova" element={<CadastroAtracao />} />
           <Route path="/contratos" element={<GestaoContratos />} />
-          <Route path="/configuracoes" element={<ConfiguracoesComerciais />} />
+          <Route style={{}} path="/configuracoes" element={<ConfiguracoesComerciais />} />
+          <Route path="/relatorios" element={<TotaisAtracao />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
