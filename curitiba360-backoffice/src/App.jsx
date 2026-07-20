@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Layout from './components/Layout';
 
+import Dashboard from './pages/Dashboard';
+
 // Componentes temporários (vamos criar arquivos para eles depois)
-function Dashboard() { return <h2>Página: Dashboard (RF-003)</h2>; }
 function GestaoUsuarios() { return <h2>Página: Gestão de Usuários (RF-006)</h2>; }
 
 function App() {
