@@ -2,137 +2,170 @@
 import { useState } from 'react';
 
 export default function GestaoRelatoriosFinanceiros() {
-  const [dataInicio, setDataInicio] = useState('2026-07-01');
-  const [dataFim, setDataFim] = useState('2026-07-20');
-  const [canalFiltro, setCanalFiltro] = useState('Todos');
+  const [tipoRelatorio, setTipoRelatorio] = useState('Vendas Consolidadas');
+  const [dataInicial, setDataInicial] = useState('2026-07-01');
+  const [dataFinal, setDataFinal] = useState('2026-07-31');
+  const [parceiroFiltro, setParceiroFiltro] = useState('Todos');
+  
+  // Estado para armazenar os dados gerados (Mock)
+  const [dadosRelatorio, setDadosRelatorio] = useState(null);
 
-  // Mock de Relatório Consolidado
-  const resumoFinanceiro = {
-    faturamentoBruto: 458900.00,
-    comissaoPlataforma: 68835.00, // ~15% médio
-    taxaGateway: 16061.50, // ~3.5%
-    repasseLiquido: 374003.50,
+  // Mocks de resultados dependendo do tipo de relatório
+  const gerarRelatorio = (e) => {
+    e.preventDefault();
+    
+    if (tipoRelatorio === 'Vendas Consolidadas') {
+      setDadosRelatorio({
+        colunas: ['Data', 'Atração', 'Qtd Ingressos', 'Receita Bruta (R$)', 'Taxas Gateway (R$)', 'Receita Líquida (R$)'],
+        linhas: [
+          ['20/07/2026', 'Ópera de Arame', 150, 7500.00, 150.00, 7350.00],
+          ['20/07/2026', 'Jardim Botânico', 300, 12000.00, 240.00, 11760.00],
+          ['19/07/2026', 'Parque Jaime Lerner', 80, 4000.00, 80.00, 3920.00],
+        ],
+        totais: ['Total Período', '-', 530, 23500.00, 470.00, 23030.00]
+      });
+    } else if (tipoRelatorio === 'Comissões de Agências') {
+      setDadosRelatorio({
+        colunas: ['Agência', 'Vendas Totais (R$)', 'Comissão Base (%)', 'Comissão Bruta (R$)', 'Deduções (R$)', 'A Pagar (R$)'],
+        linhas: [
+          ['Tour CWB', 45000.00, '10%', 4500.00, 150.00, 4350.00],
+          ['Viagens Sul', 28000.00, '12%', 3360.00, 0.00, 3360.00],
+          ['Explore Paraná', 12500.00, '10%', 1250.00, 50.00, 1200.00],
+        ],
+        totais: ['Total Período', 85500.00, '-', 9110.00, 200.00, 8910.00]
+      });
+    } else if (tipoRelatorio === 'Reembolsos e Estornos') {
+      setDadosRelatorio({
+        colunas: ['Data Solicitação', 'Pedido ID', 'Turista', 'Motivo', 'Valor Estornado (R$)', 'Status'],
+        linhas: [
+          ['18/07/2026', '#1092', 'Carlos Almeida', 'Cancelamento Automático (24h)', 150.00, 'Concluído'],
+          ['19/07/2026', '#1085', 'Ana Souza', 'Aprovado Manual (Doença)', 80.00, 'Processando'],
+        ],
+        totais: ['Total Período', '-', '-', '-', 230.00, '-']
+      });
+    }
   };
 
-  // Transações consolidadas para auditoria
-  const transacoes = [
-    { id: 'TX_1001', data: '20/07/2026 12:05', cliente: 'Alice Silva', item: 'Ingresso Jardim Botânico (x2)', valor: 100.00, canal: 'Portal Público', gateway: 'Pix', status: 'Aprovado' },
-    { id: 'TX_1002', data: '20/07/2026 11:30', cliente: 'Bruno Alves', item: 'Ingresso Ópera de Arame (x3)', valor: 360.00, canal: 'Agente de Turismo', gateway: 'Cartão de Crédito', status: 'Aprovado' },
-    { id: 'TX_1003', data: '19/07/2026 18:22', cliente: 'Clara Costa', item: 'Combo Parques e Natureza (x1)', valor: 30.00, gateway: 'Pix', canal: 'Portal Público', status: 'Reembolsado' },
-    { id: 'TX_1004', data: '19/07/2026 15:45', cliente: 'Diego Souza', item: 'Ingresso Ópera de Arame (x1)', valor: 120.00, gateway: 'Cartão de Crédito', canal: 'Portal Público', status: 'Pendente' }
-  ];
-
-  const transacoesFiltradas = transacoes.filter(tx => {
-    return canalFiltro === 'Todos' || tx.canal === canalFiltro;
-  });
-
-  const handleExportarXLSX = () => {
-    alert('Consolidando dados financeiros e exportando planilha em formato XLSX...');
+  const limparFiltros = () => {
+    setDadosRelatorio(null);
+    setTipoRelatorio('Vendas Consolidadas');
   };
 
   return (
     <div>
-      {/* CABEÇALHO */}
+      {/* CABEÇALHO E AÇÕES DE EXPORTAÇÃO */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Relatórios Financeiros Consolidados</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Audite o faturamento bruto, taxas de comissão e repasses do ecossistema Curitiba 360</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Relatórios Financeiros</h1>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gere e exporte dados para conciliação e auditoria</p>
         </div>
-
-        <button 
-          onClick={handleExportarXLSX}
-          style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
-        >
-          📊 Exportar XLSX
-        </button>
-      </div>
-
-      {/* FILTROS DE AUDITORIA */}
-      <div style={{ display: 'flex', gap: '1rem', background: 'white', padding: '1.25rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem', flexWrap: 'wrap', alignItems: 'end' }}>
-        <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Data Inicial</label>
-          <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-        </div>
-        <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Data Final</label>
-          <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-        </div>
-        <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Filtrar por Canal</label>
-          <select value={canalFiltro} onChange={e => setCanalFiltro(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px' }}>
-            <option value="Todos">Todos os Canais</option>
-            <option value="Portal Público">Portal Público</option>
-            <option value="Agente de Turismo">Agente de Turismo</option>
-          </select>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button 
+            disabled={!dadosRelatorio}
+            style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: dadosRelatorio ? 'white' : '#f3f4f6', cursor: dadosRelatorio ? 'pointer' : 'not-allowed', color: dadosRelatorio ? '#374151' : '#9ca3af' }}>
+            📄 Exportar CSV
+          </button>
+          <button 
+            disabled={!dadosRelatorio}
+            style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: dadosRelatorio ? 'white' : '#f3f4f6', cursor: dadosRelatorio ? 'pointer' : 'not-allowed', color: dadosRelatorio ? '#374151' : '#9ca3af' }}>
+            📕 Exportar PDF
+          </button>
         </div>
       </div>
 
-      {/* CARDS DE BALANÇO */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', borderTop: '4px solid #3b82f6' }}>
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Faturamento Bruto</span>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0', color: '#1e3a8a' }}>R$ {resumoFinanceiro.faturamentoBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+      {/* ÁREA DE FILTROS */}
+      <form onSubmit={gerarRelatorio} style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+        <h2 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem' }}>Parâmetros do Relatório</h2>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Tipo de Relatório *</label>
+            <select value={tipoRelatorio} onChange={(e) => setTipoRelatorio(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #ccc', fontSize: '0.875rem' }}>
+              <option value="Vendas Consolidadas">Vendas Consolidadas</option>
+              <option value="Comissões de Agências">Comissões de Agências</option>
+              <option value="Repasses a Parceiros">Repasses a Parceiros</option>
+              <option value="Reembolsos e Estornos">Reembolsos e Estornos</option>
+              <option value="Uso de Cupons Promocionais">Uso de Cupons Promocionais</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Data Inicial *</label>
+            <input type="date" required value={dataInicial} onChange={(e) => setDataInicial(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #ccc', fontSize: '0.875rem' }} />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Data Final *</label>
+            <input type="date" required value={dataFinal} onChange={(e) => setDataFinal(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #ccc', fontSize: '0.875rem' }} />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Parceiro / Agência</label>
+            <select value={parceiroFiltro} onChange={(e) => setParceiroFiltro(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #ccc', fontSize: '0.875rem' }}>
+              <option value="Todos">Todos (Visão Global)</option>
+              <option value="Parque Jaime Lerner">Parque Jaime Lerner S/A</option>
+              <option value="Tour CWB">Tour CWB (Agência)</option>
+            </select>
+          </div>
         </div>
 
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', borderTop: '4px solid #f59e0b' }}>
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Comissão Plataforma</span>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0', color: '#b45309' }}>R$ {resumoFinanceiro.comissaoPlataforma.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
+          <button type="button" onClick={limparFiltros} style={{ padding: '0.75rem 1.5rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer', fontWeight: 'bold' }}>
+            Limpar
+          </button>
+          <button type="submit" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+            Gerar Relatório
+          </button>
         </div>
+      </form>
 
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', borderTop: '4px solid #ef4444' }}>
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Custos Gateway</span>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0', color: '#b91c1c' }}>- R$ {resumoFinanceiro.taxaGateway.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+      {/* RESULTADO DO RELATÓRIO */}
+      {dadosRelatorio ? (
+        <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+          <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>Resultado: {tipoRelatorio}</h2>
+            <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Período: {dataInicial} até {dataFinal}</span>
+          </div>
+          
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
+              <thead style={{ backgroundColor: '#f3f4f6' }}>
+                <tr>
+                  {dadosRelatorio.colunas.map((col, idx) => (
+                    <th key={idx} style={{ padding: '1rem', borderBottom: '2px solid #e5e7eb', color: '#374151', fontSize: '0.875rem' }}>{col}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {dadosRelatorio.linhas.map((linha, index) => (
+                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb', backgroundColor: index % 2 === 0 ? 'white' : '#f9fafb' }}>
+                    {linha.map((celula, i) => (
+                      <td key={i} style={{ padding: '1rem', color: '#4b5563', fontSize: '0.875rem', fontWeight: typeof celula === 'number' ? 'bold' : 'normal' }}>
+                        {typeof celula === 'number' && !Number.isInteger(celula) ? `R$ ${celula.toFixed(2)}` : celula}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot style={{ backgroundColor: '#ecfdf5', borderTop: '2px solid #10b981' }}>
+                <tr>
+                  {dadosRelatorio.totais.map((total, idx) => (
+                    <td key={idx} style={{ padding: '1rem', fontWeight: 'bold', color: '#065f46', fontSize: '0.875rem' }}>
+                      {typeof total === 'number' && !Number.isInteger(total) ? `R$ ${total.toFixed(2)}` : total}
+                    </td>
+                  ))}
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
-
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', borderTop: '4px solid #10b981' }}>
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Repasse Líquido (Parceiros)</span>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0.5rem 0 0 0', color: '#047857' }}>R$ {resumoFinanceiro.repasseLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+      ) : (
+        <div style={{ background: 'white', padding: '3rem 2rem', borderRadius: '8px', border: '2px dashed #e5e7eb', textAlign: 'center', color: '#6b7280' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📊</div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#374151', marginBottom: '0.5rem' }}>Nenhum relatório gerado</h3>
+          <p>Utilize os filtros acima e clique em "Gerar Relatório" para visualizar os dados.</p>
         </div>
-      </div>
-
-      {/* TABELA DE DETALHE DE TRANSAÇÕES */}
-      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-        <div style={{ padding: '1.25rem', borderBottom: '1px solid #e5e7eb', fontWeight: 'bold', fontSize: '1rem' }}>Detalhamento das Operações</div>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead style={{ backgroundColor: '#f9fafb' }}>
-            <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
-              <th style={{ padding: '1rem' }}>ID Transação</th>
-              <th style={{ padding: '1rem' }}>Data</th>
-              <th style={{ padding: '1rem' }}>Cliente</th>
-              <th style={{ padding: '1rem' }}>Item Adquirido</th>
-              <th style={{ padding: '1rem' }}>Método</th>
-              <th style={{ padding: '1rem' }}>Origem/Canal</th>
-              <th style={{ padding: '1rem' }}>Valor</th>
-              <th style={{ padding: '1rem' }}>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transacoesFiltradas.map((tx) => (
-              <tr key={tx.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <td style={{ padding: '1rem', fontWeight: 'bold' }}>{tx.id}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{tx.data}</td>
-                <td style={{ padding: '1rem' }}>{tx.cliente}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{tx.item}</td>
-                <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{tx.gateway}</td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', background: '#eff6ff', color: '#1e40af', borderRadius: '4px', fontWeight: 'bold' }}>
-                    {tx.canal}
-                  </span>
-                </td>
-                <td style={{ padding: '1rem', fontWeight: 'bold' }}>R$ {tx.valor.toFixed(2)}</td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{ 
-                    padding: '0.25rem 0.5rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold',
-                    backgroundColor: tx.status === 'Aprovado' ? '#d1fae5' : tx.status === 'Reembolsado' ? '#fee2e2' : '#fef3c7',
-                    color: tx.status === 'Aprovado' ? '#065f46' : tx.status === 'Reembolsado' ? '#991b1b' : '#92400e'
-                  }}>{tx.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
+      )}
     </div>
   );
 }
