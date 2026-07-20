@@ -30,7 +30,7 @@ export default function Login() {
       <div style={{ 
         flex: 1.2, 
         position: 'relative', 
-        backgroundImage: 'url(/curitiba_login_banner.jpg)', 
+        backgroundImage: 'url(/curitiba_login_banner.png)', 
         backgroundSize: 'cover', 
         backgroundPosition: 'center', 
         display: 'flex', 
