@@ -16,6 +16,7 @@ import Comissionamento from './pages/Comissionamento';
 import FilaReembolsos from './pages/FilaReembolsos';
 import CMSInstitucional from './pages/CMSInstitucional';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
+import CentralNotificacoes from './pages/CentralNotificacoes';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/reembolsos" element={<FilaReembolsos />} />
           <Route path="/conteudo" element={<CMSInstitucional />} />
           <Route path="/conteudo/curadoria" element={<CMSHomeCuradoria />} />
+          <Route path="/notificacoes" element={<CentralNotificacoes />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
