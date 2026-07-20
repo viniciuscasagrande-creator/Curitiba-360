@@ -2,8 +2,8 @@
 import { useState } from 'react';
 
 export default function GestaoPacotes() {
-  // Controle de Telas (Listagem vs Formulário)
-  const [view, setView] = useState('lista'); // 'lista' ou 'formulario'
+  // Controle de Telas: 'lista' ou 'formulario'
+  const [view, setView] = useState('lista');
 
   // ==========================================
   // ESTADOS DA LISTAGEM (RF-040.06 a RF-040.28)
@@ -13,7 +13,7 @@ export default function GestaoPacotes() {
   const [selecionados, setSelecionados] = useState([]);
   const [itensPorPagina, setItensPorPagina] = useState(10);
 
-  // Mock de Pacotes (RF-040.10)
+  // Mock de Pacotes 
   const [pacotes, setPacotes] = useState([
     { id: 201, nome: 'Tour Curitiba Clássica', qtdAtracoes: 3, precoOriginal: 150.00, precoPacote: 120.00, desconto: 20, vigencia: '01/08/2026 até 31/12/2026', disponibilidade: 50, status: 'Ativo' },
     { id: 202, nome: 'Fim de Semana nos Parques', qtdAtracoes: 2, precoOriginal: 80.00, precoPacote: 70.00, desconto: 12.5, vigencia: '10/08/2026 até 30/08/2026', disponibilidade: 0, status: 'Inativo' },
@@ -42,20 +42,19 @@ export default function GestaoPacotes() {
   const [descricao, setDescricao] = useState('');
   const [categoria, setCategoria] = useState('');
   const [duracao, setDuracao] = useState('');
-  const [regulamento, setRegulamento] = useState('');
   
-  // Composição do Pacote (RF-040.38 a RF-040.43)
+  // Composição do Pacote
   const [composicao, setComposicao] = useState([
     { id: Date.now(), atracao: 'Ópera de Arame', ingresso: 'Inteira - Lote 001', qtd: 1, unitario: 50.00, subtotal: 50.00 }
   ]);
 
-  // Precificação (RF-040.44 a RF-040.61)
+  // Precificação
   const precoOriginalCalc = composicao.reduce((acc, item) => acc + item.subtotal, 0);
   const [precoPacote, setPrecoPacote] = useState('');
   const [inicioVigencia, setInicioVigencia] = useState('');
   const [fimVigencia, setFimVigencia] = useState('');
   const [qtdMax, setQtdMax] = useState('');
-  const [parcelamento, setParcelamento] = useState('Pague em até 12x Sem Juros'); // Herdado global (RN-040.23)
+  const [parcelamento, setParcelamento] = useState('Pague em até 12x Sem Juros');
 
   const adicionarItemComposicao = () => {
     setComposicao([...composicao, { id: Date.now(), atracao: '', ingresso: '', qtd: 1, unitario: 0, subtotal: 0 }]);
@@ -72,23 +71,20 @@ export default function GestaoPacotes() {
       return;
     }
     if (parseFloat(precoPacote) >= precoOriginalCalc) {
-      alert('Erro: O preço do pacote deve ser inferior ao preço original (deve conter desconto).');
+      alert('Erro: O preço do pacote deve ser inferior ao preço original para aplicar o desconto promocional.');
       return;
     }
-    alert(`Pacote "${nomePacote}" salvo com sucesso!`);
+    alert(`Pacote "${nomePacote}" salvo com sucesso e disponibilizado para venda!`);
     setView('lista');
   };
 
-  // ==========================================
-  // RENDERIZAÇÃO PRINCIPAL
-  // ==========================================
   return (
     <div>
-      {/* CABEÇALHO GERAL (RF-040.02) */}
+      {/* CABEÇALHO GERAL */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Gestão de Pacotes</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie os pacotes de ingressos combinados</p>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie os pacotes promocionais de múltiplas atrações</p>
         </div>
         
         {view === 'lista' ? (
@@ -116,9 +112,9 @@ export default function GestaoPacotes() {
         )}
       </div>
 
+      {/* RENDERIZAÇÃO DA LISTA */}
       {view === 'lista' && (
         <>
-          {/* ABAS E AÇÕES DA LISTA (RF-040.06 e RF-040.19) */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', marginBottom: '1rem' }}>
             <div style={{ display: 'flex', gap: '2rem' }}>
               {['Ativos', 'Inativos', 'Todos'].map(aba => (
@@ -148,7 +144,6 @@ export default function GestaoPacotes() {
             )}
           </div>
 
-          {/* TABELA DE PACOTES (RF-040.10) */}
           <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead style={{ backgroundColor: '#f9fafb' }}>
@@ -188,6 +183,7 @@ export default function GestaoPacotes() {
         </>
       )}
 
+      {/* RENDERIZAÇÃO DO FORMULÁRIO */}
       {view === 'formulario' && (
         <form onSubmit={handleSalvarPacote} style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>Identificação do Pacote</h2>
@@ -254,7 +250,6 @@ export default function GestaoPacotes() {
             <div>
               <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Condição Máxima de Parcelamento *</label>
               <input type="text" required value={parcelamento} onChange={e => setParcelamento(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-              <small style={{ color: '#6b7280' }}>* Herdado da Configuração Global (RF-010).</small>
             </div>
           </div>
 
