@@ -2,9 +2,13 @@
   "name": "curitiba360",
   "version": "1.0.0",
   "description": "Curitiba360 - Plataforma de Integração Cultural e Desenvolvimento de Turismo",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev:server": "node server.js",
+    "dev:vite": "vite",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:vite\"",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [
     "curitiba",
@@ -17,5 +21,9 @@
   "license": "ISC",
   "dependencies": {
     "firebase": "^12.16.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "vite": "^8.1.1"
   }
 }
