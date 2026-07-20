@@ -8,6 +8,15 @@ import PrivateRoute from './components/PrivateRoute';
 // Páginas Públicas
 import Login from './pages/Login';
 
+// Páginas do Portal Público (Nativo/Nova Coleção)
+import PortalHome from './pages/portal/PortalHome';
+import PortalLogin from './pages/portal/PortalLogin';
+import PortalRecuperarSenha from './pages/portal/PortalRecuperarSenha';
+import PortalCriarSenha from './pages/portal/PortalCriarSenha';
+import PortalCriarConta from './pages/portal/PortalCriarConta';
+import PortalConfirmacaoCadastro from './pages/portal/PortalConfirmacaoCadastro';
+import PortalEmailMock from './pages/portal/PortalEmailMock';
+
 // Páginas Privadas
 import Dashboard from './pages/Dashboard';
 import DashboardAnalytics from './pages/DashboardAnalytics';
@@ -46,14 +55,25 @@ import CadastroContrato from './pages/CadastroContrato';
 import CadastroAgente from './pages/CadastroAgente';
 import PainelAntiCambista from './pages/PainelAntiCambista';
 import RelatoriosAtracao from './pages/RelatoriosAtracao';
+import VisualizadorWireframes from './pages/VisualizadorWireframes';
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Rotas Públicas */}
+          {/* Rotas Públicas do Backoffice */}
           <Route path="/login" element={<Login />} />
+          
+          {/* Rotas Públicas do Portal */}
+          <Route path="/portal" element={<PortalHome />} />
+          <Route path="/portal/login" element={<PortalLogin />} />
+          <Route path="/portal/recuperar-senha" element={<PortalRecuperarSenha />} />
+          <Route path="/portal/criar-senha" element={<PortalCriarSenha />} />
+          <Route path="/portal/criar-conta" element={<PortalCriarConta />} />
+          <Route path="/portal/confirmacao-cadastro" element={<PortalConfirmacaoCadastro />} />
+          <Route path="/portal/email-recuperar-senha" element={<PortalEmailMock />} />
+          <Route path="/portal/email-confirmacao" element={<PortalEmailMock />} />
           
           {/* Rota semi-pública */}
           <Route path="/validacao" element={<ValidacaoIngressos />} />
@@ -68,6 +88,7 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} /> 
               <Route path="/analytics" element={<DashboardAnalytics />} />
               <Route path="/perfil" element={<Perfil />} />
+              <Route path="/wireframes" element={<VisualizadorWireframes />} />
               
               {/* Usuários */}
               <Route path="/usuarios" element={<GestaoUsuarios />} />
