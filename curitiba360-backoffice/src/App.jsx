@@ -32,48 +32,51 @@ import PesquisarIngresso from './pages/PesquisarIngresso';
 import DashboardAnalytics from './pages/DashboardAnalytics';
 import GestaoRelatoriosFinanceiros from './pages/GestaoRelatoriosFinanceiros';
 import GestaoFluxoEntrada from './pages/GestaoFluxoEntrada';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Rota Pública */}
-        <Route path="/" element={<Login />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Rota Pública */}
+          <Route path="/" element={<Login />} />
 
-        {/* Rotas Privadas (Protegidas pelo Layout) */}
-        <Route element={<Layout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/usuarios" element={<GestaoUsuarios />} />
-          <Route path="/usuarios/novo" element={<CadastroUsuario />} />
-          <Route path="/parceiros" element={<GestaoParceiros />} />
-          <Route path="/parceiros/novo" element={<CadastroParceiro />} />
-          <Route path="/agencias" element={<GestaoAgencias />} />
-          <Route path="/agencias/novo" element={<CadastroAgencia />} />
-          <Route path="/agentes" element={<GestaoAgentes />} />
-          <Route path="/vendas" element={<OperacaoComercial />} />
-          <Route path="/comissionamento" element={<Comissionamento />} />
-          <Route path="/reembolsos" element={<FilaReembolsos />} />
-          <Route path="/conteudo" element={<CMSInstitucional />} />
-          <Route path="/conteudo/curadoria" element={<CMSHomeCuradoria />} />
-          <Route path="/notificacoes" element={<CentralNotificacoes />} />
-          <Route path="/atracoes" element={<GestaoAtracoes />} />
-          <Route path="/atracoes/nova" element={<CadastroAtracao />} />
-          <Route path="/contratos" element={<GestaoContratos />} />
-          <Route style={{}} path="/configuracoes" element={<ConfiguracoesComerciais />} />
-          <Route path="/relatorios" element={<GestaoRelatoriosFinanceiros />} />
-          <Route path="/atracoes/totais" element={<TotaisAtracao />} />
-          <Route path="/transferencias" element={<ControleTransferencias />} />
-          <Route path="/pacotes" element={<GestaoPacotes />} />
-          <Route path="/ingressos" element={<GestaoIngressos />} />
-          <Route path="/cupons" element={<GestaoCupons />} />
-          <Route path="/validar" element={<ValidacaoIngressos />} />
-          <Route path="/ingressos/pesquisa" element={<PesquisarIngresso />} />
-          <Route path="/atracoes/analytics" element={<DashboardAnalytics />} />
-          <Route path="/portaria/fluxo" element={<GestaoFluxoEntrada />} />
-          {/* Adicionaremos as outras rotas aqui conforme o documento */}
-        </Route>
-      </Routes>
-    </Router>
+          {/* Rotas Privadas (Protegidas pelo Layout) */}
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/usuarios" element={<GestaoUsuarios />} />
+            <Route path="/usuarios/novo" element={<CadastroUsuario />} />
+            <Route path="/parceiros" element={<GestaoParceiros />} />
+            <Route path="/parceiros/novo" element={<CadastroParceiro />} />
+            <Route path="/agencias" element={<GestaoAgencias />} />
+            <Route path="/agencias/novo" element={<CadastroAgencia />} />
+            <Route path="/agentes" element={<GestaoAgentes />} />
+            <Route path="/vendas" element={<OperacaoComercial />} />
+            <Route path="/comissionamento" element={<Comissionamento />} />
+            <Route path="/reembolsos" element={<FilaReembolsos />} />
+            <Route path="/conteudo" element={<CMSInstitucional />} />
+            <Route path="/conteudo/curadoria" element={<CMSHomeCuradoria />} />
+            <Route path="/notificacoes" element={<CentralNotificacoes />} />
+            <Route path="/atracoes" element={<GestaoAtracoes />} />
+            <Route path="/atracoes/nova" element={<CadastroAtracao />} />
+            <Route path="/contratos" element={<GestaoContratos />} />
+            <Route style={{}} path="/configuracoes" element={<ConfiguracoesComerciais />} />
+            <Route path="/relatorios" element={<GestaoRelatoriosFinanceiros />} />
+            <Route path="/atracoes/totais" element={<TotaisAtracao />} />
+            <Route path="/transferencias" element={<ControleTransferencias />} />
+            <Route path="/pacotes" element={<GestaoPacotes />} />
+            <Route path="/ingressos" element={<GestaoIngressos />} />
+            <Route path="/cupons" element={<GestaoCupons />} />
+            <Route path="/validar" element={<ValidacaoIngressos />} />
+            <Route path="/ingressos/pesquisa" element={<PesquisarIngresso />} />
+            <Route path="/atracoes/analytics" element={<DashboardAnalytics />} />
+            <Route path="/portaria/fluxo" element={<GestaoFluxoEntrada />} />
+            {/* Adicionaremos as outras rotas aqui conforme o documento */}
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
