@@ -31,7 +31,7 @@ export default function CMSInstitucional() {
     if (confirma) {
       setTemRascunhoPrivacidade(false);
       alert('Conteúdo publicado com sucesso! O portal foi atualizado.');
-      // Aqui enviaria para o backend limpar as tags maliciosas (Sanitização XSS - RN-032.06) e salvar no BD
+      // A sanitização XSS ocorreria no backend antes de salvar no banco de dados (RN-032.06)
     }
   };
 
@@ -112,7 +112,7 @@ export default function CMSInstitucional() {
             />
           </div>
 
-          {/* Botões de Ação do CMS (RF-032.09 e RF-032.09) */}
+          {/* Botões de Ação do CMS (RF-032.07 a RF-032.09) */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
             <button style={{ padding: '0.5rem 1rem', border: '1px solid #3b82f6', color: '#3b82f6', borderRadius: '4px', background: 'white', cursor: 'pointer', fontWeight: 'bold' }}>
               👁 Pré-visualizar
