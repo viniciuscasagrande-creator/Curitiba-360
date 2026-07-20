@@ -1,9 +1,9 @@
-// src/pages/TotaisAtracao.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TotaisAtracao() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   // RF-004.08 a RF-004.12: Filtros de Período (Padrão: 30 Dias)
   const [filtroRapido, setFiltroRapido] = useState('30 Dias');
@@ -67,29 +67,32 @@ export default function TotaisAtracao() {
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {/* RF-004.07: Voltar ao Dashboard Geral */}
             <li style={{ padding: '0.5rem 1.5rem' }}>
-              <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', textAlign: 'left' }}>
+              <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', textAlign: 'left', fontSize: '0.875rem' }}>
                 ← Voltar ao Dashboard
               </button>
             </li>
             <hr style={{ margin: '0.5rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
             
             {[
-              { id: 'totais', label: 'Totais da Atração', ativo: true },
-              { id: 'categorias', label: 'Categorias' },
-              { id: 'pesquisar_ingresso', label: 'Pesquisar Ingresso' },
-              { id: 'gestao_ingressos', label: 'Gestão de Ingressos' },
-              { id: 'cupons', label: 'Gestão de Cupons' },
-              { id: 'analytics', label: 'Gráficos Analytics' },
-              { id: 'editar', label: 'Editar da Atração' },
-              { id: 'agencias', label: 'Agências e Agentes' },
-              { id: 'usuarios', label: 'Usuários' }
+              { id: 'totais', label: 'Totais da Atração', path: `/atracoes/${id}/totais`, ativo: true },
+              { id: 'categorias', label: 'Categorias', path: `/atracoes` },
+              { id: 'pesquisar_ingresso', label: 'Pesquisar Ingresso', path: `/atendimento/pesquisar` },
+              { id: 'gestao_ingressos', label: 'Gestão de Ingressos', path: `/atracoes/${id}/ingressos` },
+              { id: 'cupons', label: 'Gestão de Cupons', path: `/atracoes/${id}/cupons` },
+              { id: 'analytics', label: 'Gráficos Analytics', path: `/analytics` },
+              { id: 'editar', label: 'Editar da Atração', path: `/atracoes` },
+              { id: 'agencias', label: 'Agências e Agentes', path: `/comercial/agentes` },
+              { id: 'usuarios', label: 'Usuários', path: `/dashboard` }
             ].map(item => (
               <li key={item.id}>
-                <button style={{ 
-                  width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: item.ativo ? '#ecfdf5' : 'white', 
-                  color: item.ativo ? '#065f46' : '#374151', fontWeight: item.ativo ? 'bold' : 'normal', textAlign: 'left',
-                  borderLeft: item.ativo ? '4px solid #10b981' : '4px solid transparent', cursor: 'pointer'
-                }}>
+                <button 
+                  onClick={() => navigate(item.path)}
+                  style={{ 
+                    width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: item.ativo ? '#ecfdf5' : 'white', 
+                    color: item.ativo ? '#065f46' : '#374151', fontWeight: item.ativo ? 'bold' : 'normal', textAlign: 'left',
+                    borderLeft: item.ativo ? '4px solid #10b981' : '4px solid transparent', cursor: 'pointer', fontSize: '0.875rem'
+                  }}
+                >
                   {item.label}
                 </button>
               </li>
@@ -97,20 +100,20 @@ export default function TotaisAtracao() {
 
             {/* Menu Expansível Financeiro (RF-004.10) */}
             <li>
-              <button onClick={() => setFinanceiroExpandido(!financeiroExpandido)} style={{ width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: 'white', color: '#374151', textAlign: 'left', borderLeft: '4px solid transparent', cursor: 'pointer', display: 'flex', justifyContent: 'space-between' }}>
+              <button onClick={() => setFinanceiroExpandido(!financeiroExpandido)} style={{ width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: 'white', color: '#374151', textAlign: 'left', borderLeft: '4px solid transparent', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                 Gestão Financeira <span>{financeiroExpandido ? '▲' : '▼'}</span>
               </button>
               {financeiroExpandido && (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, backgroundColor: '#f9fafb' }}>
-                  <li><button style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer' }}>Relatórios da Atração</button></li>
-                  <li><button style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer' }}>Negociação Financeira</button></li>
-                  <li><button style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer' }}>Resumo das Despesas</button></li>
+                  <li><button onClick={() => navigate('/financeiro/relatorios')} style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}>Relatórios da Atração</button></li>
+                  <li><button onClick={() => navigate('/comercial/configuracoes')} style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}>Negociação Financeira</button></li>
+                  <li><button onClick={() => navigate('/financeiro/relatorios')} style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}>Resumo das Despesas</button></li>
                 </ul>
               )}
             </li>
 
             <li>
-              <button style={{ width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: 'white', color: '#374151', textAlign: 'left', borderLeft: '4px solid transparent', cursor: 'pointer' }}>
+              <button onClick={() => navigate('/validacao')} style={{ width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: 'white', color: '#374151', textAlign: 'left', borderLeft: '4px solid transparent', cursor: 'pointer', fontSize: '0.875rem' }}>
                 Validar Ingressos
               </button>
             </li>
