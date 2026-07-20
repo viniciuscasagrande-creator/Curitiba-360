@@ -1,5 +1,6 @@
 // src/pages/Dashboard.jsx
 import { useState } from 'react';
+import Input from '../components/ui/Input';
 
 export default function Dashboard() {
   const [abaAtiva, setAbaAtiva] = useState('Ativos');
@@ -22,14 +23,11 @@ export default function Dashboard() {
       {/* Cabeçalho */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>Dashboard</h1>
-        <div style={{ position: 'relative', width: '300px' }}>
-          <input 
-            type="text" 
-            placeholder="Enter search terms" 
-            style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }} 
-          />
-          <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }}>🔍</span>
-        </div>
+        <Input 
+          icon="🔍"
+          placeholder="Enter search terms" 
+          style={{ width: '300px' }}
+        />
       </header>
 
       {/* Abas */}
