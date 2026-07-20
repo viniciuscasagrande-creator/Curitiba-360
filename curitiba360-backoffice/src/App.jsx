@@ -29,6 +29,7 @@ import GestaoIngressos from './pages/GestaoIngressos';
 import GestaoCupons from './pages/GestaoCupons';
 import ValidacaoIngressos from './pages/ValidacaoIngressos';
 import PesquisarIngresso from './pages/PesquisarIngresso';
+import DashboardAnalytics from './pages/DashboardAnalytics';
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
           <Route path="/cupons" element={<GestaoCupons />} />
           <Route path="/validar" element={<ValidacaoIngressos />} />
           <Route path="/ingressos/pesquisa" element={<PesquisarIngresso />} />
+          <Route path="/atracoes/analytics" element={<DashboardAnalytics />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
