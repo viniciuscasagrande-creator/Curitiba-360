@@ -27,6 +27,7 @@ import ControleTransferencias from './pages/ControleTransferencias';
 import GestaoPacotes from './pages/GestaoPacotes';
 import GestaoIngressos from './pages/GestaoIngressos';
 import GestaoCupons from './pages/GestaoCupons';
+import ValidacaoIngressos from './pages/ValidacaoIngressos';
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           <Route path="/pacotes" element={<GestaoPacotes />} />
           <Route path="/ingressos" element={<GestaoIngressos />} />
           <Route path="/cupons" element={<GestaoCupons />} />
+          <Route path="/validar" element={<ValidacaoIngressos />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
