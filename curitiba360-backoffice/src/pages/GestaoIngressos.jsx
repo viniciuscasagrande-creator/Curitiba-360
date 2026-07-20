@@ -1,7 +1,10 @@
 // src/pages/GestaoIngressos.jsx
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function GestaoIngressos() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   // RF-017.05 e RF-017.06: Abas de Status (Padrão: 'Ativos')
   const [abaAtiva, setAbaAtiva] = useState('Ativos');
   const [termoBusca, setTermoBusca] = useState('');
@@ -47,14 +50,27 @@ export default function GestaoIngressos() {
 
   return (
     <div>
-      {/* CABEÇALHO (RF-017.01) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Gestão de Ingressos</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie os lotes e a carga de ingressos da atração</p>
+      {/* Cabeçalho e Ações da Atração */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+        <div style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem', flex: 1, minWidth: '300px' }}>
+          <button 
+            onClick={() => navigate('/atracoes')}
+            style={{ padding: '0.5rem 1rem', background: '#f3f4f6', border: 'none', borderRadius: '8px', cursor: 'pointer', marginBottom: '1rem', fontWeight: 'bold' }}
+          >
+            ← Voltar para Atrações
+          </button>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', margin: '0 0 1rem 0' }}>
+            Atração: Parque Jaime Lerner
+          </h1>
+          <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <button onClick={() => navigate(`/atracoes/${id}/totais`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', color: '#6b7280', fontWeight: '500' }}>📊 Totais</button>
+            <button onClick={() => navigate(`/atracoes/${id}/ingressos`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', fontWeight: '600', color: '#10b981', borderBottom: '3px solid #10b981' }}>🎫 Ingressos</button>
+            <button onClick={() => navigate(`/atracoes/${id}/cupons`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', color: '#6b7280', fontWeight: '500' }}>🎟️ Cupons</button>
+            <button onClick={() => navigate(`/atracoes/${id}/relatorios`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', color: '#6b7280', fontWeight: '500' }}>💰 Financeiro & Relatórios</button>
+          </div>
         </div>
         
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '3.5rem' }}>
           <input 
             type="text" 
             placeholder="Buscar Categoria, Lote ou ID..." 

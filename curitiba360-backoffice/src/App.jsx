@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import DashboardAnalytics from './pages/DashboardAnalytics';
 import GestaoUsuarios from './pages/GestaoUsuarios';
+import CadastroUsuario from './pages/CadastroUsuario';
 import GestaoAtracoes from './pages/GestaoAtracoes';
 import CadastroAtracao from './pages/CadastroAtracao';
 import TotaisAtracao from './pages/TotaisAtracao';
@@ -30,6 +31,22 @@ import CentralNotificacoes from './pages/CentralNotificacoes';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CMSInstitucional from './pages/CMSInstitucional';
 
+// Novas Páginas Comercial & Financeiro
+import GestaoAgencias from './pages/GestaoAgencias';
+import CadastroAgencia from './pages/CadastroAgencia';
+import GestaoParceiros from './pages/GestaoParceiros';
+import CadastroParceiro from './pages/CadastroParceiro';
+import OperacaoComercial from './pages/OperacaoComercial';
+import Comissionamento from './pages/Comissionamento';
+import FilaReembolsos from './pages/FilaReembolsos';
+
+// Páginas de Wireframes Adicionais
+import Perfil from './pages/Perfil';
+import CadastroContrato from './pages/CadastroContrato';
+import CadastroAgente from './pages/CadastroAgente';
+import PainelAntiCambista from './pages/PainelAntiCambista';
+import RelatoriosAtracao from './pages/RelatoriosAtracao';
+
 export default function App() {
   return (
     <AuthProvider>
@@ -38,8 +55,7 @@ export default function App() {
           {/* Rotas Públicas */}
           <Route path="/login" element={<Login />} />
           
-          {/* Rota semi-pública (opcionalmente pode ser protegida também, 
-              mas geralmente fica no tablet da catraca com token fixo) */}
+          {/* Rota semi-pública */}
           <Route path="/validacao" element={<ValidacaoIngressos />} />
 
           {/* === ROTAS PROTEGIDAS (Exigem Login) === */}
@@ -51,26 +67,52 @@ export default function App() {
               
               <Route path="/dashboard" element={<Dashboard />} /> 
               <Route path="/analytics" element={<DashboardAnalytics />} />
-              <Route path="/usuarios" element={<GestaoUsuarios />} />
+              <Route path="/perfil" element={<Perfil />} />
               
+              {/* Usuários */}
+              <Route path="/usuarios" element={<GestaoUsuarios />} />
+              <Route path="/usuarios/novo" element={<CadastroUsuario />} />
+              
+              {/* Agências */}
+              <Route path="/agencias" element={<GestaoAgencias />} />
+              <Route path="/agencias/novo" element={<CadastroAgencia />} />
+              
+              {/* Parceiros */}
+              <Route path="/parceiros" element={<GestaoParceiros />} />
+              <Route path="/parceiros/novo" element={<CadastroParceiro />} />
+              
+              {/* Atrações */}
               <Route path="/atracoes" element={<GestaoAtracoes />} />
               <Route path="/atracoes/nova" element={<CadastroAtracao />} />
               <Route path="/atracoes/:id/totais" element={<TotaisAtracao />} />
               <Route path="/atracoes/:id/ingressos" element={<GestaoIngressos />} />
               <Route path="/atracoes/:id/cupons" element={<GestaoCupons />} />
+              <Route path="/atracoes/:id/relatorios" element={<RelatoriosAtracao />} />
               
+              {/* Pacotes & Operações */}
               <Route path="/pacotes" element={<GestaoPacotes />} />
               <Route path="/controle-transferencias" element={<ControleTransferencias />} />
               <Route path="/fluxo-entrada" element={<GestaoFluxoEntrada />} />
               
+              {/* Comercial & Contratos */}
               <Route path="/comercial/configuracoes" element={<ConfiguracoesComerciais />} />
               <Route path="/comercial/contratos" element={<GestaoContratos />} />
+              <Route path="/comercial/contratos/novo" element={<CadastroContrato />} />
               <Route path="/comercial/agentes" element={<GestaoAgentes />} />
-              <Route path="/financeiro/relatorios" element={<GestaoRelatoriosFinanceiros />} />
+              <Route path="/comercial/agentes/novo" element={<CadastroAgente />} />
+              <Route path="/comercial/anti-cambista" element={<PainelAntiCambista />} />
+              <Route path="/comercial/vendas" element={<OperacaoComercial />} />
               
+              {/* Financeiro */}
+              <Route path="/financeiro/relatorios" element={<GestaoRelatoriosFinanceiros />} />
+              <Route path="/financeiro/comissionamento" element={<Comissionamento />} />
+              <Route path="/financeiro/reembolsos" element={<FilaReembolsos />} />
+              
+              {/* Atendimento & Notificações */}
               <Route path="/atendimento/pesquisar" element={<PesquisarIngresso />} />
               <Route path="/notificacoes" element={<CentralNotificacoes />} />
               
+              {/* CMS */}
               <Route path="/cms/home" element={<CMSHomeCuradoria />} />
               <Route path="/cms/institucional" element={<CMSInstitucional />} />
             </Route>

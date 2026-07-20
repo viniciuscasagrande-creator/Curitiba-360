@@ -1,7 +1,10 @@
 // src/pages/TotaisAtracao.jsx
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function TotaisAtracao() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [filtroTempo, setFiltroTempo] = useState('Tudo');
 
   // Mapeamento estrutural dos cards conforme WF-003
@@ -91,10 +94,24 @@ export default function TotaisAtracao() {
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       
-      {/* Título */}
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#374151', margin: '0 0 1.5rem 0' }}>
-        Atração Parque Jaime Lerner
-      </h1>
+      {/* Cabeçalho da Atração */}
+      <div style={{ marginBottom: '2rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
+        <button 
+          onClick={() => navigate('/atracoes')}
+          style={{ padding: '0.5rem 1rem', background: '#f3f4f6', border: 'none', borderRadius: '8px', cursor: 'pointer', marginBottom: '1rem', fontWeight: 'bold' }}
+        >
+          ← Voltar para Atrações
+        </button>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', margin: '0 0 1rem 0' }}>
+          Atração: Parque Jaime Lerner
+        </h1>
+        <div style={{ display: 'flex', gap: '1.5rem' }}>
+          <button onClick={() => navigate(`/atracoes/${id}/totais`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', fontWeight: '600', color: '#10b981', borderBottom: '3px solid #10b981' }}>📊 Totais</button>
+          <button onClick={() => navigate(`/atracoes/${id}/ingressos`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', color: '#6b7280', fontWeight: '500' }}>🎫 Ingressos</button>
+          <button onClick={() => navigate(`/atracoes/${id}/cupons`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', color: '#6b7280', fontWeight: '500' }}>🎟️ Cupons</button>
+          <button onClick={() => navigate(`/atracoes/${id}/relatorios`)} style={{ border: 'none', background: 'none', padding: '0.5rem 0', cursor: 'pointer', color: '#6b7280', fontWeight: '500' }}>💰 Financeiro & Relatórios</button>
+        </div>
+      </div>
 
       {/* Filtros de Data */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>

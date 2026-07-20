@@ -1,7 +1,9 @@
 // src/pages/GestaoContratos.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function GestaoContratos() {
+  const navigate = useNavigate();
   const [expandidos, setExpandidos] = useState([]);
 
   // Mock: Parceiros com seus contratos aninhados (RF-008.06 a RF-008.11)
@@ -33,7 +35,10 @@ export default function GestaoContratos() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Gestão de Contratos</h1>
           <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Acompanhe as assinaturas via DocuSign</p>
         </div>
-        <button style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
+        <button 
+          onClick={() => navigate('/comercial/contratos/novo')}
+          style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
           + Adicionar Contrato
         </button>
       </div>

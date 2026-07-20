@@ -1,11 +1,13 @@
 // src/pages/GestaoAgentes.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Tabs from '../components/ui/Tabs';
 import Table from '../components/ui/Table';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
 export default function GestaoAgentes() {
+  const navigate = useNavigate();
   // RF-028.05 e RF-028.06: Abas de Status (Padrão: 'Ativos')
   const [abaAtiva, setAbaAtiva] = useState('Ativos');
   const [termoBusca, setTermoBusca] = useState('');
@@ -84,7 +86,7 @@ export default function GestaoAgentes() {
           <Button variant="outline">
             Filtros
           </Button>
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => navigate('/comercial/agentes/novo')}>
             + Adicionar Agente
           </Button>
         </div>
