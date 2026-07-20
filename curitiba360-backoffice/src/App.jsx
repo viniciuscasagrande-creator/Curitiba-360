@@ -20,6 +20,7 @@ import CentralNotificacoes from './pages/CentralNotificacoes';
 import GestaoAtracoes from './pages/GestaoAtracoes';
 import GestaoContratos from './pages/GestaoContratos';
 import ConfiguracoesComerciais from './pages/ConfiguracoesComerciais';
+import CadastroAtracao from './pages/CadastroAtracao';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/conteudo/curadoria" element={<CMSHomeCuradoria />} />
           <Route path="/notificacoes" element={<CentralNotificacoes />} />
           <Route path="/atracoes" element={<GestaoAtracoes />} />
+          <Route path="/atracoes/nova" element={<CadastroAtracao />} />
           <Route path="/contratos" element={<GestaoContratos />} />
           <Route path="/configuracoes" element={<ConfiguracoesComerciais />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
