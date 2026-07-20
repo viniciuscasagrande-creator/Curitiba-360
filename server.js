@@ -444,7 +444,8 @@ const server = http.createServer((req, res) => {
             packages: db.packages || [],
             commercialConditions: db.commercialConditions || [],
             financialInfo: db.financialInfo || [],
-            usuarios: db.usuarios || []
+            usuarios: db.usuarios || [],
+            parceiros_comerciais: db.parceiros_comerciais || []
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(payload));

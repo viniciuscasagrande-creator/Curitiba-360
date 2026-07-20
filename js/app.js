@@ -2093,6 +2093,8 @@ let srsState = {
     packages: [],
     commercialConditions: [],
     financialInfo: [],
+    usuarios: [],
+    parceiros_comerciais: [],
     
     selectedContractIds: [],
     currentContractType: 'Contrato de Atração'
@@ -2125,6 +2127,8 @@ async function loadSrsData() {
         srsState.packages = await fetchCollectionData('packages');
         srsState.commercialConditions = await fetchCollectionData('commercialConditions');
         srsState.financialInfo = await fetchCollectionData('financialInfo');
+        srsState.usuarios = await fetchCollectionData('usuarios');
+        srsState.parceiros_comerciais = await fetchCollectionData('parceiros_comerciais');
         
         // Render panels
         renderContractsTable();
@@ -2918,7 +2922,8 @@ async function syncLocalDbToFirestore() {
             { col: 'commercialConditions', data: commData.commercialConditions || [] },
             { col: 'financialInfo', data: commData.financialInfo || [] },
             { col: 'refunds', data: refundsData || [] },
-            { col: 'usuarios', data: localData.usuarios || [] }
+            { col: 'usuarios', data: localData.usuarios || [] },
+            { col: 'parceiros_comerciais', data: localData.parceiros_comerciais || [] }
         ];
         
         for (const m of migrations) {

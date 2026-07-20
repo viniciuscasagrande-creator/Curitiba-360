@@ -420,5 +420,49 @@
         "atracoesIds": [1, 2]
       }
     }
+  ],
+  "parceiros_comerciais": [
+    {
+      "id": 1,
+      "razaoSocial": "Parque Jaime Lerner Ltda",
+      "nomeFantasia": "Parque Jaime Lerner",
+      "cnpj": "12.345.678/0001-90",
+      "inscricaoEstadual": "Isento",
+      "segmento": "Parque",
+      "emailComercial": "contato@parque.com",
+      "telefoneComercial": "(41) 3333-3333",
+      "endereco": {
+        "cep": "80000-000",
+        "logradouro": "Rua João Gava",
+        "numero": "970",
+        "bairro": "Abranches",
+        "cidade": "Curitiba",
+        "uf": "PR"
+      },
+      "status": "ATIVO",
+      "usuarioId": "admin-mock-uid-123",
+      "dataCriacao": "20/07/2026 10:00:00"
+    },
+    {
+      "id": 2,
+      "razaoSocial": "Ópera de Arame Entretenimento S.A.",
+      "nomeFantasia": "Ópera de Arame",
+      "cnpj": "98.765.432/0001-10",
+      "inscricaoEstadual": "987654321",
+      "segmento": "Teatro / Cultura",
+      "emailComercial": "opera@arame.com",
+      "telefoneComercial": "(41) 3222-2222",
+      "endereco": {
+        "cep": "80000-100",
+        "logradouro": "Rua João Gava",
+        "numero": "920",
+        "bairro": "Pilarzinho",
+        "cidade": "Curitiba",
+        "uf": "PR"
+      },
+      "status": "ATIVO",
+      "usuarioId": "partner-mock-uid-456",
+      "dataCriacao": "20/07/2026 10:02:00"
+    }
   ]
 }
