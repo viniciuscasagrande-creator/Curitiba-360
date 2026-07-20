@@ -24,6 +24,7 @@ import CadastroAtracao from './pages/CadastroAtracao';
 import TotaisAtracao from './pages/TotaisAtracao';
 import GestaoAgentes from './pages/GestaoAgentes';
 import ControleTransferencias from './pages/ControleTransferencias';
+import GestaoPacotes from './pages/GestaoPacotes';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           <Route style={{}} path="/configuracoes" element={<ConfiguracoesComerciais />} />
           <Route path="/relatorios" element={<TotaisAtracao />} />
           <Route path="/transferencias" element={<ControleTransferencias />} />
+          <Route path="/pacotes" element={<GestaoPacotes />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
