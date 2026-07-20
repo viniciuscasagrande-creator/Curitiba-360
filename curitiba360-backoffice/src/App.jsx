@@ -26,6 +26,7 @@ import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CMSInstitucional from './pages/CMSInstitucional';
 import DashboardAnalytics from './pages/DashboardAnalytics';
 import Login from './pages/Login';
+import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
   return (
@@ -34,39 +35,42 @@ export default function App() {
         <Routes>
           {/* Rotas Públicas (Não possuem o Menu Lateral) */}
           <Route path="/login" element={<Login />} />
-          
-          {/* Validação de Ingressos geralmente fica em um tablet na portaria, 
-              então faz sentido não ter o menu administrativo completo */}
-          <Route path="/validacao" element={<ValidacaoIngressos />} />
 
-          {/* Rotas Privadas (Envolvidas pelo Layout com o Menu Lateral) */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            
-            {/* Se você quiser usar o Dashboard com os cards (Dashboard.jsx) ou o Analytics (DashboardAnalytics.jsx) */}
-            <Route path="/dashboard" element={<Dashboard />} /> 
-            <Route path="/analytics" element={<DashboardAnalytics />} />
-            
-            <Route path="/atracoes" element={<GestaoAtracoes />} />
-            <Route path="/atracoes/nova" element={<CadastroAtracao />} />
-            <Route path="/atracoes/:id/totais" element={<TotaisAtracao />} />
-            <Route path="/atracoes/:id/ingressos" element={<GestaoIngressos />} />
-            <Route path="/atracoes/:id/cupons" element={<GestaoCupons />} />
-            
-            <Route path="/pacotes" element={<GestaoPacotes />} />
-            <Route path="/controle-transferencias" element={<ControleTransferencias />} />
-            <Route path="/fluxo-entrada" element={<GestaoFluxoEntrada />} />
-            
-            <Route path="/comercial/configuracoes" element={<ConfiguracoesComerciais />} />
-            <Route path="/comercial/contratos" element={<GestaoContratos />} />
-            <Route path="/comercial/agentes" element={<GestaoAgentes />} />
-            <Route path="/financeiro/relatorios" element={<GestaoRelatoriosFinanceiros />} />
-            
-            <Route path="/atendimento/pesquisar" element={<PesquisarIngresso />} />
-            <Route path="/notificacoes" element={<CentralNotificacoes />} />
-            
-            <Route path="/cms/home" element={<CMSHomeCuradoria />} />
-            <Route path="/cms/institucional" element={<CMSInstitucional />} />
+          {/* Rotas Privadas (Protegidas) */}
+          <Route element={<PrivateRoute />}>
+            {/* Validação de Ingressos geralmente fica em um tablet na portaria, 
+                então faz sentido não ter o menu administrativo completo */}
+            <Route path="/validacao" element={<ValidacaoIngressos />} />
+
+            {/* Rotas Privadas (Envolvidas pelo Layout com o Menu Lateral) */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              
+              {/* Se você quiser usar o Dashboard com os cards (Dashboard.jsx) ou o Analytics (DashboardAnalytics.jsx) */}
+              <Route path="/dashboard" element={<Dashboard />} /> 
+              <Route path="/analytics" element={<DashboardAnalytics />} />
+              
+              <Route path="/atracoes" element={<GestaoAtracoes />} />
+              <Route path="/atracoes/nova" element={<CadastroAtracao />} />
+              <Route path="/atracoes/:id/totais" element={<TotaisAtracao />} />
+              <Route path="/atracoes/:id/ingressos" element={<GestaoIngressos />} />
+              <Route path="/atracoes/:id/cupons" element={<GestaoCupons />} />
+              
+              <Route path="/pacotes" element={<GestaoPacotes />} />
+              <Route path="/controle-transferencias" element={<ControleTransferencias />} />
+              <Route path="/fluxo-entrada" element={<GestaoFluxoEntrada />} />
+              
+              <Route path="/comercial/configuracoes" element={<ConfiguracoesComerciais />} />
+              <Route path="/comercial/contratos" element={<GestaoContratos />} />
+              <Route path="/comercial/agentes" element={<GestaoAgentes />} />
+              <Route path="/financeiro/relatorios" element={<GestaoRelatoriosFinanceiros />} />
+              
+              <Route path="/atendimento/pesquisar" element={<PesquisarIngresso />} />
+              <Route path="/notificacoes" element={<CentralNotificacoes />} />
+              
+              <Route path="/cms/home" element={<CMSHomeCuradoria />} />
+              <Route path="/cms/institucional" element={<CMSInstitucional />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
