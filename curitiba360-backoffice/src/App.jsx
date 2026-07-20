@@ -30,6 +30,7 @@ import GestaoCupons from './pages/GestaoCupons';
 import ValidacaoIngressos from './pages/ValidacaoIngressos';
 import PesquisarIngresso from './pages/PesquisarIngresso';
 import DashboardAnalytics from './pages/DashboardAnalytics';
+import GestaoRelatoriosFinanceiros from './pages/GestaoRelatoriosFinanceiros';
 
 function App() {
   return (
@@ -58,7 +59,8 @@ function App() {
           <Route path="/atracoes/nova" element={<CadastroAtracao />} />
           <Route path="/contratos" element={<GestaoContratos />} />
           <Route style={{}} path="/configuracoes" element={<ConfiguracoesComerciais />} />
-          <Route path="/relatorios" element={<TotaisAtracao />} />
+          <Route path="/relatorios" element={<GestaoRelatoriosFinanceiros />} />
+          <Route path="/atracoes/totais" element={<TotaisAtracao />} />
           <Route path="/transferencias" element={<ControleTransferencias />} />
           <Route path="/pacotes" element={<GestaoPacotes />} />
           <Route path="/ingressos" element={<GestaoIngressos />} />
