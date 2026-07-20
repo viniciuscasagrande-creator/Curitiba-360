@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 
 import GestaoUsuarios from './pages/GestaoUsuarios';
+import NovoUsuario from './pages/NovoUsuario';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/usuarios" element={<GestaoUsuarios />} />
+          <Route path="/usuarios/novo" element={<NovoUsuario />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
