@@ -2,11 +2,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 
-// Importação do Layout Base
 import Layout from './components/Layout';
+import PrivateRoute from './components/PrivateRoute';
 
-// Importação das páginas que construímos
+// Páginas Públicas
+import Login from './pages/Login';
+
+// Páginas Privadas
 import Dashboard from './pages/Dashboard';
+import DashboardAnalytics from './pages/DashboardAnalytics';
 import GestaoAtracoes from './pages/GestaoAtracoes';
 import CadastroAtracao from './pages/CadastroAtracao';
 import TotaisAtracao from './pages/TotaisAtracao';
@@ -24,29 +28,26 @@ import PesquisarIngresso from './pages/PesquisarIngresso';
 import CentralNotificacoes from './pages/CentralNotificacoes';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CMSInstitucional from './pages/CMSInstitucional';
-import DashboardAnalytics from './pages/DashboardAnalytics';
-import Login from './pages/Login';
-import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Rotas Públicas (Não possuem o Menu Lateral) */}
+          {/* Rotas Públicas */}
           <Route path="/login" element={<Login />} />
+          
+          {/* Rota semi-pública (opcionalmente pode ser protegida também, 
+              mas geralmente fica no tablet da catraca com token fixo) */}
+          <Route path="/validacao" element={<ValidacaoIngressos />} />
 
-          {/* Rotas Privadas (Protegidas) */}
+          {/* === ROTAS PROTEGIDAS (Exigem Login) === */}
           <Route element={<PrivateRoute />}>
-            {/* Validação de Ingressos geralmente fica em um tablet na portaria, 
-                então faz sentido não ter o menu administrativo completo */}
-            <Route path="/validacao" element={<ValidacaoIngressos />} />
-
-            {/* Rotas Privadas (Envolvidas pelo Layout com o Menu Lateral) */}
+            
+            {/* O Layout contém o Menu Lateral e renderiza os filhos no <Outlet /> */}
             <Route element={<Layout />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
-              {/* Se você quiser usar o Dashboard com os cards (Dashboard.jsx) ou o Analytics (DashboardAnalytics.jsx) */}
               <Route path="/dashboard" element={<Dashboard />} /> 
               <Route path="/analytics" element={<DashboardAnalytics />} />
               
@@ -71,6 +72,7 @@ export default function App() {
               <Route path="/cms/home" element={<CMSHomeCuradoria />} />
               <Route path="/cms/institucional" element={<CMSInstitucional />} />
             </Route>
+
           </Route>
         </Routes>
       </BrowserRouter>
