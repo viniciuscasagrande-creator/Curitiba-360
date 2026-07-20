@@ -22,6 +22,7 @@ import CentralNotificacoes from './pages/CentralNotificacoes';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CMSInstitucional from './pages/CMSInstitucional';
 import DashboardAnalytics from './pages/DashboardAnalytics';
+import Layout from './components/Layout';
 
 // Página de Login (Criaremos a seguir se desejar)
 const Login = () => <div style={{ padding: '2rem' }}><h1>Tela de Login Simples</h1></div>;
@@ -35,31 +36,33 @@ export default function App() {
           <Route path="/login" element={<Login />} />
 
           {/* Rotas Privadas (Protegidas) */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/analytics" element={<DashboardAnalytics />} />
-          
-          <Route path="/atracoes" element={<GestaoAtracoes />} />
-          <Route path="/atracoes/nova" element={<CadastroAtracao />} />
-          <Route path="/atracoes/:id/totais" element={<TotaisAtracao />} />
-          <Route path="/atracoes/:id/ingressos" element={<GestaoIngressos />} />
-          <Route path="/atracoes/:id/cupons" element={<GestaoCupons />} />
-          
-          <Route path="/pacotes" element={<GestaoPacotes />} />
-          <Route path="/validacao" element={<ValidacaoIngressos />} />
-          <Route path="/controle-transferencias" element={<ControleTransferencias />} />
-          <Route path="/fluxo-entrada" element={<GestaoFluxoEntrada />} />
-          
-          <Route path="/comercial/configuracoes" element={<ConfiguracoesComerciais />} />
-          <Route path="/comercial/contratos" element={<GestaoContratos />} />
-          <Route path="/comercial/agentes" element={<GestaoAgentes />} />
-          <Route path="/financeiro/relatorios" element={<GestaoRelatoriosFinanceiros />} />
-          
-          <Route path="/atendimento/pesquisar" element={<PesquisarIngresso />} />
-          <Route path="/notificacoes" element={<CentralNotificacoes />} />
-          
-          <Route path="/cms/home" element={<CMSHomeCuradoria />} />
-          <Route path="/cms/institucional" element={<CMSInstitucional />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/analytics" element={<DashboardAnalytics />} />
+            
+            <Route path="/atracoes" element={<GestaoAtracoes />} />
+            <Route path="/atracoes/nova" element={<CadastroAtracao />} />
+            <Route path="/atracoes/:id/totais" element={<TotaisAtracao />} />
+            <Route path="/atracoes/:id/ingressos" element={<GestaoIngressos />} />
+            <Route path="/atracoes/:id/cupons" element={<GestaoCupons />} />
+            
+            <Route path="/pacotes" element={<GestaoPacotes />} />
+            <Route path="/validacao" element={<ValidacaoIngressos />} />
+            <Route path="/controle-transferencias" element={<ControleTransferencias />} />
+            <Route path="/fluxo-entrada" element={<GestaoFluxoEntrada />} />
+            
+            <Route path="/comercial/configuracoes" element={<ConfiguracoesComerciais />} />
+            <Route path="/comercial/contratos" element={<GestaoContratos />} />
+            <Route path="/comercial/agentes" element={<GestaoAgentes />} />
+            <Route path="/financeiro/relatorios" element={<GestaoRelatoriosFinanceiros />} />
+            
+            <Route path="/atendimento/pesquisar" element={<PesquisarIngresso />} />
+            <Route path="/notificacoes" element={<CentralNotificacoes />} />
+            
+            <Route path="/cms/home" element={<CMSHomeCuradoria />} />
+            <Route path="/cms/institucional" element={<CMSInstitucional />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
