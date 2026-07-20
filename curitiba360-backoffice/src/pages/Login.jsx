@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import loginBanner from '../assets/curitiba_login_banner.png';
 
 export default function Login() {
   const [email, setEmail] = useState('admin@curitiba360.com');
@@ -30,7 +31,7 @@ export default function Login() {
       <div style={{ 
         flex: 1.2, 
         position: 'relative', 
-        backgroundImage: 'url(/curitiba_login_banner.png)', 
+        backgroundImage: `url(${loginBanner})`, 
         backgroundSize: 'cover', 
         backgroundPosition: 'center', 
         display: 'flex', 
