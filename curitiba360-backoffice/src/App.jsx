@@ -12,6 +12,7 @@ import CadastroAgencia from './pages/CadastroAgencia';
 import GestaoParceiros from './pages/GestaoParceiros';
 import CadastroParceiro from './pages/CadastroParceiro';
 import OperacaoComercial from './pages/OperacaoComercial';
+import Comissionamento from './pages/Comissionamento';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/agencias" element={<GestaoAgencias />} />
           <Route path="/agencias/novo" element={<CadastroAgencia />} />
           <Route path="/configuracoes" element={<OperacaoComercial />} />
+          <Route path="/comissionamento" element={<Comissionamento />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
