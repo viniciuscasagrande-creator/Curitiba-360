@@ -130,5 +130,115 @@
       "tedFee": "Não",
       "linked": true
     }
+  ],
+  "refunds": [
+    {
+      "id": 1,
+      "orderId": "C360-128492",
+      "touristName": "Marcos Oliveira",
+      "touristEmail": "marcos.o@example.com",
+      "touristPhone": "(41) 99999-1111",
+      "attraction": "Jardim Botânico de Curitiba",
+      "value": 99.00,
+      "reason": "Problemas de saúde",
+      "origin": "Turista",
+      "purchaseDate": "10/07/2026",
+      "requestDate": "18/07/2026",
+      "status": "Pendente",
+      "paymentMethod": "Pix",
+      "ticketType": "Inteira",
+      "eventDate": "12/07/2026",
+      "qrCode": "C360-128492-JB",
+      "ticketStatus": "Ativo",
+      "scansHistory": [],
+      "policy": "Cancelamento gratuito em até 48h antes da data da atração. Cancelamento solicitado após o evento está sujeito a análise de força maior.",
+      "touristComments": "Fiquei doente no dia e não pude comparecer.",
+      "history": [
+        { "actor": "Sistema", "action": "Solicitação registrada via Portal do Turista", "date": "18/07/2026 14:32" }
+      ]
+    },
+    {
+      "id": 2,
+      "orderId": "C360-391827",
+      "touristName": "John Doe",
+      "touristEmail": "john.d@example.com",
+      "touristPhone": "+1 (555) 019-2831",
+      "attraction": "Linha Turismo Curitiba",
+      "value": 199.00,
+      "reason": "Desistência da viagem",
+      "origin": "Agência",
+      "solicitante": "Agência Batel Turismo (ID 2)",
+      "justificativaOperacional": "Cliente solicitou cancelamento por e-mail por motivos pessoais, agência solicita estorno para manter bom relacionamento.",
+      "purchaseDate": "05/07/2026",
+      "requestDate": "14/07/2026",
+      "status": "Pendente",
+      "paymentMethod": "Cartão de Crédito",
+      "ticketType": "Estrangeiro",
+      "eventDate": "08/07/2026",
+      "qrCode": "C360-391827-LT",
+      "ticketStatus": "Ativo",
+      "scansHistory": [],
+      "policy": "Cancelamento sem taxa até 7 dias após a compra.",
+      "touristComments": "Cancelamento solicitado via agência por alteração de rota aérea.",
+      "history": [
+        { "actor": "Agência (ID 2)", "action": "Solicitação manual criada na Central de Agências", "date": "14/07/2026 10:15" }
+      ]
+    },
+    {
+      "id": 3,
+      "orderId": "C360-928173",
+      "touristName": "Camila Schmidt",
+      "touristEmail": "camila.s@example.com",
+      "touristPhone": "(47) 98888-2222",
+      "attraction": "Parque Jaime Lerner",
+      "value": 75.00,
+      "reason": "Condições climáticas (chuva)",
+      "origin": "Turista",
+      "purchaseDate": "01/07/2026",
+      "requestDate": "08/07/2026",
+      "status": "Em Análise",
+      "paymentMethod": "Pix",
+      "ticketType": "Meia Entrada",
+      "eventDate": "03/07/2026",
+      "qrCode": "C360-928173-JL",
+      "ticketStatus": "Ativo",
+      "scansHistory": [],
+      "policy": "Atrações ao ar livre funcionam mesmo com chuva. Cancelamento não elegível por clima, exceto em caso de tempestades com fechamento oficial do parque.",
+      "touristComments": "Choveu muito forte no dia e o passeio ficou inviável para crianças.",
+      "history": [
+        { "actor": "Sistema", "action": "Solicitação registrada via Portal do Turista", "date": "08/07/2026 18:40" },
+        { "actor": "Administrador", "action": "Status alterado para Em Análise", "date": "12/07/2026 09:22" }
+      ]
+    },
+    {
+      "id": 4,
+      "orderId": "C360-847291",
+      "touristName": "Sofia Silva",
+      "touristEmail": "sofia.silva@example.com",
+      "touristPhone": "(11) 97777-3333",
+      "attraction": "Ópera de Arame",
+      "value": 199.00,
+      "reason": "Erro na data da compra",
+      "origin": "Administrador",
+      "solicitante": "Admin Antigravity",
+      "justificativaOperacional": "Ajuste operacional de data errada.",
+      "purchaseDate": "18/07/2026",
+      "requestDate": "19/07/2026",
+      "status": "Aprovado",
+      "paymentMethod": "Pix",
+      "ticketType": "Inteira",
+      "eventDate": "20/07/2026",
+      "qrCode": "C360-847291-OA",
+      "ticketStatus": "Cancelado",
+      "scansHistory": [],
+      "policy": "Cancelamento gratuito antes do início do evento.",
+      "touristComments": "Cliente comprou para segunda em vez de domingo por engano.",
+      "approvedAmount": 199.00,
+      "returnMethod": "gateway",
+      "internalNotes": "Aprovado estorno integral.",
+      "history": [
+        { "actor": "Administrador", "action": "Solicitação criada e Aprovada integralmente", "date": "19/07/2026 10:00" }
+      ]
+    }
   ]
 }

@@ -59,6 +59,7 @@ const translations = {
         dashMenuDemographics: "Perfil do Turista",
         dashMenuIntegrations: "Integrações Externas",
         dashMenuCommercial: "Configurações Comerciais",
+        dashMenuRefunds: "Fila de Reembolsos",
         dashStatVisitors: "Visitantes Únicos",
         dashStatConversion: "Taxa de Conversão",
         dashStatRevenue: "Receita Turística",
@@ -163,6 +164,7 @@ const translations = {
         dashMenuDemographics: "Tourist Profile",
         dashMenuIntegrations: "External Integrations",
         dashMenuCommercial: "Commercial Settings",
+        dashMenuRefunds: "Refund Queue",
         dashStatVisitors: "Unique Visitors",
         dashStatConversion: "Conversion Rate",
         dashStatRevenue: "Tourism Revenue",
@@ -434,6 +436,7 @@ function switchDashboardTab(tabId) {
     const profileDiv = document.getElementById('dash-view-profile');
     const integrationsDiv = document.getElementById('dash-view-integrations');
     const commercialDiv = document.getElementById('dash-view-commercial-settings');
+    const refundDiv = document.getElementById('dash-view-refund-queue');
     
     if (!overviewDiv || !heatmapDiv || !profileDiv) return;
     
@@ -442,6 +445,7 @@ function switchDashboardTab(tabId) {
     profileDiv.style.display = 'none';
     if (integrationsDiv) integrationsDiv.style.display = 'none';
     if (commercialDiv) commercialDiv.style.display = 'none';
+    if (refundDiv) refundDiv.style.display = 'none';
     
     if (tabId === 'overview') {
         overviewDiv.style.display = 'block';
@@ -455,6 +459,11 @@ function switchDashboardTab(tabId) {
         if (commercialDiv) {
             commercialDiv.style.display = 'block';
             loadCommercialData();
+        }
+    } else if (tabId === 'refund-queue') {
+        if (refundDiv) {
+            refundDiv.style.display = 'block';
+            loadRefundData();
         }
     }
 }
@@ -1425,5 +1434,546 @@ window.toggleFinancialRow = toggleFinancialRow;
 window.openFinancialModal = openFinancialModal;
 window.handleFinancialAction = handleFinancialAction;
 window.saveFinancialForm = saveFinancialForm;
+
+// --- FILA DE REEMBOLSOS (WF-053) ---
+let refundsState = {
+    allRefunds: [],
+    filteredRefunds: [],
+    selectedIds: [],
+    statusTab: 'Pendente', // Pendente, Em Análise, Aprovado, Rejeitado, Todos
+    activeDecisionRefundId: null,
+    activeDecisionMode: null // 'approve' or 'reject'
+};
+
+// Calculate SLA in days dynamically
+function calculateSlaDays(requestDateStr) {
+    try {
+        const parts = requestDateStr.split('/');
+        // Parse dd/mm/yyyy
+        const reqDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+        const now = new Date(2026, 6, 20); // Sync with current system time (20/07/2026)
+        const diffTime = Math.max(0, now - reqDate);
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    } catch (e) {
+        return 0;
+    }
+}
+
+// Fetch all refunds from backend
+async function loadRefundData() {
+    try {
+        const res = await fetch('/api/refunds');
+        const data = await res.json();
+        
+        refundsState.allRefunds = data;
+        refundsState.selectedIds = [];
+        
+        // Sort by SLA desc (requirement RF-031.19: SLA decrescente)
+        refundsState.allRefunds.sort((a, b) => {
+            const slaA = calculateSlaDays(a.requestDate);
+            const slaB = calculateSlaDays(b.requestDate);
+            return slaB - slaA;
+        });
+
+        // Update badge count of pending refunds (requirement RF-031.01)
+        const pendingCount = refundsState.allRefunds.filter(r => r.status === 'Pendente').length;
+        const badge = document.getElementById('refund-badge-count');
+        if (badge) badge.textContent = pendingCount;
+        
+        filterRefundsTable();
+    } catch (err) {
+        console.error("Error loading refunds data:", err);
+    }
+}
+
+// Filter and render the table
+function filterRefundsTable() {
+    const searchVal = document.getElementById('refund-search').value.toLowerCase().trim();
+    const attractionFilter = document.getElementById('refund-filter-attraction').value;
+    const originFilter = document.getElementById('refund-filter-origin').value;
+    
+    // Filter by Tab first
+    let list = refundsState.allRefunds;
+    if (refundsState.statusTab !== 'Todos') {
+        list = list.filter(r => r.status === refundsState.statusTab);
+    }
+    
+    // Filter by Search (ID Pedido, ID Reembolso, Turista Nome/Email)
+    if (searchVal) {
+        list = list.filter(r => {
+            return String(r.id).includes(searchVal) || 
+                   r.orderId.toLowerCase().includes(searchVal) || 
+                   r.touristName.toLowerCase().includes(searchVal) || 
+                   r.touristEmail.toLowerCase().includes(searchVal);
+        });
+    }
+    
+    // Filter by Attraction
+    if (attractionFilter !== 'Todos') {
+        list = list.filter(r => r.attraction.includes(attractionFilter));
+    }
+    
+    // Filter by Origin
+    if (originFilter !== 'Todos') {
+        list = list.filter(r => r.origin === originFilter);
+    }
+    
+    refundsState.filteredRefunds = list;
+    renderRefundsTable();
+}
+
+// Switch status filter tab
+function switchRefundTabFilter(tabName) {
+    refundsState.statusTab = tabName;
+    
+    // Remove active styles from tabs
+    const tabIds = ['Pendente', 'Em Análise', 'Aprovado', 'Rejeitado', 'Todos'];
+    const elMap = {
+        'Pendente': 'btn-ref-tab-pending',
+        'Em Análise': 'btn-ref-tab-analysing',
+        'Aprovado': 'btn-ref-tab-approved',
+        'Rejeitado': 'btn-ref-tab-rejected',
+        'Todos': 'btn-ref-tab-all'
+    };
+    
+    tabIds.forEach(id => {
+        const btn = document.getElementById(elMap[id]);
+        if (btn) {
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+        }
+    });
+    
+    // Add active style to selected
+    const activeBtn = document.getElementById(elMap[tabName]);
+    if (activeBtn) {
+        activeBtn.style.background = 'var(--primary-glow)';
+        activeBtn.style.borderColor = 'var(--primary)';
+        activeBtn.style.color = 'var(--primary)';
+    }
+    
+    // Reset selection checkboxes
+    refundsState.selectedIds = [];
+    updateRefundActionBar();
+    
+    const checkAll = document.getElementById('ref-check-all');
+    if (checkAll) checkAll.checked = false;
+    
+    filterRefundsTable();
+}
+
+// Render the table records
+function renderRefundsTable() {
+    const tbody = document.getElementById('refunds-table-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (refundsState.filteredRefunds.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; padding: 24px; color: var(--text-muted);">Nenhuma solicitação de reembolso encontrada.</td></tr>`;
+        return;
+    }
+    
+    refundsState.filteredRefunds.forEach(r => {
+        const isChecked = refundsState.selectedIds.includes(r.id);
+        const sla = calculateSlaDays(r.requestDate);
+        
+        // SLA color mapping (RF-031.18: verde <= 3, amarelo 4-7, vermelho > 7)
+        let slaColor = '#10B981'; // Green
+        if (sla > 7) {
+            slaColor = '#EF4444'; // Red
+        } else if (sla >= 4) {
+            slaColor = '#F59E0B'; // Yellow
+        }
+        
+        // Status Badge color mapping
+        let statusBg = 'rgba(245, 158, 11, 0.15)';
+        let statusColor = '#F59E0B';
+        if (r.status === 'Aprovado') {
+            statusBg = 'rgba(16, 185, 129, 0.15)';
+            statusColor = '#10B981';
+        } else if (r.status === 'Rejeitado') {
+            statusBg = 'rgba(239, 68, 68, 0.15)';
+            statusColor = '#EF4444';
+        } else if (r.status === 'Em Análise') {
+            statusBg = 'rgba(99, 102, 241, 0.15)';
+            statusColor = '#818CF8';
+        }
+        
+        const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.style.borderBottom = '1px solid var(--glass-border)';
+        
+        // Click handler inside row (but ignores checkbox click)
+        tr.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'INPUT' && e.target.type !== 'checkbox') {
+                openRefundDecisionModal(r.id);
+            }
+        });
+        
+        tr.innerHTML = `
+            <td style="padding: 12px 16px;"><input type="checkbox" class="ref-row-check" data-id="${r.id}" ${isChecked ? 'checked' : ''} onclick="toggleRefundRow(${r.id}, event)"></td>
+            <td style="padding: 12px; font-weight: 700;">#${r.id}</td>
+            <td style="padding: 12px;">${r.orderId}</td>
+            <td style="padding: 12px;">
+                <div style="font-weight: 700; color: #FFF;">${r.touristName}</div>
+                <div style="font-size: 10px; color: var(--text-muted);">${r.touristEmail}</div>
+            </td>
+            <td style="padding: 12px;">${r.attraction}</td>
+            <td style="padding: 12px; font-weight: 700; color: #FFF;">R$ ${r.value.toFixed(2)}</td>
+            <td style="padding: 12px; color: var(--text-secondary); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.reason}</td>
+            <td style="padding: 12px;">${r.origin}</td>
+            <td style="padding: 12px; color: var(--text-muted);">${r.purchaseDate}</td>
+            <td style="padding: 12px; color: var(--text-muted);">${r.requestDate}</td>
+            <td style="padding: 12px; font-weight: 700; color: ${slaColor};">${sla} dias</td>
+            <td style="padding: 12px;">
+                <span style="background: ${statusBg}; color: ${statusColor}; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase;">${r.status}</span>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Toggle individual checkbox
+function toggleRefundRow(id, event) {
+    if (event) event.stopPropagation();
+    
+    const idx = refundsState.selectedIds.indexOf(id);
+    if (idx === -1) {
+        refundsState.selectedIds.push(id);
+    } else {
+        refundsState.selectedIds.splice(idx, 1);
+    }
+    
+    // Update check-all checkbox
+    const checkAll = document.getElementById('ref-check-all');
+    if (checkAll) {
+        const visibleRowChecks = document.querySelectorAll('.ref-row-check');
+        checkAll.checked = visibleRowChecks.length > 0 && Array.from(visibleRowChecks).every(c => c.checked);
+    }
+    
+    updateRefundActionBar();
+}
+
+// Toggle all visible checkboxes
+function toggleAllRefunds(source) {
+    const isChecked = source.checked;
+    const rowChecks = document.querySelectorAll('.ref-row-check');
+    
+    rowChecks.forEach(c => {
+        const id = Number(c.getAttribute('data-id'));
+        c.checked = isChecked;
+        
+        const idx = refundsState.selectedIds.indexOf(id);
+        if (isChecked && idx === -1) {
+            refundsState.selectedIds.push(id);
+        } else if (!isChecked && idx !== -1) {
+            refundsState.selectedIds.splice(idx, 1);
+        }
+    });
+    
+    updateRefundActionBar();
+}
+
+// Show/hide floating action bar
+function updateRefundActionBar() {
+    const bar = document.getElementById('refund-action-bar');
+    const countEl = document.getElementById('ref-selected-count');
+    if (!bar || !countEl) return;
+    
+    const count = refundsState.selectedIds.length;
+    if (count > 0) {
+        bar.style.display = 'flex';
+        countEl.textContent = count;
+    } else {
+        bar.style.display = 'none';
+    }
+}
+
+// Handle mass operations
+async function handleRefundMassAction(actionType, targetStatus) {
+    if (refundsState.selectedIds.length === 0) return;
+    
+    if (actionType === 'reject') {
+        const reason = prompt("Digite o motivo obrigatório da rejeição para todas as solicitações selecionadas:");
+        if (!reason || !reason.trim()) {
+            alert("Operação cancelada. O motivo da rejeição é obrigatório!");
+            return;
+        }
+        
+        if (confirm(`Deseja rejeitar as ${refundsState.selectedIds.length} solicitações selecionadas?`)) {
+            await executeRefundAPI({
+                action: 'reject',
+                ids: refundsState.selectedIds,
+                reason: reason.trim()
+            });
+        }
+    } else if (actionType === 'status-update') {
+        if (confirm(`Deseja marcar as ${refundsState.selectedIds.length} solicitações selecionadas como '${targetStatus}'?`)) {
+            await executeRefundAPI({
+                action: 'status-update',
+                ids: refundsState.selectedIds,
+                status: targetStatus
+            });
+        }
+    }
+}
+
+// Core API caller
+async function executeRefundAPI(payload) {
+    try {
+        const res = await fetch('/api/refunds', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+            showToast("Fila de reembolsos atualizada com sucesso!");
+            loadRefundData();
+        } else {
+            alert("Erro na operação: " + (data.error || "Erro interno"));
+        }
+    } catch (e) {
+        console.error("API error:", e);
+        showToast("Erro ao conectar com o servidor.", true);
+    }
+}
+
+// Open detail modal
+function openRefundDecisionModal(id) {
+    const r = refundsState.allRefunds.find(item => item.id === id);
+    if (!r) return;
+    
+    refundsState.activeDecisionRefundId = id;
+    refundsState.activeDecisionMode = null;
+    
+    // Hide decision sub-panels
+    document.getElementById('decision-approve-panel').style.display = 'none';
+    document.getElementById('decision-reject-panel').style.display = 'none';
+    
+    // Reset button border highlights
+    document.getElementById('btn-decision-approve').style.borderColor = 'transparent';
+    document.getElementById('btn-decision-reject').style.borderColor = 'transparent';
+    
+    // Populating Seção 1: Solicitação
+    document.getElementById('ref-detail-id').textContent = `#${r.id}`;
+    document.getElementById('ref-detail-order').textContent = r.orderId;
+    document.getElementById('ref-detail-purchdate').textContent = r.purchaseDate;
+    document.getElementById('ref-detail-reqdate').textContent = r.requestDate;
+    
+    const sla = calculateSlaDays(r.requestDate);
+    const slaEl = document.getElementById('ref-detail-sla');
+    slaEl.textContent = `${sla} dias`;
+    slaEl.style.color = sla > 7 ? '#EF4444' : (sla >= 4 ? '#F59E0B' : '#10B981');
+    
+    document.getElementById('ref-detail-price').textContent = `R$ ${r.value.toFixed(2)}`;
+    document.getElementById('ref-detail-method').textContent = r.paymentMethod;
+    
+    // Turista
+    document.getElementById('ref-detail-tourist').textContent = r.touristName;
+    document.getElementById('ref-detail-email').textContent = r.touristEmail;
+    document.getElementById('ref-detail-phone').textContent = r.touristPhone;
+    
+    // Agent context (RF-031.27)
+    const agentBox = document.getElementById('ref-detail-agent-box');
+    if (r.origin === 'Agente' || r.origin === 'Agência') {
+        agentBox.style.display = 'block';
+        document.getElementById('ref-detail-agent-name').textContent = r.solicitante || r.origin;
+        document.getElementById('ref-detail-agent-just').textContent = r.justificativaOperacional || "Sem justificativa anexada.";
+    } else {
+        agentBox.style.display = 'none';
+    }
+    
+    // Seção 2: Ingresso
+    document.getElementById('ref-detail-attraction').textContent = r.attraction;
+    document.getElementById('ref-detail-tickettype').textContent = r.ticketType;
+    document.getElementById('ref-detail-eventdate').textContent = r.eventDate;
+    
+    const tStatusEl = document.getElementById('ref-detail-tstatus');
+    tStatusEl.textContent = r.ticketStatus;
+    tStatusEl.style.color = r.ticketStatus === 'Ativo' ? '#10B981' : '#EF4444';
+    document.getElementById('ref-detail-qrcode').textContent = r.qrCode;
+    
+    // Seção 3: Motivos & Observações
+    document.getElementById('ref-detail-reason').textContent = r.reason;
+    document.getElementById('ref-detail-touristobs').textContent = r.touristComments || "Nenhuma observação livre digitada.";
+    
+    // Seção 3.5: Política
+    document.getElementById('ref-detail-policy').textContent = r.policy || "Política de cancelamento padrão: cancelamento sem multa até 48h antes da atração.";
+    
+    // Reset decision fields
+    document.getElementById('ref-approve-amount').value = r.value;
+    document.getElementById('ref-approve-amount').max = r.value;
+    document.getElementById('ref-approve-notes').value = '';
+    
+    document.getElementById('ref-reject-reason').selectedIndex = 0;
+    document.getElementById('ref-reject-text').value = '';
+    
+    // Trigger rejection previews initial state
+    updateRejectionPreview(document.getElementById('ref-reject-reason').value);
+    
+    // Disable or enable decision actions based on current status
+    const formPanel = document.getElementById('ref-decision-form-panel');
+    if (r.status === 'Aprovado' || r.status === 'Rejeitado') {
+        formPanel.style.opacity = '0.5';
+        formPanel.style.pointerEvents = 'none';
+    } else {
+        formPanel.style.opacity = '1';
+        formPanel.style.pointerEvents = 'auto';
+    }
+    
+    // Populating Histórico
+    const histContainer = document.getElementById('ref-detail-history');
+    histContainer.innerHTML = '';
+    
+    if (r.history && r.history.length > 0) {
+        r.history.forEach(h => {
+            const hDiv = document.createElement('div');
+            hDiv.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+            hDiv.style.paddingBottom = '4px';
+            hDiv.innerHTML = `<span style="color: var(--primary); font-weight: 700;">${h.actor}:</span> ${h.action} <span style="float: right; color: var(--text-muted); font-size: 10px;">${h.date}</span>`;
+            histContainer.appendChild(hDiv);
+        });
+    } else {
+        histContainer.innerHTML = `<div style="color: var(--text-muted); font-style: italic;">Nenhum histórico registrado.</div>`;
+    }
+    
+    // Open Modal Overlay
+    const overlay = document.getElementById('modal-overlay');
+    const modal = document.getElementById('modal-refund-decision-view');
+    
+    if (overlay && modal) {
+        overlay.style.display = 'flex';
+        // Hide other modals
+        document.querySelectorAll('.modal-card').forEach(m => m.style.display = 'none');
+        modal.style.display = 'block';
+    }
+}
+
+// Toggle Decision Panels
+function toggleDecisionPanel(mode) {
+    refundsState.activeDecisionMode = mode;
+    
+    const appPanel = document.getElementById('decision-approve-panel');
+    const rejPanel = document.getElementById('decision-reject-panel');
+    
+    if (mode === 'approve') {
+        appPanel.style.display = 'block';
+        rejPanel.style.display = 'none';
+        
+        // Active borders highlight
+        document.getElementById('btn-decision-approve').style.borderColor = '#10B981';
+        document.getElementById('btn-decision-reject').style.borderColor = 'transparent';
+    } else {
+        appPanel.style.display = 'none';
+        rejPanel.style.display = 'block';
+        
+        document.getElementById('btn-decision-approve').style.borderColor = 'transparent';
+        document.getElementById('btn-decision-reject').style.borderColor = '#EF4444';
+    }
+}
+
+// Update rejection preview email details dynamically
+function updateRejectionPreview(reasonVal) {
+    const r = refundsState.allRefunds.find(item => item.id === refundsState.activeDecisionRefundId);
+    if (!r) return;
+    
+    document.getElementById('ref-email-preview-tourist').textContent = r.touristName;
+    document.getElementById('ref-email-preview-order').textContent = r.orderId;
+    
+    const reasonText = document.getElementById('ref-reject-text').value;
+    document.getElementById('ref-email-preview-reason').innerHTML = `<strong>Motivo:</strong> ${reasonVal}${reasonText ? '<br><strong>Detalhes:</strong> ' + reasonText : ''}`;
+}
+
+// Custom text input live preview
+function updateRejectionPreviewCustom(textVal) {
+    const reasonVal = document.getElementById('ref-reject-reason').value;
+    const r = refundsState.allRefunds.find(item => item.id === refundsState.activeDecisionRefundId);
+    if (!r) return;
+    
+    document.getElementById('ref-email-preview-reason').innerHTML = `<strong>Motivo:</strong> ${reasonVal}${textVal ? '<br><strong>Detalhes:</strong> ' + textVal : ''}`;
+}
+
+// Submit Decision Form
+async function submitRefundDecision(type) {
+    const id = refundsState.activeDecisionRefundId;
+    if (!id) return;
+    
+    if (type === 'status-update') {
+        // Just marking as "Em Análise"
+        await executeRefundAPI({
+            action: 'status-update',
+            id: id,
+            status: 'Em Análise'
+        });
+        closeModal();
+        return;
+    }
+    
+    if (type === 'approve') {
+        const approvedAmount = Number(document.getElementById('ref-approve-amount').value);
+        const returnMethod = document.getElementById('ref-approve-method').value;
+        const internalNotes = document.getElementById('ref-approve-notes').value;
+        const r = refundsState.allRefunds.find(item => item.id === id);
+        
+        // Input validation (RF-031.28)
+        if (isNaN(approvedAmount) || approvedAmount <= 0) {
+            alert("O valor de reembolso deve ser maior que R$ 0,00!");
+            return;
+        }
+        if (approvedAmount > r.value) {
+            alert("O valor de reembolso não pode exceder o valor total pago do ingresso (R$ " + r.value.toFixed(2) + ")!");
+            return;
+        }
+        
+        if (confirm(`Deseja aprovar o reembolso no valor de R$ ${approvedAmount.toFixed(2)}?`)) {
+            await executeRefundAPI({
+                action: 'approve',
+                id: id,
+                approvedAmount: approvedAmount,
+                returnMethod: returnMethod,
+                internalNotes: internalNotes
+            });
+            closeModal();
+        }
+    } else if (type === 'reject') {
+        const reasonSelect = document.getElementById('ref-reject-reason').value;
+        const reasonText = document.getElementById('ref-reject-text').value.trim();
+        
+        // technical validation: require explanation text
+        if (!reasonText) {
+            alert("A justificativa escrita de rejeição é obrigatória!");
+            return;
+        }
+        
+        const finalReason = `${reasonSelect} - ${reasonText}`;
+        
+        if (confirm(`Deseja rejeitar este reembolso? Um e-mail de notificação será disparado ao turista.`)) {
+            await executeRefundAPI({
+                action: 'reject',
+                id: id,
+                reason: finalReason
+            });
+            closeModal();
+        }
+    }
+}
+
+// Bind to window to allow direct HTML calls
+window.loadRefundData = loadRefundData;
+window.filterRefundsTable = filterRefundsTable;
+window.switchRefundTabFilter = switchRefundTabFilter;
+window.toggleRefundRow = toggleRefundRow;
+window.toggleAllRefunds = toggleAllRefunds;
+window.handleRefundMassAction = handleRefundMassAction;
+window.openRefundDecisionModal = openRefundDecisionModal;
+window.toggleDecisionPanel = toggleDecisionPanel;
+window.updateRejectionPreview = updateRejectionPreview;
+window.updateRejectionPreviewCustom = updateRejectionPreviewCustom;
+window.submitRefundDecision = submitRefundDecision;
+
 
 

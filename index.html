@@ -428,6 +428,10 @@
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span data-t="dashMenuCommercial">Configurações Comerciais</span>
                     </div>
+                    <div class="dashboard-menu-item" data-dash-tab="refund-queue">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span data-t="dashMenuRefunds">Fila de Reembolsos</span>
+                    </div>
                 </div>
                 
                 <!-- Content panel -->
@@ -767,6 +771,91 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- TAB 6: FILA DE REEMBOLSOS (WF-053) -->
+                    <div id="dash-view-refund-queue" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap;">
+                            <div>
+                                <h3 style="font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                                    Fila de Reembolsos
+                                    <span style="background: var(--primary); color: #FFF; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 800;" id="refund-badge-count">0</span>
+                                </h3>
+                                <p style="color: var(--text-secondary); font-size: 13px;">Triagem e aprovação manual de solicitações fora da janela automática.</p>
+                            </div>
+                        </div>
+
+                        <!-- Search and Filter Bar -->
+                        <div class="glass-panel" style="padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; align-items: end;">
+                            <div>
+                                <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Buscar Solicitação</label>
+                                <input type="text" id="refund-search" class="input-custom" placeholder="Buscar por ID Pedido, Reembolso ou Nome/Email..." oninput="filterRefundsTable()" style="padding: 8px 12px; font-size: 12px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Filtrar por Atração</label>
+                                <select id="refund-filter-attraction" class="select-custom" onchange="filterRefundsTable()" style="padding: 8px; font-size: 12px;">
+                                    <option value="Todos">Todas as atrações</option>
+                                    <option value="Jardim Botânico">Jardim Botânico</option>
+                                    <option value="Linha Turismo">Linha Turismo</option>
+                                    <option value="Parque Jaime Lerner">Parque Jaime Lerner</option>
+                                    <option value="Ópera de Arame">Ópera de Arame</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Origem</label>
+                                <select id="refund-filter-origin" class="select-custom" onchange="filterRefundsTable()" style="padding: 8px; font-size: 12px;">
+                                    <option value="Todos">Todas as origens</option>
+                                    <option value="Turista">Turista</option>
+                                    <option value="Agente">Agente</option>
+                                    <option value="Agência">Agência</option>
+                                    <option value="Administrador">Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Status filter sub-tabs -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                            <button type="button" class="btn-secondary" id="btn-ref-tab-pending" style="padding: 4px 12px; font-size: 11px; background: var(--primary-glow); border-color: var(--primary); color: var(--primary);" onclick="switchRefundTabFilter('Pendente')">Pendentes</button>
+                            <button type="button" class="btn-secondary" id="btn-ref-tab-analysing" style="padding: 4px 12px; font-size: 11px;" onclick="switchRefundTabFilter('Em Análise')">Em Análise</button>
+                            <button type="button" class="btn-secondary" id="btn-ref-tab-approved" style="padding: 4px 12px; font-size: 11px;" onclick="switchRefundTabFilter('Aprovado')">Aprovados</button>
+                            <button type="button" class="btn-secondary" id="btn-ref-tab-rejected" style="padding: 4px 12px; font-size: 11px;" onclick="switchRefundTabFilter('Rejeitado')">Rejeitados</button>
+                            <button type="button" class="btn-secondary" id="btn-ref-tab-all" style="padding: 4px 12px; font-size: 11px;" onclick="switchRefundTabFilter('Todos')">Todos</button>
+                        </div>
+
+                        <!-- Table Wrapper -->
+                        <div style="overflow-x: auto; background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;" class="dashboard-table">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.02);">
+                                        <th style="padding: 12px 16px; width: 40px;"><input type="checkbox" id="ref-check-all" onclick="toggleAllRefunds(this)"></th>
+                                        <th style="padding: 12px; font-weight: 700; width: 60px;">ID Reemb</th>
+                                        <th style="padding: 12px; font-weight: 700;">ID Pedido</th>
+                                        <th style="padding: 12px; font-weight: 700;">Turista</th>
+                                        <th style="padding: 12px; font-weight: 700;">Atração</th>
+                                        <th style="padding: 12px; font-weight: 700;">Valor</th>
+                                        <th style="padding: 12px; font-weight: 700;">Motivo</th>
+                                        <th style="padding: 12px; font-weight: 700;">Origem</th>
+                                        <th style="padding: 12px; font-weight: 700;">Data Compra</th>
+                                        <th style="padding: 12px; font-weight: 700;">Solicitado Em</th>
+                                        <th style="padding: 12px; font-weight: 700;">SLA (Aberto)</th>
+                                        <th style="padding: 12px; font-weight: 700;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="refunds-table-body">
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Floating Action Bar for mass updates -->
+                        <div id="refund-action-bar" class="glass-panel" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; padding: 12px 24px; border: 1px solid var(--primary); box-shadow: 0 8px 32px rgba(255, 75, 43, 0.2); justify-content: space-between; align-items: center; z-index: 100; border-radius: 12px; flex-direction: row;">
+                            <div style="font-weight: 700; font-size: 13px;"><span id="ref-selected-count">0</span> selecionados</div>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; background: rgba(99,102,241,0.1); color: #818CF8; border: 1px solid #818CF8;" onclick="handleRefundMassAction('status-update', 'Em Análise')">Marcar Em Análise</button>
+                                <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid #EF4444;" onclick="handleRefundMassAction('reject')">Rejeitar Selecionados</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
             </div>
@@ -1011,6 +1100,159 @@
                     <button type="submit" class="btn-primary" style="padding: 10px 24px;">Salvar</button>
                 </div>
             </form>
+        </div>
+
+        <!-- CARD 5: REFUND DETAILS & DECISION (WF-053 Modal) -->
+        <div class="modal-card glass-panel" id="modal-refund-decision-view" style="display: none; max-width: 750px; padding: 28px; text-align: left;">
+            <span class="modal-close" onclick="closeModal()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </span>
+            <h2 style="font-weight: 800; font-size: 22px; margin-bottom: 6px; color: #FFF;">Detalhes e Decisão de Reembolso</h2>
+            <p class="subtitle" style="font-size: 12px; margin-bottom: 20px; color: var(--text-secondary);">Analise os dados e as políticas da atração antes de decidir o estorno.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left; margin-bottom: 20px; align-items: start;">
+                <!-- Left: Request data & tourist info -->
+                <div>
+                    <h3 style="font-size: 13px; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; margin-bottom: 10px;">1. Dados da Solicitação</h3>
+                    <div style="font-size: 12px; line-height: 1.8; color: var(--text-secondary);">
+                        <div><strong>ID Reembolso:</strong> <span id="ref-detail-id"></span></div>
+                        <div><strong>Pedido:</strong> <span id="ref-detail-order"></span></div>
+                        <div><strong>Data Compra:</strong> <span id="ref-detail-purchdate"></span></div>
+                        <div><strong>Data Solicitação:</strong> <span id="ref-detail-reqdate"></span></div>
+                        <div><strong>Dias em Aberto (SLA):</strong> <span id="ref-detail-sla" style="font-weight: 700;"></span></div>
+                        <div><strong>Valor Pago:</strong> <span id="ref-detail-price" style="font-weight: 700; color: #FFF;"></span></div>
+                        <div><strong>Forma de Pagamento:</strong> <span id="ref-detail-method"></span></div>
+                        
+                        <div style="margin-top: 12px; font-weight: 700; color: var(--primary);">Turista:</div>
+                        <div style="padding-left: 8px; background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border); padding: 8px; border-radius: 4px; margin-top: 4px;">
+                            <div><strong>Nome:</strong> <span id="ref-detail-tourist"></span></div>
+                            <div><strong>Email:</strong> <span id="ref-detail-email"></span></div>
+                            <div><strong>Telefone:</strong> <span id="ref-detail-phone"></span></div>
+                        </div>
+
+                        <!-- Special Agent / Agency field -->
+                        <div id="ref-detail-agent-box" style="display: none; margin-top: 12px; padding: 12px; background: rgba(96, 165, 250, 0.05); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 4px;">
+                            <div style="color: #60A5FA; font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Solicitado por Canal Parceiro</div>
+                            <div><strong>Solicitante:</strong> <span id="ref-detail-agent-name"></span></div>
+                            <div style="margin-top: 6px;"><strong>Justificativa Operacional:</strong></div>
+                            <p id="ref-detail-agent-just" style="margin: 2px 0 0 0; font-style: italic; font-size: 11px; color: #93C5FD; line-height: 1.4;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Ticket details, QR Code & Policy -->
+                <div>
+                    <h3 style="font-size: 13px; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; margin-bottom: 10px;">2. Dados do Ingresso & Política</h3>
+                    <div style="font-size: 12px; line-height: 1.8; color: var(--text-secondary);">
+                        <div><strong>Atração:</strong> <span id="ref-detail-attraction" style="font-weight: 700; color: #FFF;"></span></div>
+                        <div><strong>Tipo Ingresso:</strong> <span id="ref-detail-tickettype"></span></div>
+                        <div><strong>Data Evento:</strong> <span id="ref-detail-eventdate"></span></div>
+                        <div><strong>Status Ingresso:</strong> <span id="ref-detail-tstatus" style="font-weight: 700;"></span></div>
+                        
+                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 8px; border-radius: 4px;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: #FFF; flex-shrink: 0;"><path d="M3 3h6v6H3V3zm2 2v2h2V5H5zm8-2h6v6h-6V3zm2 2v2h2V5h-2zM3 15h6v6H3v-6zm2 2v2h2v-2H5zm10-2h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm-4-4h2v2h-2v-2zm0 2h2v2h-2v-2zm2-4h2v2h-2v-2zm4 0h2v2h-2v-2zm-6-4h2v2h-2V7zm0 2h2v2h-2V9z"/></svg>
+                            <div>
+                                <div style="font-size: 9px; color: var(--text-muted); text-transform: uppercase;">Código QR</div>
+                                <div style="font-family: monospace; font-weight: 700; font-size: 12px;" id="ref-detail-qrcode"></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 12px; padding: 12px; background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 4px;">
+                            <div style="color: #F59E0B; font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Política de Cancelamento da Atração</div>
+                            <p id="ref-detail-policy" style="margin: 0; font-size: 11px; line-height: 1.4; color: #FCD34D;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer observation -->
+            <div style="text-align: left; margin-bottom: 20px; font-size: 12px; padding: 12px; background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border); border-radius: 4px;">
+                <div><strong>Motivo Selecionado:</strong> <span id="ref-detail-reason" style="font-weight: 600; color: #FFF;"></span></div>
+                <div style="margin-top: 6px;"><strong>Observação livre do turista:</strong></div>
+                <p id="ref-detail-touristobs" style="margin: 2px 0 0 0; font-style: italic; color: var(--text-secondary); line-height: 1.4;"></p>
+            </div>
+
+            <!-- Seção de Decisão -->
+            <div class="glass-panel" style="padding: 16px; text-align: left; border: 1px solid var(--glass-border); margin-bottom: 20px;" id="ref-decision-form-panel">
+                <h3 style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px;">3. Tomada de Decisão</h3>
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <button type="button" class="btn-secondary" id="btn-decision-analysing" onclick="submitRefundDecision('status-update')" style="padding: 8px 16px; font-size: 12px;">
+                        Manter Em Análise
+                    </button>
+                    <button type="button" class="btn-secondary" id="btn-decision-approve" style="background: rgba(16,185,129,0.1); color: #10B981; border: 1px solid #10B981; padding: 8px 16px; font-size: 12px;" onclick="toggleDecisionPanel('approve')">
+                        Aprovar Reembolso
+                    </button>
+                    <button type="button" class="btn-secondary" id="btn-decision-reject" style="background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid #EF4444; padding: 8px 16px; font-size: 12px;" onclick="toggleDecisionPanel('reject')">
+                        Rejeitar Reembolso
+                    </button>
+                </div>
+
+                <!-- Sub-Panel: Approve options -->
+                <div id="decision-approve-panel" style="display: none; padding-top: 16px; border-top: 1px dashed var(--glass-border);">
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <div class="form-group">
+                            <label style="font-size: 11px; display: block; margin-bottom: 4px; font-weight: 600;">Valor a Reembolsar (R$) *</label>
+                            <input type="number" step="0.01" id="ref-approve-amount" class="input-custom" style="padding: 10px; font-size: 13px;">
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size: 11px; display: block; margin-bottom: 4px; font-weight: 600;">Método de Estorno *</label>
+                            <select id="ref-approve-method" class="select-custom" style="padding: 9px; font-size: 13px;">
+                                <option value="gateway">Automático via Gateway (Stripe/Pix)</option>
+                                <option value="manual">Manual (Depósito/Pix Externo)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="font-size: 11px; display: block; margin-bottom: 4px; font-weight: 600;">Observação Interna (Opcional)</label>
+                        <input type="text" id="ref-approve-notes" class="input-custom" placeholder="Notas sobre a aprovação..." style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <button type="button" class="btn-primary" onclick="submitRefundDecision('approve')" style="padding: 10px 24px;">Confirmar Aprovação e Estorno</button>
+                </div>
+
+                <!-- Sub-Panel: Reject options -->
+                <div id="decision-reject-panel" style="display: none; padding-top: 16px; border-top: 1px dashed var(--glass-border);">
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 11px; display: block; margin-bottom: 4px; font-weight: 600;">Motivo da Rejeição *</label>
+                        <select id="ref-reject-reason" class="select-custom" style="padding: 9px; font-size: 13px;" onchange="updateRejectionPreview(this.value)">
+                            <option value="Prazo expirado e evento realizado">Prazo expirado e evento já realizado</option>
+                            <option value="Ingresso já utilizado no local">Ingresso já utilizado no local de destino</option>
+                            <option value="Descumprimento de política de cancelamento">Descumprimento de política de cancelamento da atração</option>
+                            <option value="Outro (justificar abaixo)">Outro (justificar no campo de texto)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label style="font-size: 11px; display: block; margin-bottom: 4px; font-weight: 600;">Complemento / Justificativa Escrita *</label>
+                        <textarea id="ref-reject-text" class="input-custom" placeholder="Descreva os motivos técnicos detalhados..." style="padding: 10px; font-size: 13px; min-height: 60px; resize: vertical;" oninput="updateRejectionPreviewCustom(this.value)"></textarea>
+                    </div>
+
+                    <!-- Email Preview (Specification rule: display email preview before rejection) -->
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 12px; border-radius: 4px; font-size: 11px; margin-bottom: 16px;">
+                        <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px;">Visualização do E-mail de Notificação (Turista)</div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 4px; font-family: monospace; border: 1px solid var(--glass-border); line-height: 1.5; color: var(--text-secondary);">
+                            <div><strong>Assunto:</strong> Atualização de Solicitação de Reembolso - Curitiba360</div>
+                            <div style="margin-top: 8px;">Olá, <span id="ref-email-preview-tourist" style="font-weight: 700; color: #FFF;"></span>.</div>
+                            <div style="margin-top: 4px;">Informamos que sua solicitação de reembolso referente ao pedido <strong id="ref-email-preview-order" style="color: #FFF;"></strong> foi analisada e <strong>rejeitada</strong> pelo seguinte motivo:</div>
+                            <div style="margin: 8px 0; padding: 6px 12px; background: rgba(239,68,68,0.05); color: #FCA5A5; border-left: 3px solid #EF4444; border-radius: 2px;" id="ref-email-preview-reason">Prazo expirado e evento realizado</div>
+                            <div>Caso discorde desta decisão, você poderá contestar entrando em contato pelo e-mail: <strong>contestacoes@curitiba360.com.br</strong>.</div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-primary" style="background: var(--primary); color: #FFF; padding: 10px 24px;" onclick="submitRefundDecision('reject')">Confirmar Rejeição e Enviar E-mail</button>
+                </div>
+            </div>
+
+            <!-- Histórico de Ações (Specification rule: show log at bottom, read-only) -->
+            <div style="margin-top: 20px; text-align: left; font-size: 11px; border-top: 1px solid var(--glass-border); padding-top: 12px;">
+                <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Histórico de Ações da Solicitação</div>
+                <div style="display: flex; flex-direction: column; gap: 6px; max-height: 100px; overflow-y: auto; padding-right: 6px;" id="ref-detail-history">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 16px; margin-top: 20px;">
+                <button type="button" class="btn-secondary" onclick="closeModal()" style="padding: 8px 16px; font-size: 12px;">Fechar</button>
+            </div>
         </div>
     </div>
 

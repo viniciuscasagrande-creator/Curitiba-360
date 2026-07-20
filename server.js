@@ -335,6 +335,103 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // GET /api/refunds
+    if (url.pathname === '/api/refunds' && method === 'GET') {
+        const db = readDatabase();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(db.refunds || []));
+        return;
+    }
+
+    // POST /api/refunds
+    if (url.pathname === '/api/refunds' && method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const reqData = JSON.parse(body);
+                const db = readDatabase();
+                db.refunds = db.refunds || [];
+                
+                const nowStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
+                
+                // 1. UPDATE STATUS / MARCAR EM ANÁLISE
+                if (reqData.action === 'status-update') {
+                    const idsToUpdate = Array.isArray(reqData.ids) ? reqData.ids : [reqData.id];
+                    db.refunds.forEach(r => {
+                        if (idsToUpdate.includes(r.id)) {
+                            r.status = reqData.status;
+                            r.history.push({
+                                actor: "Administrador",
+                                action: `Status alterado para ${reqData.status}`,
+                                date: nowStr
+                            });
+                        }
+                    });
+                    writeDatabase(db);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                    return;
+                }
+                
+                // 2. APPROVE ACTION
+                if (reqData.action === 'approve') {
+                    const r = db.refunds.find(ref => ref.id === Number(reqData.id));
+                    if (!r) {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: "Solicitação não encontrada" }));
+                        return;
+                    }
+                    
+                    r.status = "Aprovado";
+                    r.ticketStatus = "Cancelado";
+                    r.approvedAmount = Number(reqData.approvedAmount);
+                    r.returnMethod = reqData.returnMethod;
+                    r.internalNotes = reqData.internalNotes;
+                    r.history.push({
+                        actor: "Administrador",
+                        action: `Reembolso Aprovado (R$ ${Number(reqData.approvedAmount).toFixed(2)} via ${reqData.returnMethod})`,
+                        date: nowStr
+                    });
+                    
+                    writeDatabase(db);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                    return;
+                }
+                
+                // 3. REJECT ACTION
+                if (reqData.action === 'reject') {
+                    const idsToReject = Array.isArray(reqData.ids) ? reqData.ids : [reqData.id];
+                    const reason = reqData.reason || "Rejeitado pelo administrador.";
+                    
+                    db.refunds.forEach(r => {
+                        if (idsToReject.includes(r.id)) {
+                            r.status = "Rejeitado";
+                            r.history.push({
+                                actor: "Administrador",
+                                action: `Reembolso Rejeitado: ${reason}`,
+                                date: nowStr
+                            });
+                        }
+                    });
+                    
+                    writeDatabase(db);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                    return;
+                }
+                
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Invalid action type" }));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Malformed JSON body" }));
+            }
+        });
+        return;
+    }
+
     // POST /api/register
     if (url.pathname === '/api/register' && method === 'POST') {
         let body = '';
