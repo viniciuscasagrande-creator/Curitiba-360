@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import GestaoUsuarios from './pages/GestaoUsuarios';
 import CadastroUsuario from './pages/CadastroUsuario';
 import GestaoAgencias from './pages/GestaoAgencias';
+import CadastroAgencia from './pages/CadastroAgencia';
 import GestaoParceiros from './pages/GestaoParceiros';
 import CadastroParceiro from './pages/CadastroParceiro';
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/parceiros" element={<GestaoParceiros />} />
           <Route path="/parceiros/novo" element={<CadastroParceiro />} />
           <Route path="/agencias" element={<GestaoAgencias />} />
+          <Route path="/agencias/novo" element={<CadastroAgencia />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
