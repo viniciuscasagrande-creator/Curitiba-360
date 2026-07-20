@@ -28,6 +28,7 @@ import GestaoPacotes from './pages/GestaoPacotes';
 import GestaoIngressos from './pages/GestaoIngressos';
 import GestaoCupons from './pages/GestaoCupons';
 import ValidacaoIngressos from './pages/ValidacaoIngressos';
+import PesquisarIngresso from './pages/PesquisarIngresso';
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           <Route path="/ingressos" element={<GestaoIngressos />} />
           <Route path="/cupons" element={<GestaoCupons />} />
           <Route path="/validar" element={<ValidacaoIngressos />} />
+          <Route path="/ingressos/pesquisa" element={<PesquisarIngresso />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
