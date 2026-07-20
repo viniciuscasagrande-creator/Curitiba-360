@@ -31,6 +31,7 @@ import ValidacaoIngressos from './pages/ValidacaoIngressos';
 import PesquisarIngresso from './pages/PesquisarIngresso';
 import DashboardAnalytics from './pages/DashboardAnalytics';
 import GestaoRelatoriosFinanceiros from './pages/GestaoRelatoriosFinanceiros';
+import GestaoFluxoEntrada from './pages/GestaoFluxoEntrada';
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
           <Route path="/validar" element={<ValidacaoIngressos />} />
           <Route path="/ingressos/pesquisa" element={<PesquisarIngresso />} />
           <Route path="/atracoes/analytics" element={<DashboardAnalytics />} />
+          <Route path="/portaria/fluxo" element={<GestaoFluxoEntrada />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
