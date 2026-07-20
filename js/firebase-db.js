@@ -2,7 +2,9 @@
 
 // Read collections dynamically
 async function fetchCollectionData(collectionName) {
-    const actualCol = collectionName === 'attractions' ? 'atracoes' : collectionName;
+    let actualCol = collectionName;
+    if (actualCol === 'attractions') actualCol = 'atracoes';
+    if (actualCol === 'agencies') actualCol = 'agencias';
     if (window.firebaseEnabled) {
         try {
             const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
@@ -37,7 +39,9 @@ async function fetchCollectionData(collectionName) {
 
 // Save/Update/Delete records dynamically
 async function saveCollectionRecord(collectionName, action, recordData) {
-    const actualCol = collectionName === 'attractions' ? 'atracoes' : collectionName;
+    let actualCol = collectionName;
+    if (actualCol === 'attractions') actualCol = 'atracoes';
+    if (actualCol === 'agencies') actualCol = 'agencias';
     if (window.firebaseEnabled) {
         try {
             const { collection, doc, setDoc, deleteDoc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");

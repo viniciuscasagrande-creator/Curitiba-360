@@ -2119,6 +2119,7 @@ async function loadSrsData() {
         srsState.contracts = await fetchCollectionData('contracts');
         srsState.attractions = await fetchCollectionData('attractions');
         srsState.agencies = await fetchCollectionData('agencies');
+        srsState.agencias = await fetchCollectionData('agencias');
         
         const cmsData = await fetchCollectionData('cms');
         srsState.cms = Array.isArray(cmsData) && cmsData.length > 0 && cmsData[0].faq ? cmsData[0] : { faq: Array.isArray(cmsData) ? cmsData : [], banners: [] };
@@ -2554,14 +2555,20 @@ function renderAgenciesTable() {
     if (!tbody) return;
     tbody.innerHTML = '';
     
-    srsState.agencies.forEach(ag => {
+    const list = srsState.agencias || srsState.agencies || [];
+    list.forEach(ag => {
         const tr = document.createElement('tr');
+        const nameVal = ag.nomeFantasia || ag.razaoSocial || ag.name || "";
+        const agentsVal = ag.agentsCount !== undefined ? ag.agentsCount : (ag.gestores ? ag.gestores.length : 0);
+        const commVal = ag.commissionRate !== undefined ? ag.commissionRate : 10;
+        const contractVal = ag.contractId || "Pendente";
+        
         tr.innerHTML = `
             <td style="padding: 12px 16px; font-weight:700;">#${ag.id}</td>
-            <td style="padding: 12px 16px;"><strong>${ag.name}</strong></td>
-            <td style="padding: 12px 16px;">${ag.agentsCount} agentes</td>
-            <td style="padding: 12px 16px;">${ag.commissionRate}% comissão</td>
-            <td style="padding: 12px 16px; font-family: monospace;">Contrato #${ag.contractId}</td>
+            <td style="padding: 12px 16px;"><strong>${nameVal}</strong></td>
+            <td style="padding: 12px 16px;">${agentsVal} agentes</td>
+            <td style="padding: 12px 16px;">${commVal}% comissão</td>
+            <td style="padding: 12px 16px; font-family: monospace;">Contrato #${contractVal}</td>
             <td style="padding: 12px 16px;">
                 <span style="background: rgba(16,185,129,0.15); color: #10B981; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700;">${ag.status}</span>
             </td>
@@ -2919,8 +2926,8 @@ async function syncLocalDbToFirestore() {
         
         const migrations = [
             { col: 'contracts', data: localData.contracts || [] },
-            { col: 'attractions', data: localData.attractions || [] },
-            { col: 'agencies', data: localData.agencies || [] },
+            { col: 'atracoes', data: localData.atracoes || [] },
+            { col: 'agencias', data: localData.agencias || [] },
             { col: 'packages', data: localData.packages || [] },
             { col: 'notifications', data: localData.notifications || [] },
             { col: 'cms', data: localData.cms ? [localData.cms] : [] },

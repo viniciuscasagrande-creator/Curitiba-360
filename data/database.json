@@ -343,21 +343,69 @@
       "scanStatus": "Crítico"
     }
   ],
-  "agencies": [
+  "agencias": [
     {
       "id": 1,
-      "name": "Batel Turismo",
-      "agentsCount": 12,
+      "razaoSocial": "Turismo Curitiba 360 Ltda",
+      "nomeFantasia": "Tour CWB",
+      "cnpj": "98.765.432/0001-10",
+      "status": "ATIVO",
+      "responsavel": {
+        "nomeCompleto": "Maria Oliveira",
+        "cpfOuPassaporte": "999.888.777-66",
+        "email": "maria@tourcwb.com"
+      },
+      "dadosBancarios": {
+        "banco": "033",
+        "tipoConta": "Corrente",
+        "agencia": "1234",
+        "conta": "56789-0",
+        "titular": "Turismo Curitiba 360 Ltda",
+        "chavePix": "98.765.432/0001-10"
+      },
+      "gestores": [
+        {
+          "primeiroNome": "Carlos",
+          "ultimoNome": "Santos",
+          "telefone": "(41) 98888-8888",
+          "emails": ["carlos@tourcwb.com"]
+        }
+      ],
+      "dataCriacao": "20/07/2026 10:00:00",
+      "agentsCount": 1,
       "commissionRate": 10,
-      "status": "Ativo",
       "contractId": 1
     },
     {
       "id": 2,
-      "name": "Serra Verde Express",
-      "agentsCount": 25,
-      "commissionRate": 15,
-      "status": "Ativo",
+      "razaoSocial": "Batel Agência de Viagens Eireli",
+      "nomeFantasia": "Batel Turismo",
+      "cnpj": "12.222.333/0001-44",
+      "status": "ATIVO",
+      "responsavel": {
+        "nomeCompleto": "Juliana Costa",
+        "cpfOuPassaporte": "777.666.555-44",
+        "email": "juliana@batelturismo.com.br"
+      },
+      "dadosBancarios": {
+        "banco": "341",
+        "tipoConta": "Corrente",
+        "agencia": "4321",
+        "conta": "98765-4",
+        "titular": "Batel Agência de Viagens Eireli",
+        "chavePix": "12.222.333/0001-44"
+      },
+      "gestores": [
+        {
+          "primeiroNome": "Ana",
+          "ultimoNome": "Juliana",
+          "telefone": "(41) 97777-7777",
+          "emails": ["juliana@batelturismo.com.br"]
+        }
+      ],
+      "dataCriacao": "20/07/2026 10:02:00",
+      "agentsCount": 12,
+      "commissionRate": 10,
       "contractId": 2
     }
   ],
