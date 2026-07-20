@@ -1,9 +1,10 @@
-// src/pages/Dashboard.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [abaAtiva, setAbaAtiva] = useState('Ativos');
   const [termoBusca, setTermoBusca] = useState('');
 
@@ -61,7 +62,12 @@ export default function Dashboard() {
               <span style={{ color: '#9ca3af', fontSize: '1.5rem' }}>🖼️</span>
             </div>
 
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', margin: '0 0 0.5rem 0', color: '#111827' }}>{atracao.nome}</h3>
+            <h3 
+              onClick={() => navigate(`/atracoes/1/totais`)}
+              style={{ fontSize: '1.125rem', fontWeight: 'bold', margin: '0 0 0.5rem 0', color: '#3b82f6', cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              {atracao.nome}
+            </h3>
             <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span>📍</span> {atracao.local}
             </p>

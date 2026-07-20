@@ -11,6 +11,7 @@ import Login from './pages/Login';
 // Páginas Privadas
 import Dashboard from './pages/Dashboard';
 import DashboardAnalytics from './pages/DashboardAnalytics';
+import GestaoUsuarios from './pages/GestaoUsuarios';
 import GestaoAtracoes from './pages/GestaoAtracoes';
 import CadastroAtracao from './pages/CadastroAtracao';
 import TotaisAtracao from './pages/TotaisAtracao';
@@ -50,6 +51,7 @@ export default function App() {
               
               <Route path="/dashboard" element={<Dashboard />} /> 
               <Route path="/analytics" element={<DashboardAnalytics />} />
+              <Route path="/usuarios" element={<GestaoUsuarios />} />
               
               <Route path="/atracoes" element={<GestaoAtracoes />} />
               <Route path="/atracoes/nova" element={<CadastroAtracao />} />

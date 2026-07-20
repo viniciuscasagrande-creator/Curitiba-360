@@ -70,9 +70,12 @@ export default function GestaoAtracoes() {
               <tr key={a.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                 <td style={{ padding: '0.75rem' }}><input type="checkbox" /></td>
                 <td style={{ padding: '0.75rem', color: '#6b7280' }}>#{a.id}</td>
-                <td style={{ padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <td 
+                  onClick={() => navigate(`/atracoes/${a.id}/totais`)}
+                  style={{ padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
+                >
                   <img src={a.foto} alt="" style={{ borderRadius: '4px' }} />
-                  <strong>{a.nome}</strong>
+                  <strong style={{ color: '#3b82f6', textDecoration: 'underline' }}>{a.nome}</strong>
                 </td>
                 <td style={{ padding: '0.75rem' }}><span style={{ padding: '0.2rem 0.5rem', background: '#f3f4f6', borderRadius: '4px', fontSize: '0.75rem' }}>{a.parceiro}</span></td>
                 <td style={{ padding: '0.75rem' }}>
