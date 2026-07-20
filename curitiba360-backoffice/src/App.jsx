@@ -18,6 +18,7 @@ import CMSInstitucional from './pages/CMSInstitucional';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CentralNotificacoes from './pages/CentralNotificacoes';
 import GestaoAtracoes from './pages/GestaoAtracoes';
+import GestaoContratos from './pages/GestaoContratos';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path="/conteudo/curadoria" element={<CMSHomeCuradoria />} />
           <Route path="/notificacoes" element={<CentralNotificacoes />} />
           <Route path="/atracoes" element={<GestaoAtracoes />} />
+          <Route path="/contratos" element={<GestaoContratos />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
