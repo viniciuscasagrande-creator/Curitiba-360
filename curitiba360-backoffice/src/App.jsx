@@ -22,6 +22,7 @@ import GestaoContratos from './pages/GestaoContratos';
 import ConfiguracoesComerciais from './pages/ConfiguracoesComerciais';
 import CadastroAtracao from './pages/CadastroAtracao';
 import TotaisAtracao from './pages/TotaisAtracao';
+import GestaoAgentes from './pages/GestaoAgentes';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/parceiros/novo" element={<CadastroParceiro />} />
           <Route path="/agencias" element={<GestaoAgencias />} />
           <Route path="/agencias/novo" element={<CadastroAgencia />} />
+          <Route path="/agentes" element={<GestaoAgentes />} />
           <Route path="/vendas" element={<OperacaoComercial />} />
           <Route path="/comissionamento" element={<Comissionamento />} />
           <Route path="/reembolsos" element={<FilaReembolsos />} />
