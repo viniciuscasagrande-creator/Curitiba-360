@@ -1,115 +1,193 @@
 // src/pages/CadastroUsuario.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../config/firebase';
-import { collection, addDoc } from 'firebase/firestore';
 
 export default function CadastroUsuario() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    primeiroNome: '',
-    ultimoNome: '',
-    emailPrincipal: '',
-    telefone: '',
-    cpfCnpj: '',
-    perfil: 'LEITOR',
-    status: 'ATIVO',
-    idiomaPadrao: 'PT_BR',
-    fotoPerfilUrl: '',
-    excluido: false,
-    vinculos: {
-      parceiroComercialId: null,
-      agenciaId: null,
-      atracoesIds: []
-    }
-  });
-  const [loading, setLoading] = useState(false);
-  const [mensagem, setMensagem] = useState('');
 
-  const handleSubmit = async (e) => {
+  // Estados dos campos comuns (RF-007.01 a RF-007.10)
+  const [primeiroNome, setPrimeiroNome] = useState('');
+  const [ultimoNome, setUltimoNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [idioma, setIdioma] = useState('PT_BR');
+  const [perfil, setPerfil] = useState('');
+  const [ativo, setAtivo] = useState(true);
+
+  // Estados dos campos dinâmicos por perfil
+  const [parceiroSelecionado, setParceiroSelecionado] = useState('');
+  const [atracaoSelecionada, setAtracaoSelecionada] = useState([]);
+  const [visibilidadeAgencia, setVisibilidadeAgencia] = useState('Pública');
+  const [agenciaVinculada, setAgenciaVinculada] = useState('');
+  const [isEstrangeiro, setIsEstrangeiro] = useState(false);
+
+  // Mock de dados para os selects (Contexto do seu projeto)
+  const mockParceiros = ['Parque Jaime Lerner S/A', 'Ópera Eventos', 'Tour CWB'];
+  const mockAtracoes = ['Parque Jaime Lerner', 'Ópera de Arame', 'Pedreira Paulo Leminski'];
+  const mockAgencias = ['Agência Turismo PR', 'Viagens Sul'];
+
+  const handleSalvar = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMensagem('');
-
-    try {
-      // Salva no Firestore
-      // await addDoc(collection(db, 'usuarios'), {
-      //   ...formData,
-      //   dataCriacao: new Date().toISOString()
-      // });
-      setMensagem('Usuário criado com sucesso (Modo simulação)!');
-      setTimeout(() => {
-        navigate('/usuarios');
-      }, 1500);
-    } catch (error) {
-      setMensagem('Erro ao criar usuário: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
+    // RN-007.03: A senha provisória é gerada no backend e enviada por email
+    alert(`Salvando usuário ${primeiroNome} com perfil ${perfil}. Senha provisória será enviada para ${email}.`);
+    navigate('/usuarios');
   };
 
   return (
-    <div style={{ maxWidth: '600px', background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Adicionar Novo Usuário</h1>
-      
-      {mensagem && <div style={{ padding: '0.75rem', marginBottom: '1rem', backgroundColor: mensagem.includes('sucesso') ? '#d1fae5' : '#fee2e2', color: mensagem.includes('sucesso') ? '#065f46' : '#991b1b', borderRadius: '4px', textAlign: 'center' }}>{mensagem}</div>}
+    <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      {/* Cabeçalho do Modal/Página (RF-007.01 e RF-007.02) */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Novo Usuário</h2>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Preencha os campos obrigatórios para adicionar um usuário</p>
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button onClick={() => navigate('/usuarios')} style={{ padding: '0.5rem 1rem', background: 'white', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}>
+            Descartar
+          </button>
+          <button onClick={handleSalvar} style={{ padding: '0.5rem 1rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+            Salvar
+          </button>
+        </div>
+      </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Primeiro Nome</label>
-            <input type="text" required value={formData.primeiroNome} onChange={e => setFormData({...formData, primeiroNome: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+      <form onSubmit={handleSalvar} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        
+        {/* CAMPOS COMUNS A TODOS OS PERFIS */}
+        <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={{ width: '60px', height: '60px', backgroundColor: '#e5e7eb', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#9ca3af' }}>
+            Foto
           </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Último Nome</label>
-            <input type="text" required value={formData.ultimoNome} onChange={e => setFormData({...formData, ultimoNome: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-          </div>
+          <button type="button" style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Carregar nova foto</button>
         </div>
 
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>E-mail Principal</label>
-          <input type="email" required value={formData.emailPrincipal} onChange={e => setFormData({...formData, emailPrincipal: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Primeiro nome *</label>
+          <input type="text" required value={primeiroNome} onChange={e => setPrimeiroNome(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Telefone</label>
-            <input type="text" required value={formData.telefone} onChange={e => setFormData({...formData, telefone: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>CPF/CNPJ</label>
-            <input type="text" required value={formData.cpfCnpj} onChange={e => setFormData({...formData, cpfCnpj: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-          </div>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Último nome *</label>
+          <input type="text" required value={ultimoNome} onChange={e => setUltimoNome(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Email de contato *</label>
+          <input type="email" required value={email} onChange={e => setEmail(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Telefone *</label>
+          <input type="text" required placeholder="(XX) XXXXX-XXXX" value={telefone} onChange={e => setTelefone(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Idioma padrão *</label>
+          <select value={idioma} onChange={e => setIdioma(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+            <option value="PT_BR">Português Brasil</option>
+            <option value="EN">Inglês</option>
+            <option value="ES">Espanhol</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>Perfil *</label>
+          <select required value={perfil} onChange={e => setPerfil(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+            <option value="">Selecione um perfil...</option>
+            <option value="ADMINISTRADOR">Administrador</option>
+            <option value="EDITOR">Editor</option>
+            <option value="LEITOR">Leitor</option>
+            <option value="AGENCIA">Agência</option>
+            <option value="AGENTE">Agente</option>
+            <option value="TURISTA">Turista</option>
+          </select>
+        </div>
+
+        {/* ----------------------------------------------------------------- */}
+        {/* LÓGICA DE RENDERIZAÇÃO CONDICIONAL BASEADA NO PERFIL (RF-007)     */}
+        {/* ----------------------------------------------------------------- */}
+
+        {/* Perfil: Editor ou Leitor (RN-007.11) */}
+        {(perfil === 'EDITOR' || perfil === 'LEITOR') && (
+          <>
+            <div style={{ gridColumn: '1 / -1', padding: '1rem', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px' }}>
+              <h3 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Vínculos da Atração</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Parceiro Comercial</label>
+                  <select value={parceiroSelecionado} onChange={e => setParceiroSelecionado(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                    <option value="">Selecione o parceiro...</option>
+                    {mockParceiros.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Atração</label>
+                  <select multiple value={atracaoSelecionada} onChange={e => setAtracaoSelecionada([...e.target.selectedOptions].map(o => o.value))} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                    {mockAtracoes.map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                  <small style={{ color: '#6b7280', fontSize: '0.75rem' }}>Segure Ctrl/Cmd para selecionar múltiplas</small>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Perfil: Agência (RN-007.12 e RN-007.13) */}
+        {perfil === 'AGENCIA' && (
+          <div style={{ gridColumn: '1 / -1', padding: '1rem', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '4px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Visibilidade</label>
+              <select value={visibilidadeAgencia} onChange={e => setVisibilidadeAgencia(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                <option value="Pública">Pública</option>
+                <option value="Reservada">Reservada</option>
+              </select>
+            </div>
+            
+            {visibilidadeAgencia === 'Reservada' && (
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Parceiro Comercial</label>
+                <select multiple style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                  {mockParceiros.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+            )}
+            
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Atrações Permitidas</label>
+              <select multiple style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                {mockAtracoes.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Perfil: Agente (RN-007.14) */}
+        {perfil === 'AGENTE' && (
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Perfil</label>
-            <select value={formData.perfil} onChange={e => setFormData({...formData, perfil: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-              <option value="ADMINISTRADOR">Administrador</option>
-              <option value="PARCEIRO_COMERCIAL">Parceiro Comercial</option>
-              <option value="EDITOR">Editor</option>
-              <option value="LEITOR">Leitor</option>
-              <option value="AGENCIA">Agência</option>
-              <option value="AGENTE">Agente</option>
+            <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Agência Vinculada</label>
+            <select value={agenciaVinculada} onChange={e => setAgenciaVinculada(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+              <option value="">Independente (Sem vínculo)</option>
+              {mockAgencias.map(ag => <option key={ag} value={ag}>{ag}</option>)}
             </select>
           </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Idioma Padrão</label>
-            <select value={formData.idiomaPadrao} onChange={e => setFormData({...formData, idiomaPadrao: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-              <option value="PT_BR">Português (Brasil)</option>
-              <option value="EN_US">Inglês (Estados Unidos)</option>
-              <option value="ES_ES">Espanhol (Espanha)</option>
-            </select>
-          </div>
-        </div>
+        )}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-          <button type="button" onClick={() => navigate('/usuarios')} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Cancelar</button>
-          <button type="submit" disabled={loading} style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-            {loading ? 'Salvando...' : 'Salvar Usuário'}
+        {/* Perfil: Turista */}
+        {perfil === 'TURISTA' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.5rem' }}>
+            <input type="checkbox" id="estrangeiro" checked={isEstrangeiro} onChange={e => setIsEstrangeiro(e.target.checked)} />
+            <label htmlFor="estrangeiro" style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>Turista Estrangeiro?</label>
+          </div>
+        )}
+
+        {/* Toggle de Status */}
+        <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e5e7eb' }}>
+          <label style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>Status da Conta:</label>
+          <button type="button" onClick={() => setAtivo(!ativo)} style={{ padding: '0.25rem 1rem', borderRadius: '20px', border: 'none', cursor: 'pointer', backgroundColor: ativo ? '#10b981' : '#ef4444', color: 'white', fontWeight: 'bold' }}>
+            {ativo ? 'ATIVO' : 'INATIVO'}
           </button>
         </div>
+
       </form>
     </div>
   );
