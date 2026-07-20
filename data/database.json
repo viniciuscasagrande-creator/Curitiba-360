@@ -376,5 +376,49 @@
       "price": 150,
       "status": "Ativo"
     }
+  ],
+  "usuarios": [
+    {
+      "id": 1,
+      "uid": "admin-mock-uid-123",
+      "primeiroNome": "João",
+      "ultimoNome": "Silva",
+      "emailPrincipal": "joao@email.com",
+      "telefone": "(41) 99999-9999",
+      "cpfCnpj": "111.222.333-44",
+      "perfil": "ADMINISTRADOR",
+      "status": "ATIVO",
+      "idiomaPadrao": "PT_BR",
+      "fotoPerfilUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
+      "dataCriacao": "20/07/2026 10:00:00",
+      "ultimoAcesso": "20/07/2026 10:55:00",
+      "excluido": false,
+      "vinculos": {
+        "parceiroComercialId": null,
+        "agenciaId": null,
+        "atracoesIds": []
+      }
+    },
+    {
+      "id": 2,
+      "uid": "partner-mock-uid-456",
+      "primeiroNome": "Maria",
+      "ultimoNome": "Oliveira",
+      "emailPrincipal": "maria@operadearame.com",
+      "telefone": "(41) 98888-8888",
+      "cpfCnpj": "222.333.444-55",
+      "perfil": "PARCEIRO_COMERCIAL",
+      "status": "ATIVO",
+      "idiomaPadrao": "PT_BR",
+      "fotoPerfilUrl": "",
+      "dataCriacao": "20/07/2026 10:05:00",
+      "ultimoAcesso": "20/07/2026 10:45:00",
+      "excluido": false,
+      "vinculos": {
+        "parceiroComercialId": 1,
+        "agenciaId": null,
+        "atracoesIds": [1, 2]
+      }
+    }
   ]
 }

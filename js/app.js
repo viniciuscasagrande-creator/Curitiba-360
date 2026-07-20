@@ -2917,7 +2917,8 @@ async function syncLocalDbToFirestore() {
             { col: 'cms', data: localData.cms ? [localData.cms] : [] },
             { col: 'commercialConditions', data: commData.commercialConditions || [] },
             { col: 'financialInfo', data: commData.financialInfo || [] },
-            { col: 'refunds', data: refundsData || [] }
+            { col: 'refunds', data: refundsData || [] },
+            { col: 'usuarios', data: localData.usuarios || [] }
         ];
         
         for (const m of migrations) {

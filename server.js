@@ -443,7 +443,8 @@ const server = http.createServer((req, res) => {
             notifications: db.notifications || [],
             packages: db.packages || [],
             commercialConditions: db.commercialConditions || [],
-            financialInfo: db.financialInfo || []
+            financialInfo: db.financialInfo || [],
+            usuarios: db.usuarios || []
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(payload));
