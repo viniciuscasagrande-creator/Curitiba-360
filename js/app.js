@@ -87,7 +87,21 @@ const translations = {
         pkgDescGreen: "Explore a revolução ecológica de Curitiba. Inclui passe ilimitado para a Linha Turismo de ônibus e tour guiado pelas inovações urbanísticas do novo Parque Jaime Lerner.",
         pkgInclGreen1: "Passe diário ilimitado para Linha Turismo",
         pkgInclGreen2: "Visita guiada ao Parque Jaime Lerner",
-        pkgInclGreen3: "Brinde ecológico exclusivo do memorial"
+        pkgInclGreen3: "Brinde ecológico exclusivo do memorial",
+
+        badgePromo: "Novidades",
+        titlePromo: "Destaques Semanais",
+        descPromo: "Benefícios exclusivos da semana para usuários da plataforma Curitiba360.",
+        promo1Title: "Parada Confeitaria das Flores",
+        promo1Desc: "15% de desconto em todo o cardápio de cafés coloniais ao apresentar o QR Code da plataforma.",
+        promo2Title: "Bar do Alemão - Batel",
+        promo2Desc: "Chopp em dobro de segunda a quinta para turistas hospedados em hotéis parceiros.",
+        badgeRoadmap: "Roadmap",
+        titleRoadmap: "Futuro: App Curitiba360",
+        descRoadmap: "Em breve, um aplicativo nativo completo para expandir sua jornada urbana.",
+        roadmapItem1: "Gamificação: Colete conquistas ao visitar atrações",
+        roadmapItem2: "Recompensas: Troque pontos por ingressos e brindes",
+        roadmapItem3: "Login Pessoal: Histórico de viagens e roteiros salvos"
     },
     en: {
         navHome: "Home",
@@ -175,7 +189,21 @@ const translations = {
         pkgDescGreen: "Explore Curitiba's ecological design. Includes a hop-on hop-off day pass for the double-decker Tourism Line bus and a guided architectural tour of the new Jaime Lerner Park.",
         pkgInclGreen1: "Hop-on hop-off Tourism Bus day pass",
         pkgInclGreen2: "Guided walking tour of Jaime Lerner Park",
-        pkgInclGreen3: "Exclusive eco-gift from the memorial"
+        pkgInclGreen3: "Exclusive eco-gift from the memorial",
+
+        badgePromo: "What's New",
+        titlePromo: "Weekly Highlights",
+        descPromo: "Exclusive weekly benefits for Curitiba360 users.",
+        promo1Title: "Confeitaria das Flores Stop",
+        promo1Desc: "15% discount on all colonial coffee menu items by showing the platform's QR Code.",
+        promo2Title: "Bar do Alemão - Batel",
+        promo2Desc: "Double draft beer from Monday to Thursday for tourists staying in partner hotels.",
+        badgeRoadmap: "Roadmap",
+        titleRoadmap: "Future: Curitiba360 App",
+        descRoadmap: "Coming soon, a complete native app to expand your urban journey.",
+        roadmapItem1: "Gamification: Collect achievements when visiting attractions",
+        roadmapItem2: "Rewards: Exchange points for tickets and gifts",
+        roadmapItem3: "Personal Login: Travel history and saved routes"
     }
 };
 
@@ -364,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Switch view sections (Tourist Site vs Partner Dashboard)
 function switchSection(sectionId) {
-    const touristSecs = ['hero-section', 'section-map', 'section-packages'];
+    const touristSecs = ['hero-section', 'section-map', 'section-packages', 'section-highlights'];
     const dashSec = document.getElementById('section-dashboard');
     
     if (sectionId === 'tourist') {
