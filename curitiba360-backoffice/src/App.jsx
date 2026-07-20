@@ -19,6 +19,7 @@ import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CentralNotificacoes from './pages/CentralNotificacoes';
 import GestaoAtracoes from './pages/GestaoAtracoes';
 import GestaoContratos from './pages/GestaoContratos';
+import ConfiguracoesComerciais from './pages/ConfiguracoesComerciais';
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
           <Route path="/parceiros/novo" element={<CadastroParceiro />} />
           <Route path="/agencias" element={<GestaoAgencias />} />
           <Route path="/agencias/novo" element={<CadastroAgencia />} />
-          <Route path="/configuracoes" element={<OperacaoComercial />} />
+          <Route path="/vendas" element={<OperacaoComercial />} />
           <Route path="/comissionamento" element={<Comissionamento />} />
           <Route path="/reembolsos" element={<FilaReembolsos />} />
           <Route path="/conteudo" element={<CMSInstitucional />} />
@@ -44,6 +45,7 @@ function App() {
           <Route path="/notificacoes" element={<CentralNotificacoes />} />
           <Route path="/atracoes" element={<GestaoAtracoes />} />
           <Route path="/contratos" element={<GestaoContratos />} />
+          <Route path="/configuracoes" element={<ConfiguracoesComerciais />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
