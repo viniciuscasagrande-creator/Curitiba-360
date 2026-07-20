@@ -2,6 +2,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 
+// Importação do Layout Base
+import Layout from './components/Layout';
+
 // Importação das páginas que construímos
 import Dashboard from './pages/Dashboard';
 import GestaoAtracoes from './pages/GestaoAtracoes';
@@ -22,23 +25,28 @@ import CentralNotificacoes from './pages/CentralNotificacoes';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CMSInstitucional from './pages/CMSInstitucional';
 import DashboardAnalytics from './pages/DashboardAnalytics';
-import Layout from './components/Layout';
 
-// Página de Login (Criaremos a seguir se desejar)
-const Login = () => <div style={{ padding: '2rem' }}><h1>Tela de Login Simples</h1></div>;
+// Tela de Login (Fora do Layout)
+const Login = () => <div style={{ padding: '2rem' }}><h1>Tela de Login</h1></div>;
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Rota Pública */}
+          {/* Rotas Públicas (Não possuem o Menu Lateral) */}
           <Route path="/login" element={<Login />} />
+          
+          {/* Validação de Ingressos geralmente fica em um tablet na portaria, 
+              então faz sentido não ter o menu administrativo completo */}
+          <Route path="/validacao" element={<ValidacaoIngressos />} />
 
-          {/* Rotas Privadas (Protegidas) */}
+          {/* Rotas Privadas (Envolvidas pelo Layout com o Menu Lateral) */}
           <Route element={<Layout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* Se você quiser usar o Dashboard com os cards (Dashboard.jsx) ou o Analytics (DashboardAnalytics.jsx) */}
+            <Route path="/dashboard" element={<Dashboard />} /> 
             <Route path="/analytics" element={<DashboardAnalytics />} />
             
             <Route path="/atracoes" element={<GestaoAtracoes />} />
@@ -48,7 +56,6 @@ export default function App() {
             <Route path="/atracoes/:id/cupons" element={<GestaoCupons />} />
             
             <Route path="/pacotes" element={<GestaoPacotes />} />
-            <Route path="/validacao" element={<ValidacaoIngressos />} />
             <Route path="/controle-transferencias" element={<ControleTransferencias />} />
             <Route path="/fluxo-entrada" element={<GestaoFluxoEntrada />} />
             
