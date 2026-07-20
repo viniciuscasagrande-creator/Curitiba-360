@@ -15,6 +15,7 @@ import OperacaoComercial from './pages/OperacaoComercial';
 import Comissionamento from './pages/Comissionamento';
 import FilaReembolsos from './pages/FilaReembolsos';
 import CMSInstitucional from './pages/CMSInstitucional';
+import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/comissionamento" element={<Comissionamento />} />
           <Route path="/reembolsos" element={<FilaReembolsos />} />
           <Route path="/conteudo" element={<CMSInstitucional />} />
+          <Route path="/conteudo/curadoria" element={<CMSHomeCuradoria />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
