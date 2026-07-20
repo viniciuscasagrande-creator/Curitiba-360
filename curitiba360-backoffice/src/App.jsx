@@ -5,8 +5,7 @@ import Layout from './components/Layout';
 
 import Dashboard from './pages/Dashboard';
 
-// Componentes temporários (vamos criar arquivos para eles depois)
-function GestaoUsuarios() { return <h2>Página: Gestão de Usuários (RF-006)</h2>; }
+import GestaoUsuarios from './pages/GestaoUsuarios';
 
 function App() {
   return (
