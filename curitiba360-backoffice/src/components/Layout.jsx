@@ -1,144 +1,116 @@
 // src/components/Layout.jsx
-import { useState, useEffect } from 'react';
-import { useNavigate, Outlet, Link } from 'react-router-dom';
-import { auth, db } from '../config/firebase';
-import { signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { useContext } from 'react';
+import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function Layout() {
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [menuExpandido, setMenuExpandido] = useState(true);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [userData, setUserData] = useState({ nome: '', perfil: '', foto: '' });
+  const location = useLocation();
 
-  // Busca os dados do usuário no Firestore após o login
-  useEffect(() => {
-    const fetchUser = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setUserData({
-            nome: `${data.primeiroNome} ${data.ultimoNome}`,
-            perfil: data.perfil,
-            foto: data.fotoPerfilUrl || 'https://via.placeholder.com/40' // Avatar padrão (RF-002.03)
-          });
-        }
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate('/');
+  const handleSignOut = () => {
+    logout();
+    navigate('/login');
   };
 
-  // RF-002 e RF-035: Definição dos menus por perfil
-  const getMenuItems = () => {
-    const menus = [];
-    
-    // RN-002.02: Menus do Administrador
-    if (userData.perfil === 'ADMINISTRADOR') {
-      menus.push(
-        { titulo: 'Dashboard', rota: '/dashboard' },
-        { titulo: 'Gestão de Usuários', rota: '/usuarios' },
-        { titulo: 'Parceiros Comerciais', rota: '/parceiros' },
-        { titulo: 'Gestão de Agências', rota: '/agencias' },
-        { titulo: 'Gestão de Agentes', rota: '/agentes' },
-        { titulo: 'Gestão de Contratos', rota: '/contratos' },
-        { titulo: 'Config. Comerciais', rota: '/configuracoes' },
-        { titulo: 'Gestão de Atrações', rota: '/atracoes' },
-        { titulo: 'Fila de Reembolsos', rota: '/reembolsos' },
-        { titulo: 'Relatórios Financeiros', rota: '/relatorios' },
-        { titulo: 'Controle Transferências', rota: '/transferencias' },
-        { titulo: 'Conteúdo', rota: '/conteudo' },
-        { titulo: 'Notificações', rota: '/notificacoes' }
-      );
-    }
-    
-    // Aqui adicionaremos as condições para os outros perfis (Parceiro, Agência, etc) futuramente
-    return menus;
-  };
+  // Define os itens de menu e as rotas correspondentes
+  const menuItems = [
+    { rota: '/dashboard', icone: '🗃️', label: 'Dashboard' },
+    { rota: '/atracoes', icone: '📦', label: 'Gestão de Atrações' },
+    { rota: '/pacotes', icone: '🎒', label: 'Gestão de Pacotes' },
+    { rota: '/validacao', icone: '🎟️', label: 'Validação Ingressos' },
+    { rota: '/controle-transferencias', icone: '🔄', label: 'Anti-Cambista' },
+    { rota: '/fluxo-entrada', icone: '🚦', label: 'Fluxo de Entrada' },
+    { rota: '/comercial/contratos', icone: '📅', label: 'Gestão de Contratos' },
+    { rota: '/comercial/agentes', icone: '👥', label: 'Gestão de Agentes' },
+    { rota: '/comercial/configuracoes', icone: '📋', label: 'Condições Comerciais' },
+    { rota: '/financeiro/relatorios', icone: '📊', label: 'Relatórios Financeiros' },
+    { rota: '/atendimento/pesquisar', icone: '🔍', label: 'Pesquisar Ingresso' },
+    { rota: '/notificacoes', icone: '🔔', label: 'Notificações' },
+    { rota: '/cms/institucional', icone: '📝', label: 'CMS Institucional' },
+  ];
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f3f4f6' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: 'sans-serif', color: '#374151' }}>
       
-      {/* MENU LATERAL (Sidebar) - RF-002.01 e RF-002.06 */}
-      <aside style={{ 
-        width: menuExpandido ? '250px' : '80px', 
-        backgroundColor: '#1f2937', 
-        color: 'white', 
-        transition: 'width 0.3s',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <div style={{ padding: '1rem', textAlign: 'center', borderBottom: '1px solid #374151' }}>
-          <button onClick={() => setMenuExpandido(!menuExpandido)} style={{ background: 'none', color: 'white', border: 'none', cursor: 'pointer' }}>
-            {menuExpandido ? '⬅ Recolher' : '➡'}
-          </button>
-        </div>
+      {/* ================= BARRA LATERAL (SIDEBAR) ================= */}
+      <aside style={{ width: '260px', backgroundColor: 'white', borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh' }}>
         
-        <nav style={{ flex: 1, padding: '1rem 0' }}>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {getMenuItems().map((item, index) => (
-              <li key={index} style={{ padding: '0.75rem 1rem' }}>
-                <Link to={item.rota} style={{ color: 'white', textDecoration: 'none', display: 'block' }}>
-                  {menuExpandido ? item.titulo : item.titulo.charAt(0)}
-                </Link>
-              </li>
-            ))}
+        {/* Perfil do Usuário */}
+        <div style={{ padding: '1.5rem 1rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb', marginBottom: '0.5rem' }}>
+          <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '2px solid #3b82f6', margin: '0 auto 0.75rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#eff6ff', overflow: 'hidden' }}>
+            <span style={{ fontSize: '1.5rem' }}>👨‍💻</span>
+          </div>
+          <h2 style={{ fontSize: '0.9rem', fontWeight: 'bold', margin: '0 0 0.25rem 0', color: '#111827' }}>
+            {user ? user.name : 'Visitante'}
+          </h2>
+          <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>
+            {user ? user.role : 'Aguardando Login'}
+          </p>
+        </div>
+
+        {/* Navegação Principal */}
+        <nav style={{ flex: 1, padding: '0 0.75rem', overflowY: 'auto' }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            {menuItems.map((item) => {
+              const ativo = location.pathname === item.rota;
+              return (
+                <li key={item.rota}>
+                  <Link 
+                    to={item.rota} 
+                    style={{ 
+                      width: '100%', 
+                      padding: '0.6rem 0.75rem', 
+                      backgroundColor: ativo ? '#eff6ff' : 'transparent', 
+                      border: 'none', 
+                      borderRadius: '8px', 
+                      textAlign: 'left', 
+                      fontWeight: ativo ? 'bold' : 'normal', 
+                      color: ativo ? '#1d4ed8' : '#4b5563', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.75rem', 
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    <span>{item.icone}</span> {item.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
-        {/* Rodapé do Menu Lateral - RF-005 */}
-        <div style={{ padding: '1rem', borderTop: '1px solid #374151' }}>
-           <Link to="/perfil" style={{ color: 'white', textDecoration: 'none' }}>
-             {menuExpandido ? '⚙ Meu Perfil' : '⚙'}
-           </Link>
+        {/* Navegação Inferior */}
+        <div style={{ padding: '0.75rem', borderTop: '1px solid #e5e7eb' }}>
+          <button 
+            onClick={handleSignOut} 
+            style={{ 
+              width: '100%', 
+              padding: '0.6rem 0.75rem', 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              textAlign: 'left', 
+              color: '#ef4444', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.75rem', 
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '0.85rem'
+            }}
+          >
+            <span>🚪</span> Sair da Conta
+          </button>
         </div>
       </aside>
 
-      {/* ÁREA PRINCIPAL (Header + Conteúdo) */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        
-        {/* CABEÇALHO (Header) - RF-002.02, RF-002.03, RF-002.04 */}
-        <header style={{ height: '60px', backgroundColor: 'white', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '0 2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ textAlign: 'right' }}>
-              <strong style={{ display: 'block', fontSize: '0.875rem' }}>{userData.nome || 'Carregando...'}</strong>
-              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{userData.perfil}</span>
-            </div>
-            <img src={userData.foto} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-            
-            <button 
-              onClick={() => setShowLogoutModal(true)} 
-              style={{ padding: '0.5rem 1rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginLeft: '1rem' }}
-            >
-              Sair
-            </button>
-          </div>
-        </header>
-
-        {/* CONTEÚDO DINÂMICO DA PÁGINA (Onde o Dashboard, Usuários, etc., vão renderizar) */}
-        <div style={{ padding: '2rem', overflowY: 'auto', flex: 1 }}>
-          <Outlet />
-        </div>
+      {/* ================= ÁREA PRINCIPAL ================= */}
+      <main style={{ flex: 1, padding: '2rem 3rem', overflowY: 'auto' }}>
+        <Outlet />
       </main>
-
-      {/* MODAL DE LOGOUT (RF-002.05 e CA-002.02) */}
-      {showLogoutModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', width: '300px', textAlign: 'center' }}>
-            <h3 style={{ marginBottom: '1.5rem' }}>Deseja realmente sair?</h3>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
-              <button onClick={() => setShowLogoutModal(false)} style={{ flex: 1, padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Não</button>
-              <button onClick={handleLogout} style={{ flex: 1, padding: '0.5rem', border: 'none', borderRadius: '4px', background: '#ef4444', color: 'white', cursor: 'pointer' }}>Sim</button>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );
