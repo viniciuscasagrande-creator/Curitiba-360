@@ -1,10 +1,10 @@
-// src/pages/NovoUsuario.jsx
+// src/pages/CadastroUsuario.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
-export default function NovoUsuario() {
+export default function CadastroUsuario() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     primeiroNome: '',
