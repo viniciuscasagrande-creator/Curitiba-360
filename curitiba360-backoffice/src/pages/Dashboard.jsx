@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function Dashboard() {
   const [abaAtiva, setAbaAtiva] = useState('Ativos');
 
-  // Mock de dados baseado no wireframe WF-002 - Dashboard.png
+  // Mock de dados baseado no wireframe WF-002
   const atracoes = Array(6).fill({
     nome: 'Parque Jaime Lerner',
     local: 'Pilarzinho - Curitiba',
