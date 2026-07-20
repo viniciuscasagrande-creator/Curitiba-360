@@ -14,6 +14,7 @@ import CadastroParceiro from './pages/CadastroParceiro';
 import OperacaoComercial from './pages/OperacaoComercial';
 import Comissionamento from './pages/Comissionamento';
 import FilaReembolsos from './pages/FilaReembolsos';
+import CMSInstitucional from './pages/CMSInstitucional';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/configuracoes" element={<OperacaoComercial />} />
           <Route path="/comissionamento" element={<Comissionamento />} />
           <Route path="/reembolsos" element={<FilaReembolsos />} />
+          <Route path="/conteudo" element={<CMSInstitucional />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
