@@ -4,219 +4,234 @@ import { useNavigate } from 'react-router-dom';
 
 export default function CadastroAtracao() {
   const navigate = useNavigate();
+  
+  // RF-013.01: Controle de etapas (1 a 3)
+  const [etapaAtual, setEtapaAtual] = useState(1);
 
-  const [nome, setNome] = useState('');
-  const [descricao, setDescricao] = useState('');
+  // --- ETAPA 1: Dados da Atração (RF-013.06 a RF-013.32) ---
   const [parceiroId, setParceiroId] = useState('');
-  const [capacidadePublico, setCapacidadePublico] = useState('');
-  const [classificacaoEtaria, setClassificacaoEtaria] = useState('Livre');
-  const [precoIngresso, setPrecoIngresso] = useState('0');
-  const [linkYoutube, setLinkYoutube] = useState('');
+  const [nomeAtracao, setNomeAtracao] = useState('');
   const [cep, setCep] = useState('');
-  const [endereco, setEndereco] = useState({ logradouro: '', numero: '', complemento: '', bairro: '', cidade: 'Curitiba', uf: 'PR' });
+  const [endereco, setEndereco] = useState({ logradouro: '', numero: '', cidade: '', uf: '' });
+  const [classificacao, setClassificacao] = useState('Livre');
+  const [capacidade, setCapacidade] = useState('');
+  
+  // --- ETAPA 2: Dados Bancários e Materiais (RF-013.33 a RF-013.49) ---
+  const [usarDadosParceiro, setUsarDadosParceiro] = useState(false);
+  const [banco, setBanco] = useState('');
+  const [agencia, setAgencia] = useState('');
+  const [conta, setConta] = useState('');
+  const [linkVideo, setLinkVideo] = useState('');
+  const [release, setRelease] = useState('');
 
-  // Previews de Fotos
-  const [fotoCapa, setFotoCapa] = useState(null);
-  const [fotosGaleria, setFotosGaleria] = useState([]);
+  // --- ETAPA 3: Dados do Ingresso (RF-013.50 a RF-013.64) ---
+  const [ingressos, setIngressos] = useState([
+    { id: 1, categoria: '', valor: '', quantidade: '', lote: '001' }
+  ]);
 
-  // Mock de Parceiros Comerciais para vinculação
+  // Mock de Parceiros (RF-013.11)
   const parceiros = [
-    { id: 101, nome: 'Parque Jaime Lerner S/A' },
-    { id: 102, nome: 'Ópera Eventos Culturais Ltda' }
+    { id: 1, nome: 'Parque Jaime Lerner S/A' },
+    { id: 2, nome: 'Ópera Eventos' }
   ];
 
-  const handleBuscarCep = async () => {
-    const cepLimpo = cep.replace(/\D/g, '');
-    if (cepLimpo.length === 8) {
-      try {
-        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-        const data = await res.json();
-        if (!data.erro) {
-          setEndereco({
-            ...endereco,
-            logradouro: data.logradouro || '',
-            bairro: data.bairro || '',
-            cidade: data.localidade || 'Curitiba',
-            uf: data.uf || 'PR'
-          });
-        } else {
-          alert('CEP não encontrado.');
-        }
-      } catch (err) {
-        alert('Erro ao buscar o CEP.');
-      }
-    }
-  };
-
-  const handleFotoCapaChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFotoCapa(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-
-  const handleGaleriaChange = (e) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-      setFotosGaleria(prev => [...prev, ...filesArray]);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  // RF-013.04: Navegação entre etapas
+  const avancarEtapa = (e) => {
     e.preventDefault();
+    if (etapaAtual < 3) setEtapaAtual(etapaAtual + 1);
+  };
 
-    // Validação básica de URL do Youtube se preenchida
-    if (linkYoutube && !linkYoutube.includes('youtube.com') && !linkYoutube.includes('youtu.be')) {
-      alert('Por favor, informe um link de vídeo válido do YouTube.');
-      return;
-    }
+  const voltarEtapa = () => {
+    if (etapaAtual > 1) setEtapaAtual(etapaAtual - 1);
+  };
 
-    alert('Atração cadastrada com sucesso! Ela nascerá com status Rascunho até que as assinaturas de contrato sejam concluídas.');
+  // RF-013.05 (Tabela de botões) e RN-013.01: Salvar Rascunho
+  const handleSalvarRascunho = () => {
+    alert(`Rascunho da atração "${nomeAtracao || 'Sem Nome'}" salvo com sucesso! Status: Rascunho.`);
     navigate('/atracoes');
   };
 
+  // RF-013.05 e RN-013.03: Finalizar
+  const handleFinalizar = (e) => {
+    e.preventDefault();
+    alert(`Atração "${nomeAtracao}" finalizada! Status: Pendente de Contrato.`);
+    navigate('/atracoes');
+  };
+
+  // RF-013.33: Toggle para usar dados do parceiro
+  const toggleDadosBancarios = (checked) => {
+    setUsarDadosParceiro(checked);
+    if (checked) {
+      setBanco('033 - Santander');
+      setAgencia('1234');
+      setConta('56789-0');
+    } else {
+      setBanco('');
+      setAgencia('');
+      setConta('');
+    }
+  };
+
   return (
-    <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-      
-      {/* CABEÇALHO */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Cadastrar Nova Atração</h1>
-        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Cadastre uma nova atração no portal público vinculada a um parceiro comercial credenciado</p>
+    <div style={{ maxWidth: '900px', margin: '0 auto', background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      {/* CABEÇALHO E PROGRESSO (RF-013.02 e RF-013.03) */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Nova Atração {etapaAtual}/3</h2>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+            {etapaAtual === 1 && 'Insira os dados da atração'}
+            {etapaAtual === 2 && 'Insira os dados bancários'}
+            {etapaAtual === 3 && 'Insira os dados do ingresso'}
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button onClick={() => navigate('/atracoes')} style={{ padding: '0.5rem 1rem', background: 'white', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}>
+            Descartar
+          </button>
+          <button onClick={handleSalvarRascunho} style={{ padding: '0.5rem 1rem', background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+            Salvar Rascunho
+          </button>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', color: '#6b7280', fontSize: '0.875rem' }}>
+        <span style={{ fontWeight: etapaAtual === 1 ? 'bold' : 'normal', color: etapaAtual === 1 ? '#10b981' : 'inherit' }}>1. Dados da Atração</span>
+        <span style={{ fontWeight: etapaAtual === 2 ? 'bold' : 'normal', color: etapaAtual === 2 ? '#10b981' : 'inherit' }}>2. Dados Bancários e Materiais</span>
+        <span style={{ fontWeight: etapaAtual === 3 ? 'bold' : 'normal', color: etapaAtual === 3 ? '#10b981' : 'inherit' }}>3. Dados do Ingresso</span>
+      </div>
+
+      <form onSubmit={etapaAtual === 3 ? handleFinalizar : avancarEtapa}>
         
-        {/* Bloco 1: Informações Gerais */}
-        <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1.25rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>Informações Básicas</h3>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-            <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Nome da Atração *</label>
-              <input type="text" required value={nome} onChange={e => setNome(e.target.value)} placeholder="Ex: Tour Guiado Ópera de Arame" style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Parceiro Comercial Vinculado *</label>
-              <select required value={parceiroId} onChange={e => setParceiroId(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
-                <option value="">Selecione...</option>
-                {parceiros.map(p => (
-                  <option key={p.id} value={p.id}>{p.nome}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Classificação Etária *</label>
-              <select required value={classificacaoEtaria} onChange={e => setClassificacaoEtaria(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
-                <option value="Livre">Livre</option>
-                <option value="10">10 anos</option>
-                <option value="12">12 anos</option>
-                <option value="14">14 anos</option>
-                <option value="16">16 anos</option>
-                <option value="18">18 anos</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Preço do Ingresso (R$) *</label>
-              <input type="number" step="0.01" required value={precoIngresso} onChange={e => setPrecoIngresso(e.target.value)} placeholder="0.00 para gratuito" style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Capacidade de Público (Por Turno) *</label>
-              <input type="number" required value={capacidadePublico} onChange={e => setCapacidadePublico(e.target.value)} placeholder="Capacidade máxima" style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-            </div>
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Descrição Detalhada *</label>
-            <textarea required rows="4" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descrição completa sobre a atração para o portal público..." style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-          </div>
-        </div>
-
-        {/* Bloco 2: Localização */}
-        <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1.25rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>Localização</h3>
-          
+        {/* ================= ETAPA 1: DADOS DA ATRAÇÃO ================= */}
+        {etapaAtual === 1 && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Parceiro Comercial *</label>
+              <select required value={parceiroId} onChange={e => setParceiroId(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                <option value="">Selecione o parceiro...</option>
+                {parceiros.map(p => <option key={p.id} value={p.id}>{p.nome}</option>)}
+              </select>
+            </div>
+
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Nome da Atração *</label>
+              <input type="text" required maxLength={150} value={nomeAtracao} onChange={e => setNomeAtracao(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+            </div>
+
             <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>CEP *</label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <input type="text" required value={cep} onChange={e => setCep(e.target.value)} placeholder="00000-000" style={{ flex: 1, padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-                <button type="button" onClick={handleBuscarCep} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}>Buscar</button>
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Classificação Etária *</label>
+              <select required value={classificacao} onChange={e => setClassificacao(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                <option value="Livre">Livre</option>
+                <option value="10 anos">10 anos</option>
+                <option value="12 anos">12 anos</option>
+                <option value="14 anos">14 anos</option>
+                <option value="16 anos">16 anos</option>
+                <option value="18 anos">18 anos</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Capacidade de Público *</label>
+              <input type="number" required value={capacidade} onChange={e => setCapacidade(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+            </div>
+
+            <div style={{ gridColumn: '1 / -1', borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem', marginTop: '1rem' }}>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Localização</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>CEP *</label><input type="text" required value={cep} onChange={e => setCep(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} /></div>
+                <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Cidade *</label><input type="text" required value={endereco.cidade} onChange={e => setEndereco({...endereco, cidade: e.target.value})} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} /></div>
+                <div style={{ gridColumn: '1 / -1' }}><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Logradouro *</label><input type="text" required value={endereco.logradouro} onChange={e => setEndereco({...endereco, logradouro: e.target.value})} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} /></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================= ETAPA 2: DADOS BANCÁRIOS E MATERIAIS ================= */}
+        {etapaAtual === 2 && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
+            <div style={{ background: '#f9fafb', padding: '1.5rem', borderRadius: '4px', border: '1px solid #e5e7eb' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Dados Bancários para Depósito</h3>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', color: '#3b82f6', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={usarDadosParceiro} onChange={(e) => toggleDadosBancarios(e.target.checked)} />
+                  Utilizar dados bancários do parceiro?
+                </label>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Banco *</label><input type="text" required disabled={usarDadosParceiro} value={banco} onChange={e => setBanco(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', backgroundColor: usarDadosParceiro ? '#f3f4f6' : 'white' }} /></div>
+                <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Agência *</label><input type="text" required disabled={usarDadosParceiro} value={agencia} onChange={e => setAgencia(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', backgroundColor: usarDadosParceiro ? '#f3f4f6' : 'white' }} /></div>
+                <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Conta Corrente *</label><input type="text" required disabled={usarDadosParceiro} value={conta} onChange={e => setConta(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', backgroundColor: usarDadosParceiro ? '#f3f4f6' : 'white' }} /></div>
               </div>
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Cidade / UF</label>
-              <input type="text" disabled value={`${endereco.cidade} - ${endereco.uf}`} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', backgroundColor: '#f3f4f6' }} />
-            </div>
+            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Materiais de Divulgação</h3>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Link de Vídeo (YouTube)</label>
+                <input type="url" value={linkVideo} onChange={e => setLinkVideo(e.target.value)} placeholder="https://youtube.com/..." style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+              </div>
 
-            <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Logradouro / Avenida *</label>
-              <input type="text" required value={endereco.logradouro} onChange={e => setEndereco({ ...endereco, logradouro: e.target.value })} placeholder="Rua, Av..." style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Número *</label>
-              <input type="text" required value={endereco.numero} onChange={e => setEndereco({ ...endereco, numero: e.target.value })} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Bairro *</label>
-              <input type="text" required value={endereco.bairro} onChange={e => setEndereco({ ...endereco, bairro: e.target.value })} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+              <div>
+                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem' }}>Release da Atração</label>
+                <textarea rows="4" value={release} onChange={e => setRelease(e.target.value)} placeholder="Descreva os detalhes e atrativos..." style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}></textarea>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Bloco 3: Midia e Vídeo */}
-        <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1.25rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>Mídia & Divulgação</h3>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Vídeo Promocional (YouTube)</label>
-              <input type="url" value={linkYoutube} onChange={e => setLinkYoutube(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+        {/* ================= ETAPA 3: DADOS DO INGRESSO ================= */}
+        {etapaAtual === 3 && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Configuração de Ingressos</h3>
+              <button type="button" onClick={() => setIngressos([...ingressos, { id: Date.now(), categoria: '', valor: '', quantidade: '', lote: '001' }])} style={{ padding: '0.5rem 1rem', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                + Adicionar Categoria
+              </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-              <div>
-                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Foto de Capa (Proporção 16:9) *</label>
-                <input type="file" accept="image/*" required onChange={handleFotoCapaChange} style={{ marginBottom: '1rem' }} />
-                {fotoCapa && (
-                  <div style={{ width: '100%', maxHeight: '150px', borderRadius: '4px', overflow: 'hidden', border: '1px solid #ccc' }}>
-                    <img src={fotoCapa} alt="Capa Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
+            {ingressos.map((ing, idx) => (
+              <div key={ing.id} style={{ background: '#f9fafb', padding: '1rem', borderRadius: '4px', border: '1px solid #e5e7eb', marginBottom: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr auto', gap: '1rem', alignItems: 'end' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', fontWeight: 'bold' }}>Categoria *</label>
+                  <select required style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}>
+                    <option value="">Selecione...</option>
+                    <option value="Inteira">Inteira</option>
+                    <option value="Meia">Meia-entrada</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', fontWeight: 'bold' }}>Valor (R$) *</label>
+                  <input type="number" step="0.01" required placeholder="0.00" style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', fontWeight: 'bold' }}>Qtd Dispo. *</label>
+                  <input type="number" required style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', fontWeight: 'bold' }}>Lote</label>
+                  <input type="text" defaultValue="001" style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+                </div>
+                {ingressos.length > 1 && (
+                  <button type="button" onClick={() => setIngressos(ingressos.filter(i => i.id !== ing.id))} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', paddingBottom: '0.5rem' }}>Remover</button>
                 )}
               </div>
-
-              <div>
-                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Galeria de Fotos (Múltiplas)</label>
-                <input type="file" accept="image/*" multiple onChange={handleGaleriaChange} style={{ marginBottom: '1rem' }} />
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  {fotosGaleria.map((img, idx) => (
-                    <div key={idx} style={{ width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden', border: '1px solid #ccc' }}>
-                      <img src={img} alt="Galeria Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        )}
 
-        {/* BOTOES */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-          <button type="button" onClick={() => navigate('/atracoes')} style={{ padding: '0.75rem 2rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer', fontWeight: 'bold' }}>
-            Cancelar
+        {/* NAVEGAÇÃO ENTRE ETAPAS */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid #e5e7eb' }}>
+          <button type="button" onClick={voltarEtapa} disabled={etapaAtual === 1} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: etapaAtual === 1 ? 'not-allowed' : 'pointer', opacity: etapaAtual === 1 ? 0.5 : 1 }}>
+            Anterior
           </button>
-          <button type="submit" style={{ padding: '0.75rem 2rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-            Salvar Atração
+          
+          <button type="submit" style={{ padding: '0.5rem 1.5rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+            {etapaAtual === 3 ? 'Finalizar Atração' : 'Próximo'}
           </button>
         </div>
-
       </form>
-
     </div>
   );
 }
