@@ -25,9 +25,7 @@ import CentralNotificacoes from './pages/CentralNotificacoes';
 import CMSHomeCuradoria from './pages/CMSHomeCuradoria';
 import CMSInstitucional from './pages/CMSInstitucional';
 import DashboardAnalytics from './pages/DashboardAnalytics';
-
-// Tela de Login (Fora do Layout)
-const Login = () => <div style={{ padding: '2rem' }}><h1>Tela de Login</h1></div>;
+import Login from './pages/Login';
 
 export default function App() {
   return (
