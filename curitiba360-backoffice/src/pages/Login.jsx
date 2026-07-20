@@ -2,83 +2,162 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import Input from '../components/ui/Input';
+import Button from '../components/ui/Button';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@curitiba360.com');
+  const [password, setPassword] = useState('123456');
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    if (!email || !password) {
-      alert('Preencha todos os campos!');
-      return;
-    }
-
-    // Chama a função de login do contexto
     await login(email, password);
-    
-    // Se o login for bem-sucedido, o estado do usuário muda, mas já podemos forçar o redirecionamento
     navigate('/dashboard');
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif' }}>
+    <div style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      backgroundColor: '#f1f5f9', 
+      fontFamily: '"Inter", sans-serif', 
+      boxSizing: 'border-box'
+    }}>
       
-      {/* Lado Esquerdo - Banner/Imagem */}
-      <div style={{ flex: 1, backgroundColor: '#10b981', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', padding: '3rem', backgroundImage: 'linear-gradient(to bottom right, #10b981, #047857)' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>Curitiba 360</h1>
-        <p style={{ fontSize: '1.25rem', textAlign: 'center', maxWidth: '400px' }}>
-          Plataforma de gestão integrada para atrações, parceiros e atendimento ao turista.
-        </p>
-      </div>
+      {/* Lado Esquerdo - Banner da Cidade com Overlay */}
+      <div style={{ 
+        flex: 1.2, 
+        position: 'relative', 
+        backgroundImage: 'url(/curitiba_login_banner.jpg)', 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center', 
+        display: 'flex', 
+        alignItems: 'flex-end', 
+        padding: '4rem'
+      }}>
+        {/* Dark overlay gradient */}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0, 
+          background: 'linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.8) 100%)',
+          zIndex: 1
+        }} />
 
-      {/* Lado Direito - Formulário */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
-        <div style={{ width: '100%', maxWidth: '400px', padding: '2rem' }}>
-          <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>Bem-vindo de volta</h2>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '2rem' }}>Insira suas credenciais para acessar o backoffice.</p>
-
-          <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', color: '#374151', marginBottom: '0.5rem' }}>E-mail corporativo</label>
-              <input 
-                type="email" 
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@curitiba360.com"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', fontSize: '1rem' }}
-              />
+        {/* Welcome Glass Card */}
+        <div style={{ 
+          position: 'relative',
+          zIndex: 2,
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '16px',
+          padding: '2.5rem',
+          color: 'white',
+          maxWidth: '500px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+        }}>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0 0 0.5rem 0', letterSpacing: '-0.5px' }}>
+            Curitiba 360
+          </h1>
+          <p style={{ fontSize: '1.125rem', color: '#e2e8f0', margin: '0 0 1.5rem 0', lineHeight: '1.5' }}>
+            Acesso integrado ao ecossistema turístico e cultural da capital do Paraná.
+          </p>
+          <div style={{ display: 'flex', gap: '2rem', fontSize: '0.875rem', color: '#cbd5e1' }}>
+            <div>
+              <strong style={{ display: 'block', color: 'white', fontSize: '1rem' }}>+5 Atrações</strong>
+              Parques e Teatros
             </div>
-            
-            <div style={{ marginBottom: '1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <label style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#374151' }}>Senha</label>
-                <a href="#" style={{ fontSize: '0.75rem', color: '#3b82f6', textDecoration: 'none' }}>Esqueceu a senha?</a>
-              </div>
-              <input 
-                type="password" 
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', fontSize: '1rem' }}
-              />
+            <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.2)' }} />
+            <div>
+              <strong style={{ display: 'block', color: 'white', fontSize: '1rem' }}>Vouchers QR</strong>
+              Validação Rápida
             </div>
-
-            <button type="submit" style={{ width: '100%', padding: '0.875rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', marginTop: '1rem' }}>
-              Entrar no Sistema
-            </button>
-          </form>
-
-          <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.75rem', color: '#9ca3af' }}>
-            <p>Dica: Use <strong>admin@curitiba360.com</strong> e senha <strong>123456</strong> para simular o acesso.</p>
           </div>
         </div>
       </div>
+
+      {/* Lado Direito - Painel de Credenciais */}
+      <div style={{ 
+        flex: 1, 
+        backgroundColor: 'white', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: '4rem'
+      }}>
+        <div style={{ width: '100%', maxWidth: '420px' }}>
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0f172a', margin: '0 0 0.5rem 0' }}>
+              Painel Corporativo
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>
+              Insira seus dados administrativos para gerenciar os serviços.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#334155', marginBottom: '0.5rem' }}>
+                E-mail Administrativo
+              </label>
+              <Input 
+                type="email" 
+                required 
+                placeholder="ex: admin@curitiba360.com" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: '600', color: '#334155' }}>
+                  Senha de Acesso
+                </label>
+                <a href="#" style={{ fontSize: '0.875rem', color: '#10b981', fontWeight: '600', textDecoration: 'none' }}>
+                  Esqueceu a senha?
+                </a>
+              </div>
+              <Input 
+                type="password" 
+                required 
+                placeholder="******" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <Button 
+              type="submit" 
+              variant="primary" 
+              style={{ width: '100%', padding: '1rem', fontSize: '1rem', marginTop: '1rem' }}
+            >
+              Entrar no Sistema
+            </Button>
+          </form>
+
+          {/* Dica de Acesso */}
+          <div style={{ 
+            marginTop: '2.5rem', 
+            padding: '1rem', 
+            borderRadius: '8px', 
+            backgroundColor: '#f8fafc', 
+            border: '1px dashed #cbd5e1',
+            fontSize: '0.825rem',
+            color: '#64748b',
+            lineHeight: '1.4'
+          }}>
+            🔑 <strong>Acesso Administrativo Simulado:</strong><br />
+            Use o e-mail <code>admin@curitiba360.com</code> e senha <code>123456</code> para logar imediatamente.
+          </div>
+        </div>
+      </div>
+      
     </div>
   );
 }

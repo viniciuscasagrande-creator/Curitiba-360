@@ -1,229 +1,178 @@
+// src/pages/TotaisAtracao.jsx
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TotaisAtracao() {
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const [filtroTempo, setFiltroTempo] = useState('Tudo');
 
-  // RF-004.08 a RF-004.12: Filtros de Período (Padrão: 30 Dias)
-  const [filtroRapido, setFiltroRapido] = useState('30 Dias');
-  const [dataInicial, setDataInicial] = useState('');
-  const [dataFinal, setDataFinal] = useState('');
-  
-  // Controle do submenu expansível "Gestão Financeira" (RF-004.10)
-  const [financeiroExpandido, setFinanceiroExpandido] = useState(false);
-
-  // Mock de Dados da Atração (RF-004.01 a RF-004.03)
-  const atracao = {
-    nome: 'Ópera de Arame',
-    bairro: 'Pilarzinho',
-    cidade: 'Curitiba - PR',
-    foto: 'https://via.placeholder.com/150'
-  };
-
-  // Mock de KPIs (RF-004.13 a RF-004.16 e Cards Obrigatórios)
-  const kpis = {
-    vendidos: { qtd: 1540, variacao: 12.5, valor: 77000.00, ticketMedio: 50.00, metaStatus: 'Acima da meta' },
-    emitidos: { qtd: 1600, variacao: 10.2, cortesias: 60, total: 1600 },
-    reservados: { qtd: 45, variacao: -5.0, valor: 2250.00, ticketMedio: 50.00 },
-    validacao: { qtd: 1540, variacao: 12.5, validados: 1300, pendentes: 240 }
-  };
-
-  // Mock de Pagamentos (Cards 5 ao 10)
-  const pagamentos = [
-    { titulo: 'Vendas no Dinheiro', qtd: 40, transacoes: 15, valor: 2000.00, variacao: -2.0 },
-    { titulo: 'Vendas no C. Débito', qtd: 300, transacoes: 120, valor: 15000.00, variacao: 5.5 },
-    { titulo: 'Vendas no C. Crédito', qtd: 500, transacoes: 210, valor: 25000.00, variacao: 15.0 },
-    { titulo: 'Vendas no C. Crédito Parcelado', qtd: 400, transacoes: 150, valor: 20000.00, variacao: 8.4 },
-    { titulo: 'Vendas no PIX', qtd: 300, transacoes: 140, valor: 15000.00, variacao: 25.0 },
-    { titulo: 'Vendas por depósito, TED, etc...', qtd: 0, transacoes: 0, valor: 0.00, variacao: 0.0 } // RF-004.05: Zero não oculta
+  // Mapeamento estrutural dos cards conforme WF-003
+  const metricsData = [
+    {
+      id: 1, title: 'Ingressos Vendidos', subtitle: 'Ingressos Vendidos no período', icon: '💰',
+      mainBox: { label: 'Quantidade de Ingressos', value: '224', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Valor das Vendas', value: 'R$ 3.900,00' },
+        { label: 'Ticket Médio', value: 'R$ 17,41', badge: '⭐ Acima da meta' }
+      ]
+    },
+    {
+      id: 2, title: 'Ingressos Emitidos', subtitle: 'Ingressos Emitidos no período', icon: '🎫',
+      mainBox: { label: 'Quantidade de Ingressos', value: '224', subtext: 'Unidades Emitidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Cortesias', value: '2' },
+        { label: 'Total', value: '226' }
+      ]
+    },
+    {
+      id: 3, title: 'Ingressos Reservados', subtitle: 'Ingressos Reservados no período', icon: '💾',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Reservados', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: 'R$ 3.900,00' }, // Conforme dummy data do mockup
+        { label: 'Total', value: 'R$ 17,41' }
+      ]
+    },
+    {
+      id: 4, title: 'Ingressos Validação', subtitle: 'Ingressos Validados no período', icon: '✓',
+      mainBox: { label: 'Quantidade de Ingressos', value: '224', subtext: 'Unidades Validados', trend: '+8%' },
+      subBoxes: [
+        { label: 'Validados', value: '2', hasBar: true },
+        { label: 'Pendentes', value: '226' }
+      ]
+    },
+    {
+      id: 5, title: 'Vendas no Dinheiro', subtitle: 'Vendas em dinheiro no período', icon: '💵',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: '125' },
+        { label: 'Total', value: 'R$ 2.125,00' }
+      ]
+    },
+    {
+      id: 6, title: 'Vendas no C. Débito', subtitle: 'Vendas no cartão débito no período', icon: '💳',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: '125' },
+        { label: 'Total', value: 'R$ 2.125,00' }
+      ]
+    },
+    {
+      id: 7, title: 'Vendas no C. Crédito', subtitle: 'Vendas no cartão crédito no período', icon: '💳',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: '125' },
+        { label: 'Total', value: 'R$ 2.125,00' }
+      ]
+    },
+    {
+      id: 8, title: 'Vendas no C. Crédito Parcelado', subtitle: 'Vendas no cartão crédito no período', icon: '💳',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: '125' },
+        { label: 'Total', value: 'R$ 2.125,00' }
+      ]
+    },
+    {
+      id: 9, title: 'Vendas no PIX', subtitle: 'Vendas no Pix no período', icon: '💠',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: '125' },
+        { label: 'Total', value: 'R$ 2.125,00' }
+      ]
+    },
+    {
+      id: 10, title: 'Vendas por depósito, TED, etc...', subtitle: 'Vendas por depósito no período', icon: '🏛️',
+      mainBox: { label: 'Quantidade de Ingressos', value: '0', subtext: 'Unidades Vendidas', trend: '+8%' },
+      subBoxes: [
+        { label: 'Quantidade', value: '125' },
+        { label: 'Total', value: 'R$ 2.125,00' }
+      ]
+    }
   ];
 
-  // Componente Auxiliar para a Variação Percentual (RF-004.16)
-  const VariacaoBadge = ({ valor }) => {
-    if (valor === 0) return <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>N/A</span>; // RF-004.04
-    const isPositivo = valor > 0;
-    return (
-      <span style={{ color: isPositivo ? '#10b981' : '#ef4444', fontSize: '0.875rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-        {isPositivo ? '↑' : '↓'} {Math.abs(valor)}%
-      </span>
-    );
-  };
-
   return (
-    <div style={{ display: 'flex', gap: '2rem', height: '100%' }}>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       
-      {/* MENU LATERAL DE SUBMÓDULOS DA ATRAÇÃO (RF-004.04 e Tabela de Ordem) */}
-      <aside style={{ width: '260px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        
-        {/* RF-004.01 a RF-004.03: Info da Atração */}
-        <div style={{ padding: '1.5rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>
-          <img src={atracao.foto} alt="Atração" style={{ width: '100px', height: '100px', borderRadius: '8px', objectFit: 'cover', marginBottom: '1rem' }} />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>{atracao.nome}</h2>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '0.5rem 0 0 0' }}>{atracao.bairro} - {atracao.cidade}</p>
-        </div>
+      {/* Título */}
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#374151', margin: '0 0 1.5rem 0' }}>
+        Atração Parque Jaime Lerner
+      </h1>
 
-        <nav style={{ padding: '1rem 0', flex: 1, overflowY: 'auto' }}>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {/* RF-004.07: Voltar ao Dashboard Geral */}
-            <li style={{ padding: '0.5rem 1.5rem' }}>
-              <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', textAlign: 'left', fontSize: '0.875rem' }}>
-                ← Voltar ao Dashboard
-              </button>
-            </li>
-            <hr style={{ margin: '0.5rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
-            
-            {[
-              { id: 'totais', label: 'Totais da Atração', path: `/atracoes/${id}/totais`, ativo: true },
-              { id: 'categorias', label: 'Categorias', path: `/atracoes` },
-              { id: 'pesquisar_ingresso', label: 'Pesquisar Ingresso', path: `/atendimento/pesquisar` },
-              { id: 'gestao_ingressos', label: 'Gestão de Ingressos', path: `/atracoes/${id}/ingressos` },
-              { id: 'cupons', label: 'Gestão de Cupons', path: `/atracoes/${id}/cupons` },
-              { id: 'analytics', label: 'Gráficos Analytics', path: `/analytics` },
-              { id: 'editar', label: 'Editar da Atração', path: `/atracoes` },
-              { id: 'agencias', label: 'Agências e Agentes', path: `/comercial/agentes` },
-              { id: 'usuarios', label: 'Usuários', path: `/dashboard` }
-            ].map(item => (
-              <li key={item.id}>
-                <button 
-                  onClick={() => navigate(item.path)}
-                  style={{ 
-                    width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: item.ativo ? '#ecfdf5' : 'white', 
-                    color: item.ativo ? '#065f46' : '#374151', fontWeight: item.ativo ? 'bold' : 'normal', textAlign: 'left',
-                    borderLeft: item.ativo ? '4px solid #10b981' : '4px solid transparent', cursor: 'pointer', fontSize: '0.875rem'
-                  }}
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-
-            {/* Menu Expansível Financeiro (RF-004.10) */}
-            <li>
-              <button onClick={() => setFinanceiroExpandido(!financeiroExpandido)} style={{ width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: 'white', color: '#374151', textAlign: 'left', borderLeft: '4px solid transparent', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                Gestão Financeira <span>{financeiroExpandido ? '▲' : '▼'}</span>
-              </button>
-              {financeiroExpandido && (
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, backgroundColor: '#f9fafb' }}>
-                  <li><button onClick={() => navigate('/financeiro/relatorios')} style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}>Relatórios da Atração</button></li>
-                  <li><button onClick={() => navigate('/comercial/configuracoes')} style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}>Negociação Financeira</button></li>
-                  <li><button onClick={() => navigate('/financeiro/relatorios')} style={{ width: '100%', padding: '0.5rem 1.5rem 0.5rem 2.5rem', border: 'none', background: 'none', color: '#6b7280', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}>Resumo das Despesas</button></li>
-                </ul>
-              )}
-            </li>
-
-            <li>
-              <button onClick={() => navigate('/validacao')} style={{ width: '100%', padding: '0.75rem 1.5rem', border: 'none', background: 'white', color: '#374151', textAlign: 'left', borderLeft: '4px solid transparent', cursor: 'pointer', fontSize: '0.875rem' }}>
-                Validar Ingressos
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
-      {/* ÁREA DE CONTEÚDO PRINCIPAL (Cards e Filtros) */}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        
-        {/* RF-004.08 a RF-004.09: Filtros Rápidos */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', background: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            {['Hoje', '7 Dias', '30 Dias', 'Tudo'].map(f => (
-              <button key={f} onClick={() => setFiltroRapido(f)} style={{ padding: '0.5rem 1rem', borderRadius: '20px', border: 'none', cursor: 'pointer', background: filtroRapido === f ? '#3b82f6' : '#f3f4f6', color: filtroRapido === f ? 'white' : '#374151', fontWeight: filtroRapido === f ? 'bold' : 'normal' }}>
-                {f}
-              </button>
-            ))}
-            <button onClick={() => setFiltroRapido('Período')} style={{ padding: '0.5rem 1rem', borderRadius: '20px', border: '1px solid #ccc', cursor: 'pointer', background: filtroRapido === 'Período' ? '#eff6ff' : 'white', color: '#374151' }}>
-              Período Específico
+      {/* Filtros de Data */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+        {['Tudo', 'Hoje', '7 Dias', '30 Dias', '📅 Período'].map((filtro) => {
+          const isActive = filtroTempo === filtro;
+          return (
+            <button 
+              key={filtro}
+              onClick={() => setFiltroTempo(filtro)}
+              style={{
+                padding: '0.75rem 1.25rem',
+                backgroundColor: isActive ? '#4b5563' : '#f3f4f6',
+                color: isActive ? 'white' : '#4b5563',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              {filtro}
             </button>
-          </div>
-
-          {filtroRapido === 'Período' && (
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <input type="date" value={dataInicial} onChange={e => setDataInicial(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-              <span>até</span>
-              <input type="date" value={dataFinal} onChange={e => setDataFinal(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-            </div>
-          )}
-        </div>
-
-        {/* ================= CARDS PRINCIPAIS OBRIGATÓRIOS ================= */}
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Visão Geral (Indicadores)</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
-          
-          {/* Card 1: Ingressos Vendidos */}
-          <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <h4 style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Ingressos Vendidos</h4>
-              <VariacaoBadge valor={kpis.vendidos.variacao} />
-            </div>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>{kpis.vendidos.qtd}</p>
-            <div style={{ fontSize: '0.875rem', color: '#374151' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Valor:</span> <strong>R$ {kpis.vendidos.valor.toFixed(2)}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Ticket Médio:</span> <strong>R$ {kpis.vendidos.ticketMedio.toFixed(2)}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Meta:</span> <strong style={{ color: '#10b981' }}>{kpis.vendidos.metaStatus}</strong></div>
-            </div>
-          </div>
-
-          {/* Card 2: Ingressos Emitidos */}
-          <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <h4 style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Ingressos Emitidos</h4>
-              <VariacaoBadge valor={kpis.emitidos.variacao} />
-            </div>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>{kpis.emitidos.qtd}</p>
-            <div style={{ fontSize: '0.875rem', color: '#374151' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Cortesias:</span> <strong>{kpis.emitidos.cortesias}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Total (Vend + Cort):</span> <strong>{kpis.emitidos.total}</strong></div>
-            </div>
-          </div>
-
-          {/* Card 3: Ingressos Reservados */}
-          <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <h4 style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Ingressos Reservados</h4>
-              <VariacaoBadge valor={kpis.reservados.variacao} />
-            </div>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>{kpis.reservados.qtd}</p>
-            <div style={{ fontSize: '0.875rem', color: '#374151' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Valor Reservado:</span> <strong>R$ {kpis.reservados.valor.toFixed(2)}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Ticket Médio:</span> <strong>R$ {kpis.reservados.ticketMedio.toFixed(2)}</strong></div>
-            </div>
-          </div>
-
-          {/* Card 4: Ingressos Validação */}
-          <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <h4 style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Ingressos Validação</h4>
-              <VariacaoBadge valor={kpis.validacao.variacao} />
-            </div>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>{kpis.validacao.qtd}</p>
-            <div style={{ fontSize: '0.875rem', color: '#374151' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Validados:</span> <strong style={{ color: '#10b981' }}>{kpis.validacao.validados}</strong></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Pendentes:</span> <strong style={{ color: '#ef4444' }}>{kpis.validacao.pendentes}</strong></div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* ================= CARDS FORMAS DE PAGAMENTO ================= */}
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Formas de Pagamento</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
-          {pagamentos.map((pag, idx) => (
-            <div key={idx} style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <h4 style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>{pag.titulo}</h4>
-                <VariacaoBadge valor={pag.variacao} />
-              </div>
-              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '0 0 1rem 0' }}>{pag.qtd} <span style={{ fontSize: '0.875rem', fontWeight: 'normal', color: '#6b7280' }}>itens</span></p>
-              <div style={{ fontSize: '0.875rem', color: '#374151' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}><span>Transações:</span> <strong>{pag.transacoes}</strong></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Total:</span> <strong>R$ {pag.valor.toFixed(2)}</strong></div>
-              </div>
-            </div>
-          ))}
-        </div>
-
+          )
+        })}
       </div>
+
+      {/* Grid de Métricas */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+        {metricsData.map((metric) => (
+          <div key={metric.id} style={{ border: '1px solid #d1d5db', borderRadius: '12px', padding: '1.5rem', backgroundColor: 'white' }}>
+            
+            {/* Header do Card */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '8px', border: '1px solid #fcd34d', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fffbeb', fontSize: '1.25rem' }}>
+                {metric.icon}
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold', color: '#374151' }}>{metric.title}</h3>
+                <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280' }}>{metric.subtitle}</p>
+              </div>
+            </div>
+
+            {/* Main Data Box */}
+            <div style={{ border: '1px solid #d1d5db', borderRadius: '8px', padding: '1rem', backgroundColor: '#f9fafb', marginBottom: '1rem', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '1rem', right: '1rem', color: '#d97706', fontWeight: 'bold', fontSize: '0.875rem' }}>
+                {metric.mainBox.trend}
+              </span>
+              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: '#6b7280' }}>{metric.mainBox.label}</p>
+              <p style={{ margin: '0 0 0.25rem 0', fontSize: '2rem', fontWeight: 'bold', color: '#374151' }}>{metric.mainBox.value}</p>
+              <p style={{ margin: 0, fontSize: '0.75rem', color: '#9ca3af' }}>{metric.mainBox.subtext}</p>
+            </div>
+
+            {/* Sub Boxes Row */}
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              {metric.subBoxes.map((sub, index) => (
+                <div key={index} style={{ flex: 1, border: '1px solid #d1d5db', borderRadius: '8px', padding: '1rem', backgroundColor: '#f9fafb' }}>
+                  <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: '#6b7280' }}>{sub.label}</p>
+                  <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold', color: '#374151' }}>{sub.value}</p>
+                  
+                  {/* Tratativas especiais (Badge e Barra de Progresso) conforme o design */}
+                  {sub.badge && (
+                    <span style={{ display: 'inline-block', marginTop: '0.5rem', fontSize: '0.75rem', color: '#d97706', fontWeight: 'bold' }}>
+                      {sub.badge}
+                    </span>
+                  )}
+                  {sub.hasBar && (
+                    <div style={{ marginTop: '0.5rem', width: '100%', height: '4px', backgroundColor: '#d1d5db', borderRadius: '2px' }}>
+                      <div style={{ width: '10%', height: '100%', backgroundColor: '#4b5563', borderRadius: '2px' }}></div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+          </div>
+        ))}
+      </div>
+      
     </div>
   );
 }
