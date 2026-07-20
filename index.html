@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curitiba360 - Sinta a Cultura, Viva a Experiência</title>
+    <meta name="description" content="Curitiba360 integra turismo, cultura, gastronomia e parcerias em Curitiba. Adquira pacotes com descontos exclusivos e acompanhe a inteligência de dados locais.">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo" data-target-section="tourist">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                Curitiba<span>360</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="#hero-section" class="nav-link active" data-target-section="tourist" data-t="navHome">Início</a>
+                <a href="#section-map" class="nav-link" data-target-section="tourist" data-t="navMap">Mapa Interativo</a>
+                <a href="#section-packages" class="nav-link" data-target-section="tourist" data-t="navPackages">Pacotes</a>
+                <a href="#section-dashboard" class="nav-link" data-target-section="dashboard" data-t="navDashboard">Painel do Parceiro</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <!-- Theme Switcher -->
+                <button class="btn-icon" id="btn-theme" title="Alterar Tema">
+                    <svg class="theme-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828-9.900l-.707-.707m12.728 9.900l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                </button>
+                
+                <!-- Language Switcher -->
+                <button class="btn-lang" id="btn-language">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 0112 12c.502-.455.918-.98 1.217-1.5M12 12v6M9 11v1h3m-3-1v3a2 2 0 002 2h2m-6-6v3h3" />
+                    </svg>
+                    <span class="lang-label">PT</span>
+                </button>
+                
+                <a href="#section-dashboard" class="btn-secondary" style="padding: 8px 18px; font-size: 13px;" data-target-section="dashboard" data-t="navDashboard">Painel do Parceiro</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero-section">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <span class="section-badge" data-t="heroSubtitle">Viva Curitiba com todos os sentidos.</span>
+                <h1>
+                    <span data-t="heroTitleLine1">Sinta a Cultura,</span>
+                    <span class="highlight text-gradient-primary" data-t="heroTitleLine2">Viva a Experiência.</span>
+                </h1>
+                <p data-t="heroDesc">
+                    O Curitiba360 conecta hotéis, restaurantes, pontos turísticos e eventos em uma plataforma digital integrada. Escaneie, explore e viva a cidade com descontos exclusivos.
+                </p>
+                <div class="hero-actions">
+                    <a href="#section-map" class="btn-primary" data-t="heroBtnExplore">
+                        Ver Mapa da Cidade
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                    </a>
+                    <a href="#section-packages" class="btn-secondary" data-t="heroBtnPromo">Ver Ofertas Especiais</a>
+                </div>
+            </div>
+            
+            <!-- Simulator Column -->
+            <div class="qr-simulator-card glass-panel">
+                <div class="qr-icon-wrapper">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 data-t="simTitle">Simulador de QR Code</h3>
+                <p data-t="simDesc">Simule a experiência do turista escaneando o QR Code físico no balcão do hotel.</p>
+                
+                <div class="hotel-selector-wrapper">
+                    <label for="simulator-hotel" data-t="simLabelSelect">Escolha o Hotel de Simulação</label>
+                    <select id="simulator-hotel" class="select-custom">
+                        <option value="Pestana">Hotel Pestana Curitiba</option>
+                        <option value="Radisson">Radisson Hotel Curitiba</option>
+                        <option value="GrandRayon">Grand Hotel Rayon</option>
+                        <option value="Novotel">Novotel Curitiba Batel</option>
+                        <option value="Bourbon">Bourbon Curitiba Hotel</option>
+                    </select>
+                </div>
+                
+                <button class="btn-primary btn-scan" id="btn-simulate-scan" data-t="simBtnScan">Escanear QR Code do Hotel</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Interactive Section -->
+    <section class="section" id="section-map">
+        <div class="container">
+            <div class="section-title-area">
+                <span class="section-badge" data-t="badgeMap">Mapa 360°</span>
+                <h2 class="section-title" data-t="titleMap">Ligue os Pontos da Cidade</h2>
+                <p class="section-title-desc" data-t="descMap">Explore os marcos icônicos no mapa. Clique nos pontos brilhantes para ver detalhes, fotos históricas, horários de funcionamento e integrar sua visita aos pacotes.</p>
+            </div>
+            
+            <div class="map-grid">
+                <!-- Interactive SVG Map -->
+                <div class="map-container glass-panel">
+                    <svg class="curitiba-svg-map" viewBox="0 0 600 400">
+                        <defs>
+                            <linearGradient id="cyan-orange-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="var(--secondary)" />
+                                <stop offset="100%" stop-color="var(--primary)" />
+                            </linearGradient>
+                            <filter id="glow-effect" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="6" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+                        
+                        <!-- Grid Lines -->
+                        <path d="M 0,50 L 600,50 M 0,100 L 600,100 M 0,150 L 600,150 M 0,200 L 600,200 M 0,250 L 600,250 M 0,300 L 600,300 M 0,350 L 600,350" stroke="rgba(255,255,255,0.015)" stroke-width="1" />
+                        <path d="M 100,0 L 100,400 M 200,0 L 200,400 M 300,0 L 300,400 M 400,0 L 400,400 M 500,0 L 500,400" stroke="rgba(255,255,255,0.015)" stroke-width="1" />
+                        
+                        <!-- City Tour Route connection line -->
+                        <path d="M 210,80 Q 320,100 420,140 T 330,130 T 450,280 T 280,230 Z" class="map-bg-routes" />
+                        <path d="M 210,80 Q 320,100 420,140 T 330,130 T 450,280 T 280,230 Z" class="map-route-active" />
+                        
+                        <!-- PINS -->
+                        <!-- Pin 1: Opera de Arame -->
+                        <g class="map-pin" data-spot="opera" transform="translate(0, 0)">
+                            <circle cx="210" cy="80" r="16" class="outer-ring" />
+                            <circle cx="210" cy="80" r="12" class="glow-ring" />
+                            <circle cx="210" cy="80" r="6" class="core-pin" />
+                            <text x="210" y="60" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.5">Ópera de Arame</text>
+                        </g>
+                        
+                        <!-- Pin 2: Jaime Lerner Park -->
+                        <g class="map-pin" data-spot="lerner">
+                            <circle cx="420" cy="140" r="16" class="outer-ring" />
+                            <circle cx="420" cy="140" r="12" class="glow-ring" />
+                            <circle cx="420" cy="140" r="6" class="core-pin" />
+                            <text x="420" y="120" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.5">Pq Jaime Lerner</text>
+                        </g>
+                        
+                        <!-- Pin 3: MON -->
+                        <g class="map-pin" data-spot="mon">
+                            <circle cx="330" cy="130" r="16" class="outer-ring" />
+                            <circle cx="330" cy="130" r="12" class="glow-ring" />
+                            <circle cx="330" cy="130" r="6" class="core-pin" />
+                            <text x="330" y="110" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.5">M. Oscar Niemeyer</text>
+                        </g>
+                        
+                        <!-- Pin 4: Jardim Botanico -->
+                        <g class="map-pin" data-spot="botanico">
+                            <circle cx="450" cy="280" r="16" class="outer-ring" />
+                            <circle cx="450" cy="280" r="12" class="glow-ring" />
+                            <circle cx="450" cy="280" r="6" class="core-pin" />
+                            <text x="450" y="260" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.5">Jardim Botânico</text>
+                        </g>
+                        
+                        <!-- Pin 5: Centro Historico -->
+                        <g class="map-pin" data-spot="historico">
+                            <circle cx="280" cy="230" r="16" class="outer-ring" />
+                            <circle cx="280" cy="230" r="12" class="glow-ring" />
+                            <circle cx="280" cy="230" r="6" class="core-pin" />
+                            <text x="280" y="210" fill="var(--text-primary)" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.5">Centro Histórico</text>
+                        </g>
+                    </svg>
+                </div>
+                
+                <!-- Map detail card -->
+                <div class="map-details-card glass-panel">
+                    <!-- Placeholder state -->
+                    <div class="map-detail-placeholder" id="map-placeholder">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <p data-t="mapPlaceholderText">Selecione um ponto turístico no mapa para ver informações detalhadas sobre a atração.</p>
+                    </div>
+                    
+                    <!-- Content state -->
+                    <div class="map-detail-content" id="map-content">
+                        <img class="map-detail-img" id="detail-img" src="" alt="">
+                        <h3 id="detail-title">Nome da Atração</h3>
+                        <div id="detail-tags" style="display: flex; flex-wrap: wrap; margin-bottom: 12px;"></div>
+                        <p id="detail-desc">Descrição completa da atração turística.</p>
+                        
+                        <div class="map-detail-meta">
+                            <div class="map-meta-item">
+                                <small id="label-horario">HORÁRIO</small>
+                                <span id="detail-horario">09:00 - 18:00</span>
+                            </div>
+                            <div class="map-meta-item">
+                                <small id="label-ingresso">INGRESSO</small>
+                                <span id="detail-ingresso">Gratuito</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section class="section" id="section-packages">
+        <div class="container">
+            <div class="section-title-area">
+                <span class="section-badge" data-t="badgePackages">Combos Exclusivos</span>
+                <h2 class="section-title" data-t="titlePackages">Roteiros Temáticos com Desconto</h2>
+                <p class="section-title-desc" data-t="descPackages">Pacotes completos integrando gastronomia qualificada, transporte turístico e ingressos culturais sem complexidade operacional.</p>
+            </div>
+            
+            <div class="packages-grid">
+                <!-- Package 1 -->
+                <div class="package-card glass-panel">
+                    <div class="package-img-wrapper">
+                        <img class="package-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Curitiba Gastronômica">
+                        <span class="package-tag" data-t="pkgTagGastronomic">Gastronomia + Show</span>
+                    </div>
+                    <div class="package-body">
+                        <h3 data-t="pkgTitleGastronomic">Curitiba Gastronômica Noturna</h3>
+                        <p data-t="pkgDescGastronomic">Aproveite a melhor culinária do Hard Rock Cafe Curitiba com direito a drink especial, mais ingresso premium para um show musical no Teatro Positivo.</p>
+                        
+                        <div class="package-inclusions">
+                            <strong data-t="pkgInclusions" style="font-size: 12px; margin-bottom: 6px; display:block;">O que está incluso:</strong>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclGastronomic1">Jantar completo no Hard Rock Cafe</span>
+                            </div>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclGastronomic2">Drink temático ou bebida inclusa</span>
+                            </div>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclGastronomic3">Ingresso de Plateia para Show no Teatro</span>
+                            </div>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="package-price">
+                                <span class="original">R$ 240,00</span>
+                                <span class="value">R$ 199,00</span>
+                            </div>
+                            <button class="btn-primary" data-package="gastronomic" data-t="pkgBtnBook">Reservar Experiência</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Package 2 -->
+                <div class="package-card glass-panel">
+                    <div class="package-img-wrapper">
+                        <img class="package-img" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80" alt="Curitiba Histórica">
+                        <span class="package-tag" data-t="pkgTagHistoric">História + Café</span>
+                    </div>
+                    <div class="package-body">
+                        <h3 data-t="pkgTitleHistoric">Curitiba Histórica Colonial</h3>
+                        <p data-t="pkgDescHistoric">Uma imersão completa no berço de Curitiba. Inclui um tour guiado exclusivo a pé pelo Largo da Ordem com historiador local e um café especial na Confeitaria das Flores.</p>
+                        
+                        <div class="package-inclusions">
+                            <strong data-t="pkgInclusions" style="font-size: 12px; margin-bottom: 6px; display:block;">O que está incluso:</strong>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclHistoric1">Tour guiado a pé de 2 horas</span>
+                            </div>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclHistoric2">Guia historiador bilíngue credenciado</span>
+                            </div>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclHistoric3">Combo de Café Especial + Torta Colonial</span>
+                            </div>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="package-price">
+                                <span class="original">R$ 120,00</span>
+                                <span class="value">R$ 99,00</span>
+                            </div>
+                            <button class="btn-primary" data-package="historic" data-t="pkgBtnBook">Reservar Experiência</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Package 3 -->
+                <div class="package-card glass-panel">
+                    <div class="package-img-wrapper">
+                        <img class="package-img" src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=600&q=80" alt="Curitiba Verde">
+                        <span class="package-tag" data-t="pkgTagGreen">Parques + Transporte</span>
+                    </div>
+                    <div class="package-body">
+                        <h3 data-t="pkgTitleGreen">Curitiba Verde Jaime Lerner</h3>
+                        <p data-t="pkgDescGreen">Explore a revolução ecológica de Curitiba. Inclui passe ilimitado para a Linha Turismo de ônibus e tour guiado pelas inovações urbanísticas do novo Parque Jaime Lerner.</p>
+                        
+                        <div class="package-inclusions">
+                            <strong data-t="pkgInclusions" style="font-size: 12px; margin-bottom: 6px; display:block;">O que está incluso:</strong>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclGreen1">Hop-on hop-off Tourism Bus day pass</span>
+                            </div>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclGreen2">Guided walking tour of Jaime Lerner Park</span>
+                            </div>
+                            <div class="inclusion-item">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span data-t="pkgInclGreen3">Exclusive eco-gift from the memorial</span>
+                            </div>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="package-price">
+                                <span class="original">R$ 90,00</span>
+                                <span class="value">R$ 75,00</span>
+                            </div>
+                            <button class="btn-primary" data-package="green" data-t="pkgBtnBook">Reservar Experiência</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Dashboard Section (Hidden by default) -->
+    <section class="section" id="section-dashboard" style="display: none; padding-top: 140px;">
+        <div class="container">
+            <div class="section-title-area" style="margin-bottom: 40px; text-align: left; max-width: 100%;">
+                <span class="section-badge">ADMIN PORTAL</span>
+                <h2 class="section-title" data-t="dashTitle">Portal de Inteligência de Turismo</h2>
+                <p class="section-title-desc" data-t="dashSubtitle">Análise de perfil do público e dados de conversão em tempo real.</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Sidebar tabs -->
+                <div class="dashboard-sidebar glass-panel">
+                    <div class="dashboard-menu-item active" data-dash-tab="overview">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <span data-t="dashMenuOverview">Visão Geral</span>
+                    </div>
+                    <div class="dashboard-menu-item" data-dash-tab="heatmap">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span data-t="dashMenuHotels">Heatmap de Hotéis</span>
+                    </div>
+                    <div class="dashboard-menu-item" data-dash-tab="profile">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <span data-t="dashMenuDemographics">Perfil do Turista</span>
+                    </div>
+                </div>
+                
+                <!-- Content panel -->
+                <div class="dashboard-content-area glass-panel">
+                    <!-- Stats summary cards -->
+                    <div class="dashboard-stats-row">
+                        <div class="stat-card glass-panel">
+                            <h4 data-t="dashStatVisitors">Visitantes Únicos</h4>
+                            <div class="value" id="dash-stat-visitors">18,635</div>
+                            <span class="trend up">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                                +14.2%
+                            </span>
+                        </div>
+                        <div class="stat-card glass-panel">
+                            <h4 data-t="dashStatConversion">Taxa de Conversão</h4>
+                            <div class="value" id="dash-stat-conversion">6.8%</div>
+                            <span class="trend up">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                                +2.1%
+                            </span>
+                        </div>
+                        <div class="stat-card glass-panel">
+                            <h4 data-t="dashStatRevenue">Receita Turística</h4>
+                            <div class="value" id="dash-stat-revenue">R$ 142,450.00</div>
+                            <span class="trend up">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                                +18.7%
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- TAB 1: OVERVIEW CHANNELS -->
+                    <div id="dash-view-overview">
+                        <h3 data-t="dashTitleChannels" style="margin-bottom: 24px; font-weight: 700;">Acessos Estimados por Canal Mensal</h3>
+                        <div class="chart-container" id="dash-chart-channels">
+                            <!-- Injected dynamically by dashboard.js -->
+                        </div>
+                    </div>
+                    
+                    <!-- TAB 2: HEATMAP HOTELS -->
+                    <div id="dash-view-heatmap" style="display: none;">
+                        <h3 data-t="dashTitleHeatmap" style="margin-bottom: 24px; font-weight: 700;">Volume de Scans de QR Code por Hotel</h3>
+                        <div class="heatmap-list" id="dash-hotel-heatmap">
+                            <!-- Injected dynamically by dashboard.js -->
+                        </div>
+                    </div>
+                    
+                    <!-- TAB 3: PROFILE DEMOGRAPHICS -->
+                    <div id="dash-view-profile" style="display: none;">
+                        <h3 data-t="dashTitleDemographics" style="margin-bottom: 24px; font-weight: 700;">Origem Geográfica dos Turistas</h3>
+                        <div class="chart-container" id="dash-chart-demographics">
+                            <!-- Injected dynamically by dashboard.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 40px 24px; border-top: 1px solid var(--glass-border); margin-top: 60px;">
+            <a href="#" class="logo" style="font-size: 18px;" data-target-section="tourist">
+                Curitiba<span>360</span>
+            </a>
+            <p style="font-size: 13px; color: var(--text-muted);">&copy; 2026 Curitiba360. Projeto de Integração Cultural e Desenvolvimento de Turismo.</p>
+        </div>
+    </footer>
+
+    <!-- Overlay Booking & Ticket Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        
+        <!-- CARD 1: CHECKOUT SURVEY FORM -->
+        <div class="modal-card glass-panel" id="modal-checkout-view">
+            <span class="modal-close" id="modal-close">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </span>
+            <h2 data-t="surveyTitle">Complete seu Cadastro Curitiba360</h2>
+            <p class="subtitle" data-t="surveySubtitle">Personalize sua experiência e garanta seu cupom de desconto.</p>
+            
+            <form id="checkout-form">
+                <div style="margin-bottom: 12px; font-weight: 700; color: var(--primary); font-size: 16px;" id="checkout-package-name">Nome do Pacote</div>
+                
+                <div class="form-group">
+                    <label for="checkout-name" data-t="surveyName">Nome Completo</label>
+                    <input type="text" id="checkout-name" class="input-custom" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="checkout-email" data-t="surveyEmail">E-mail de Contato</label>
+                    <input type="email" id="checkout-email" class="input-custom" required>
+                </div>
+                
+                <div class="form-group">
+                    <label style="margin-bottom: 6px;" for="checkout-origin" data-t="surveyOrigin">Cidade / Estado de Origem</label>
+                    <input type="text" id="checkout-origin" class="input-custom" data-t="surveyOriginPlh" placeholder="Ex: São Paulo - SP" required>
+                </div>
+                
+                <!-- Survey selection 1: Stay duration -->
+                <div class="form-group">
+                    <label data-t="surveyLabelDays">Quantos dias ficará em Curitiba?</label>
+                    <div class="survey-options-grid">
+                        <button type="button" class="survey-option-btn selected" data-survey-group="days">1-2 dias</button>
+                        <button type="button" class="survey-option-btn" data-survey-group="days">3-5 dias</button>
+                        <button type="button" class="survey-option-btn" data-survey-group="days">6-9 dias</button>
+                        <button type="button" class="survey-option-btn" data-survey-group="days">10+ dias</button>
+                    </div>
+                </div>
+                
+                <!-- Survey selection 2: Reason -->
+                <div class="form-group" style="margin-bottom: 32px;">
+                    <label data-t="surveyLabelReason">Qual o principal motivo da sua viagem?</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button type="button" class="survey-option-btn selected" data-survey-group="reason" data-reason="leisure" data-t="surveyReasonLeisure">Lazer e Turismo</button>
+                        <button type="button" class="survey-option-btn" data-survey-group="reason" data-reason="business" data-t="surveyReasonBusiness">Trabalho e Eventos</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;" data-t="surveyBtnSubmit">Gerar Meu Ingresso Digital</button>
+            </form>
+        </div>
+        
+        <!-- CARD 2: DIGITAL TICKET CONFIRMATION -->
+        <div class="modal-card glass-panel" id="modal-ticket-view" style="display: none;">
+            <h2 data-t="ticketTitle">Seu Ingresso Digital Curitiba360</h2>
+            <p class="subtitle" data-t="ticketSubtitle">Apresente nos estabelecimentos parceiros para resgatar os serviços.</p>
+            
+            <div class="ticket-container">
+                <h3 id="ticket-package-title" style="font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 20px; text-align: center;">Curitiba Gastronômica Noturna</h3>
+                
+                <div class="ticket-qr" id="ticket-qrcode-container">
+                    <!-- Simulated QR code goes here -->
+                </div>
+                
+                <div class="ticket-divider"></div>
+                
+                <div class="ticket-details">
+                    <div>
+                        <small style="color: var(--text-muted); font-size: 10px; font-weight:600; display:block;" data-t="ticketCode">CÓDIGO DO INGRESSO</small>
+                        <span id="ticket-val-code" style="font-weight: 700;">C360-847291</span>
+                    </div>
+                    <div>
+                        <small style="color: var(--text-muted); font-size: 10px; font-weight:600; display:block;" data-t="surveyName">Nome</small>
+                        <span id="ticket-val-name" style="font-weight: 700;">Sofia Silva</span>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <small style="color: var(--text-muted); font-size: 10px; font-weight:600; display:block;" data-t="ticketHotel">HOTEL DE ORIGEM</small>
+                        <span id="ticket-val-hotel" style="font-weight: 700;">Hotel Pestana</span>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <small style="color: var(--text-muted); font-size: 10px; font-weight:600; display:block;" data-t="ticketDate">DATA DE EMISSÃO</small>
+                        <span id="ticket-val-date" style="font-weight: 700;">20/07/2026</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px; padding: 8px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 4px; text-align: center; color: #10B981; font-weight: 700; font-size: 12px;" data-t="ticketStatus">
+                    ATIVO / NÃO UTILIZADO
+                </div>
+            </div>
+            
+            <button onclick="closeModal()" class="btn-primary" style="width: 100%; justify-content: center;" data-t="ticketClose">Fechar e Salvar</button>
+        </div>
+    </div>
+
+    <!-- Live Support Chat Widget -->
+    <div class="chat-widget" id="chat-widget">
+        <!-- Floating bubble -->
+        <div class="chat-bubble" id="chat-bubble">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.739-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.59 2.017 14.12 1.01 11.512 1.01c-5.44 0-9.866 4.372-9.87 9.802 0 1.698.459 3.355 1.33 4.816l-.993 3.634 3.737-.968c.001-.001-.001-.001 0 0z"/>
+            </svg>
+        </div>
+        
+        <!-- Chat window -->
+        <div class="chat-window glass-panel" id="chat-window">
+            <div class="chat-header">
+                <div class="chat-header-user">
+                    <div class="chat-avatar">360</div>
+                    <div class="chat-header-info">
+                        <h4>Suporte Curitiba360</h4>
+                        <span data-t="ticketStatusActive">Online</span>
+                    </div>
+                </div>
+                <span id="chat-close" style="cursor: pointer;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </span>
+            </div>
+            
+            <div class="chat-body" id="chat-body">
+                <div class="chat-msg bot" data-t="chatWelcome">
+                    Olá! Seja bem-vindo ao Curitiba360. Como posso ajudar na sua viagem hoje?
+                </div>
+            </div>
+            
+            <div class="chat-footer">
+                <input type="text" id="chat-input" data-t="chatPlaceholder" placeholder="Digite sua pergunta...">
+                <button class="chat-btn-send" id="chat-send-btn">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts modules -->
+    <script src="js/map.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
