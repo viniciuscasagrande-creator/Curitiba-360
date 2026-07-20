@@ -23,6 +23,7 @@ import ConfiguracoesComerciais from './pages/ConfiguracoesComerciais';
 import CadastroAtracao from './pages/CadastroAtracao';
 import TotaisAtracao from './pages/TotaisAtracao';
 import GestaoAgentes from './pages/GestaoAgentes';
+import ControleTransferencias from './pages/ControleTransferencias';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/contratos" element={<GestaoContratos />} />
           <Route style={{}} path="/configuracoes" element={<ConfiguracoesComerciais />} />
           <Route path="/relatorios" element={<TotaisAtracao />} />
+          <Route path="/transferencias" element={<ControleTransferencias />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
