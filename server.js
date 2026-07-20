@@ -437,7 +437,8 @@ const server = http.createServer((req, res) => {
         const db = readDatabase();
         const payload = {
             contracts: db.contracts || [],
-            attractions: db.attractions || [],
+            attractions: db.atracoes || [],
+            atracoes: db.atracoes || [],
             agencies: db.agencies || [],
             cms: db.cms || { faq: [], banners: [] },
             notifications: db.notifications || [],
@@ -460,7 +461,7 @@ const server = http.createServer((req, res) => {
             try {
                 const reqData = JSON.parse(body);
                 const db = readDatabase();
-                const col = reqData.collection;
+                const col = reqData.collection === 'attractions' ? 'atracoes' : reqData.collection;
                 const act = reqData.action;
                 const record = reqData.data || {};
                 

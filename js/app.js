@@ -2467,15 +2467,20 @@ function renderAttractionsTable() {
     if (!tbody) return;
     tbody.innerHTML = '';
     
-    srsState.attractions.forEach(a => {
+    const list = srsState.atracoes || srsState.attractions || [];
+    list.forEach(a => {
         const tr = document.createElement('tr');
+        const nameVal = a.nome || a.name || "";
+        const catVal = a.category || "Parque";
+        const capVal = a.capacidadePublico || a.capacity || 1000;
+        
         tr.innerHTML = `
             <td style="padding: 12px 16px; font-weight:700;">#${a.id}</td>
-            <td style="padding: 12px 16px;"><strong>${a.name}</strong></td>
-            <td style="padding: 12px 16px;">${a.category}</td>
-            <td style="padding: 12px 16px;">${a.capacity} scans/dia</td>
+            <td style="padding: 12px 16px;"><strong>${nameVal}</strong></td>
+            <td style="padding: 12px 16px;">${catVal}</td>
+            <td style="padding: 12px 16px;">${capVal} scans/dia</td>
             <td style="padding: 12px 16px;">
-                <span style="color: ${a.scanStatus === 'Crítico' ? '#EF4444' : '#10B981'}; font-weight:700;">● ${a.scanStatus}</span>
+                <span style="color: ${a.scanStatus === 'Crítico' ? '#EF4444' : '#10B981'}; font-weight:700;">● ${a.scanStatus || 'Normal'}</span>
             </td>
             <td style="padding: 12px 16px;">
                 <span style="background: rgba(16,185,129,0.15); color: #10B981; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700;">${a.status}</span>

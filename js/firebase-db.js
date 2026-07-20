@@ -2,10 +2,11 @@
 
 // Read collections dynamically
 async function fetchCollectionData(collectionName) {
+    const actualCol = collectionName === 'attractions' ? 'atracoes' : collectionName;
     if (window.firebaseEnabled) {
         try {
             const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
-            const colRef = collection(window.firebaseDb, collectionName);
+            const colRef = collection(window.firebaseDb, actualCol);
             const snapshot = await getDocs(colRef);
             const list = [];
             snapshot.forEach(doc => {
@@ -15,7 +16,7 @@ async function fetchCollectionData(collectionName) {
             });
             return list;
         } catch (e) {
-            console.error(`Error reading ${collectionName} from Firestore, falling back to local:`, e);
+            console.error(`Error reading ${actualCol} from Firestore, falling back to local:`, e);
         }
     }
     
@@ -30,16 +31,17 @@ async function fetchCollectionData(collectionName) {
     } else {
         const res = await fetch('/api/srs-data');
         const data = await res.json();
-        return data[collectionName] || [];
+        return data[actualCol] || [];
     }
 }
 
 // Save/Update/Delete records dynamically
 async function saveCollectionRecord(collectionName, action, recordData) {
+    const actualCol = collectionName === 'attractions' ? 'atracoes' : collectionName;
     if (window.firebaseEnabled) {
         try {
             const { collection, doc, setDoc, deleteDoc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
-            const colRef = collection(window.firebaseDb, collectionName);
+            const colRef = collection(window.firebaseDb, actualCol);
             
             const docId = String(recordData.id || Date.now());
             const docRef = doc(colRef, docId);

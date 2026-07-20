@@ -293,33 +293,54 @@
       "linkedConditionId": 1
     }
   ],
-  "attractions": [
+  "atracoes": [
     {
       "id": 1,
-      "name": "Jardim Botânico de Curitiba",
-      "category": "Natureza / Parque",
-      "capacity": 5000,
-      "scanStatus": "Normal",
-      "status": "Ativo",
-      "policy": "Cancelamento gratuito em até 48h antes da data da atração."
+      "nome": "Jardim Botânico de Curitiba",
+      "parceiroId": 1,
+      "status": "ATIVO",
+      "capacidadePublico": 5000,
+      "classificacaoEtaria": "Livre",
+      "endereco": {
+        "cep": "80000-000",
+        "logradouro": "Rua Engenheiro Ostoja Roguski",
+        "numero": "0",
+        "bairro": "Jardim Botânico",
+        "cidade": "Curitiba",
+        "uf": "PR"
+      },
+      "imagens": {
+        "capa": "https://images.unsplash.com/photo-1596436889106-be35e843f974",
+        "galeria": []
+      },
+      "linkVideoYoutube": "https://youtube.com/watch?v=jb123",
+      "dataCriacao": "20/07/2026 10:00:00",
+      "excluido": false,
+      "scanStatus": "Normal"
     },
     {
       "id": 2,
-      "name": "Ópera de Arame",
-      "category": "Cultura / Teatro",
-      "capacity": 1500,
-      "scanStatus": "Crítico",
-      "status": "Ativo",
-      "policy": "Cancelamento gratuito antes do início do evento."
-    },
-    {
-      "id": 3,
-      "name": "Parque Jaime Lerner",
-      "category": "Inovação / Arquitetura",
-      "capacity": 3000,
-      "scanStatus": "Normal",
-      "status": "Ativo",
-      "policy": "Cancelamento sob consulta técnica."
+      "nome": "Ópera de Arame",
+      "parceiroId": 2,
+      "status": "ATIVO",
+      "capacidadePublico": 1500,
+      "classificacaoEtaria": "Livre",
+      "endereco": {
+        "cep": "80000-100",
+        "logradouro": "Rua João Gava",
+        "numero": "970",
+        "bairro": "Abranches",
+        "cidade": "Curitiba",
+        "uf": "PR"
+      },
+      "imagens": {
+        "capa": "https://images.unsplash.com/photo-1583212292454-1fe6229603b7",
+        "galeria": []
+      },
+      "linkVideoYoutube": "https://youtube.com/watch?v=op456",
+      "dataCriacao": "20/07/2026 10:02:00",
+      "excluido": false,
+      "scanStatus": "Crítico"
     }
   ],
   "agencies": [
