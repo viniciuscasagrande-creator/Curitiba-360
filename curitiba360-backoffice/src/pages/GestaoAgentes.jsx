@@ -1,5 +1,9 @@
 // src/pages/GestaoAgentes.jsx
 import { useState } from 'react';
+import Tabs from '../components/ui/Tabs';
+import Table from '../components/ui/Table';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 export default function GestaoAgentes() {
   // RF-028.05 e RF-028.06: Abas de Status (Padrão: 'Ativos')
@@ -69,130 +73,120 @@ export default function GestaoAgentes() {
           <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie os revendedores individuais do sistema</p>
         </div>
         
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <input 
-            type="text" 
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <Input 
+            icon="🔍" 
             placeholder="Buscar Nome, CPF ou E-mail..." 
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
-            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', width: '250px' }}
+            style={{ width: '250px' }}
           />
-          <button style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>
+          <Button variant="outline">
             Filtros
-          </button>
-          <button style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+          </Button>
+          <Button variant="primary">
             + Adicionar Agente
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* ABAS DE STATUS E BARRA DE AÇÕES (RF-028.05 e RF-028.16) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', gap: '1.5rem' }}>
-          {['Ativos', 'Pendente de Aprovação', 'Inativos', 'Todos'].map(aba => (
-            <button 
-              key={aba}
-              onClick={() => { setAbaAtiva(aba); setSelecionados([]); }}
-              style={{ 
-                padding: '0.5rem 0', border: 'none', background: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
-                fontWeight: abaAtiva === aba ? 'bold' : 'normal',
-                borderBottom: abaAtiva === aba ? '2px solid #10b981' : '2px solid transparent',
-                color: abaAtiva === aba ? '#111827' : '#6b7280'
-              }}
-            >
-              {aba}
-            </button>
-          ))}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ flex: 1, maxWidth: '600px' }}>
+          <Tabs 
+            options={['Ativos', 'Pendente de Aprovação', 'Inativos', 'Todos']} 
+            activeTab={abaAtiva} 
+            onChange={(aba) => { setAbaAtiva(aba); setSelecionados([]); }} 
+          />
         </div>
 
         {/* BARRA DE AÇÕES CONTEXTUAL POR ABA (RF-028.16 a RF-028.19) */}
         {selecionados.length > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: '#eff6ff', padding: '0.5rem 1rem', borderRadius: '4px' }}>
-            <span style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#1d4ed8' }}>Selecionados {selecionados.length}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: '#eff6ff', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #bfdbfe', marginBottom: '1.5rem' }}>
+            <span style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#1d4ed8' }}>Selecionados: {selecionados.length}</span>
             
-            <button disabled={selecionados.length !== 1} style={{ padding: '0.25rem 0.5rem', cursor: selecionados.length === 1 ? 'pointer' : 'not-allowed' }}>Editar</button>
+            <Button variant="outline" disabled={selecionados.length !== 1} onClick={() => alert('Editando agente...')}>
+              Editar
+            </Button>
             
             {abaAtiva === 'Pendente de Aprovação' && (
               <>
-                <button style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#10b981', fontWeight: 'bold' }}>Aprovar</button>
-                <button style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#ef4444' }}>Rejeitar</button>
+                <Button variant="primary" onClick={() => alert('Agentes aprovados!')}>Aprovar</Button>
+                <Button variant="danger" onClick={() => alert('Agentes rejeitados!')}>Rejeitar</Button>
               </>
             )}
 
             {abaAtiva === 'Ativos' && (
               <>
-                <button onClick={handleTransferir} style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#3b82f6' }}>Transferir Agência</button>
-                <button style={{ padding: '0.25rem 0.5rem', cursor: 'pointer' }}>Inativar</button>
+                <Button variant="secondary" onClick={handleTransferir}>Transferir Agência</Button>
+                <Button variant="outline" onClick={() => alert('Agente inativado')}>Inativar</Button>
               </>
             )}
 
             {abaAtiva === 'Inativos' && (
               <>
-                <button onClick={handleTransferir} style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#3b82f6' }}>Transferir Agência</button>
-                <button style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#10b981' }}>Ativar</button>
+                <Button variant="secondary" onClick={handleTransferir}>Transferir Agência</Button>
+                <Button variant="primary" onClick={() => alert('Agente ativado')}>Ativar</Button>
               </>
             )}
             
-            <button style={{ padding: '0.25rem 0.5rem', color: 'red', cursor: 'pointer' }}>Excluir</button>
+            <Button variant="danger" onClick={() => alert('Agente excluído')}>Excluir</Button>
           </div>
         )}
       </div>
 
       {/* TABELA DE AGENTES (RF-028.08) */}
-      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '900px' }}>
-          <thead style={{ backgroundColor: '#f9fafb' }}>
-            <tr>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb', width: '40px' }}>
-                <input type="checkbox" onChange={handleSelecionarTodos} checked={selecionados.length === agentesFiltrados.length && agentesFiltrados.length > 0} />
-              </th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>ID</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Nome / E-mail</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>CPF</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Agência Vinculada</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Status</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb', textAlign: 'center' }}>Atrações</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Data Cadastro</th>
-            </tr>
-          </thead>
-          <tbody>
-            {agentesFiltrados.map((a) => (
-              <tr key={a.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <td style={{ padding: '0.75rem' }}>
-                  <input type="checkbox" checked={selecionados.includes(a.id)} onChange={() => handleSelecionarUm(a.id)} />
-                </td>
-                <td style={{ padding: '0.75rem', color: '#6b7280' }}>#{a.id}</td>
-                <td style={{ padding: '0.75rem' }}>
-                  <div style={{ fontWeight: 'bold' }}>{a.nome}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{a.email}</div>
-                </td>
-                <td style={{ padding: '0.75rem' }}>{a.cpf}</td>
-                <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#3b82f6' }}>{a.agencia}</td>
-                <td style={{ padding: '0.75rem' }}>
-                  <span style={{ 
-                    padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold',
-                    backgroundColor: getBadgeStyle(a.status).bg,
-                    color: getBadgeStyle(a.status).text
-                  }}>
-                    {a.status}
-                  </span>
-                </td>
-                <td style={{ padding: '0.75rem', textAlign: 'center' }}>{a.qtdAtracoes}</td>
-                <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{a.dataCadastro}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <Table 
+        columns={[
+          <input 
+            type="checkbox" 
+            onChange={handleSelecionarTodos} 
+            checked={selecionados.length === agentesFiltrados.length && agentesFiltrados.length > 0} 
+          />,
+          'ID', 
+          'Nome / E-mail', 
+          'CPF', 
+          'Agência Vinculada', 
+          'Status', 
+          'Atrações', 
+          'Data Cadastro'
+        ]}
+      >
+        {agentesFiltrados.map((a) => (
+          <tr key={a.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+            <td style={{ padding: '0.75rem 1rem' }}>
+              <input type="checkbox" checked={selecionados.includes(a.id)} onChange={() => handleSelecionarUm(a.id)} />
+            </td>
+            <td style={{ padding: '0.75rem 1rem', color: '#6b7280' }}>#{a.id}</td>
+            <td style={{ padding: '0.75rem 1rem' }}>
+              <div style={{ fontWeight: 'bold' }}>{a.nome}</div>
+              <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{a.email}</div>
+            </td>
+            <td style={{ padding: '0.75rem 1rem' }}>{a.cpf}</td>
+            <td style={{ padding: '0.75rem 1rem', fontWeight: 'bold', color: '#3b82f6' }}>{a.agencia}</td>
+            <td style={{ padding: '0.75rem 1rem' }}>
+              <span style={{ 
+                padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold',
+                backgroundColor: getBadgeStyle(a.status).bg,
+                color: getBadgeStyle(a.status).text
+              }}>
+                {a.status}
+              </span>
+            </td>
+            <td style={{ padding: '0.75rem 1rem', textAlign: 'center' }}>{a.qtdAtracoes}</td>
+            <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{a.dataCadastro}</td>
+          </tr>
+        ))}
+      </Table>
 
-        {/* Paginação */}
-        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb' }}>
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Mostrando 1 a {agentesFiltrados.length} de {agentesFiltrados.length} registros</span>
-          <select value={itensPorPagina} onChange={(e) => setItensPorPagina(e.target.value)} style={{ padding: '0.25rem', borderRadius: '4px' }}>
-            <option value="10">10 por página</option>
-            <option value="20">20 por página</option>
-            <option value="50">50 por página</option>
-          </select>
-        </div>
+      {/* Paginação */}
+      <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb', borderRadius: '0 0 8px 8px', border: '1px solid #e5e7eb', borderTop: 'none' }}>
+        <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Mostrando 1 a {agentesFiltrados.length} de {agentesFiltrados.length} registros</span>
+        <select value={itensPorPagina} onChange={(e) => setItensPorPagina(e.target.value)} style={{ padding: '0.25rem', borderRadius: '4px', border: '1px solid #d1d5db' }}>
+          <option value="10">10 por página</option>
+          <option value="20">20 por página</option>
+          <option value="50">50 por página</option>
+        </select>
       </div>
     </div>
   );
