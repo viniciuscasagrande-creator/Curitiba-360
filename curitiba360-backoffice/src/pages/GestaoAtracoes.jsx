@@ -4,39 +4,31 @@ import { useNavigate } from 'react-router-dom';
 
 export default function GestaoAtracoes() {
   const navigate = useNavigate();
+  const [abaAtiva, setAbaAtiva] = useState('Ativos'); // RF-012.06
+  const [selecionados, setSelecionados] = useState([]);
   const [termoBusca, setTermoBusca] = useState('');
-  const [filtroStatus, setFiltroStatus] = useState('Todos');
 
-  // Mock de dados baseado no seed do database (coleção atracoes)
+  // Mock de Atrações (RF-012.10)
   const [atracoes, setAtracoes] = useState([
-    {
-      id: 1,
-      nome: "Visita Guiada Ópera de Arame",
-      capacidadePublico: 1000,
-      classificacaoEtaria: "Livre",
-      precoIngresso: 15.00,
-      status: "ATIVO",
-      linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    },
-    {
-      id: 2,
-      nome: "Jardim Botânico de Curitiba",
-      capacidadePublico: 2000,
-      classificacaoEtaria: "Livre",
-      precoIngresso: 0.00,
-      status: "ATIVO",
-      linkYoutube: ""
-    }
+    { id: 1, nome: 'Jardim Botânico', parceiro: 'Parque Jaime Lerner S/A', status: 'Ativo', dataCriacao: '01/07/2026', foto: 'https://via.placeholder.com/40' },
+    { id: 2, nome: 'Ópera de Arame', parceiro: 'Ópera Eventos', status: 'Pendente de Contrato', dataCriacao: '05/07/2026', foto: 'https://via.placeholder.com/40' },
+    { id: 3, nome: 'Tour Histórico CWB', parceiro: 'Tour CWB', status: 'Rascunho', dataCriacao: '10/07/2026', foto: 'https://via.placeholder.com/40' }
   ]);
 
-  const atracoesFiltradas = atracoes.filter(a => {
-    const matchBusca = a.nome.toLowerCase().includes(termoBusca.toLowerCase());
-    const matchStatus = filtroStatus === 'Todos' || a.status === filtroStatus;
-    return matchBusca && matchStatus;
+  const filtrados = atracoes.filter(a => {
+    const matchBusca = a.nome.toLowerCase().includes(termoBusca.toLowerCase()) || a.parceiro.toLowerCase().includes(termoBusca.toLowerCase());
+    const matchAba = abaAtiva === 'Todos' || a.status.includes(abaAtiva.replace('s', ''));
+    return matchBusca && matchAba;
   });
 
-  const handleToggleStatus = (id) => {
-    setAtracoes(atracoes.map(a => a.id === id ? { ...a, status: a.status === 'ATIVO' ? 'INATIVO' : 'ATIVO' } : a));
+  const getBadgeStyle = (status) => {
+    switch(status) {
+      case 'Ativo': return { bg: '#d1fae5', text: '#065f46' };
+      case 'Pendente de Contrato': return { bg: '#fef3c7', text: '#92400e' };
+      case 'Rascunho': return { bg: '#f3f4f6', text: '#374151' };
+      case 'Inativo': return { bg: '#fee2e2', text: '#991b1b' };
+      default: return { bg: '#f3f4f6', text: '#374151' };
+    }
   };
 
   return (
@@ -44,107 +36,51 @@ export default function GestaoAtracoes() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Gestão de Atrações</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie as atrações e pontos turísticos listados no portal público</p>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie as atrações do sistema</p>
         </div>
-        
-        <button 
-          onClick={() => navigate('/atracoes/novo')} 
-          style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-          + Adicionar Atração
-        </button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <input type="text" placeholder="Buscar ID, nome, parceiro..." value={termoBusca} onChange={(e) => setTermoBusca(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+          <button style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Filtros</button>
+          <button onClick={() => navigate('/atracoes/nova')} style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>+ Adicionar Atração</button>
+        </div>
       </div>
 
-      {/* FILTROS */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-        <input 
-          type="text" 
-          placeholder="Buscar atração por nome..." 
-          value={termoBusca}
-          onChange={(e) => setTermoBusca(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', flex: 1, minWidth: '250px' }}
-        />
-        
-        <select 
-          value={filtroStatus} 
-          onChange={(e) => setFiltroStatus(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-        >
-          <option value="Todos">Todos os Status</option>
-          <option value="ATIVO">Ativas</option>
-          <option value="INATIVO">Inativas</option>
-        </select>
+      <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb', marginBottom: '1rem', gap: '2rem' }}>
+        {['Ativos', 'Inativos', 'Todos'].map(aba => (
+          <button key={aba} onClick={() => setAbaAtiva(aba)} style={{ padding: '0.5rem 0', border: 'none', background: 'none', cursor: 'pointer', fontWeight: abaAtiva === aba ? 'bold' : 'normal', borderBottom: abaAtiva === aba ? '2px solid #10b981' : '2px solid transparent' }}>
+            {aba}
+          </button>
+        ))}
       </div>
 
-      {/* TABELA DE ATRAÇÕES */}
-      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ backgroundColor: '#f9fafb' }}>
-            <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
-              <th style={{ padding: '1rem' }}>Nome da Atração</th>
-              <th style={{ padding: '1rem' }}>Capacidade máxima</th>
-              <th style={{ padding: '1rem' }}>Classificação</th>
-              <th style={{ padding: '1rem' }}>Preço Ingresso</th>
-              <th style={{ padding: '1rem' }}>Vídeo Youtube</th>
-              <th style={{ padding: '1rem' }}>Status</th>
-              <th style={{ padding: '1rem', textAlign: 'center' }}>Ações</th>
+            <tr>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb', width: '40px' }}><input type="checkbox" /></th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>ID</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Nome da Atração</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Parceiro Comercial</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Status</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Data de Criação</th>
             </tr>
           </thead>
           <tbody>
-            {atracoesFiltradas.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>Nenhuma atração cadastrada.</td>
+            {filtrados.map(a => (
+              <tr key={a.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                <td style={{ padding: '0.75rem' }}><input type="checkbox" /></td>
+                <td style={{ padding: '0.75rem', color: '#6b7280' }}>#{a.id}</td>
+                <td style={{ padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <img src={a.foto} alt="" style={{ borderRadius: '4px' }} />
+                  <strong>{a.nome}</strong>
+                </td>
+                <td style={{ padding: '0.75rem' }}><span style={{ padding: '0.2rem 0.5rem', background: '#f3f4f6', borderRadius: '4px', fontSize: '0.75rem' }}>{a.parceiro}</span></td>
+                <td style={{ padding: '0.75rem' }}>
+                  <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', backgroundColor: getBadgeStyle(a.status).bg, color: getBadgeStyle(a.status).text }}>{a.status}</span>
+                </td>
+                <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{a.dataCriacao}</td>
               </tr>
-            ) : (
-              atracoesFiltradas.map((a) => (
-                <tr key={a.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                  <td style={{ padding: '1rem', fontWeight: 'bold' }}>{a.nome}</td>
-                  <td style={{ padding: '1rem' }}>{a.capacidadePublico} pessoas</td>
-                  <td style={{ padding: '1rem' }}>{a.classificacaoEtaria}</td>
-                  <td style={{ padding: '1rem', fontWeight: 'bold' }}>
-                    {a.precoIngresso === 0 ? 'Gratuito' : `R$ ${a.precoIngresso.toFixed(2)}`}
-                  </td>
-                  <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
-                    {a.linkYoutube ? (
-                      <a href={a.linkYoutube} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
-                        Ver Vídeo 🔗
-                      </a>
-                    ) : (
-                      <span style={{ color: '#9ca3af' }}>Nenhum</span>
-                    )}
-                  </td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ 
-                      padding: '0.25rem 0.5rem', 
-                      borderRadius: '20px', 
-                      fontSize: '0.75rem', 
-                      fontWeight: 'bold',
-                      backgroundColor: a.status === 'ATIVO' ? '#d1fae5' : '#fee2e2',
-                      color: a.status === 'ATIVO' ? '#065f46' : '#991b1b'
-                    }}>
-                      {a.status}
-                    </span>
-                  </td>
-                  <td style={{ padding: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                    <button 
-                      onClick={() => navigate(`/atracoes/${a.id}`)}
-                      style={{ padding: '0.25rem 0.5rem', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      onClick={() => handleToggleStatus(a.id)}
-                      style={{ 
-                        padding: '0.25rem 0.5rem', 
-                        backgroundColor: a.status === 'ATIVO' ? '#f59e0b' : '#10b981', 
-                        color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' 
-                      }}
-                    >
-                      {a.status === 'ATIVO' ? 'Inativar' : 'Ativar'}
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
       </div>
