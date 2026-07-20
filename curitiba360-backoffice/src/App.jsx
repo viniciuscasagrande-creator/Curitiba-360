@@ -11,6 +11,7 @@ import GestaoAgencias from './pages/GestaoAgencias';
 import CadastroAgencia from './pages/CadastroAgencia';
 import GestaoParceiros from './pages/GestaoParceiros';
 import CadastroParceiro from './pages/CadastroParceiro';
+import OperacaoComercial from './pages/OperacaoComercial';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/parceiros/novo" element={<CadastroParceiro />} />
           <Route path="/agencias" element={<GestaoAgencias />} />
           <Route path="/agencias/novo" element={<CadastroAgencia />} />
+          <Route path="/configuracoes" element={<OperacaoComercial />} />
           {/* Adicionaremos as outras rotas aqui conforme o documento */}
         </Route>
       </Routes>
