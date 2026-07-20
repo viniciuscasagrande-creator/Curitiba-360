@@ -57,6 +57,7 @@ const translations = {
         dashMenuOverview: "Visão Geral",
         dashMenuHotels: "Heatmap de Hotéis",
         dashMenuDemographics: "Perfil do Turista",
+        dashMenuIntegrations: "Integrações Externas",
         dashStatVisitors: "Visitantes Únicos",
         dashStatConversion: "Taxa de Conversão",
         dashStatRevenue: "Receita Turística",
@@ -159,6 +160,7 @@ const translations = {
         dashMenuOverview: "Overview",
         dashMenuHotels: "Hotel Heatmap",
         dashMenuDemographics: "Tourist Profile",
+        dashMenuIntegrations: "External Integrations",
         dashStatVisitors: "Unique Visitors",
         dashStatConversion: "Conversion Rate",
         dashStatRevenue: "Tourism Revenue",
@@ -428,12 +430,14 @@ function switchDashboardTab(tabId) {
     const overviewDiv = document.getElementById('dash-view-overview');
     const heatmapDiv = document.getElementById('dash-view-heatmap');
     const profileDiv = document.getElementById('dash-view-profile');
+    const integrationsDiv = document.getElementById('dash-view-integrations');
     
     if (!overviewDiv || !heatmapDiv || !profileDiv) return;
     
     overviewDiv.style.display = 'none';
     heatmapDiv.style.display = 'none';
     profileDiv.style.display = 'none';
+    if (integrationsDiv) integrationsDiv.style.display = 'none';
     
     if (tabId === 'overview') {
         overviewDiv.style.display = 'block';
@@ -441,6 +445,8 @@ function switchDashboardTab(tabId) {
         heatmapDiv.style.display = 'block';
     } else if (tabId === 'profile') {
         profileDiv.style.display = 'block';
+    } else if (tabId === 'integrations') {
+        if (integrationsDiv) integrationsDiv.style.display = 'block';
     }
 }
 
@@ -688,3 +694,57 @@ function handleChatSend() {
         body.scrollTop = body.scrollHeight;
     }, 800);
 }
+
+// Test External API connectivity simulator
+function testIntegration(id, name) {
+    showToast(state.language === 'pt' ? 
+        `Conexão testada com sucesso para ${name}!` : 
+        `Connection tested successfully for ${name}!`);
+    
+    // Update badge status to "Connected"
+    const badge = document.getElementById(`status-int-${id}`);
+    if (badge) {
+        badge.textContent = state.language === 'pt' ? 'Conectado' : 'Connected';
+        badge.style.background = 'rgba(16, 185, 129, 0.1)';
+        badge.style.color = '#10B981';
+        badge.style.borderColor = '#10B981';
+    }
+}
+
+// Switch diagram in the viewer dropdown
+function switchDiagram(fileName) {
+    const imgViewer = document.getElementById('diagram-img-viewer');
+    const titleText = document.getElementById('diagram-display-title');
+    if (imgViewer && titleText) {
+        imgViewer.src = `assets/diagramas/${fileName}`;
+        titleText.textContent = fileName;
+        
+        // Reset zoom
+        imgViewer.style.transform = 'scale(1)';
+        imgViewer.style.cursor = 'zoom-in';
+    }
+}
+
+// Zoom in/out helper for the diagram image
+let isDiagramZoomed = false;
+function zoomDiagram() {
+    const imgViewer = document.getElementById('diagram-img-viewer');
+    if (!imgViewer) return;
+    
+    isDiagramZoomed = !isDiagramZoomed;
+    if (isDiagramZoomed) {
+        imgViewer.style.transform = 'scale(1.8)';
+        imgViewer.style.cursor = 'zoom-out';
+        imgViewer.parentElement.style.overflow = 'auto'; // allow panning
+    } else {
+        imgViewer.style.transform = 'scale(1)';
+        imgViewer.style.cursor = 'zoom-in';
+        imgViewer.parentElement.style.overflow = 'hidden';
+    }
+}
+
+// Bind to window to allow direct HTML calls
+window.testIntegration = testIntegration;
+window.switchDiagram = switchDiagram;
+window.zoomDiagram = zoomDiagram;
+

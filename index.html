@@ -420,6 +420,10 @@
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         <span data-t="dashMenuDemographics">Perfil do Turista</span>
                     </div>
+                    <div class="dashboard-menu-item" data-dash-tab="integrations">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                        <span data-t="dashMenuIntegrations">Integrações Externas</span>
+                    </div>
                 </div>
                 
                 <!-- Content panel -->
@@ -473,6 +477,127 @@
                         <h3 data-t="dashTitleDemographics" style="margin-bottom: 24px; font-weight: 700;">Origem Geográfica dos Turistas</h3>
                         <div class="chart-container" id="dash-chart-demographics">
                             <!-- Injected dynamically by dashboard.js -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: EXTERNAL INTEGRATIONS & DIAGRAMS -->
+                    <div id="dash-view-integrations" style="display: none;">
+                        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px; align-items: start;">
+                            
+                            <!-- Left: Integration config cards -->
+                            <div>
+                                <h3 style="margin-bottom: 8px; font-weight: 700;">Configurações de APIs e Integrações (bo-02)</h3>
+                                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px;">Insira as credenciais e teste a conectividade com os provedores externos.</p>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                                    <!-- INT-01 -->
+                                    <div class="glass-panel" style="padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h4 style="font-weight: 700; font-size: 15px; color: var(--primary);">INT-01: Gateway de Pagamento</h4>
+                                            <span class="section-badge" style="margin: 0; font-size: 9px; padding: 2px 8px; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981;" id="status-int-01">Conectado (Sandbox)</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 12px;">
+                                            <label style="font-size: 11px;">Chave Pública (Public Key)</label>
+                                            <input type="text" class="input-custom" value="pk_test_51Nz8vXCuritiba360Key" style="padding: 8px 12px; font-size: 12px;">
+                                        </div>
+                                        <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;" onclick="testIntegration('01', 'Gateway de Pagamento')">Testar Conexão</button>
+                                    </div>
+
+                                    <!-- INT-02 -->
+                                    <div class="glass-panel" style="padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h4 style="font-weight: 700; font-size: 15px; color: var(--primary);">INT-02: Provedor de E-mail (SMTP/API)</h4>
+                                            <span class="section-badge" style="margin: 0; font-size: 9px; padding: 2px 8px; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981;" id="status-int-02">Conectado</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 12px;">
+                                            <label style="font-size: 11px;">Servidor SMTP (Host)</label>
+                                            <input type="text" class="input-custom" value="smtp.sendgrid.net" style="padding: 8px 12px; font-size: 12px;">
+                                        </div>
+                                        <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;" onclick="testIntegration('02', 'Provedor de E-mail')">Testar Conexão</button>
+                                    </div>
+
+                                    <!-- INT-03 -->
+                                    <div class="glass-panel" style="padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h4 style="font-weight: 700; font-size: 15px; color: var(--primary);">INT-03: DocuSign (Contratos)</h4>
+                                            <span class="section-badge" style="margin: 0; font-size: 9px; padding: 2px 8px; background: rgba(245, 158, 11, 0.1); color: #F59E0B; border: 1px solid #F59E0B;" id="status-int-03">Pendente Autenticação</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 12px;">
+                                            <label style="font-size: 11px;">DocuSign Integration Key</label>
+                                            <input type="text" class="input-custom" value="docusign-ik-8271-9281-a392" style="padding: 8px 12px; font-size: 12px;">
+                                        </div>
+                                        <button type="button" class="btn-primary" style="padding: 8px 16px; font-size: 12px;" onclick="testIntegration('03', 'DocuSign')">Autenticar e Testar</button>
+                                    </div>
+
+                                    <!-- INT-04 -->
+                                    <div class="glass-panel" style="padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h4 style="font-weight: 700; font-size: 15px; color: var(--primary);">INT-04: Google Analytics (GA4)</h4>
+                                            <span class="section-badge" style="margin: 0; font-size: 9px; padding: 2px 8px; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981;" id="status-int-04">Ativo</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 12px;">
+                                            <label style="font-size: 11px;">ID de Medição (Measurement ID)</label>
+                                            <input type="text" class="input-custom" value="G-C360ANALYTICS" style="padding: 8px 12px; font-size: 12px;">
+                                        </div>
+                                        <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;" onclick="testIntegration('04', 'Google Analytics')">Testar Conexão</button>
+                                    </div>
+
+                                    <!-- INT-05 -->
+                                    <div class="glass-panel" style="padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h4 style="font-weight: 700; font-size: 15px; color: var(--primary);">INT-05: Google Places API</h4>
+                                            <span class="section-badge" style="margin: 0; font-size: 9px; padding: 2px 8px; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981;" id="status-int-05">Conectado</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 12px;">
+                                            <label style="font-size: 11px;">Places API Key</label>
+                                            <input type="text" class="input-custom" value="AIzaSyCuritiba360PlacesKey" style="padding: 8px 12px; font-size: 12px;">
+                                        </div>
+                                        <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;" onclick="testIntegration('05', 'Google Places API')">Testar Conexão</button>
+                                    </div>
+
+                                    <!-- INT-06 -->
+                                    <div class="glass-panel" style="padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h4 style="font-weight: 700; font-size: 15px; color: var(--primary);">INT-06: Provedor Push Notification</h4>
+                                            <span class="section-badge" style="margin: 0; font-size: 9px; padding: 2px 8px; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981;" id="status-int-06">Conectado</span>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 12px;">
+                                            <label style="font-size: 11px;">Firebase Messaging credentials.json</label>
+                                            <input type="text" class="input-custom" value="firebase-adminsdk-c360.json" style="padding: 8px 12px; font-size: 12px;" readonly>
+                                        </div>
+                                        <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;" onclick="testIntegration('06', 'Provedor Push')">Testar Conexão</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Architecture diagram browser -->
+                            <div style="position: sticky; top: 120px;">
+                                <h3 style="margin-bottom: 8px; font-weight: 700;">Navegador de Diagramas (bo-02)</h3>
+                                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">Selecione qualquer diagrama do Backoffice para visualizar o escopo da plataforma.</p>
+                                
+                                <div class="hotel-selector-wrapper">
+                                    <label>Escolha o Diagrama de Arquitetura</label>
+                                    <select id="diagram-selector" class="select-custom" onchange="switchDiagram(this.value)">
+                                        <option value="bo-02-integracoes-externas.png" selected>bo-02: Integrações Externas e Contexto (Recomendado)</option>
+                                        <option value="bo-01-areas-e-perfis.png">bo-01: Áreas, Classes e Perfis</option>
+                                        <option value="bo-03-hierarquia-modulos.png">bo-03: Hierarquia de Módulos</option>
+                                        <option value="bo-04-vinculos-perfis-entidades.png">bo-04: Vínculos entre Perfis e Entidades</option>
+                                        <option value="bo-05-ativacao-contrato.png">bo-05: Fluxo de Ativação Comercial</option>
+                                        <option value="bo-06-cancelamento-venda-24h.png">bo-06: Cancelamento de Venda (24h)</option>
+                                        <option value="bo-07-ciclo-comissionamento-repasse.png">bo-07: Ciclo de Comissionamento e Repasse</option>
+                                        <option value="bo-08-fila-reembolsos.png">bo-08: Triagem da Fila de Reembolsos</option>
+                                        <option value="bo-09-cms-backoffice-portal.png">bo-09: CMS Backoffice e Publicação</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="glass-panel" style="padding: 16px; margin-top: 20px; text-align: center;">
+                                    <h4 id="diagram-display-title" style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--primary);">bo-02-integracoes-externas.png</h4>
+                                    <div style="background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; min-height: 300px;">
+                                        <img id="diagram-img-viewer" src="assets/diagramas/bo-02-integracoes-externas.png" alt="Diagrama de Arquitetura" style="max-width: 100%; max-height: 480px; border-radius: 4px; object-fit: contain; cursor: zoom-in; transition: transform var(--transition-fast);" onclick="zoomDiagram()">
+                                    </div>
+                                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">Clique na imagem para ampliar e ver detalhes do fluxo técnico.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
