@@ -1,45 +1,36 @@
 // src/components/ui/Input.jsx
 import React from 'react';
 
-export default function Input({
-  label,
-  error,
+export default function Input({ 
+  icon, 
+  placeholder, 
+  value, 
+  onChange, 
   type = 'text',
-  placeholder,
-  value,
-  onChange,
   style = {},
-  ...props
+  ...props 
 }) {
   return (
-    <div style={{ marginBottom: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
-      {label && (
-        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', color: '#374151' }}>
-          {label}
-        </label>
-      )}
-      <input
-        type={type}
+    <div style={{ position: 'relative', width: '100%', ...style }}>
+      <input 
+        type={type} 
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        style={{
-          width: '100%',
-          padding: '0.75rem',
-          borderRadius: '8px',
-          border: error ? '1px solid #ef4444' : '1px solid #d1d5db',
+        style={{ 
+          width: '100%', 
+          padding: icon ? '0.75rem 1rem 0.75rem 2.5rem' : '0.75rem 1rem', 
+          borderRadius: '8px', 
+          border: '1px solid #d1d5db', 
           outline: 'none',
-          fontSize: '1rem',
-          transition: 'border-color 0.2s, box-shadow 0.2s',
-          boxSizing: 'border-box',
-          backgroundColor: 'white',
-          ...style
-        }}
+          fontSize: '0.875rem',
+          color: '#111827'
+        }} 
         {...props}
       />
-      {error && (
-        <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 'bold' }}>
-          {error}
+      {icon && (
+        <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }}>
+          {icon}
         </span>
       )}
     </div>
