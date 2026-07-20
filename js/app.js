@@ -229,7 +229,10 @@ const packagesData = {
     green: { key: 'green', price: 75.00, originalPrice: 90.00 }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 0. Initialize Firebase if configured
+    await initializeFirebaseApp();
+    
     // 1. Initial setups
     applyLanguage(state.language);
     
@@ -445,6 +448,7 @@ function switchDashboardTab(tabId) {
     const antiScalperDiv = document.getElementById('dash-view-anti-scalper');
     const financialsDiv = document.getElementById('dash-view-financial-reports');
     const packagesDiv = document.getElementById('dash-view-packages');
+    const firebaseSettingsDiv = document.getElementById('dash-view-firebase-settings');
     
     if (!overviewDiv || !heatmapDiv || !profileDiv) return;
     
@@ -462,6 +466,7 @@ function switchDashboardTab(tabId) {
     if (antiScalperDiv) antiScalperDiv.style.display = 'none';
     if (financialsDiv) financialsDiv.style.display = 'none';
     if (packagesDiv) packagesDiv.style.display = 'none';
+    if (firebaseSettingsDiv) firebaseSettingsDiv.style.display = 'none';
     
     if (tabId === 'overview') {
         overviewDiv.style.display = 'block';
@@ -520,6 +525,11 @@ function switchDashboardTab(tabId) {
         if (packagesDiv) {
             packagesDiv.style.display = 'block';
             loadSrsData();
+        }
+    } else if (tabId === 'firebase-settings') {
+        if (firebaseSettingsDiv) {
+            firebaseSettingsDiv.style.display = 'block';
+            renderFirebasePanel();
         }
     }
 }
@@ -873,10 +883,8 @@ function switchCommercialSubTab(subTabId) {
 // Fetch Commercial Settings from backend API
 async function loadCommercialData() {
     try {
-        const response = await fetch('/api/commercial-settings');
-        const data = await response.json();
-        commercialState.conditions = data.commercialConditions || [];
-        commercialState.financials = data.financialInfo || [];
+        commercialState.conditions = await fetchCollectionData('commercialConditions');
+        commercialState.financials = await fetchCollectionData('financialInfo');
         
         // Reset selections
         commercialState.selectedConditionIds = [];
@@ -1518,8 +1526,7 @@ function calculateSlaDays(requestDateStr) {
 // Fetch all refunds from backend
 async function loadRefundData() {
     try {
-        const res = await fetch('/api/refunds');
-        const data = await res.json();
+        const data = await fetchCollectionData('refunds');
         
         refundsState.allRefunds = data;
         refundsState.selectedIds = [];
@@ -1779,6 +1786,51 @@ async function handleRefundMassAction(actionType, targetStatus) {
 // Core API caller
 async function executeRefundAPI(payload) {
     try {
+        let action = payload.action;
+        if (window.firebaseEnabled) {
+            const currentRefunds = refundsState.allRefunds;
+            const targetIds = Array.isArray(payload.ids) ? payload.ids : [payload.id];
+            
+            for (const id of targetIds) {
+                const existing = currentRefunds.find(r => r.id === id);
+                if (existing) {
+                    const updated = JSON.parse(JSON.stringify(existing));
+                    if (action === 'status-update') {
+                        updated.status = payload.status;
+                        updated.history = updated.history || [];
+                        updated.history.push({
+                            actor: "Administrador",
+                            action: `Status alterado para ${payload.status}`,
+                            date: new Date().toLocaleDateString('pt-BR')
+                        });
+                    } else if (action === 'approve') {
+                        updated.status = 'Aprovado';
+                        updated.approvedAmount = payload.approvedAmount;
+                        updated.returnMethod = payload.returnMethod;
+                        updated.internalNotes = payload.internalNotes;
+                        updated.history = updated.history || [];
+                        updated.history.push({
+                            actor: "Administrador",
+                            action: `Reembolso Aprovado (R$ ${Number(payload.approvedAmount).toFixed(2)} via ${payload.returnMethod})`,
+                            date: new Date().toLocaleDateString('pt-BR')
+                        });
+                    } else if (action === 'reject') {
+                        updated.status = 'Rejeitado';
+                        updated.history = updated.history || [];
+                        updated.history.push({
+                            actor: "Administrador",
+                            action: `Reembolso Rejeitado: ${payload.reason || 'Rejeitado pelo administrador.'}`,
+                            date: new Date().toLocaleDateString('pt-BR')
+                        });
+                    }
+                    await saveCollectionRecord('refunds', 'edit', updated);
+                }
+            }
+            showToast("Fila de reembolsos atualizada com sucesso!");
+            loadRefundData();
+            return;
+        }
+        
         const res = await fetch('/api/refunds', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2062,17 +2114,17 @@ function calculateSlaDays(requestDateStr) {
 // Fetch SRS Data
 async function loadSrsData() {
     try {
-        const res = await fetch('/api/srs-data');
-        const data = await res.json();
+        srsState.contracts = await fetchCollectionData('contracts');
+        srsState.attractions = await fetchCollectionData('attractions');
+        srsState.agencies = await fetchCollectionData('agencies');
         
-        srsState.contracts = data.contracts || [];
-        srsState.attractions = data.attractions || [];
-        srsState.agencies = data.agencies || [];
-        srsState.cms = data.cms || { faq: [], banners: [] };
-        srsState.notifications = data.notifications || [];
-        srsState.packages = data.packages || [];
-        srsState.commercialConditions = data.commercialConditions || [];
-        srsState.financialInfo = data.financialInfo || [];
+        const cmsData = await fetchCollectionData('cms');
+        srsState.cms = Array.isArray(cmsData) && cmsData.length > 0 && cmsData[0].faq ? cmsData[0] : { faq: Array.isArray(cmsData) ? cmsData : [], banners: [] };
+        
+        srsState.notifications = await fetchCollectionData('notifications');
+        srsState.packages = await fetchCollectionData('packages');
+        srsState.commercialConditions = await fetchCollectionData('commercialConditions');
+        srsState.financialInfo = await fetchCollectionData('financialInfo');
         
         // Render panels
         renderContractsTable();
@@ -2379,12 +2431,16 @@ async function saveContractForm(event) {
     };
     
     try {
-        const res = await fetch('/api/srs-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        const data = await saveCollectionRecord('contracts', id ? 'edit' : 'create', {
+            id: id ? Number(id) : undefined,
+            partnerName: partner,
+            partnerId: 10,
+            type: type,
+            status: status,
+            expirationDate: expFormatted,
+            attraction: attraction,
+            linkedConditionId: condId
         });
-        const data = await res.json();
         if (data.success) {
             closeModal();
             loadSrsData();
@@ -2462,12 +2518,8 @@ async function saveAttractionForm(event) {
     };
     
     try {
-        const res = await fetch('/api/srs-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if ((await res.json()).success) {
+        const data = await saveCollectionRecord('attractions', 'create', payload.data);
+        if (data.success) {
             closeModal();
             loadSrsData();
             showToast("Atração criada com sucesso!");
@@ -2478,16 +2530,8 @@ async function saveAttractionForm(event) {
 async function deleteAttraction(id) {
     if (confirm("Deseja realmente excluir esta atração?")) {
         try {
-            const res = await fetch('/api/srs-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    collection: 'attractions',
-                    action: 'delete',
-                    id: id
-                })
-            });
-            if ((await res.json()).success) {
+            const data = await saveCollectionRecord('attractions', 'delete', { id: id });
+            if (data.success) {
                 loadSrsData();
                 showToast("Atração excluída!");
             }
@@ -2552,12 +2596,8 @@ async function saveAgencyForm(event) {
     };
     
     try {
-        const res = await fetch('/api/srs-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if ((await res.json()).success) {
+        const data = await saveCollectionRecord('agencies', 'create', payload.data);
+        if (data.success) {
             closeModal();
             loadSrsData();
             showToast("Agência criada com sucesso!");
@@ -2568,16 +2608,8 @@ async function saveAgencyForm(event) {
 async function deleteAgency(id) {
     if (confirm("Deseja excluir esta agência?")) {
         try {
-            const res = await fetch('/api/srs-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    collection: 'agencies',
-                    action: 'delete',
-                    id: id
-                })
-            });
-            if ((await res.json()).success) {
+            const data = await saveCollectionRecord('agencies', 'delete', { id: id });
+            if (data.success) {
                 loadSrsData();
                 showToast("Agência excluída!");
             }
@@ -2617,19 +2649,11 @@ async function addFaqPrompt() {
     const newFaq = [...srsState.cms.faq, { id: Date.now(), question: q, answer: a }];
     
     try {
-        const res = await fetch('/api/srs-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                collection: 'cms',
-                action: 'edit', 
-                data: {
-                    faq: newFaq,
-                    banners: srsState.cms.banners
-                }
-            })
+        const data = await saveCollectionRecord('cms', 'edit', {
+            faq: newFaq,
+            banners: srsState.cms.banners
         });
-        if ((await res.json()).success) {
+        if (data.success) {
             loadSrsData();
             showToast("FAQ atualizado!");
         }
@@ -2665,20 +2689,12 @@ async function sendMassNotificationPrompt() {
     const nowStr = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
     
     try {
-        const res = await fetch('/api/srs-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                collection: 'notifications',
-                action: 'create',
-                data: {
-                    type: 'Global',
-                    message: msg,
-                    timestamp: nowStr
-                }
-            })
+        const data = await saveCollectionRecord('notifications', 'create', {
+            type: 'Global',
+            message: msg,
+            timestamp: nowStr
         });
-        if ((await res.json()).success) {
+        if (data.success) {
             loadSrsData();
             showToast("Alerta disparado!");
         }
@@ -2753,12 +2769,8 @@ async function savePackageForm(event) {
     };
     
     try {
-        const res = await fetch('/api/srs-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if ((await res.json()).success) {
+        const data = await saveCollectionRecord('packages', 'create', payload.data);
+        if (data.success) {
             closeModal();
             loadSrsData();
             showToast("Pacote criado com sucesso!");
@@ -2769,16 +2781,8 @@ async function savePackageForm(event) {
 async function deletePackage(id) {
     if (confirm("Deseja excluir este pacote?")) {
         try {
-            const res = await fetch('/api/srs-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    collection: 'packages',
-                    action: 'delete',
-                    id: id
-                })
-            });
-            if ((await res.json()).success) {
+            const data = await saveCollectionRecord('packages', 'delete', { id: id });
+            if (data.success) {
                 loadSrsData();
                 showToast("Pacote excluído!");
             }
@@ -2825,6 +2829,119 @@ window.deletePackage = deletePackage;
 
 window.blockUser = blockUser;
 window.ignoreAlert = ignoreAlert;
+
+// --- FIREBASE SETTINGS PANEL CONTROLLERS ---
+
+function renderFirebasePanel() {
+    const indicator = document.getElementById('firebase-status-indicator');
+    const label = document.getElementById('firebase-status-label');
+    
+    if (window.firebaseEnabled) {
+        if (indicator) indicator.style.background = '#10B981'; // Green
+        if (label) label.textContent = 'Conectado à Nuvem (Google Firestore)';
+    } else {
+        if (indicator) indicator.style.background = '#F59E0B'; // Orange/Yellow
+        if (label) label.textContent = 'Desconectado (Modo Sandbox Local)';
+    }
+    
+    // Fill credentials form if saved
+    try {
+        const savedConfig = localStorage.getItem('c360_firebase_config');
+        if (savedConfig) {
+            const config = JSON.parse(savedConfig);
+            document.getElementById('fb-apiKey').value = config.apiKey || '';
+            document.getElementById('fb-authDomain').value = config.authDomain || '';
+            document.getElementById('fb-projectId').value = config.projectId || '';
+            document.getElementById('fb-storageBucket').value = config.storageBucket || '';
+            document.getElementById('fb-messagingSenderId').value = config.messagingSenderId || '';
+            document.getElementById('fb-appId').value = config.appId || '';
+        }
+    } catch(e) {
+        console.warn(e);
+    }
+}
+
+function handleFirebaseConfigSubmit(event) {
+    event.preventDefault();
+    const config = {
+        apiKey: document.getElementById('fb-apiKey').value.trim(),
+        authDomain: document.getElementById('fb-authDomain').value.trim(),
+        projectId: document.getElementById('fb-projectId').value.trim(),
+        storageBucket: document.getElementById('fb-storageBucket').value.trim(),
+        messagingSenderId: document.getElementById('fb-messagingSenderId').value.trim(),
+        appId: document.getElementById('fb-appId').value.trim()
+    };
+    saveFirebaseUiConfig(config);
+}
+
+function clearFirebaseConfig() {
+    if (confirm("Deseja realmente limpar as credenciais do Firebase e retornar ao Modo Sandbox Local?")) {
+        localStorage.removeItem('c360_firebase_config');
+        alert("Credenciais limpas! Reiniciando a aplicação...");
+        window.location.reload();
+    }
+}
+
+// Complete local SQLite/JSON database to Firestore Cloud migration script!
+async function syncLocalDbToFirestore() {
+    if (!window.firebaseEnabled) {
+        alert("Por favor, configure e ative o Firebase antes de iniciar a migração!");
+        return;
+    }
+    
+    if (!confirm("Isso irá migrar todos os dados locais do banco sandbox para o Firestore Cloud. Deseja prosseguir?")) {
+        return;
+    }
+    
+    showToast("Iniciando migração de dados locais...", false);
+    
+    try {
+        // Fetch all local records from local backend endpoint
+        const res = await fetch('/api/srs-data');
+        const localData = await res.json();
+        
+        // Fetch commercial settings
+        const commRes = await fetch('/api/commercial-settings');
+        const commData = await commRes.json();
+        
+        // Fetch refunds
+        const refRes = await fetch('/api/refunds');
+        const refundsData = await refRes.json();
+        
+        const migrations = [
+            { col: 'contracts', data: localData.contracts || [] },
+            { col: 'attractions', data: localData.attractions || [] },
+            { col: 'agencies', data: localData.agencies || [] },
+            { col: 'packages', data: localData.packages || [] },
+            { col: 'notifications', data: localData.notifications || [] },
+            { col: 'cms', data: localData.cms ? [localData.cms] : [] },
+            { col: 'commercialConditions', data: commData.commercialConditions || [] },
+            { col: 'financialInfo', data: commData.financialInfo || [] },
+            { col: 'refunds', data: refundsData || [] }
+        ];
+        
+        for (const m of migrations) {
+            showToast(`Migrando coleção '${m.col}' (${m.data.length} itens)...`, false);
+            for (const item of m.data) {
+                await saveCollectionRecord(m.col, 'create', item);
+            }
+        }
+        
+        showToast("Migração concluída! Todos os dados estão na nuvem Firestore.", false);
+        alert("Sucesso! Todos os dados locais foram exportados com sucesso para o banco de dados cloud Firestore.");
+        window.location.reload();
+    } catch (err) {
+        console.error("Migration error:", err);
+        alert("Erro durante a migração de banco: " + err.message);
+    }
+}
+
+// Bind to window for HTML calls
+window.renderFirebasePanel = renderFirebasePanel;
+window.handleFirebaseConfigSubmit = handleFirebaseConfigSubmit;
+window.clearFirebaseConfig = clearFirebaseConfig;
+window.syncLocalDbToFirestore = syncLocalDbToFirestore;
+
 
 
 
