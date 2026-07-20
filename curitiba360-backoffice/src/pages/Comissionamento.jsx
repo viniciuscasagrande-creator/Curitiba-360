@@ -2,142 +2,227 @@
 import { useState } from 'react';
 
 export default function Comissionamento() {
-  const [abaAtiva, setAbaAtiva] = useState('Pendentes');
-  const [termoBusca, setTermoBusca] = useState('');
+  // Simulando a visão da AGÊNCIA
+  const perfilLogado = 'AGENCIA';
 
-  // Mock de Dados de Repasses / Comissionamento
-  const [repasses, setRepasses] = useState([
-    { id: 1, destinatario: 'Parque Jaime Lerner S/A', tipo: 'Parceiro Comercial', cnpj: '12.345.678/0001-90', valor: 4500.00, chavePix: '12.345.678/0001-90', status: 'Pendentes', periodo: '01/07/2026 - 15/07/2026' },
-    { id: 2, destinatario: 'Tour CWB Agência', tipo: 'Agência de Turismo', cnpj: '98.765.432/0001-10', valor: 1545.00, chavePix: 'financeiro@tourcwb.com', status: 'Pendentes', periodo: '01/07/2026 - 15/07/2026' },
-    { id: 3, destinatario: 'Ópera de Arame', tipo: 'Parceiro Comercial', cnpj: '11.222.333/0001-44', valor: 8900.00, chavePix: 'financeiro@opera.com', status: 'Pagos', periodo: '15/06/2026 - 30/06/2026', dataPagamento: '05/07/2026' },
+  // --- Mock de Dados do Período Atual (RF-030.01 a RF-030.03) ---
+  const periodoAtual = {
+    dataInicio: '01/07/2026',
+    dataFimPrevista: '31/07/2026',
+    comissaoBruta: 1650.00,
+    deducoes: 105.00, // Referente a cancelamentos/reembolsos
+    comissaoLiquida: 1545.00
+  };
+
+  // --- Mock do Histórico de Períodos Fechados (RF-030.04 e RF-030.05) ---
+  const [historico, setHistorico] = useState([
+    { id: 1, periodo: 'Junho/2026', vendas: 12000.00, qtdIngressos: 240, comissaoBruta: 1200.00, deducoes: 0, comissaoLiquida: 1200.00, status: 'Repasse Pago' },
+    { id: 2, periodo: 'Maio/2026', vendas: 15000.00, qtdIngressos: 300, comissaoBruta: 1500.00, deducoes: 50.00, comissaoLiquida: 1450.00, status: 'Fechado' },
+    { id: 3, periodo: 'Abril/2026', vendas: 8000.00, qtdIngressos: 160, comissaoBruta: 800.00, deducoes: 0, comissaoLiquida: 800.00, status: 'Repasse Solicitado' },
+    { id: 4, periodo: 'Março/2026', vendas: 10000.00, qtdIngressos: 200, comissaoBruta: 1000.00, deducoes: 100.00, comissaoLiquida: 900.00, status: 'Em Contestação' }
   ]);
 
-  const repassesFiltrados = repasses.filter(r => {
-    const matchBusca = r.destinatario.toLowerCase().includes(termoBusca.toLowerCase()) || r.cnpj.includes(termoBusca);
-    const matchAba = abaAtiva === 'Todos' || r.status === abaAtiva;
-    return matchBusca && matchAba;
-  });
+  // Estados dos Modais (RF-030.11 e RF-030.16)
+  const [modalRepasse, setModalRepasse] = useState(null);
+  const [modalContestacao, setModalContestacao] = useState(null);
+  const [observacaoRepasse, setObservacaoRepasse] = useState('');
+  const [motivoContestacao, setMotivoContestacao] = useState('');
+  const [valorEsperado, setValorEsperado] = useState('');
 
-  const handlePagarRepasse = (id) => {
-    if (confirm("Confirmar a execução do pagamento via PIX integrado?")) {
-      setRepasses(repasses.map(r => r.id === id ? { ...r, status: 'Pagos', dataPagamento: new Date().toLocaleDateString('pt-BR') } : r));
-      alert("Pagamento processado com sucesso!");
+  // Badges de Status (RF-030.05)
+  const getBadgeStatus = (status) => {
+    switch(status) {
+      case 'Repasse Pago': return { bg: '#d1fae5', text: '#065f46' };
+      case 'Fechado': return { bg: '#dbeafe', text: '#1e40af' };
+      case 'Repasse Solicitado': return { bg: '#fef3c7', text: '#92400e' };
+      case 'Em Contestação': return { bg: '#fee2e2', text: '#991b1b' };
+      default: return { bg: '#f3f4f6', text: '#374151' };
     }
   };
 
-  // KPIs
-  const totalPendente = repasses.filter(r => r.status === 'Pendentes').reduce((acc, curr) => acc + curr.valor, 0);
-  const totalPago = repasses.filter(r => r.status === 'Pagos').reduce((acc, curr) => acc + curr.valor, 0);
+  // Funções de Ação
+  const handleSolicitarRepasse = (e) => {
+    e.preventDefault();
+    alert(`Repasse de R$ ${modalRepasse.comissaoLiquida} solicitado com sucesso! O status mudará para "Repasse Solicitado".`);
+    // Aqui chamaria o backend para alterar o status e notificar o Admin (RF-030.15)
+    setModalRepasse(null);
+  };
+
+  const handleContestar = (e) => {
+    e.preventDefault();
+    alert(`Contestação enviada! Status do período ${modalContestacao.periodo} mudará para "Em Contestação".`);
+    // Aqui chamaria o backend (RF-030.19)
+    setModalContestacao(null);
+  };
 
   return (
     <div>
       {/* CABEÇALHO */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Comissionamentos e Repasses (RF-030)</h1>
-        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie as comissões devidas a parceiros e agências de turismo e efetue os repasses financeiros</p>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Comissionamento e Repasse</h1>
+        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Acompanhe suas comissões e solicite repasses</p>
       </div>
 
-      {/* CARDS DE KPIS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #f59e0b', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total Pendente de Repasse</h3>
-          <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#b45309' }}>R$ {totalPendente.toFixed(2)}</p>
-          <small style={{ color: '#6b7280' }}>Refere-se ao ciclo de faturamento aberto.</small>
+      {/* PAINEL DO PERÍODO ATUAL (RF-030.01 a RF-030.03) */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem', border: '1px solid #e5e7eb' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
+          <div>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Período Atual em Aberto</h2>
+            <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>De {periodoAtual.dataInicio} até {periodoAtual.dataFimPrevista} (Previsão)</p>
+          </div>
+          <span style={{ padding: '0.25rem 0.75rem', backgroundColor: '#f3f4f6', borderRadius: '20px', fontSize: '0.875rem', fontWeight: 'bold', color: '#374151' }}>
+            Aguardando Fechamento
+          </span>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+          <div>
+            <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Comissão Bruta Acumulada</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>R$ {periodoAtual.comissaoBruta.toFixed(2)}</p>
+          </div>
+          <div>
+            <h3 style={{ fontSize: '0.875rem', color: '#ef4444' }}>Total de Deduções</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>- R$ {periodoAtual.deducoes.toFixed(2)}</p>
+            <small style={{ color: '#6b7280', fontSize: '0.75rem' }}>Cancelamentos/Reembolsos</small>
+          </div>
+          <div style={{ paddingLeft: '1.5rem', borderLeft: '2px solid #e5e7eb' }}>
+            <h3 style={{ fontSize: '0.875rem', color: '#10b981', fontWeight: 'bold' }}>Comissão Líquida a Receber</h3>
+            <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>R$ {periodoAtual.comissaoLiquida.toFixed(2)}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* HISTÓRICO DE PERÍODOS (RF-030.04) */}
+      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Histórico de Períodos Fechados</h2>
         </div>
         
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #10b981', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total Pago (Mês Atual)</h3>
-          <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#047857' }}>R$ {totalPago.toFixed(2)}</p>
-          <small style={{ color: '#6b7280' }}>Pagamentos liquidados com comprovante anexado.</small>
-        </div>
-      </div>
-
-      {/* ABAS E FILTROS */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', gap: '2rem' }}>
-          {['Pendentes', 'Pagos', 'Todos'].map(aba => (
-            <button 
-              key={aba}
-              onClick={() => setAbaAtiva(aba)}
-              style={{ 
-                padding: '0.5rem 0', border: 'none', background: 'none', cursor: 'pointer',
-                fontWeight: abaAtiva === aba ? 'bold' : 'normal',
-                borderBottom: abaAtiva === aba ? '2px solid #10b981' : '2px solid transparent',
-                color: abaAtiva === aba ? '#111827' : '#6b7280'
-              }}
-            >
-              {aba}
-            </button>
-          ))}
-        </div>
-
-        <input 
-          type="text" 
-          placeholder="Buscar Destinatário, CNPJ..." 
-          value={termoBusca}
-          onChange={(e) => setTermoBusca(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', width: '250px', marginBottom: '0.5rem' }}
-        />
-      </div>
-
-      {/* TABELA DE REPASSES */}
-      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ backgroundColor: '#f9fafb' }}>
-            <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
-              <th style={{ padding: '1rem' }}>Destinatário</th>
-              <th style={{ padding: '1rem' }}>Tipo</th>
-              <th style={{ padding: '1rem' }}>Período Ref.</th>
-              <th style={{ padding: '1rem' }}>Valor do Repasse</th>
-              <th style={{ padding: '1rem' }}>Dados Pix</th>
-              <th style={{ padding: '1rem' }}>Status</th>
-              {abaAtiva === 'Pendentes' && <th style={{ padding: '1rem', textAlign: 'center' }}>Ação</th>}
+            <tr>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Período</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Vendas (R$)</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Qtd Ingressos</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Comissão Bruta</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Deduções</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Comissão Líquida</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Status</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb', textAlign: 'center' }}>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {repassesFiltrados.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>Nenhum repasse registrado para os filtros selecionados.</td>
-              </tr>
-            ) : (
-              repassesFiltrados.map((rep) => (
-                <tr key={rep.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                  <td style={{ padding: '1rem' }}>
-                    <div style={{ fontWeight: 'bold' }}>{rep.destinatario}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>CNPJ: {rep.cnpj}</div>
-                  </td>
-                  <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{rep.tipo}</td>
-                  <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#6b7280' }}>{rep.periodo}</td>
-                  <td style={{ padding: '1rem', fontWeight: 'bold', color: '#111827' }}>R$ {rep.valor.toFixed(2)}</td>
-                  <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}>{rep.chavePix}</td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ 
-                      padding: '0.25rem 0.5rem', 
-                      borderRadius: '20px', 
-                      fontSize: '0.75rem', 
-                      fontWeight: 'bold',
-                      backgroundColor: rep.status === 'Pagos' ? '#d1fae5' : '#fef3c7',
-                      color: rep.status === 'Pagos' ? '#065f46' : '#92400e'
-                    }}>
-                      {rep.status === 'Pagos' ? `Pago em ${rep.dataPagamento}` : 'Aguardando Liberação'}
-                    </span>
-                  </td>
-                  {abaAtiva === 'Pendentes' && (
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <button 
-                        onClick={() => handlePagarRepasse(rep.id)}
-                        style={{ padding: '0.4rem 0.8rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.875rem' }}
-                      >
-                        Pagar PIX
-                      </button>
-                    </td>
+            {historico.map((h) => (
+              <tr key={h.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>{h.periodo}</td>
+                <td style={{ padding: '0.75rem' }}>R$ {h.vendas.toFixed(2)}</td>
+                <td style={{ padding: '0.75rem' }}>{h.qtdIngressos}</td>
+                <td style={{ padding: '0.75rem' }}>R$ {h.comissaoBruta.toFixed(2)}</td>
+                <td style={{ padding: '0.75rem', color: '#ef4444' }}>R$ {h.deducoes.toFixed(2)}</td>
+                <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#10b981' }}>R$ {h.comissaoLiquida.toFixed(2)}</td>
+                <td style={{ padding: '0.75rem' }}>
+                  <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', backgroundColor: getBadgeStatus(h.status).bg, color: getBadgeStatus(h.status).text }}>
+                    {h.status}
+                  </span>
+                </td>
+                <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                  {/* Botões de Ação (RF-030.09 e RF-030.10) */}
+                  {h.status === 'Fechado' && h.comissaoLiquida > 0 && (
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                      <button onClick={() => setModalRepasse(h)} style={{ padding: '0.25rem 0.5rem', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Solicitar Repasse</button>
+                      <button onClick={() => setModalContestacao(h)} style={{ padding: '0.25rem 0.5rem', backgroundColor: 'white', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Contestar</button>
+                    </div>
                   )}
-                </tr>
-              ))
-            )}
+                  {h.status !== 'Fechado' && (
+                    <button style={{ padding: '0.25rem 0.5rem', backgroundColor: 'white', color: '#6b7280', border: '1px solid #e5e7eb', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>Ver Detalhes</button>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      {/* MODAL DE SOLICITAÇÃO DE REPASSE (RF-030.11 a RF-030.15) */}
+      {modalRepasse && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', width: '100%', maxWidth: '500px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Solicitar Repasse - {modalRepasse.periodo}</h2>
+            <div style={{ padding: '1rem', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '4px', marginBottom: '1.5rem', textAlign: 'center' }}>
+              <p style={{ margin: 0, color: '#065f46', fontSize: '0.875rem' }}>Valor a ser repassado</p>
+              <h3 style={{ margin: 0, fontSize: '2rem', color: '#10b981' }}>R$ {modalRepasse.comissaoLiquida.toFixed(2)}</h3>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h4 style={{ fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Dados Bancários para Depósito</h4>
+              <div style={{ padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '4px', fontSize: '0.875rem', color: '#374151' }}>
+                <p style={{ margin: '0 0 0.25rem 0' }}><strong>Banco:</strong> 033 - Santander</p>
+                <p style={{ margin: '0 0 0.25rem 0' }}><strong>Agência:</strong> 1234 | <strong>Conta:</strong> 56789-0</p>
+                <p style={{ margin: 0 }}><strong>Titular:</strong> Turismo Curitiba 360 Ltda</p>
+              </div>
+              <a href="/perfil" style={{ display: 'inline-block', marginTop: '0.5rem', fontSize: '0.75rem', color: '#3b82f6', textDecoration: 'none' }}>Editar dados bancários</a>
+            </div>
+
+            <form onSubmit={handleSolicitarRepasse}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Observação (Opcional)</label>
+                <textarea 
+                  rows="3" 
+                  value={observacaoRepasse}
+                  onChange={(e) => setObservacaoRepasse(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
+                  placeholder="Alguma observação para o Administrador?"
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button type="button" onClick={() => setModalRepasse(null)} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Cancelar</button>
+                <button type="submit" style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Confirmar Solicitação</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CONTESTAÇÃO (RF-030.16 a RF-030.20) */}
+      {modalContestacao && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', width: '100%', maxWidth: '500px' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Contestar Valores - {modalContestacao.periodo}</h2>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem' }}>Se você encontrou alguma divergência nas comissões deste período, preencha os dados abaixo.</p>
+
+            <form onSubmit={handleContestar}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Valor Esperado (R$)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  required
+                  value={valorEsperado}
+                  onChange={(e) => setValorEsperado(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
+                  placeholder="Ex: 1500.00"
+                />
+              </div>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Motivo da Contestação *</label>
+                <textarea 
+                  rows="4" 
+                  required
+                  value={motivoContestacao}
+                  onChange={(e) => setMotivoContestacao(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
+                  placeholder="Detalhe os pedidos ou valores que estão incorretos..."
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button type="button" onClick={() => setModalContestacao(null)} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Cancelar</button>
+                <button type="submit" style={{ padding: '0.5rem 1rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Enviar Contestação</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
