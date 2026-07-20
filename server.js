@@ -156,6 +156,185 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // GET /api/commercial-settings
+    if (url.pathname === '/api/commercial-settings' && method === 'GET') {
+        const db = readDatabase();
+        const payload = {
+            commercialConditions: db.commercialConditions || [],
+            financialInfo: db.financialInfo || []
+        };
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(payload));
+        return;
+    }
+
+    // POST /api/commercial-conditions
+    if (url.pathname === '/api/commercial-conditions' && method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const reqData = JSON.parse(body);
+                const db = readDatabase();
+                db.commercialConditions = db.commercialConditions || [];
+                
+                // 1. DELETE Action
+                if (reqData.action === 'delete') {
+                    const idsToDelete = Array.isArray(reqData.ids) ? reqData.ids : [reqData.id];
+                    
+                    // Check if any is linked
+                    const linkedFound = db.commercialConditions.some(c => idsToDelete.includes(c.id) && c.linked);
+                    if (linkedFound) {
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: "Não é possível excluir condição vinculada a contrato" }));
+                        return;
+                    }
+                    
+                    db.commercialConditions = db.commercialConditions.filter(c => !idsToDelete.includes(c.id));
+                    writeDatabase(db);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                    return;
+                }
+                
+                // 2. INACTIVATE Action
+                if (reqData.action === 'inactivate') {
+                    const idsToInactivate = Array.isArray(reqData.ids) ? reqData.ids : [reqData.id];
+                    db.commercialConditions.forEach(c => {
+                        if (idsToInactivate.includes(c.id)) {
+                            c.status = 'Inativo';
+                        }
+                    });
+                    writeDatabase(db);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                    return;
+                }
+                
+                // 3. CREATE / EDIT Action
+                if (reqData.id) {
+                    // EDIT Mode
+                    const existing = db.commercialConditions.find(c => c.id === Number(reqData.id));
+                    if (!existing) {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: "Condição não encontrada" }));
+                        return;
+                    }
+                    if (existing.linked && reqData.nickname !== existing.nickname) {
+                        // Business rule: lock if linked (prevent changing structural properties, block editing linked)
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: "Não é possível editar condição vinculada a contrato vigente" }));
+                        return;
+                    }
+                    
+                    // Update fields
+                    existing.nickname = reqData.nickname;
+                    existing.type = reqData.type;
+                    existing.value = Number(reqData.value);
+                    existing.ccVista = Number(reqData.ccVista);
+                    existing.ccParcelado = Number(reqData.ccParcelado);
+                    existing.pix = Number(reqData.pix);
+                    existing.anticipation = Number(reqData.anticipation);
+                    existing.daysLimit = Number(reqData.daysLimit);
+                    existing.international = Number(reqData.international);
+                    existing.status = reqData.status || existing.status;
+                } else {
+                    // CREATE Mode
+                    const nextId = db.commercialConditions.reduce((max, c) => c.id > max ? c.id : max, 0) + 1;
+                    const newCond = {
+                        id: nextId,
+                        nickname: reqData.nickname,
+                        type: reqData.type,
+                        value: Number(reqData.value),
+                        ccVista: Number(reqData.ccVista),
+                        ccParcelado: Number(reqData.ccParcelado),
+                        pix: Number(reqData.pix),
+                        anticipation: Number(reqData.anticipation),
+                        daysLimit: Number(reqData.daysLimit),
+                        international: Number(reqData.international),
+                        status: reqData.status || 'Ativo',
+                        linked: false
+                    };
+                    db.commercialConditions.push(newCond);
+                }
+                
+                writeDatabase(db);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Malformed JSON body" }));
+            }
+        });
+        return;
+    }
+
+    // POST /api/financial-info
+    if (url.pathname === '/api/financial-info' && method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const reqData = JSON.parse(body);
+                const db = readDatabase();
+                db.financialInfo = db.financialInfo || [];
+                
+                // 1. DELETE Action
+                if (reqData.action === 'delete') {
+                    const idsToDelete = Array.isArray(reqData.ids) ? reqData.ids : [reqData.id];
+                    db.financialInfo = db.financialInfo.filter(f => !idsToDelete.includes(f.id));
+                    writeDatabase(db);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                    return;
+                }
+                
+                // 2. CREATE / EDIT Action
+                if (reqData.id) {
+                    // EDIT Mode
+                    const existing = db.financialInfo.find(f => f.id === Number(reqData.id));
+                    if (!existing) {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: "Regra financeira não encontrada" }));
+                        return;
+                    }
+                    existing.nickname = reqData.nickname;
+                    existing.status = reqData.status || existing.status;
+                    existing.withdrawAllowed = reqData.withdrawAllowed;
+                    existing.withdrawPct = Number(reqData.withdrawPct);
+                    existing.withdrawMax = Number(reqData.withdrawMax);
+                    existing.withdrawMinDays = Number(reqData.withdrawMinDays);
+                    existing.pixFee = reqData.pixFee;
+                    existing.tedFee = reqData.tedFee;
+                } else {
+                    // CREATE Mode
+                    const nextId = db.financialInfo.reduce((max, f) => f.id > max ? f.id : max, 0) + 1;
+                    const newInfo = {
+                        id: nextId,
+                        nickname: reqData.nickname,
+                        status: reqData.status || 'Ativo',
+                        withdrawAllowed: reqData.withdrawAllowed,
+                        withdrawPct: Number(reqData.withdrawPct),
+                        withdrawMax: Number(reqData.withdrawMax),
+                        withdrawMinDays: Number(reqData.withdrawMinDays),
+                        pixFee: reqData.pixFee,
+                        tedFee: reqData.tedFee,
+                        linked: false
+                    };
+                    db.financialInfo.push(newInfo);
+                }
+                
+                writeDatabase(db);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Malformed JSON body" }));
+            }
+        });
+        return;
+    }
+
     // POST /api/register
     if (url.pathname === '/api/register' && method === 'POST') {
         let body = '';

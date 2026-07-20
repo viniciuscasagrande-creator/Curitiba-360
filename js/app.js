@@ -58,6 +58,7 @@ const translations = {
         dashMenuHotels: "Heatmap de Hotéis",
         dashMenuDemographics: "Perfil do Turista",
         dashMenuIntegrations: "Integrações Externas",
+        dashMenuCommercial: "Configurações Comerciais",
         dashStatVisitors: "Visitantes Únicos",
         dashStatConversion: "Taxa de Conversão",
         dashStatRevenue: "Receita Turística",
@@ -161,6 +162,7 @@ const translations = {
         dashMenuHotels: "Hotel Heatmap",
         dashMenuDemographics: "Tourist Profile",
         dashMenuIntegrations: "External Integrations",
+        dashMenuCommercial: "Commercial Settings",
         dashStatVisitors: "Unique Visitors",
         dashStatConversion: "Conversion Rate",
         dashStatRevenue: "Tourism Revenue",
@@ -431,6 +433,7 @@ function switchDashboardTab(tabId) {
     const heatmapDiv = document.getElementById('dash-view-heatmap');
     const profileDiv = document.getElementById('dash-view-profile');
     const integrationsDiv = document.getElementById('dash-view-integrations');
+    const commercialDiv = document.getElementById('dash-view-commercial-settings');
     
     if (!overviewDiv || !heatmapDiv || !profileDiv) return;
     
@@ -438,6 +441,7 @@ function switchDashboardTab(tabId) {
     heatmapDiv.style.display = 'none';
     profileDiv.style.display = 'none';
     if (integrationsDiv) integrationsDiv.style.display = 'none';
+    if (commercialDiv) commercialDiv.style.display = 'none';
     
     if (tabId === 'overview') {
         overviewDiv.style.display = 'block';
@@ -447,6 +451,11 @@ function switchDashboardTab(tabId) {
         profileDiv.style.display = 'block';
     } else if (tabId === 'integrations') {
         if (integrationsDiv) integrationsDiv.style.display = 'block';
+    } else if (tabId === 'commercial-settings') {
+        if (commercialDiv) {
+            commercialDiv.style.display = 'block';
+            loadCommercialData();
+        }
     }
 }
 
@@ -747,4 +756,674 @@ function zoomDiagram() {
 window.testIntegration = testIntegration;
 window.switchDiagram = switchDiagram;
 window.zoomDiagram = zoomDiagram;
+
+// State variables for Commercial Settings
+let commercialState = {
+    conditions: [],
+    financials: [],
+    currentSubTab: 'conditions',
+    currentFinancialFilter: 'Ativo',
+    selectedConditionIds: [],
+    selectedFinancialIds: [],
+    conditionsPage: 1,
+    conditionsPageSize: 10
+};
+
+// Switch sub-tab between conditions and financial rules
+function switchCommercialSubTab(subTabId) {
+    commercialState.currentSubTab = subTabId;
+    
+    const condPanel = document.getElementById('commercial-subtab-conditions-panel');
+    const finPanel = document.getElementById('commercial-subtab-financial-panel');
+    const btnCond = document.getElementById('btn-subtab-conditions');
+    const btnFin = document.getElementById('btn-subtab-financial');
+    
+    if (subTabId === 'conditions') {
+        if (condPanel) condPanel.style.display = 'block';
+        if (finPanel) finPanel.style.display = 'none';
+        
+        btnCond.style.background = 'var(--primary-glow)';
+        btnCond.style.color = 'var(--primary)';
+        btnCond.style.border = '1px solid var(--primary)';
+        
+        btnFin.style.background = 'transparent';
+        btnFin.style.color = 'var(--text-secondary)';
+        btnFin.style.border = '1px solid var(--glass-border)';
+    } else {
+        if (condPanel) condPanel.style.display = 'none';
+        if (finPanel) finPanel.style.display = 'block';
+        
+        btnFin.style.background = 'var(--primary-glow)';
+        btnFin.style.color = 'var(--primary)';
+        btnFin.style.border = '1px solid var(--primary)';
+        
+        btnCond.style.background = 'transparent';
+        btnCond.style.color = 'var(--text-secondary)';
+        btnCond.style.border = '1px solid var(--glass-border)';
+        
+        renderFinancialsTable();
+    }
+}
+
+// Fetch Commercial Settings from backend API
+async function loadCommercialData() {
+    try {
+        const response = await fetch('/api/commercial-settings');
+        const data = await response.json();
+        commercialState.conditions = data.commercialConditions || [];
+        commercialState.financials = data.financialInfo || [];
+        
+        // Reset selections
+        commercialState.selectedConditionIds = [];
+        commercialState.selectedFinancialIds = [];
+        updateConditionsActionBar();
+        updateFinancialsActionBar();
+        
+        renderConditionsTable();
+        renderFinancialsTable();
+    } catch (err) {
+        console.error("Error loading commercial settings:", err);
+    }
+}
+
+// Render Commercial Conditions Table
+function renderConditionsTable() {
+    const tbody = document.getElementById('conditions-table-body');
+    if (!tbody) return;
+    
+    // Get filter values
+    const query = document.getElementById('cond-search').value.toLowerCase();
+    const filterStatus = document.getElementById('cond-filter-status').value;
+    const filterType = document.getElementById('cond-filter-type').value;
+    const filterDays = document.getElementById('cond-filter-days').value;
+    
+    // Filter conditions
+    let filtered = commercialState.conditions.filter(c => {
+        const matchesQuery = c.nickname.toLowerCase().includes(query) || String(c.id).includes(query);
+        const matchesStatus = filterStatus === 'Todos' || c.status === filterStatus;
+        const matchesType = filterType === 'Todos' || c.type === filterType;
+        const matchesDays = !filterDays || c.daysLimit <= Number(filterDays);
+        return matchesQuery && matchesStatus && matchesType && matchesDays;
+    });
+    
+    // Pagination
+    const totalRecords = filtered.length;
+    const size = Number(commercialState.conditionsPageSize);
+    const totalPages = Math.ceil(totalRecords / size) || 1;
+    if (commercialState.conditionsPage > totalPages) {
+        commercialState.conditionsPage = totalPages;
+    }
+    const startIdx = (commercialState.conditionsPage - 1) * size;
+    const paginated = filtered.slice(startIdx, startIdx + size);
+    
+    // Update pagination info
+    const endIdx = Math.min(startIdx + size, totalRecords);
+    const paginationText = totalRecords > 0 ? `${startIdx + 1} a ${endIdx} de ${totalRecords}` : '0 de 0';
+    document.getElementById('cond-pagination-info').textContent = paginationText;
+    
+    // Build rows
+    tbody.innerHTML = paginated.map(c => {
+        const isChecked = commercialState.selectedConditionIds.includes(c.id);
+        const statusBadge = c.status === 'Ativo' ? 
+            `<span class="section-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981; font-size: 10px; margin: 0; padding: 2px 6px;">Ativo</span>` :
+            `<span class="section-badge" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid #EF4444; font-size: 10px; margin: 0; padding: 2px 6px;">Inativo</span>`;
+        
+        const typeBadge = c.type === 'Porcentagem' ? 
+            `<span style="background: rgba(99, 102, 241, 0.1); color: #818CF8; border: 1px solid #818CF8; padding: 2px 6px; border-radius: 4px;">%</span>` : 
+            `<span style="background: rgba(16, 185, 129, 0.1); color: #34D399; border: 1px solid #34D399; padding: 2px 6px; border-radius: 4px;">R$</span>`;
+            
+        const valueFormatted = c.type === 'Porcentagem' ? `${c.value}%` : `R$ ${c.value.toFixed(2)}`;
+        const linkedBadge = c.linked ? 
+            `<span style="color: #60A5FA; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> Contrato</span>` : 
+            `<span style="color: var(--text-muted);">Livre</span>`;
+
+        return `
+            <tr style="border-bottom: 1px solid var(--glass-border); background: ${isChecked ? 'rgba(255, 75, 43, 0.05)' : 'transparent'}; transition: background 0.2s;">
+                <td style="padding: 12px 16px;"><input type="checkbox" ${isChecked ? 'checked' : ''} onclick="toggleConditionRow(${c.id}, this.checked)"></td>
+                <td style="padding: 12px; font-weight: 600;">${c.id}</td>
+                <td style="padding: 12px; font-weight: 700; color: #FFF;">${c.nickname}</td>
+                <td style="padding: 12px;">${statusBadge}</td>
+                <td style="padding: 12px;">${typeBadge}</td>
+                <td style="padding: 12px; font-weight: 600;">${valueFormatted}</td>
+                <td style="padding: 12px;">${c.ccVista}%</td>
+                <td style="padding: 12px;">${c.ccParcelado}%</td>
+                <td style="padding: 12px;">${c.pix}%</td>
+                <td style="padding: 12px;">${c.anticipation}%</td>
+                <td style="padding: 12px; font-weight: 600;">${c.daysLimit} dias</td>
+                <td style="padding: 12px;">${c.international}%</td>
+                <td style="padding: 12px; font-size: 11px;">${linkedBadge}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Toggle selection for a single condition row
+function toggleConditionRow(id, isChecked) {
+    if (isChecked) {
+        if (!commercialState.selectedConditionIds.includes(id)) {
+            commercialState.selectedConditionIds.push(id);
+        }
+    } else {
+        commercialState.selectedConditionIds = commercialState.selectedConditionIds.filter(cid => cid !== id);
+    }
+    
+    // Update check-all checkbox status
+    const allCheck = document.getElementById('cond-check-all');
+    if (allCheck) {
+        const paginatedIds = commercialState.conditions.map(c => c.id);
+        allCheck.checked = paginatedIds.length > 0 && paginatedIds.every(cid => commercialState.selectedConditionIds.includes(cid));
+    }
+    
+    updateConditionsActionBar();
+    renderConditionsTable();
+}
+
+// Toggle all conditions checkboxes
+function toggleAllConditions(checkbox) {
+    const isChecked = checkbox.checked;
+    
+    // Find filtered ids on screen
+    const query = document.getElementById('cond-search').value.toLowerCase();
+    const filterStatus = document.getElementById('cond-filter-status').value;
+    const filterType = document.getElementById('cond-filter-type').value;
+    const filterDays = document.getElementById('cond-filter-days').value;
+    
+    const visibleConditions = commercialState.conditions.filter(c => {
+        const matchesQuery = c.nickname.toLowerCase().includes(query) || String(c.id).includes(query);
+        const matchesStatus = filterStatus === 'Todos' || c.status === filterStatus;
+        const matchesType = filterType === 'Todos' || c.type === filterType;
+        const matchesDays = !filterDays || c.daysLimit <= Number(filterDays);
+        return matchesQuery && matchesStatus && matchesType && matchesDays;
+    });
+
+    visibleConditions.forEach(c => {
+        if (isChecked) {
+            if (!commercialState.selectedConditionIds.includes(c.id)) {
+                commercialState.selectedConditionIds.push(c.id);
+            }
+        } else {
+            commercialState.selectedConditionIds = commercialState.selectedConditionIds.filter(cid => cid !== c.id);
+        }
+    });
+    
+    updateConditionsActionBar();
+    renderConditionsTable();
+}
+
+// Update the floating action bar for conditions
+function updateConditionsActionBar() {
+    const bar = document.getElementById('cond-action-bar');
+    if (!bar) return;
+    
+    const count = commercialState.selectedConditionIds.length;
+    if (count > 0) {
+        bar.style.display = 'flex';
+        document.getElementById('cond-selected-count').textContent = count;
+        
+        // Rules: Edit button only if exactly 1 is selected
+        const btnEdit = document.getElementById('btn-cond-edit');
+        const btnCopy = document.getElementById('btn-cond-copy');
+        const btnDelete = document.getElementById('btn-cond-delete');
+        
+        if (count === 1) {
+            btnEdit.style.display = 'block';
+            btnCopy.style.display = 'block';
+            
+            // Check if selected is linked to a contract
+            const selectedCond = commercialState.conditions.find(c => c.id === commercialState.selectedConditionIds[0]);
+            if (selectedCond && selectedCond.linked) {
+                // Cannot edit linked conditions, show Warning or hide edit (specification says: "condições vinculadas exibe Copiar em vez de Editar")
+                btnEdit.style.display = 'none';
+            }
+        } else {
+            btnEdit.style.display = 'none';
+            btnCopy.style.display = 'none';
+        }
+        
+        // Delete button disabled/warning if any selected is linked
+        const anyLinkedSelected = commercialState.conditions.some(c => commercialState.selectedConditionIds.includes(c.id) && c.linked);
+        if (anyLinkedSelected) {
+            btnDelete.style.opacity = '0.5';
+            btnDelete.title = "Não é possível excluir condições vinculadas a contratos vigentes";
+        } else {
+            btnDelete.style.opacity = '1';
+            btnDelete.title = "";
+        }
+    } else {
+        bar.style.display = 'none';
+    }
+}
+
+// Filter Conditions Table Trigger
+function filterConditionsTable() {
+    commercialState.conditionsPage = 1;
+    renderConditionsTable();
+}
+
+// Change page size
+function changeConditionsPageSize(size) {
+    commercialState.conditionsPageSize = size;
+    commercialState.conditionsPage = 1;
+    renderConditionsTable();
+}
+
+// Page switcher
+function changeConditionsPage(dir) {
+    commercialState.conditionsPage += dir;
+    if (commercialState.conditionsPage < 1) commercialState.conditionsPage = 1;
+    renderConditionsTable();
+}
+
+// Update the field values label mask when selecting type dropdown
+function updateCondValueLabel(type) {
+    const label = document.getElementById('cond-val-label');
+    if (label) {
+        label.textContent = type === 'Porcentagem' ? 'Valor (%) *' : 'Valor (R$) *';
+    }
+}
+
+// Open modal for a new commercial condition
+function openConditionModal() {
+    document.getElementById('cond-modal-title').textContent = "Nova Condição Comercial";
+    document.getElementById('cond-form-id').value = "";
+    document.getElementById('condition-form').reset();
+    updateCondValueLabel('Porcentagem');
+    
+    // Show modal
+    document.getElementById('modal-overlay').style.display = 'flex';
+    document.getElementById('modal-checkout-view').style.display = 'none';
+    document.getElementById('modal-ticket-view').style.display = 'none';
+    document.getElementById('modal-financial-view').style.display = 'none';
+    document.getElementById('modal-condition-view').style.display = 'block';
+}
+
+// Handle Conditions Actions (Edit, Copy, Delete, Inactivate)
+async function handleConditionAction(action) {
+    const selectedIds = commercialState.selectedConditionIds;
+    if (selectedIds.length === 0) return;
+    
+    if (action === 'edit') {
+        const id = selectedIds[0];
+        const cond = commercialState.conditions.find(c => c.id === id);
+        if (!cond) return;
+        
+        // Show modal pre-filled
+        document.getElementById('cond-modal-title').textContent = "Editar Condição Comercial";
+        document.getElementById('cond-form-id').value = cond.id;
+        document.getElementById('cond-form-nickname').value = cond.nickname;
+        document.getElementById('cond-form-type').value = cond.type;
+        document.getElementById('cond-form-value').value = cond.value;
+        document.getElementById('cond-form-ccvista').value = cond.ccVista;
+        document.getElementById('cond-form-ccparcelado').value = cond.ccParcelado;
+        document.getElementById('cond-form-pix').value = cond.pix;
+        document.getElementById('cond-form-anticipation').value = cond.anticipation;
+        document.getElementById('cond-form-international').value = cond.international;
+        document.getElementById('cond-form-days').value = cond.daysLimit;
+        document.getElementById('cond-form-active').checked = cond.status === 'Ativo';
+        
+        updateCondValueLabel(cond.type);
+        
+        // Show modal
+        document.getElementById('modal-overlay').style.display = 'flex';
+        document.getElementById('modal-checkout-view').style.display = 'none';
+        document.getElementById('modal-ticket-view').style.display = 'none';
+        document.getElementById('modal-financial-view').style.display = 'none';
+        document.getElementById('modal-condition-view').style.display = 'block';
+    } else if (action === 'copy') {
+        const id = selectedIds[0];
+        const cond = commercialState.conditions.find(c => c.id === id);
+        if (!cond) return;
+        
+        // Same as edit, but clear the ID field to save as new record!
+        document.getElementById('cond-modal-title').textContent = "Nova Condição Comercial (Cópia)";
+        document.getElementById('cond-form-id').value = ""; // Clear ID
+        document.getElementById('cond-form-nickname').value = `${cond.nickname} (Cópia)`;
+        document.getElementById('cond-form-type').value = cond.type;
+        document.getElementById('cond-form-value').value = cond.value;
+        document.getElementById('cond-form-ccvista').value = cond.ccVista;
+        document.getElementById('cond-form-ccparcelado').value = cond.ccParcelado;
+        document.getElementById('cond-form-pix').value = cond.pix;
+        document.getElementById('cond-form-anticipation').value = cond.anticipation;
+        document.getElementById('cond-form-international').value = cond.international;
+        document.getElementById('cond-form-days').value = cond.daysLimit;
+        document.getElementById('cond-form-active').checked = cond.status === 'Ativo';
+        
+        updateCondValueLabel(cond.type);
+        
+        // Show modal
+        document.getElementById('modal-overlay').style.display = 'flex';
+        document.getElementById('modal-checkout-view').style.display = 'none';
+        document.getElementById('modal-ticket-view').style.display = 'none';
+        document.getElementById('modal-financial-view').style.display = 'none';
+        document.getElementById('modal-condition-view').style.display = 'block';
+    } else if (action === 'delete') {
+        const anyLinked = commercialState.conditions.some(c => selectedIds.includes(c.id) && c.linked);
+        if (anyLinked) {
+            alert(state.language === 'pt' ? "Erro: Não é possível excluir uma condição vinculada a contrato vigente!" : "Error: Cannot delete a condition linked to an active contract!");
+            return;
+        }
+        
+        if (confirm(state.language === 'pt' ? `Confirmar exclusão de ${selectedIds.length} condições comerciais?` : `Confirm deletion of ${selectedIds.length} commercial conditions?`)) {
+            const res = await fetch('/api/commercial-conditions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', ids: selectedIds })
+            });
+            if (res.ok) {
+                showToast(state.language === 'pt' ? "Condições excluídas com sucesso!" : "Conditions deleted successfully!");
+                loadCommercialData();
+            } else {
+                const data = await res.json();
+                alert(data.error || "Error deleting conditions");
+            }
+        }
+    } else if (action === 'inactivate') {
+        const res = await fetch('/api/commercial-conditions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'inactivate', ids: selectedIds })
+        });
+        if (res.ok) {
+            showToast(state.language === 'pt' ? "Condições inativadas com sucesso!" : "Conditions inactivated successfully!");
+            loadCommercialData();
+        } else {
+            alert("Error inactivating conditions");
+        }
+    }
+}
+
+// Save condition form handler
+async function saveConditionForm(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('cond-form-id').value;
+    const nickname = document.getElementById('cond-form-nickname').value;
+    const type = document.getElementById('cond-form-type').value;
+    const value = document.getElementById('cond-form-value').value;
+    const ccVista = document.getElementById('cond-form-ccvista').value;
+    const ccParcelado = document.getElementById('cond-form-ccparcelado').value;
+    const pix = document.getElementById('cond-form-pix').value;
+    const anticipation = document.getElementById('cond-form-anticipation').value;
+    const international = document.getElementById('cond-form-international').value;
+    const daysLimit = document.getElementById('cond-form-days').value;
+    const status = document.getElementById('cond-form-active').checked ? 'Ativo' : 'Inativo';
+    
+    const bodyPayload = {
+        nickname, type, value, ccVista, ccParcelado, pix, anticipation, international, daysLimit, status
+    };
+    if (id) {
+        bodyPayload.id = id;
+    }
+    
+    try {
+        const res = await fetch('/api/commercial-conditions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyPayload)
+        });
+        
+        if (res.ok) {
+            closeModal();
+            showToast(state.language === 'pt' ? "Condição Comercial salva com sucesso!" : "Commercial Condition saved successfully!");
+            loadCommercialData();
+        } else {
+            const data = await res.json();
+            alert(data.error || "Erro ao salvar condição");
+        }
+    } catch (err) {
+        console.error("Error saving condition:", err);
+    }
+}
+
+
+// --- FINANCIAL RULES METHODS (WF-011) ---
+
+// Switch filter by status
+function switchFinancialFilter(filterStatus) {
+    commercialState.currentFinancialFilter = filterStatus;
+    
+    // Toggle active state on subtab filter buttons
+    const btnActive = document.getElementById('btn-fin-tab-active');
+    const btnInactive = document.getElementById('btn-fin-tab-inactive');
+    const btnAll = document.getElementById('btn-fin-tab-all');
+    
+    [btnActive, btnInactive, btnAll].forEach(btn => {
+        if (btn) {
+            btn.style.background = 'transparent';
+            btn.style.borderColor = 'var(--glass-border)';
+        }
+    });
+    
+    let activeBtn;
+    if (filterStatus === 'Ativo') activeBtn = btnActive;
+    else if (filterStatus === 'Inativo') activeBtn = btnInactive;
+    else activeBtn = btnAll;
+    
+    if (activeBtn) {
+        activeBtn.style.background = 'var(--secondary-glow)';
+        activeBtn.style.borderColor = 'var(--secondary)';
+    }
+    
+    renderFinancialsTable();
+}
+
+// Render Financials Rules Table
+function renderFinancialsTable() {
+    const tbody = document.getElementById('financials-table-body');
+    if (!tbody) return;
+    
+    const statusFilter = commercialState.currentFinancialFilter;
+    
+    let filtered = commercialState.financials.filter(f => {
+        return statusFilter === 'Todos' || f.status === statusFilter;
+    });
+    
+    tbody.innerHTML = filtered.map(f => {
+        const isChecked = commercialState.selectedFinancialIds.includes(f.id);
+        const statusBadge = f.status === 'Ativo' ? 
+            `<span class="section-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981; font-size: 10px; margin: 0; padding: 2px 6px;">Ativo</span>` :
+            `<span class="section-badge" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid #EF4444; font-size: 10px; margin: 0; padding: 2px 6px;">Inativo</span>`;
+        
+        const linkedBadge = f.linked ? 
+            `<span style="color: #60A5FA; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> Contrato</span>` : 
+            `<span style="color: var(--text-muted);">Livre</span>`;
+
+        return `
+            <tr style="border-bottom: 1px solid var(--glass-border); background: ${isChecked ? 'rgba(255, 75, 43, 0.05)' : 'transparent'}; transition: background 0.2s;">
+                <td style="padding: 12px 16px;"><input type="checkbox" ${isChecked ? 'checked' : ''} onclick="toggleFinancialRow(${f.id}, this.checked)"></td>
+                <td style="padding: 12px; font-weight: 600;">${f.id}</td>
+                <td style="padding: 12px; font-weight: 700; color: #FFF;">${f.nickname}</td>
+                <td style="padding: 12px;">${statusBadge}</td>
+                <td style="padding: 12px; font-weight: 600; color: ${f.withdrawAllowed === 'Sim' ? '#34D399' : '#F87171'};">${f.withdrawAllowed}</td>
+                <td style="padding: 12px;">${f.withdrawPct}%</td>
+                <td style="padding: 12px; font-weight: 600;">R$ ${f.withdrawMax.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                <td style="padding: 12px; font-weight: 600;">${f.withdrawMinDays} dias</td>
+                <td style="padding: 12px;">${f.pixFee}</td>
+                <td style="padding: 12px;">${f.tedFee}</td>
+                <td style="padding: 12px; font-size: 11px;">${linkedBadge}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Toggle single row selection for financial info
+function toggleFinancialRow(id, isChecked) {
+    if (isChecked) {
+        if (!commercialState.selectedFinancialIds.includes(id)) {
+            commercialState.selectedFinancialIds.push(id);
+        }
+    } else {
+        commercialState.selectedFinancialIds = commercialState.selectedFinancialIds.filter(fid => fid !== id);
+    }
+    
+    const allCheck = document.getElementById('fin-check-all');
+    if (allCheck) {
+        const visibleIds = commercialState.financials.map(f => f.id);
+        allCheck.checked = visibleIds.length > 0 && visibleIds.every(fid => commercialState.selectedFinancialIds.includes(fid));
+    }
+    
+    updateFinancialsActionBar();
+    renderFinancialsTable();
+}
+
+// Toggle all financials checkboxes
+function toggleAllFinancials(checkbox) {
+    const isChecked = checkbox.checked;
+    
+    commercialState.financials.forEach(f => {
+        if (isChecked) {
+            if (!commercialState.selectedFinancialIds.includes(f.id)) {
+                commercialState.selectedFinancialIds.push(f.id);
+            }
+        } else {
+            commercialState.selectedFinancialIds = commercialState.selectedFinancialIds.filter(fid => fid !== f.id);
+        }
+    });
+    
+    updateFinancialsActionBar();
+    renderFinancialsTable();
+}
+
+// Update the floating action bar for financial rules
+function updateFinancialsActionBar() {
+    const bar = document.getElementById('fin-action-bar');
+    if (!bar) return;
+    
+    const count = commercialState.selectedFinancialIds.length;
+    if (count > 0) {
+        bar.style.display = 'flex';
+        document.getElementById('fin-selected-count').textContent = count;
+        
+        const btnEdit = document.getElementById('btn-fin-edit');
+        if (count === 1) {
+            btnEdit.style.display = 'block';
+        } else {
+            btnEdit.style.display = 'none';
+        }
+    } else {
+        bar.style.display = 'none';
+    }
+}
+
+// Open modal for a new financial rule
+function openFinancialModal() {
+    document.getElementById('fin-modal-title').textContent = "Nova Informação Financeira";
+    document.getElementById('fin-form-id').value = "";
+    document.getElementById('financial-form').reset();
+    
+    // Show modal
+    document.getElementById('modal-overlay').style.display = 'flex';
+    document.getElementById('modal-checkout-view').style.display = 'none';
+    document.getElementById('modal-ticket-view').style.display = 'none';
+    document.getElementById('modal-condition-view').style.display = 'none';
+    document.getElementById('modal-financial-view').style.display = 'block';
+}
+
+// Handle financial rule operations (Edit, Delete)
+async function handleFinancialAction(action) {
+    const selectedIds = commercialState.selectedFinancialIds;
+    if (selectedIds.length === 0) return;
+    
+    if (action === 'edit') {
+        const id = selectedIds[0];
+        const fin = commercialState.financials.find(f => f.id === id);
+        if (!fin) return;
+        
+        document.getElementById('fin-modal-title').textContent = "Editar Informação Financeira";
+        document.getElementById('fin-form-id').value = fin.id;
+        document.getElementById('fin-form-nickname').value = fin.nickname;
+        document.getElementById('fin-form-status').value = fin.status;
+        document.getElementById('fin-form-allowed').value = fin.withdrawAllowed;
+        document.getElementById('fin-form-pct').value = fin.withdrawPct;
+        document.getElementById('fin-form-max').value = fin.withdrawMax;
+        document.getElementById('fin-form-mindays').value = fin.withdrawMinDays;
+        document.getElementById('fin-form-pixfee').value = fin.pixFee;
+        document.getElementById('fin-form-tedfee').value = fin.tedFee;
+        
+        // Show modal
+        document.getElementById('modal-overlay').style.display = 'flex';
+        document.getElementById('modal-checkout-view').style.display = 'none';
+        document.getElementById('modal-ticket-view').style.display = 'none';
+        document.getElementById('modal-condition-view').style.display = 'none';
+        document.getElementById('modal-financial-view').style.display = 'block';
+    } else if (action === 'delete') {
+        if (confirm(state.language === 'pt' ? `Confirmar exclusão de ${selectedIds.length} regras financeiras?` : `Confirm deletion of ${selectedIds.length} financial rules?`)) {
+            const res = await fetch('/api/financial-info', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', ids: selectedIds })
+            });
+            if (res.ok) {
+                showToast(state.language === 'pt' ? "Informações financeiras excluídas com sucesso!" : "Financial information deleted successfully!");
+                loadCommercialData();
+            } else {
+                alert("Error deleting financial information");
+            }
+        }
+    }
+}
+
+// Save financial rule form handler
+async function saveFinancialForm(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('fin-form-id').value;
+    const nickname = document.getElementById('fin-form-nickname').value;
+    const status = document.getElementById('fin-form-status').value;
+    const withdrawAllowed = document.getElementById('fin-form-allowed').value;
+    const withdrawPct = document.getElementById('fin-form-pct').value;
+    const withdrawMax = document.getElementById('fin-form-max').value;
+    const withdrawMinDays = document.getElementById('fin-form-mindays').value;
+    const pixFee = document.getElementById('fin-form-pixfee').value;
+    const tedFee = document.getElementById('fin-form-tedfee').value;
+    
+    const bodyPayload = {
+        nickname, status, withdrawAllowed, withdrawPct, withdrawMax, withdrawMinDays, pixFee, tedFee
+    };
+    if (id) {
+        bodyPayload.id = id;
+    }
+    
+    try {
+        const res = await fetch('/api/financial-info', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyPayload)
+        });
+        
+        if (res.ok) {
+            closeModal();
+            showToast(state.language === 'pt' ? "Regra financeira salva com sucesso!" : "Financial rule saved successfully!");
+            loadCommercialData();
+        } else {
+            alert("Erro ao salvar regra financeira");
+        }
+    } catch (err) {
+        console.error("Error saving financial rule:", err);
+    }
+}
+
+// Bind to window to allow direct HTML calls
+window.testIntegration = testIntegration;
+window.switchDiagram = switchDiagram;
+window.zoomDiagram = zoomDiagram;
+
+window.switchCommercialSubTab = switchCommercialSubTab;
+window.filterConditionsTable = filterConditionsTable;
+window.changeConditionsPageSize = changeConditionsPageSize;
+window.changeConditionsPage = changeConditionsPage;
+window.toggleAllConditions = toggleAllConditions;
+window.toggleConditionRow = toggleConditionRow;
+window.openConditionModal = openConditionModal;
+window.updateCondValueLabel = updateCondValueLabel;
+window.saveConditionForm = saveConditionForm;
+window.handleConditionAction = handleConditionAction;
+
+window.switchFinancialFilter = switchFinancialFilter;
+window.toggleAllFinancials = toggleAllFinancials;
+window.toggleFinancialRow = toggleFinancialRow;
+window.openFinancialModal = openFinancialModal;
+window.handleFinancialAction = handleFinancialAction;
+window.saveFinancialForm = saveFinancialForm;
+
 

@@ -424,6 +424,10 @@
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
                         <span data-t="dashMenuIntegrations">Integrações Externas</span>
                     </div>
+                    <div class="dashboard-menu-item" data-dash-tab="commercial-settings">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span data-t="dashMenuCommercial">Configurações Comerciais</span>
+                    </div>
                 </div>
                 
                 <!-- Content panel -->
@@ -600,7 +604,171 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- TAB 5: CONFIGURAÇÕES COMERCIAIS (WF-009 / WF-010 / WF-011) -->
+                    <div id="dash-view-commercial-settings" style="display: none;">
+                        <!-- Sub-navigation for Commercial Settings -->
+                        <div style="display: flex; gap: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px; margin-bottom: 24px;">
+                            <button type="button" class="btn-secondary" id="btn-subtab-conditions" style="border-radius: 20px; padding: 8px 20px; font-weight: 700; background: var(--primary-glow); color: var(--primary); border: 1px solid var(--primary);" onclick="switchCommercialSubTab('conditions')">
+                                Condições Comerciais (WF-009/10)
+                            </button>
+                            <button type="button" class="btn-secondary" id="btn-subtab-financial" style="border-radius: 20px; padding: 8px 20px; font-weight: 700; background: transparent; border: 1px solid var(--glass-border);" onclick="switchCommercialSubTab('financial')">
+                                Informações Financeiras (WF-011)
+                            </button>
+                        </div>
+
+                        <!-- SUB-TAB 1: CONDIÇÕES COMERCIAIS -->
+                        <div id="commercial-subtab-conditions-panel">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap;">
+                                <div>
+                                    <h3 style="font-weight: 700; margin-bottom: 4px;">Condições Comerciais</h3>
+                                    <p style="color: var(--text-secondary); font-size: 13px;">Definição de regras de faturamento, prazos de repasse e taxas dos meios de pagamento.</p>
+                                </div>
+                                <button type="button" class="btn-primary" onclick="openConditionModal()">
+                                    + Adicionar Condição
+                                </button>
+                            </div>
+
+                            <!-- Search and Filters Bar -->
+                            <div class="glass-panel" style="padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr; gap: 12px; align-items: end;">
+                                <div>
+                                    <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Buscar por Apelido ou ID</label>
+                                    <input type="text" id="cond-search" class="input-custom" placeholder="Digite ID ou apelido..." oninput="filterConditionsTable()" style="padding: 8px 12px; font-size: 12px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Status</label>
+                                    <select id="cond-filter-status" class="select-custom" onchange="filterConditionsTable()" style="padding: 8px; font-size: 12px;">
+                                        <option value="Todos">Todos</option>
+                                        <option value="Ativo">Ativo</option>
+                                        <option value="Inativo">Inativo</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Tipo</label>
+                                    <select id="cond-filter-type" class="select-custom" onchange="filterConditionsTable()" style="padding: 8px; font-size: 12px;">
+                                        <option value="Todos">Todos</option>
+                                        <option value="Porcentagem">Porcentagem</option>
+                                        <option value="Valor">Valor</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; margin-bottom: 6px; display: block; font-weight: 700; color: var(--text-secondary);">Prazo Pagamento (Máx)</label>
+                                    <input type="number" id="cond-filter-days" class="input-custom" placeholder="Dias limite..." oninput="filterConditionsTable()" style="padding: 8px 12px; font-size: 12px;">
+                                </div>
+                            </div>
+
+                            <!-- Conditions Table Wrapper -->
+                            <div style="overflow-x: auto; background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;" class="dashboard-table">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.02);">
+                                            <th style="padding: 12px 16px; width: 40px;"><input type="checkbox" id="cond-check-all" onclick="toggleAllConditions(this)"></th>
+                                            <th style="padding: 12px; font-weight: 700; width: 60px;">ID</th>
+                                            <th style="padding: 12px; font-weight: 700;">Apelido</th>
+                                            <th style="padding: 12px; font-weight: 700;">Status</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tipo</th>
+                                            <th style="padding: 12px; font-weight: 700;">Valor</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tx C.C. À Vista</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tx C.C. Parc</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tx Pix</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tx Antecipação</th>
+                                            <th style="padding: 12px; font-weight: 700;">Prazo</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tx Int.</th>
+                                            <th style="padding: 12px; font-weight: 700; width: 90px;">Vínculo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="conditions-table-body">
+                                        <!-- Injected via javascript -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Custom Table Pagination -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 12px; color: var(--text-secondary);">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span>Mostrar</span>
+                                    <select id="cond-page-size" class="select-custom" onchange="changeConditionsPageSize(this.value)" style="width: auto; padding: 4px 8px; font-size: 11px;">
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                    <span>registros</span>
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <button type="button" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="changeConditionsPage(-1)">Anterior</button>
+                                    <span id="cond-pagination-info">1 a 3 de 3</span>
+                                    <button type="button" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="changeConditionsPage(1)">Próxima</button>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Floating Action Bar (Enables when rows are selected) -->
+                            <div id="cond-action-bar" class="glass-panel" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; padding: 12px 24px; border: 1px solid var(--primary); box-shadow: 0 8px 32px rgba(255, 75, 43, 0.2); justify-content: space-between; align-items: center; z-index: 100; border-radius: 12px; flex-direction: row;">
+                                <div style="font-weight: 700; font-size: 13px;"><span id="cond-selected-count">0</span> selecionados</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px;" id="btn-cond-edit" onclick="handleConditionAction('edit')">Editar</button>
+                                    <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px;" id="btn-cond-copy" onclick="handleConditionAction('copy')">Copiar</button>
+                                    <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; background: rgba(245,158,11,0.1); color: #F59E0B; border: 1px solid #F59E0B;" onclick="handleConditionAction('inactivate')">Inativar</button>
+                                    <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid #EF4444;" id="btn-cond-delete" onclick="handleConditionAction('delete')">Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-TAB 2: INFORMAÇÕES FINANCEIRAS -->
+                        <div id="commercial-subtab-financial-panel" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap;">
+                                <div>
+                                    <h3 style="font-weight: 700; margin-bottom: 4px;">Informações Financeiras</h3>
+                                    <p style="color: var(--text-secondary); font-size: 13px;">Regras de saques, limites diários, tempos de carência e taxas de transferência (TED/Pix).</p>
+                                </div>
+                                <button type="button" class="btn-primary" onclick="openFinancialModal()">
+                                    + Adicionar Informação Financeira
+                                </button>
+                            </div>
+
+                            <!-- Sub-tabs: Ativos / Inativos / Todos -->
+                            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--text-secondary); align-self: center; margin-right: 8px;">Status:</span>
+                                <button type="button" class="btn-secondary" id="btn-fin-tab-active" style="padding: 4px 12px; font-size: 11px; background: var(--secondary-glow); border-color: var(--secondary);" onclick="switchFinancialFilter('Ativo')">Ativos</button>
+                                <button type="button" class="btn-secondary" id="btn-fin-tab-inactive" style="padding: 4px 12px; font-size: 11px;" onclick="switchFinancialFilter('Inativo')">Inativos</button>
+                                <button type="button" class="btn-secondary" id="btn-fin-tab-all" style="padding: 4px 12px; font-size: 11px;" onclick="switchFinancialFilter('Todos')">Todos</button>
+                            </div>
+
+                            <!-- Financial Rules Table Wrapper -->
+                            <div style="overflow-x: auto; background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;" class="dashboard-table">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.02);">
+                                            <th style="padding: 12px 16px; width: 40px;"><input type="checkbox" id="fin-check-all" onclick="toggleAllFinancials(this)"></th>
+                                            <th style="padding: 12px; font-weight: 700; width: 60px;">ID</th>
+                                            <th style="padding: 12px; font-weight: 700;">Apelido</th>
+                                            <th style="padding: 12px; font-weight: 700;">Status</th>
+                                            <th style="padding: 12px; font-weight: 700;">Saque Liberado</th>
+                                            <th style="padding: 12px; font-weight: 700;">% Liberado</th>
+                                            <th style="padding: 12px; font-weight: 700;">Valor Máx Saque</th>
+                                            <th style="padding: 12px; font-weight: 700;">Tempo Mín Saque</th>
+                                            <th style="padding: 12px; font-weight: 700;">Taxa Pix</th>
+                                            <th style="padding: 12px; font-weight: 700;">Taxa TED</th>
+                                            <th style="padding: 12px; font-weight: 700; width: 90px;">Vínculo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="financials-table-body">
+                                        <!-- Injected via javascript -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Financial Bottom Action Bar -->
+                            <div id="fin-action-bar" class="glass-panel" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; padding: 12px 24px; border: 1px solid var(--primary); box-shadow: 0 8px 32px rgba(255, 75, 43, 0.2); justify-content: space-between; align-items: center; z-index: 100; border-radius: 12px; flex-direction: row;">
+                                <div style="font-weight: 700; font-size: 13px;"><span id="fin-selected-count">0</span> selecionados</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px;" id="btn-fin-edit" onclick="handleFinancialAction('edit')">Editar</button>
+                                    <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 11px; background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid #EF4444;" onclick="handleFinancialAction('delete')">Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </section>
@@ -707,6 +875,142 @@
             </div>
             
             <button onclick="closeModal()" class="btn-primary" style="width: 100%; justify-content: center;" data-t="ticketClose">Fechar e Salvar</button>
+        </div>
+
+        <!-- CARD 3: NEW/EDIT COMMERCIAL CONDITION (WF-010) -->
+        <div class="modal-card glass-panel" id="modal-condition-view" style="display: none; max-width: 650px; padding: 28px;">
+            <span class="modal-close" onclick="closeModal()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </span>
+            <h2 id="cond-modal-title">Nova Condição Comercial</h2>
+            <p class="subtitle" style="font-size: 12px; margin-bottom: 20px; color: var(--text-secondary);">Preencha os campos obrigatórios para adicionar uma condição comercial.</p>
+            
+            <form id="condition-form" onsubmit="saveConditionForm(event)">
+                <input type="hidden" id="cond-form-id">
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Apelido *</label>
+                        <input type="text" id="cond-form-nickname" class="input-custom" required placeholder="Ex: Parceria Batel VIP" style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tipo *</label>
+                        <select id="cond-form-type" class="select-custom" required onchange="updateCondValueLabel(this.value)" style="padding: 9px; font-size: 13px;">
+                            <option value="Porcentagem">Porcentagem</option>
+                            <option value="Valor">Valor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label id="cond-val-label" style="font-size: 11px; margin-bottom: 4px; display: block;">Valor (%) *</label>
+                        <input type="number" step="0.01" id="cond-form-value" class="input-custom" required style="padding: 10px; font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tx. C.Crédito Vista (%) *</label>
+                        <input type="number" step="0.01" id="cond-form-ccvista" class="input-custom" required style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tx. C.Crédito Parc (%) *</label>
+                        <input type="number" step="0.01" id="cond-form-ccparcelado" class="input-custom" required style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tx. Pix (%) *</label>
+                        <input type="number" step="0.01" id="cond-form-pix" class="input-custom" required style="padding: 10px; font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tx. Antecipação (%) *</label>
+                        <input type="number" step="0.01" id="cond-form-anticipation" class="input-custom" required style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tx. Internacional (%) *</label>
+                        <input type="number" step="0.01" id="cond-form-international" class="input-custom" required style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Prazo Pagamento (dias) *</label>
+                        <input type="number" id="cond-form-days" class="input-custom" required value="30" style="padding: 10px; font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 24px;">
+                    <input type="checkbox" id="cond-form-active" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                    <label for="cond-form-active" style="margin-bottom: 0; font-weight: 600; font-size: 12px; cursor: pointer;">Status Ativo (Liberado para novos contratos)</label>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <button type="button" class="btn-secondary" onclick="closeModal()" style="padding: 10px 20px;">Descartar</button>
+                    <button type="submit" class="btn-primary" style="padding: 10px 24px;">Salvar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- CARD 4: NEW/EDIT FINANCIAL INFO (WF-011 Modal) -->
+        <div class="modal-card glass-panel" id="modal-financial-view" style="display: none; max-width: 600px; padding: 28px;">
+            <span class="modal-close" onclick="closeModal()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </span>
+            <h2 id="fin-modal-title">Nova Informação Financeira</h2>
+            <p class="subtitle" style="font-size: 12px; margin-bottom: 20px; color: var(--text-secondary);">Preencha as regras de saque e taxas de transferência para o parceiro comercial.</p>
+            
+            <form id="financial-form" onsubmit="saveFinancialForm(event)">
+                <input type="hidden" id="fin-form-id">
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Apelido da Regra *</label>
+                        <input type="text" id="fin-form-nickname" class="input-custom" required placeholder="Ex: Regra Geral de Repasse Batel" style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Status *</label>
+                        <select id="fin-form-status" class="select-custom" required style="padding: 9px; font-size: 13px;">
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Liberar Saque? *</label>
+                        <select id="fin-form-allowed" class="select-custom" required style="padding: 9px; font-size: 13px;">
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">% Liberado para Saque *</label>
+                        <input type="number" id="fin-form-pct" class="input-custom" required value="100" min="0" max="100" style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Valor Máximo Saque (R$) *</label>
+                        <input type="number" step="0.01" id="fin-form-max" class="input-custom" required value="50000" style="padding: 10px; font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Tempo Mín. Saque (Dias) *</label>
+                        <input type="number" id="fin-form-mindays" class="input-custom" required value="7" style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Taxa Transferência Pix *</label>
+                        <input type="text" id="fin-form-pixfee" class="input-custom" required value="Não" placeholder="Ex: Não ou Sim (2%)" style="padding: 10px; font-size: 13px;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 11px; margin-bottom: 4px; display: block;">Taxa Transferência TED *</label>
+                        <input type="text" id="fin-form-tedfee" class="input-custom" required value="Sim (R$ 5,00)" placeholder="Ex: Sim (R$ 5,00) ou Não" style="padding: 10px; font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <button type="button" class="btn-secondary" onclick="closeModal()" style="padding: 10px 20px;">Descartar</button>
+                    <button type="submit" class="btn-primary" style="padding: 10px 24px;">Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 

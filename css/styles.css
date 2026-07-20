@@ -1375,3 +1375,41 @@ header .nav-container {
         grid-template-columns: 1fr;
     }
 }
+
+/* Dashboard Table Styling */
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.dashboard-table th {
+    padding: 14px 16px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.dashboard-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    vertical-align: middle;
+}
+
+.dashboard-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.dashboard-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+

@@ -60,5 +60,75 @@
       "code": "C360-928173",
       "date": "20/07/2026"
     }
+  ],
+  "commercialConditions": [
+    {
+      "id": 1,
+      "nickname": "Parceria Padrão Batel",
+      "status": "Ativo",
+      "type": "Porcentagem",
+      "value": 10.0,
+      "ccVista": 2.5,
+      "ccParcelado": 3.8,
+      "pix": 0.9,
+      "anticipation": 1.5,
+      "daysLimit": 30,
+      "international": 4.5,
+      "linked": true
+    },
+    {
+      "id": 2,
+      "nickname": "Acordo Especial Hard Rock",
+      "status": "Ativo",
+      "type": "Porcentagem",
+      "value": 15.0,
+      "ccVista": 2.2,
+      "ccParcelado": 3.5,
+      "pix": 0.5,
+      "anticipation": 1.2,
+      "daysLimit": 15,
+      "international": 4.0,
+      "linked": true
+    },
+    {
+      "id": 3,
+      "nickname": "Taxa Promocional Inverno",
+      "status": "Inativo",
+      "type": "Porcentagem",
+      "value": 8.0,
+      "ccVista": 2.8,
+      "ccParcelado": 4.0,
+      "pix": 1.0,
+      "anticipation": 2.0,
+      "daysLimit": 45,
+      "international": 5.0,
+      "linked": false
+    }
+  ],
+  "financialInfo": [
+    {
+      "id": 1,
+      "nickname": "Regra Geral de Repasse",
+      "status": "Ativo",
+      "withdrawAllowed": "Sim",
+      "withdrawPct": 100,
+      "withdrawMax": 50000.0,
+      "withdrawMinDays": 7,
+      "pixFee": "Não",
+      "tedFee": "Sim (R$ 5,00)",
+      "linked": true
+    },
+    {
+      "id": 2,
+      "nickname": "Parceiro Master VIP",
+      "status": "Ativo",
+      "withdrawAllowed": "Sim",
+      "withdrawPct": 100,
+      "withdrawMax": 200000.0,
+      "withdrawMinDays": 2,
+      "pixFee": "Sim (2%)",
+      "tedFee": "Não",
+      "linked": true
+    }
   ]
 }
