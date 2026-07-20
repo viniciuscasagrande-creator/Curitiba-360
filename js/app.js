@@ -539,20 +539,36 @@ function processCheckout() {
     const ticketCode = "C360-" + Math.floor(100000 + Math.random() * 900000);
     const dateStr = new Date().toLocaleDateString(state.language === 'pt' ? 'pt-BR' : 'en-US');
     
+    const payload = {
+        name,
+        email,
+        origin,
+        days,
+        reason,
+        hotel,
+        packageKey: pkg.key,
+        pricePaid: pkg.price,
+        code: ticketCode,
+        date: dateStr
+    };
+
+    // Save to Database Server
+    fetch('api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Database write success:", data);
+    })
+    .catch(err => {
+        console.error("Database write failed:", err);
+    });
+
     // Save live registration for Dashboard Analytics
     if (window.addLiveRegistration) {
-        window.addLiveRegistration({
-            name,
-            email,
-            origin,
-            days,
-            reason,
-            hotel,
-            packageKey: pkg.key,
-            pricePaid: pkg.price,
-            code: ticketCode,
-            date: dateStr
-        });
+        window.addLiveRegistration(payload);
     }
     
     // Update digital ticket UI elements

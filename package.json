@@ -4,7 +4,7 @@
   "description": "Curitiba360 - Plataforma de Integração Cultural e Desenvolvimento de Turismo",
   "main": "index.html",
   "scripts": {
-    "dev": "npx -y http-server . -p 3000 -o"
+    "dev": "node server.js"
   },
   "keywords": [
     "curitiba",

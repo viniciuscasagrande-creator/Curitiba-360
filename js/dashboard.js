@@ -49,10 +49,46 @@ const dashboardData = {
 let liveRegistrations = [];
 
 function initDashboard() {
-    renderStatsSummary();
-    renderChannelChart();
-    renderHotelHeatmap();
-    renderDemographicChart();
+    // Fetch stats from local database server
+    fetch('api/dashboard')
+        .then(res => res.json())
+        .then(data => {
+            // Update dashboardData object values with server calculated values
+            dashboardData.visitorsTotal = data.stats.visitorsTotal;
+            dashboardData.revenueTotal = data.stats.revenueTotal;
+            dashboardData.conversionRate = data.stats.conversionRate;
+            
+            // Merge hotels data
+            data.stats.hotels.forEach(h => {
+                const match = dashboardData.hotels.find(dh => dh.name === h.name);
+                if (match) {
+                    match.scans = h.scans;
+                    match.percentage = h.percentage;
+                }
+            });
+            
+            // Merge origins data
+            data.stats.origins.forEach(o => {
+                const match = dashboardData.touristProfile.origins.find(do_ => do_.name === o.name);
+                if (match) {
+                    match.value = o.value;
+                }
+            });
+            
+            // Render graphics
+            renderStatsSummary();
+            renderChannelChart();
+            renderHotelHeatmap();
+            renderDemographicChart();
+        })
+        .catch(err => {
+            console.error("Failed to load dashboard data from database:", err);
+            // Fallback rendering
+            renderStatsSummary();
+            renderChannelChart();
+            renderHotelHeatmap();
+            renderDemographicChart();
+        });
 }
 
 function renderStatsSummary() {

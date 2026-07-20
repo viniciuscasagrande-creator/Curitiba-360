@@ -1,0 +1,64 @@
+{
+  "registrations": [
+    {
+      "name": "Sofia Silva",
+      "email": "sofia.silva@example.com",
+      "origin": "São Paulo",
+      "days": "3-5 dias",
+      "reason": "leisure",
+      "hotel": "Hotel Pestana Curitiba",
+      "packageKey": "gastronomic",
+      "pricePaid": 199.0,
+      "code": "C360-847291",
+      "date": "20/07/2026"
+    },
+    {
+      "name": "Marcos Oliveira",
+      "email": "marcos.o@example.com",
+      "origin": "Rio de Janeiro",
+      "days": "1-2 dias",
+      "reason": "business",
+      "hotel": "Radisson Hotel Curitiba",
+      "packageKey": "historic",
+      "pricePaid": 99.0,
+      "code": "C360-128492",
+      "date": "19/07/2026"
+    },
+    {
+      "name": "Ana Paula Souza",
+      "email": "ana.souza@example.com",
+      "origin": "São Paulo",
+      "days": "3-5 dias",
+      "reason": "leisure",
+      "hotel": "Hotel Pestana Curitiba",
+      "packageKey": "green",
+      "pricePaid": 75.0,
+      "code": "C360-492718",
+      "date": "20/07/2026"
+    },
+    {
+      "name": "John Doe",
+      "email": "john.d@example.com",
+      "origin": "Internacional",
+      "days": "6-9 dias",
+      "reason": "leisure",
+      "hotel": "Grand Hotel Rayon",
+      "packageKey": "gastronomic",
+      "pricePaid": 199.0,
+      "code": "C360-391827",
+      "date": "18/07/2026"
+    },
+    {
+      "name": "Camila Schmidt",
+      "email": "camila.s@example.com",
+      "origin": "Santa Catarina",
+      "days": "3-5 dias",
+      "reason": "leisure",
+      "hotel": "Novotel Curitiba Batel",
+      "packageKey": "green",
+      "pricePaid": 75.0,
+      "code": "C360-928173",
+      "date": "20/07/2026"
+    }
+  ]
+}
