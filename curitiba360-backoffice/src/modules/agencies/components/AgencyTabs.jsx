@@ -1,11 +1,12 @@
 import React from 'react';
-import { Building2, CheckCircle2, Clock, AlertTriangle, XCircle } from 'lucide-react';
+import { Building2, CheckCircle2, Clock, AlertTriangle, XCircle, ShieldAlert } from 'lucide-react';
 
 export default function AgencyTabs({ activeTab, onSelectTab, counts = {} }) {
   const tabs = [
     { id: 'todas', label: 'Todas', count: counts.todas || 0, icon: Building2 },
     { id: 'ativo', label: 'Ativas', count: counts.ativo || 0, icon: CheckCircle2 },
-    { id: 'pendente', label: 'Aguardando Contrato', count: counts.pendente || 0, icon: Clock },
+    { id: 'pending_approval', label: 'Aguardando Aprovação', count: counts.pending_approval || 0, icon: Clock },
+    { id: 'pendente', label: 'Aguardando Contrato', count: counts.pendente || 0, icon: ShieldAlert },
     { id: 'suspenso', label: 'Suspensas', count: counts.suspenso || 0, icon: AlertTriangle },
     { id: 'inativo', label: 'Inativas', count: counts.inativo || 0, icon: XCircle }
   ];

@@ -88,7 +88,7 @@ export default function AgencyFilters({
       {showAdvanced && (
         <div className="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-3 animate-fade-in">
           <div>
-            <label className="block text-[11px] font-bold text-slate-600 mb-1 flex items-center gap-1">
+            <label className="text-[11px] font-bold text-slate-600 mb-1 flex items-center gap-1">
               <MapPin className="w-3 h-3 text-slate-400" /> Cidade da Agência
             </label>
             <select

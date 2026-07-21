@@ -182,22 +182,9 @@ export default function AgencyListPage() {
     setShowAddEditModal(true);
   };
 
-  // Abrir Novo Cadastro
+  // Abrir Novo Cadastro (Etapa 02 Rota: /agencias/novo)
   const handleOpenNew = () => {
-    setEditingAgency(null);
-    setFormData({
-      nomeFantasia: '',
-      razaoSocial: '',
-      cnpj: '',
-      email: '',
-      telefone: '',
-      cidade: 'Curitiba',
-      uf: 'PR',
-      responsavel: '',
-      comissaoPadrao: 12.0,
-      limiteCredito: 50000.00
-    });
-    setShowAddEditModal(true);
+    navigate('/agencias/novo');
   };
 
   // Exportar CSV
@@ -357,8 +344,8 @@ export default function AgencyListPage() {
           selectedIds={selectedIds}
           onSelectAll={handleSelectAll}
           onSelectOne={handleSelectOne}
-          onViewDetails={(agency) => setSelectedAgencyDetail(agency)}
-          onEdit={handleOpenEdit}
+          onViewDetails={(agency) => navigate(`/agencias/${agency.id}`)}
+          onEdit={(agency) => navigate(`/agencias/${agency.id}/editar`)}
           onDeleteOne={(id) => handleBulkDelete([id])}
           onBulkStatusChange={handleBulkStatusChange}
           onBulkDelete={handleBulkDelete}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Clock, AlertTriangle, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock, AlertTriangle, XCircle, ShieldAlert } from 'lucide-react';
 
 export default function AgencyStatusBadge({ status }) {
   const normalizedStatus = (status || '').toLowerCase();
@@ -10,6 +10,12 @@ export default function AgencyStatusBadge({ status }) {
       bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
       dot: 'bg-emerald-500',
       icon: CheckCircle2
+    },
+    pending_approval: {
+      label: 'Aguardando Aprovação',
+      bg: 'bg-amber-50 text-amber-700 border-amber-200/60',
+      dot: 'bg-amber-500',
+      icon: Clock
     },
     pendente: {
       label: 'Aguardando Contrato',

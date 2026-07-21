@@ -168,6 +168,14 @@ const CMSHomeCuradoria = lazy(() => import('../pages/CMSHomeCuradoria'));
 const CMSInstitucional = lazy(() => import('../pages/CMSInstitucional'));
 const GestaoAgencias = lazy(() => import('../pages/GestaoAgencias'));
 const CadastroAgencia = lazy(() => import('../pages/CadastroAgencia'));
+const AgencyFormPage = lazy(() => import('../modules/agencies/pages/AgencyFormPage'));
+const AgencyDetailPage = lazy(() => import('../modules/agencies/pages/AgencyDetailPage'));
+const AgencyContractPage = lazy(() => import('../modules/agencies/pages/AgencyContractPage'));
+const AgentListPage = lazy(() => import('../modules/agencies/pages/agents/AgentListPage'));
+const AgentFormPage = lazy(() => import('../modules/agencies/pages/agents/AgentFormPage'));
+const AgentDetailPage = lazy(() => import('../modules/agencies/pages/agents/AgentDetailPage'));
+const AgentCommissionPage = lazy(() => import('../modules/agencies/pages/agents/AgentCommissionPage'));
+const AgencyFinancialPage = lazy(() => import('../modules/agencies/pages/financial/AgencyFinancialPage'));
 const GestaoParceiros = lazy(() => import('../pages/GestaoParceiros'));
 const CadastroParceiro = lazy(() => import('../pages/CadastroParceiro'));
 const OperacaoComercial = lazy(() => import('../pages/OperacaoComercial'));
@@ -331,7 +339,24 @@ export default function AppRoutes() {
               <Route path="/usuarios/novo" element={<CadastroUsuario />} />
 
               <Route path="/agencias" element={<GestaoAgencias />} />
-              <Route path="/agencias/novo" element={<CadastroAgencia />} />
+              <Route path="/agencias/novo" element={<AgencyFormPage />} />
+              <Route path="/agencias/:agencyId" element={<AgencyDetailPage />} />
+              <Route path="/agencias/:agencyId/editar" element={<AgencyFormPage />} />
+              <Route path="/agencias/:agencyId/contrato" element={<AgencyContractPage />} />
+              
+              {/* Etapa 04: Gestão de Agentes */}
+              <Route path="/agencias/:agencyId/agentes" element={<AgentListPage />} />
+              <Route path="/agencias/:agencyId/agentes/novo" element={<AgentFormPage />} />
+              <Route path="/agencias/:agencyId/agentes/:agentId" element={<AgentDetailPage />} />
+              <Route path="/agencias/:agencyId/agentes/:agentId/editar" element={<AgentFormPage />} />
+              <Route path="/agencias/:agencyId/agentes/:agentId/comissao" element={<AgentCommissionPage />} />
+
+              {/* Etapa 05: Dados Bancários, Carteira & Repasses (Diagrama bo-07) */}
+              <Route path="/agencias/:agencyId/financeiro" element={<AgencyFinancialPage />} />
+              <Route path="/agencias/:agencyId/repasses/novo" element={<AgencyFinancialPage />} />
+              <Route path="/agencias/:agencyId/extrato" element={<AgencyFinancialPage />} />
+
+              <Route path="/comercial/agencies/new" element={<AgencyFormPage />} />
 
               <Route path="/parceiros" element={<GestaoParceiros />} />
               <Route path="/parceiros/novo" element={<CadastroParceiro />} />
