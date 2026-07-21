@@ -1,6 +1,6 @@
 import React from 'react';
-import AgentListPage from '../modules/agencies/pages/agents/AgentListPage';
+import AgentDashboardPage from '../modules/agents/pages/AgentDashboardPage';
 
 export default function GestaoAgentes() {
-  return <AgentListPage />;
+  return <AgentDashboardPage />;
 }

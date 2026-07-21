@@ -125,7 +125,13 @@ export default function AgencyFinancialPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => navigate(`/agencias/${agencyId || 'AG-1001'}/financeiro/conciliacao`)}
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-blue-600/20 flex items-center gap-2"
+          >
+            <FileText className="w-4 h-4" /> Conciliação & Fechamento (Etapa 06)
+          </button>
           <button
             onClick={() => setShowPayoutModal(true)}
             className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2"
