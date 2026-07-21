@@ -1,46 +1,91 @@
-// src/contexts/AuthContext.jsx
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react'
 
-export const AuthContext = createContext({});
+const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simula a verificação de um usuário salvo no LocalStorage ao carregar a página
-    const storagedUser = localStorage.getItem('@Curitiba360:user');
-    const storagedToken = localStorage.getItem('@Curitiba360:token');
+    const savedUser = localStorage.getItem('curitiba360_user')
 
-    if (storagedUser && storagedToken) {
-      setUser(JSON.parse(storagedUser));
+    if (savedUser) {
+      setUser(JSON.parse(savedUser))
     }
-    setLoading(false);
-  }, []);
 
-  async function login(email, password) {
-    // Mock de uma chamada à API de Login
-    if (email === 'admin@curitiba360.com' && password === '123456') {
-      const loggedUser = { id: 1, name: 'João da Silva', role: 'Administrador' };
-      const token = 'mock-jwt-token-12345';
+    setLoading(false)
+  }, [])
 
-      setUser(loggedUser);
-      localStorage.setItem('@Curitiba360:user', JSON.stringify(loggedUser));
-      localStorage.setItem('@Curitiba360:token', token);
-    } else {
-      alert('Credenciais inválidas!');
+  const login = async (email, password) => {
+    if (!email || !password) {
+      throw new Error('Informe e-mail e senha.')
     }
+
+    const loggedUser = {
+      id: 'user-001',
+      name: 'Administrador Curitiba 360',
+      email,
+      role: 'admin'
+    }
+
+    localStorage.setItem(
+      'curitiba360_user',
+      JSON.stringify(loggedUser)
+    )
+
+    setUser(loggedUser)
+
+    return loggedUser
   }
 
-  function logout() {
-    setUser(null);
-    localStorage.removeItem('@Curitiba360:user');
-    localStorage.removeItem('@Curitiba360:token');
+  const register = async (name, email, password) => {
+    const newUser = {
+      id: crypto.randomUUID(),
+      name,
+      email,
+      role: 'user'
+    }
+
+    localStorage.setItem(
+      'curitiba360_user',
+      JSON.stringify(newUser)
+    )
+
+    setUser(newUser)
+
+    return newUser
+  }
+
+  const logout = () => {
+    localStorage.removeItem('curitiba360_user')
+    setUser(null)
+  }
+
+  const forgotPassword = async (email) => {
+    console.log(`Recuperação solicitada para: ${email}`)
+
+    return true
   }
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        forgotPassword,
+        isAuthenticated: Boolean(user)
+      }}
+    >
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
+
+export function useAuth() {
+  return useContext(AuthContext)
+}
+
+export { AuthContext }

@@ -42,6 +42,11 @@ export default function PortalHome() {
   const [detailDate, setDetailDate] = useState('');
   const [detailQty, setDetailQty] = useState(1);
 
+  // Lightbox Modal States (Mobile WF-0080C / Mobile WF-008D)
+  const [lightboxAberto, setLightboxAberto] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxModo, setLightboxModo] = useState('single'); // 'single' (WF-0080C) or 'grid' (WF-008D)
+
   // Responsive Mobile State
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   useEffect(() => {
@@ -619,9 +624,15 @@ export default function PortalHome() {
               </span>
             </div>
 
-            {/* Image Gallery */}
-            <div style={{ height: '220px', borderRadius: '12px', overflow: 'hidden' }}>
+            {/* Image Gallery (Click opens Lightbox Mobile WF-0080C / WF-008D) */}
+            <div 
+              onClick={() => { setLightboxIndex(0); setLightboxModo('single'); setLightboxAberto(true); }}
+              style={{ height: '220px', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+            >
               <img src={selectedAttractionDetail.img} alt={selectedAttractionDetail.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', bottom: '0.75rem', right: '0.75rem', backgroundColor: 'rgba(15,23,42,0.85)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                🖼️ Ver Galeria (6 Fotos)
+              </div>
             </div>
 
             {/* Description */}
@@ -683,6 +694,133 @@ export default function PortalHome() {
                 <p style={{ fontSize: '0.825rem', color: '#64748b', margin: 0 }}>Nenhuma avaliação cadastrada para este item.</p>
               )}
             </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* 4. LIGHTBOX GALERIA MODAL (Mobile WF-0080C / Mobile WF-008D) */}
+      {lightboxAberto && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundColor: 'rgba(15, 23, 42, 0.95)', backdropFilter: 'blur(16px)',
+          display: 'flex', flexDirection: 'column', zIndex: 100000, color: 'white',
+          boxSizing: 'border-box'
+        }}>
+          {/* Top Bar with Close, Counter, Grid toggle */}
+          <div style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            padding: '1rem 1.5rem', borderBottom: '1px solid #334155'
+          }}>
+            <button
+              onClick={() => setLightboxAberto(false)}
+              style={{
+                width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#334155',
+                color: 'white', border: 'none', fontSize: '1.25rem', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}
+            >
+              ✕
+            </button>
+
+            <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>
+              {lightboxIndex + 1} / {[selectedAttractionDetail?.img, '/jardim_botanico.jpg', '/opera_de_arame.jpg', '/museu_niemeyer.jpg', '/centro_historico.jpg', '/parque_barigui.jpg'].length}
+            </div>
+
+            <button
+              onClick={() => setLightboxModo(prev => prev === 'single' ? 'grid' : 'single')}
+              style={{
+                width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#334155',
+                color: 'white', border: 'none', fontSize: '1.1rem', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}
+              title={lightboxModo === 'single' ? 'Ver em Grade (WF-008D)' : 'Ver Única (WF-0080C)'}
+            >
+              {lightboxModo === 'single' ? '🏲' : '🔍'}
+            </button>
+          </div>
+
+          {/* Body: Single (WF-0080C) or Grid (WF-008D) */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            
+            {lightboxModo === 'single' ? (
+              /* WF-0080C: Single Image View */
+              <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '1rem 0' }}>
+                  <button
+                    onClick={() => setLightboxIndex(prev => (prev > 0 ? prev - 1 : 5))}
+                    style={{
+                      position: 'absolute', left: '0.5rem', zIndex: 10,
+                      width: '40px', height: '40px', borderRadius: '50%',
+                      backgroundColor: 'rgba(30, 41, 59, 0.8)', color: 'white',
+                      border: 'none', fontSize: '1.25rem', cursor: 'pointer'
+                    }}
+                  >
+                    ←
+                  </button>
+
+                  <img
+                    src={[selectedAttractionDetail?.img, '/jardim_botanico.jpg', '/opera_de_arame.jpg', '/museu_niemeyer.jpg', '/centro_historico.jpg', '/parque_barigui.jpg'][lightboxIndex]}
+                    alt="Galeria"
+                    style={{ maxWidth: '100%', maxHeight: '60vh', borderRadius: '16px', objectFit: 'contain' }}
+                  />
+
+                  <button
+                    onClick={() => setLightboxIndex(prev => (prev < 5 ? prev + 1 : 0))}
+                    style={{
+                      position: 'absolute', right: '0.5rem', zIndex: 10,
+                      width: '40px', height: '40px', borderRadius: '50%',
+                      backgroundColor: 'rgba(30, 41, 59, 0.8)', color: 'white',
+                      border: 'none', fontSize: '1.25rem', cursor: 'pointer'
+                    }}
+                  >
+                    →
+                  </button>
+                </div>
+
+                {/* Thumbnails row */}
+                <div style={{
+                  display: 'flex', gap: '0.75rem', overflowX: 'auto', width: '100%',
+                  padding: '0.5rem', boxSizing: 'border-box', scrollbarWidth: 'none'
+                }}>
+                  {[selectedAttractionDetail?.img, '/jardim_botanico.jpg', '/opera_de_arame.jpg', '/museu_niemeyer.jpg', '/centro_historico.jpg', '/parque_barigui.jpg'].map((img, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => setLightboxIndex(idx)}
+                      style={{
+                        width: '70px', height: '70px', borderRadius: '12px', flexShrink: 0,
+                        overflow: 'hidden', cursor: 'pointer',
+                        border: idx === lightboxIndex ? '3px solid #10b981' : '1px solid #334155'
+                      }}
+                    >
+                      <img src={img} alt="Thumb" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* WF-008D: 3-Column Grid View */
+              <div style={{
+                display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem',
+                maxWidth: '600px', margin: '0 auto', width: '100%'
+              }}>
+                {[selectedAttractionDetail?.img, '/jardim_botanico.jpg', '/opera_de_arame.jpg', '/museu_niemeyer.jpg', '/centro_historico.jpg', '/parque_barigui.jpg'].map((img, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setLightboxIndex(idx);
+                      setLightboxModo('single');
+                    }}
+                    style={{
+                      aspectRatio: '1', borderRadius: '12px', overflow: 'hidden',
+                      cursor: 'pointer', border: '1px solid #334155'
+                    }}
+                  >
+                    <img src={img} alt="Galeria Grid" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ))}
+              </div>
+            )}
 
           </div>
         </div>

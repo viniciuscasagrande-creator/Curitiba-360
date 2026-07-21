@@ -1,59 +1,44 @@
-// src/services/api.js
-import axios from 'axios';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'http://localhost:3000/api'
 
-const api = axios.create({
-  // URL base do backend (substitua pela URL real em produção)
-  baseURL: 'https://api.curitiba360.com.br/v1', 
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+export async function apiRequest(
+  endpoint,
+  options = {}
+) {
+  const token =
+    localStorage.getItem('curitiba360_token')
 
-// ==========================================
-// INTERCEPTOR DE REQUISIÇÃO (REQUEST)
-// ==========================================
-// Injeta o Token em todas as chamadas que saem do front-end
-api.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem('@Curitiba360:token');
-  
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
-
-// ==========================================
-// INTERCEPTOR DE RESPOSTA (RESPONSE)
-// ==========================================
-// Fica "escutando" tudo que volta do backend
-api.interceptors.response.use(
-  (response) => {
-    // Se a requisição deu sucesso (200, 201), apenas deixa passar
-    return response;
-  },
-  (error) => {
-    // Se a requisição falhou, verifica se foi um erro de permissão (401)
-    if (error.response && error.response.status === 401) {
-      console.warn('Sessão expirada ou token inválido. O usuário será deslogado.');
-
-      // 1. Limpa o cofre local de credenciais
-      localStorage.removeItem('@Curitiba360:user');
-      localStorage.removeItem('@Curitiba360:token');
-
-      // 2. Redireciona o usuário imediatamente para a tela de login.
-      // O uso do window.location é a forma mais segura de quebrar o ciclo
-      // fora do contexto das rotas do React (já que o Axios não conhece o useNavigate).
-      window.location.href = '/login';
+  const response = await fetch(
+    `${API_URL}${endpoint}`,
+    {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token
+          ? {
+              Authorization: `Bearer ${token}`
+            }
+          : {}),
+        ...options.headers
+      }
     }
+  )
 
-    // Se for outro erro (ex: 500 Servidor, 404 Não Encontrado), 
-    // repassa o erro para o componente lidar (ex: mostrando um alert)
-    return Promise.reject(error);
+  if (!response.ok) {
+    throw new Error(
+      'Erro ao comunicar com a API.'
+    )
   }
-);
+
+  return response.json()
+}
+
+const api = {
+  get: (url, config) => apiRequest(url, { method: 'GET', ...config }),
+  post: (url, data, config) => apiRequest(url, { method: 'POST', body: JSON.stringify(data), ...config }),
+  put: (url, data, config) => apiRequest(url, { method: 'PUT', body: JSON.stringify(data), ...config }),
+  delete: (url, config) => apiRequest(url, { method: 'DELETE', ...config })
+}
 
 export default api;

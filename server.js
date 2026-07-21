@@ -447,10 +447,19 @@ const server = http.createServer((req, res) => {
             commercialConditions: db.commercialConditions || [],
             financialInfo: db.financialInfo || [],
             usuarios: db.usuarios || [],
-            parceiros_comerciais: db.parceiros_comerciais || []
+            parceiros_comerciais: db.parceiros_comerciais || [],
+            wireframes: db.wireframes || []
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(payload));
+        return;
+    }
+
+    // GET /api/wireframes
+    if (url.pathname === '/api/wireframes' && method === 'GET') {
+        const db = readDatabase();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(db.wireframes || []));
         return;
     }
 

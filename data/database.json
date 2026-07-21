@@ -368,7 +368,9 @@
           "primeiroNome": "Carlos",
           "ultimoNome": "Santos",
           "telefone": "(41) 98888-8888",
-          "emails": ["carlos@tourcwb.com"]
+          "emails": [
+            "carlos@tourcwb.com"
+          ]
         }
       ],
       "dataCriacao": "20/07/2026 10:00:00",
@@ -400,7 +402,9 @@
           "primeiroNome": "Ana",
           "ultimoNome": "Juliana",
           "telefone": "(41) 97777-7777",
-          "emails": ["juliana@batelturismo.com.br"]
+          "emails": [
+            "juliana@batelturismo.com.br"
+          ]
         }
       ],
       "dataCriacao": "20/07/2026 10:02:00",
@@ -486,7 +490,10 @@
       "vinculos": {
         "parceiroComercialId": 1,
         "agenciaId": null,
-        "atracoesIds": [1, 2]
+        "atracoesIds": [
+          1,
+          2
+        ]
       }
     }
   ],
@@ -532,6 +539,858 @@
       "status": "ATIVO",
       "usuarioId": "partner-mock-uid-456",
       "dataCriacao": "20/07/2026 10:02:00"
+    }
+  ],
+  "wireframes": [
+    {
+      "id": "wf-1",
+      "code": "M-WF-001",
+      "fileName": "Mobile WF-001 - Tela de login.png",
+      "name": "WF-001 - Tela de login",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-001 - Tela de login.png",
+      "route": "/portal/login"
+    },
+    {
+      "id": "wf-2",
+      "code": "M-WF-001A",
+      "fileName": "Mobile WF-001A - Recuperar Senha.png",
+      "name": "WF-001A - Recuperar Senha",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-001A - Recuperar Senha.png",
+      "route": "/portal/recuperar-senha"
+    },
+    {
+      "id": "wf-3",
+      "code": "M-WF-001B",
+      "fileName": "Mobile WF-001B - Email Recuperar Senha.png",
+      "name": "WF-001B - Email Recuperar Senha",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-001B - Email Recuperar Senha.png",
+      "route": "/portal/email-recuperar-senha"
+    },
+    {
+      "id": "wf-4",
+      "code": "M-WF-001C",
+      "fileName": "Mobile WF-001C - Recuperar Senha Criar senha.png",
+      "name": "WF-001C - Recuperar Senha Criar senha",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-001C - Recuperar Senha Criar senha.png",
+      "route": "/portal/criar-senha"
+    },
+    {
+      "id": "wf-5",
+      "code": "M-WF-002",
+      "fileName": "Mobile WF-002 - Página Inicial.png",
+      "name": "WF-002 - Página Inicial",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-002 - Página Inicial.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-6",
+      "code": "M-WF-003-",
+      "fileName": "Mobile WF-003- Criar conta.png",
+      "name": "WF-003- Criar conta",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-003- Criar conta.png",
+      "route": "/portal/criar-conta"
+    },
+    {
+      "id": "wf-7",
+      "code": "M-WF-003A",
+      "fileName": "Mobile WF-003A - Email Confirmação de Cadastro.png",
+      "name": "WF-003A - Email Confirmação de Cadastro",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-003A - Email Confirmação de Cadastro.png",
+      "route": "/portal/email-confirmacao"
+    },
+    {
+      "id": "wf-8",
+      "code": "M-WF-003B",
+      "fileName": "Mobile WF-003B - Confirmação de Cadastro.png",
+      "name": "WF-003B - Confirmação de Cadastro",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-003B - Confirmação de Cadastro.png",
+      "route": "/portal/confirmacao-cadastro"
+    },
+    {
+      "id": "wf-9",
+      "code": "M-WF-004",
+      "fileName": "Mobile WF-004 - Cadastro de Parceiro Comercial.png",
+      "name": "WF-004 - Cadastro de Parceiro Comercial",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-004 - Cadastro de Parceiro Comercial.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-10",
+      "code": "M-WF-005",
+      "fileName": "Mobile WF-005 - Resultados da Pesquisa.png",
+      "name": "WF-005 - Resultados da Pesquisa",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-005 - Resultados da Pesquisa.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-11",
+      "code": "M-WF-007",
+      "fileName": "Mobile WF-007 - Conhecendo Curitiba.png",
+      "name": "WF-007 - Conhecendo Curitiba",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-007 - Conhecendo Curitiba.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-12",
+      "code": "M-WF-008",
+      "fileName": "Mobile WF-008 - Detalhes da Atração.png",
+      "name": "WF-008 - Detalhes da Atração",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-008 - Detalhes da Atração.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-13",
+      "code": "M-WF-0080C",
+      "fileName": "Mobile WF-0080C - Detalhes da Atração exibir imagem.png",
+      "name": "WF-0080C - Detalhes da Atração exibir imagem",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-0080C - Detalhes da Atração exibir imagem.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-14",
+      "code": "M-WF-008B",
+      "fileName": "Mobile WF-008B - Detalhes da Atração pedido de login.png",
+      "name": "WF-008B - Detalhes da Atração pedido de login",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-008B - Detalhes da Atração pedido de login.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-15",
+      "code": "M-WF-008D",
+      "fileName": "Mobile WF-008D - Detalhes da Atração exibir imagem galeria.png",
+      "name": "WF-008D - Detalhes da Atração exibir imagem galeria",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-008D - Detalhes da Atração exibir imagem galeria.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-16",
+      "code": "M-WF-010",
+      "fileName": "Mobile WF-010 - Carrinho.png",
+      "name": "WF-010 - Carrinho",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-010 - Carrinho.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-17",
+      "code": "M-WF-011",
+      "fileName": "Mobile WF-011 - Pedido.png",
+      "name": "WF-011 - Pedido",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-011 - Pedido.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-18",
+      "code": "M-WF-012",
+      "fileName": "Mobile WF-012 - Pagamento Cartão.png",
+      "name": "WF-012 - Pagamento Cartão",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-012 - Pagamento Cartão.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-19",
+      "code": "M-WF-012A",
+      "fileName": "Mobile WF-012A - Pagamento Google Pay.png",
+      "name": "WF-012A - Pagamento Google Pay",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-012A - Pagamento Google Pay.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-20",
+      "code": "M-WF-012B",
+      "fileName": "Mobile WF-012B - Pagamento Pix.png",
+      "name": "WF-012B - Pagamento Pix",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-012B - Pagamento Pix.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-21",
+      "code": "M-WF-013",
+      "fileName": "Mobile WF-013 - Pagamento Confirmado.png",
+      "name": "WF-013 - Pagamento Confirmado",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-013 - Pagamento Confirmado.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-22",
+      "code": "M-WF-013A",
+      "fileName": "Mobile WF-013A - Pagamento Confirmado.png",
+      "name": "WF-013A - Pagamento Confirmado",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-013A - Pagamento Confirmado.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-23",
+      "code": "M-WF-014",
+      "fileName": "Mobile WF-014 - Meus ingressos.png",
+      "name": "WF-014 - Meus ingressos",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-014 - Meus ingressos.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-24",
+      "code": "M-WF-014A",
+      "fileName": "Mobile WF-014A - Meus ingressos resumo do pedido.png",
+      "name": "WF-014A - Meus ingressos resumo do pedido",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-014A - Meus ingressos resumo do pedido.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-25",
+      "code": "M-WF-014B",
+      "fileName": "Mobile WF-014B - Meus ingressos ver no mapa.png",
+      "name": "WF-014B - Meus ingressos ver no mapa",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-014B - Meus ingressos ver no mapa.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-26",
+      "code": "M-WF-015",
+      "fileName": "Mobile WF-015 - Configurações dados pessoais.png",
+      "name": "WF-015 - Configurações dados pessoais",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-015 - Configurações dados pessoais.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-27",
+      "code": "M-WF-015A",
+      "fileName": "Mobile WF-015A - Configurações notificações.png",
+      "name": "WF-015A - Configurações notificações",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-015A - Configurações notificações.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-28",
+      "code": "M-WF-015B",
+      "fileName": "Mobile WF-015B - Configurações Cartões Salvos.png",
+      "name": "WF-015B - Configurações Cartões Salvos",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-015B - Configurações Cartões Salvos.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-29",
+      "code": "M-WF-015C",
+      "fileName": "Mobile WF-015C - Notificações.png",
+      "name": "WF-015C - Notificações",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-015C - Notificações.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-30",
+      "code": "M-WF-016",
+      "fileName": "Mobile WF-016 - Solicitação de Reembolso.png",
+      "name": "WF-016 - Solicitação de Reembolso",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-016 - Solicitação de Reembolso.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-31",
+      "code": "M-WF-016A",
+      "fileName": "Mobile WF-016A - Email Confirmacao de Reembolso.png",
+      "name": "WF-016A - Email Confirmacao de Reembolso",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-016A - Email Confirmacao de Reembolso.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-32",
+      "code": "M-WF-017",
+      "fileName": "Mobile WF-017 - Política de Privacidade.png",
+      "name": "WF-017 - Política de Privacidade",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-017 - Política de Privacidade.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-33",
+      "code": "M-WF-018",
+      "fileName": "Mobile WF-018 - Condições de uso do site.png",
+      "name": "WF-018 - Condições de uso do site",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-018 - Condições de uso do site.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-34",
+      "code": "M-WF-019",
+      "fileName": "Mobile WF-019 - FAQ - Perguntas frequentes.png",
+      "name": "WF-019 - FAQ - Perguntas frequentes",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-019 - FAQ - Perguntas frequentes.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-35",
+      "code": "M-WF-020",
+      "fileName": "Mobile WF-020 - Sobre Nós.png",
+      "name": "WF-020 - Sobre Nós",
+      "type": "Smartphone",
+      "category": "Portal Público (Smartphone)",
+      "imagePath": "/wireframes/Mobile WF-020 - Sobre Nós.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-36",
+      "code": "WF-001",
+      "fileName": "WF-001 - Tela de login.png",
+      "name": "WF-001 - Tela de login",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-001 - Tela de login.png",
+      "route": "/portal/login"
+    },
+    {
+      "id": "wf-37",
+      "code": "WF-001A",
+      "fileName": "WF-001A - Recuperar Senha.png",
+      "name": "WF-001A - Recuperar Senha",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-001A - Recuperar Senha.png",
+      "route": "/portal/recuperar-senha"
+    },
+    {
+      "id": "wf-38",
+      "code": "WF-001B",
+      "fileName": "WF-001B - Email Recuperar Senha.png",
+      "name": "WF-001B - Email Recuperar Senha",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-001B - Email Recuperar Senha.png",
+      "route": "/portal/email-recuperar-senha"
+    },
+    {
+      "id": "wf-39",
+      "code": "WF-001C",
+      "fileName": "WF-001C - Recuperar Senha Criar senha.png",
+      "name": "WF-001C - Recuperar Senha Criar senha",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-001C - Recuperar Senha Criar senha.png",
+      "route": "/portal/criar-senha"
+    },
+    {
+      "id": "wf-40",
+      "code": "WF-002",
+      "fileName": "WF-002 - Página Inicial.png",
+      "name": "WF-002 - Página Inicial",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-002 - Página Inicial.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-41",
+      "code": "WF-002B",
+      "fileName": "WF-002B - Página Inicial dropdown perfil.png",
+      "name": "WF-002B - Página Inicial dropdown perfil",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-002B - Página Inicial dropdown perfil.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-42",
+      "code": "WF-003-",
+      "fileName": "WF-003- Criar conta.png",
+      "name": "WF-003- Criar conta",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-003- Criar conta.png",
+      "route": "/portal/criar-conta"
+    },
+    {
+      "id": "wf-43",
+      "code": "WF-003A",
+      "fileName": "WF-003A - Email Confirmação de Cadastro.png",
+      "name": "WF-003A - Email Confirmação de Cadastro",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-003A - Email Confirmação de Cadastro.png",
+      "route": "/portal/email-confirmacao"
+    },
+    {
+      "id": "wf-44",
+      "code": "WF-003B",
+      "fileName": "WF-003B - Confirmação de Cadastro.png",
+      "name": "WF-003B - Confirmação de Cadastro",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-003B - Confirmação de Cadastro.png",
+      "route": "/portal/confirmacao-cadastro"
+    },
+    {
+      "id": "wf-45",
+      "code": "WF-004",
+      "fileName": "WF-004 - Cadastro de Parceiro Comercial.png",
+      "name": "WF-004 - Cadastro de Parceiro Comercial",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004 - Cadastro de Parceiro Comercial.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-46",
+      "code": "WF-004A",
+      "fileName": "WF-004A - Auto-cadastro Agência — Conclusão.png",
+      "name": "WF-004A - Auto-cadastro Agência — Conclusão",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004A - Auto-cadastro Agência — Conclusão.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-47",
+      "code": "WF-004A",
+      "fileName": "WF-004A - Cadastro de Agência.png",
+      "name": "WF-004A - Cadastro de Agência",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004A - Cadastro de Agência.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-48",
+      "code": "WF-004B",
+      "fileName": "WF-004B - Auto-cadastro Parceiro Comercial — Conclusão (Solicitação enviada).png",
+      "name": "WF-004B - Auto-cadastro Parceiro Comercial — Conclusão (Solicitação enviada)",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004B - Auto-cadastro Parceiro Comercial — Conclusão (Solicitação enviada).png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-49",
+      "code": "WF-004B",
+      "fileName": "WF-004B - Auto-cadastro Parceiro Comercial — Etapa 1 (Dados da Empresa).png",
+      "name": "WF-004B - Auto-cadastro Parceiro Comercial — Etapa 1 (Dados da Empresa)",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004B - Auto-cadastro Parceiro Comercial — Etapa 1 (Dados da Empresa).png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-50",
+      "code": "WF-004B",
+      "fileName": "WF-004B - Auto-cadastro Parceiro Comercial — Etapa 2 (Dados do Responsável).png",
+      "name": "WF-004B - Auto-cadastro Parceiro Comercial — Etapa 2 (Dados do Responsável)",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004B - Auto-cadastro Parceiro Comercial — Etapa 2 (Dados do Responsável).png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-51",
+      "code": "WF-004B",
+      "fileName": "WF-004B - Auto-cadastro Parceiro Comercial — Etapa 3 (Documentos e Informações Complementares).png",
+      "name": "WF-004B - Auto-cadastro Parceiro Comercial — Etapa 3 (Documentos e Informações Complementares)",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-004B - Auto-cadastro Parceiro Comercial — Etapa 3 (Documentos e Informações Complementares).png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-52",
+      "code": "WF-005",
+      "fileName": "WF-005 - Resultados da Pesquisa.png",
+      "name": "WF-005 - Resultados da Pesquisa",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-005 - Resultados da Pesquisa.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-53",
+      "code": "WF-006",
+      "fileName": "WF-006 - Pacotes de atrações.png",
+      "name": "WF-006 - Pacotes de atrações",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-006 - Pacotes de atrações.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-54",
+      "code": "WF-007",
+      "fileName": "WF-007 - Conhecendo Curitiba.png",
+      "name": "WF-007 - Conhecendo Curitiba",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-007 - Conhecendo Curitiba.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-55",
+      "code": "WF-008",
+      "fileName": "WF-008 - Detalhes da Atração.png",
+      "name": "WF-008 - Detalhes da Atração",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-008 - Detalhes da Atração.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-56",
+      "code": "WF-0080C",
+      "fileName": "WF-0080C - Detalhes da Atração exibir imagem.png",
+      "name": "WF-0080C - Detalhes da Atração exibir imagem",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-0080C - Detalhes da Atração exibir imagem.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-57",
+      "code": "WF-008A",
+      "fileName": "WF-008A - Detalhes da Atração adicionado ao carrinho.png",
+      "name": "WF-008A - Detalhes da Atração adicionado ao carrinho",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-008A - Detalhes da Atração adicionado ao carrinho.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-58",
+      "code": "WF-008B",
+      "fileName": "WF-008B - Detalhes da Atração pedido de login.png",
+      "name": "WF-008B - Detalhes da Atração pedido de login",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-008B - Detalhes da Atração pedido de login.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-59",
+      "code": "WF-008D",
+      "fileName": "WF-008D - Detalhes da Atração exibir imagem galeria.png",
+      "name": "WF-008D - Detalhes da Atração exibir imagem galeria",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-008D - Detalhes da Atração exibir imagem galeria.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-60",
+      "code": "WF-010",
+      "fileName": "WF-010 - Carrinho.png",
+      "name": "WF-010 - Carrinho",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-010 - Carrinho.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-61",
+      "code": "WF-011",
+      "fileName": "WF-011 - Pedido.png",
+      "name": "WF-011 - Pedido",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-011 - Pedido.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-62",
+      "code": "WF-012",
+      "fileName": "WF-012 - Pagamento Cartão.png",
+      "name": "WF-012 - Pagamento Cartão",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-012 - Pagamento Cartão.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-63",
+      "code": "WF-012A",
+      "fileName": "WF-012A - Pagamento Google Pay.png",
+      "name": "WF-012A - Pagamento Google Pay",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-012A - Pagamento Google Pay.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-64",
+      "code": "WF-012B",
+      "fileName": "WF-012B - Pagamento Pix.png",
+      "name": "WF-012B - Pagamento Pix",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-012B - Pagamento Pix.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-65",
+      "code": "WF-013",
+      "fileName": "WF-013 - Pagamento Confirmado.png",
+      "name": "WF-013 - Pagamento Confirmado",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-013 - Pagamento Confirmado.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-66",
+      "code": "WF-013A",
+      "fileName": "WF-013A - Email Pagamento Confirmado.png",
+      "name": "WF-013A - Email Pagamento Confirmado",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-013A - Email Pagamento Confirmado.png",
+      "route": "/portal/email-confirmacao"
+    },
+    {
+      "id": "wf-67",
+      "code": "WF-014",
+      "fileName": "WF-014 - Meus ingressos.png",
+      "name": "WF-014 - Meus ingressos",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-014 - Meus ingressos.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-68",
+      "code": "WF-014A",
+      "fileName": "WF-014A - Meus ingressos resumo do pedido.png",
+      "name": "WF-014A - Meus ingressos resumo do pedido",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-014A - Meus ingressos resumo do pedido.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-69",
+      "code": "WF-014B",
+      "fileName": "WF-014B - Meus ingressos ver no mapa.png",
+      "name": "WF-014B - Meus ingressos ver no mapa",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-014B - Meus ingressos ver no mapa.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-70",
+      "code": "WF-015",
+      "fileName": "WF-015 - Configurações dados pessoais.png",
+      "name": "WF-015 - Configurações dados pessoais",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-015 - Configurações dados pessoais.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-71",
+      "code": "WF-015A",
+      "fileName": "WF-015A - Configurações notificações.png",
+      "name": "WF-015A - Configurações notificações",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-015A - Configurações notificações.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-72",
+      "code": "WF-015B",
+      "fileName": "WF-015B - Configurações Cartões Salvos.png",
+      "name": "WF-015B - Configurações Cartões Salvos",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-015B - Configurações Cartões Salvos.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-73",
+      "code": "WF-015C",
+      "fileName": "WF-015C - Notificações.png",
+      "name": "WF-015C - Notificações",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-015C - Notificações.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-74",
+      "code": "WF-016",
+      "fileName": "WF-016 - Solicitação de Reembolso.png",
+      "name": "WF-016 - Solicitação de Reembolso",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-016 - Solicitação de Reembolso.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-75",
+      "code": "WF-016A",
+      "fileName": "WF-016A - Email Confirmacao de Reembolso.png",
+      "name": "WF-016A - Email Confirmacao de Reembolso",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-016A - Email Confirmacao de Reembolso.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-76",
+      "code": "WF-016B",
+      "fileName": "WF-016B - E-mail de Rejeição de Reembolso.png",
+      "name": "WF-016B - E-mail de Rejeição de Reembolso",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-016B - E-mail de Rejeição de Reembolso.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-77",
+      "code": "WF-017",
+      "fileName": "WF-017 - Política de Privacidade.png",
+      "name": "WF-017 - Política de Privacidade",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-017 - Política de Privacidade.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-78",
+      "code": "WF-018",
+      "fileName": "WF-018 - Condições de uso do site.png",
+      "name": "WF-018 - Condições de uso do site",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-018 - Condições de uso do site.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-79",
+      "code": "WF-019",
+      "fileName": "WF-019 - FAQ - Perguntas frequentes.png",
+      "name": "WF-019 - FAQ - Perguntas frequentes",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-019 - FAQ - Perguntas frequentes.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-80",
+      "code": "WF-020",
+      "fileName": "WF-020 - Sobre Nós.png",
+      "name": "WF-020 - Sobre Nós",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-020 - Sobre Nós.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-81",
+      "code": "WF-021",
+      "fileName": "WF-021 - Meus Favoritos — Estado Vazio.png",
+      "name": "WF-021 - Meus Favoritos — Estado Vazio",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-021 - Meus Favoritos — Estado Vazio.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-82",
+      "code": "WF-021",
+      "fileName": "WF-021 - Meus Favoritos.png",
+      "name": "WF-021 - Meus Favoritos",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-021 - Meus Favoritos.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-83",
+      "code": "WF-022",
+      "fileName": "WF-022 - Transferência de Ingresso — Estado 1.png",
+      "name": "WF-022 - Transferência de Ingresso — Estado 1",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-022 - Transferência de Ingresso — Estado 1.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-84",
+      "code": "WF-022",
+      "fileName": "WF-022 - Transferência de Ingresso — Estado 2.png",
+      "name": "WF-022 - Transferência de Ingresso — Estado 2",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-022 - Transferência de Ingresso — Estado 2.png",
+      "route": "/portal"
+    },
+    {
+      "id": "wf-85",
+      "code": "WF-022",
+      "fileName": "WF-022 - Transferência de Ingresso — Estado 3.png",
+      "name": "WF-022 - Transferência de Ingresso — Estado 3",
+      "type": "Desktop",
+      "category": "Portal Público (Desktop)",
+      "imagePath": "/wireframes/WF-022 - Transferência de Ingresso — Estado 3.png",
+      "route": "/portal"
     }
   ]
 }
