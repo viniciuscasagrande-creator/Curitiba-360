@@ -1,32 +1,30 @@
-// src/pages/GestaoAgencias.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import StatusBadge from '../components/admin/StatusBadge';
+import { Building2, Search, Filter, Plus, FileText, CheckCircle2, XCircle, Trash2, Edit } from 'lucide-react';
 
 export default function GestaoAgencias() {
   const navigate = useNavigate();
   
-  // RF-026.05 e RF-026.06: Abas de Status
   const [abaAtiva, setAbaAtiva] = useState('Todas');
   const [termoBusca, setTermoBusca] = useState('');
-  
-  // RF-026.13 a RF-026.15: Controle de seleção múltipla
   const [selecionados, setSelecionados] = useState([]);
-  const [itensPorPagina, setItensPorPagina] = useState(10);
 
-  // Mock de dados baseado no seed do database
-  const [agencias, setAgencias] = useState([
-    { id: 1, razaoSocial: 'Turismo Curitiba 360 Ltda', nomeFantasia: 'Tour CWB', cnpj: '98.765.432/0001-10', status: 'ATIVO', responsavel: 'Maria Oliveira', qtdAgentes: 1, dataCadastro: '10/07/2026' },
-    { id: 2, razaoSocial: 'Batel Agência de Viagens Eireli', nomeFantasia: 'Batel Turismo', cnpj: '12.222.333/0001-44', status: 'ATIVO', responsavel: 'Juliana Costa', qtdAgentes: 12, dataCadastro: '20/07/2026' },
+  const [agencias] = useState([
+    { id: 1, razaoSocial: 'Turismo Curitiba 360 Ltda', nomeFantasia: 'Tour CWB Premium', cnpj: '98.765.432/0001-10', status: 'ativo', responsavel: 'Maria Oliveira', qtdAgentes: 8, dataCadastro: '10/07/2026' },
+    { id: 2, razaoSocial: 'Batel Agência de Viagens Eireli', nomeFantasia: 'Batel Turismo & Pass', cnpj: '12.222.333/0001-44', status: 'ativo', responsavel: 'Juliana Costa', qtdAgentes: 12, dataCadastro: '20/07/2026' },
+    { id: 3, razaoSocial: 'Serra do Mar Operadora Turística', nomeFantasia: 'Serra do Mar Express', cnpj: '45.111.999/0001-88', status: 'pendente', responsavel: 'Carlos Eduardo', qtdAgentes: 3, dataCadastro: '21/07/2026' }
   ]);
 
-  // Lógica para filtrar a tabela (RF-026.02 e RF-026.07)
   const agenciasFiltradas = agencias.filter(ag => {
     const matchBusca = 
       ag.razaoSocial.toLowerCase().includes(termoBusca.toLowerCase()) || 
       ag.nomeFantasia.toLowerCase().includes(termoBusca.toLowerCase()) ||
       ag.cnpj.includes(termoBusca);
     
-    const matchAba = abaAtiva === 'Todas' || ag.status === abaAtiva;
+    const matchAba = abaAtiva === 'Todas' || ag.status === abaAtiva.toLowerCase();
     return matchBusca && matchAba;
   });
 
@@ -40,118 +38,148 @@ export default function GestaoAgencias() {
     else setSelecionados([...selecionados, id]);
   };
 
+  const statusTabs = [
+    { label: 'Todas', value: 'Todas', count: agencias.length },
+    { label: 'Ativas', value: 'ativo', count: agencias.filter(a => a.status === 'ativo').length },
+    { label: 'Aguardando Contrato', value: 'pendente', count: agencias.filter(a => a.status === 'pendente').length },
+    { label: 'Inativas', value: 'inativo', count: agencias.filter(a => a.status === 'inativo').length }
+  ];
+
   return (
-    <div>
-      {/* CABEÇALHO DA TELA */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+    <div className="space-y-6 animate-fade-in">
+      {/* CABEÇALHO DA TELA MOD-05 */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Gestão de Agências de Turismo</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Gerencie as agências cadastradas no sistema</p>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+            MOD-05 — Gestão de Agências de Turismo 🏢
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">Credenciamento B2B, emissão de contratos, contagem de agentes e limites de venda.</p>
         </div>
         
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <input 
-            type="text" 
-            placeholder="Buscar Razão Social, CNPJ..." 
-            value={termoBusca}
-            onChange={(e) => setTermoBusca(e.target.value)}
-            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', width: '250px' }}
-          />
-          <button style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>
-            Filtros
-          </button>
+        <div className="flex items-center gap-3">
           <button 
-            onClick={() => navigate('/agencias/novo')} 
-            style={{ padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-            + Adicionar Agência
+            onClick={() => navigate('/comercial/agencies/new')} 
+            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition shadow-sm flex items-center gap-2"
+          >
+            <Plus size={18} /> Adicionar Agência
           </button>
         </div>
       </div>
 
-      {/* ABAS DE STATUS E BARRA DE AÇÕES (RF-026.16 a RF-026.19) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', gap: '2rem' }}>
-          {['ATIVO', 'AGUARDANDO_CONTRATO', 'INATIVA', 'Todas'].map(aba => (
-            <button 
-              key={aba}
-              onClick={() => { setAbaAtiva(aba); setSelecionados([]); }}
-              style={{ 
-                padding: '0.5rem 0', border: 'none', background: 'none', cursor: 'pointer',
-                fontWeight: abaAtiva === aba ? 'bold' : 'normal',
-                borderBottom: abaAtiva === aba ? '2px solid #10b981' : '2px solid transparent',
-                color: abaAtiva === aba ? '#111827' : '#6b7280'
-              }}
+      {/* BARRA DE PESQUISA E ABAS DE STATUS */}
+      <Card className="p-4 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input 
+              type="text" 
+              placeholder="Buscar por Razão Social, Nome Fantasia ou CNPJ..." 
+              value={termoBusca}
+              onChange={(e) => setTermoBusca(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            />
+          </div>
+
+          <button className="px-3.5 py-2 border border-gray-200 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-50 transition flex items-center gap-2">
+            <Filter size={16} /> Filtros Avançados
+          </button>
+        </div>
+
+        {/* STATUS TABS (RF-026.05) */}
+        <div className="flex items-center gap-2 border-t border-gray-100 pt-3 overflow-x-auto">
+          {statusTabs.map(tab => (
+            <button
+              key={tab.value}
+              onClick={() => { setAbaAtiva(tab.value); setSelecionados([]); }}
+              className={`
+                px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap
+                ${abaAtiva === tab.value 
+                  ? 'bg-blue-600 text-white shadow-sm' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
+              `}
             >
-              {aba === 'ATIVO' ? 'Ativas' : aba === 'AGUARDANDO_CONTRATO' ? 'Aguardando Contrato' : aba === 'INATIVA' ? 'Inativas' : 'Todas'}
+              {tab.label}
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${abaAtiva === tab.value ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                {tab.count}
+              </span>
             </button>
           ))}
         </div>
+      </Card>
 
-        {/* BARRA DE AÇÕES CONTEXTUAL */}
-        {selecionados.length > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: '#eff6ff', padding: '0.5rem 1rem', borderRadius: '4px' }}>
-            <span style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#1d4ed8' }}>Selecionados {selecionados.length}</span>
-            
-            <button disabled={selecionados.length !== 1} style={{ padding: '0.25rem 0.5rem', cursor: selecionados.length === 1 ? 'pointer' : 'not-allowed' }}>Editar</button>
-            
-            {abaAtiva === 'AGUARDANDO_CONTRATO' && (
-              <>
-                <button style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#10b981', fontWeight: 'bold' }}>Emitir Contrato</button>
-                <button style={{ padding: '0.25rem 0.5rem', cursor: 'pointer', color: '#ef4444' }}>Recusar Credenciamento</button>
-              </>
-            )}
+      {/* BARRA CONTEXTUAL DE AÇÕES EM LOTE */}
+      {selecionados.length > 0 && (
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between animate-fade-in text-xs">
+          <span className="font-bold text-blue-900">
+            {selecionados.length} agência(s) selecionada(s)
+          </span>
 
-            {abaAtiva === 'ATIVO' && <button style={{ padding: '0.25rem 0.5rem' }}>Suspender</button>}
-            
-            <button style={{ padding: '0.25rem 0.5rem', color: 'red', cursor: 'pointer' }}>Excluir</button>
+          <div className="flex items-center gap-2">
+            <button className="px-3 py-1 bg-white border border-blue-300 text-blue-800 font-bold rounded-lg hover:bg-blue-100 transition flex items-center gap-1">
+              <Edit size={14} /> Editar em Lote
+            </button>
+            <button className="px-3 py-1 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition flex items-center gap-1">
+              <FileText size={14} /> Emitir Contrato
+            </button>
+            <button className="px-3 py-1 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition flex items-center gap-1">
+              <Trash2 size={14} /> Excluir
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* TABELA DE AGÊNCIAS */}
-      <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead style={{ backgroundColor: '#f9fafb' }}>
-            <tr>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb', width: '40px' }}>
-                <input type="checkbox" onChange={handleSelecionarTodos} checked={selecionados.length === agenciasFiltradas.length && agenciasFiltradas.length > 0} />
-              </th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>ID</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Nome Fantasia / Razão Social</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>CNPJ</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Responsável</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Status</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Agentes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {agenciasFiltradas.map((ag) => (
-              <tr key={ag.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <td style={{ padding: '0.75rem' }}>
-                  <input type="checkbox" checked={selecionados.includes(ag.id)} onChange={() => handleSelecionarUm(ag.id)} />
-                </td>
-                <td style={{ padding: '0.75rem', color: '#6b7280' }}>#{ag.id}</td>
-                <td style={{ padding: '0.75rem' }}>
-                  <div style={{ fontWeight: 'bold' }}>{ag.nomeFantasia}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{ag.razaoSocial}</div>
-                </td>
-                <td style={{ padding: '0.75rem' }}>{ag.cnpj}</td>
-                <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{ag.responsavel}</td>
-                <td style={{ padding: '0.75rem' }}>
-                  <span style={{ 
-                    padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold',
-                    backgroundColor: ag.status === 'ATIVO' ? '#d1fae5' : ag.status === 'AGUARDANDO_CONTRATO' ? '#fef3c7' : '#fee2e2',
-                    color: ag.status === 'ATIVO' ? '#065f46' : ag.status === 'AGUARDANDO_CONTRATO' ? '#92400e' : '#991b1b'
-                  }}>
-                    {ag.status}
-                  </span>
-                </td>
-                <td style={{ padding: '0.75rem' }}>{ag.qtdAgentes}</td>
+      {/* DATATABLE PREMIUM DE AGÊNCIAS */}
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-gray-600">
+            <thead className="border-b border-gray-200 bg-gray-50 text-xs uppercase font-semibold text-gray-700">
+              <tr>
+                <th className="p-4 w-10">
+                  <input 
+                    type="checkbox" 
+                    onChange={handleSelecionarTodos} 
+                    checked={selecionados.length === agenciasFiltradas.length && agenciasFiltradas.length > 0} 
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                </th>
+                <th className="p-4">ID</th>
+                <th className="p-4">Nome Fantasia / Razão Social</th>
+                <th className="p-4">CNPJ</th>
+                <th className="p-4">Responsável Legal</th>
+                <th className="p-4">Agentes</th>
+                <th className="p-4">Status Credenciamento</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-xs">
+              {agenciasFiltradas.map((ag) => (
+                <tr key={ag.id} className="hover:bg-gray-50/80 transition">
+                  <td className="p-4">
+                    <input 
+                      type="checkbox" 
+                      checked={selecionados.includes(ag.id)} 
+                      onChange={() => handleSelecionarUm(ag.id)} 
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                  </td>
+                  <td className="p-4 font-mono font-bold text-gray-500">#{ag.id}</td>
+                  <td className="p-4">
+                    <div className="font-bold text-gray-900 text-sm">{ag.nomeFantasia}</div>
+                    <div className="text-xs text-gray-500">{ag.razaoSocial}</div>
+                  </td>
+                  <td className="p-4 font-mono text-gray-700 font-medium">{ag.cnpj}</td>
+                  <td className="p-4 font-medium text-gray-900">{ag.responsavel}</td>
+                  <td className="p-4">
+                    <Badge variant="blue">{ag.qtdAgentes} Agentes</Badge>
+                  </td>
+                  <td className="p-4">
+                    <StatusBadge status={ag.status} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
     </div>
   );
 }
