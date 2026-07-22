@@ -5,10 +5,13 @@ import {
   MapPin,
   Menu,
   UserRound,
+  ShoppingCart,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCart } from "../../cart";
 
 export default function HomeHeader() {
+  const { itemCount } = useCart();
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -59,6 +62,19 @@ export default function HomeHeader() {
               aria-hidden="true"
             />
           </button>
+
+          <Link
+            to="/carrinho"
+            className="relative flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition hover:bg-slate-100 hover:text-emerald-700 text-decoration-none"
+            aria-label={`Carrinho com ${itemCount} itens`}
+          >
+            <ShoppingCart size={20} aria-hidden="true" />
+            {itemCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-emerald-700 px-1 text-[9px] font-bold text-white shadow-sm border border-white">
+                {itemCount > 99 ? "99+" : itemCount}
+              </span>
+            )}
+          </Link>
 
           <Link
             to="/perfil"

@@ -2,12 +2,12 @@ import React from "react";
 import {
   Accessibility,
   BadgeCheck,
-  Heart,
   MapPin,
   PawPrint,
   Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import FavoriteButton from "../../favorites/components/FavoriteButton";
 
 export default function SearchResultCard({
   item,
@@ -27,16 +27,12 @@ export default function SearchResultCard({
           />
         </Link>
 
-        <button
-          type="button"
-          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-sm transition hover:text-red-600 border-none cursor-pointer"
-          aria-label={`Favoritar ${item.title}`}
-        >
-          <Heart
-            size={18}
-            aria-hidden="true"
-          />
-        </button>
+        <FavoriteButton
+          itemId={item.id}
+          label={false}
+          size="icon"
+          className="absolute right-3 top-3 rounded-full bg-white/95 shadow-sm"
+        />
 
         {item.featured && (
           <span className="absolute left-3 top-3 rounded-full bg-slate-950/85 px-3 py-1 text-xs font-semibold text-white backdrop-blur">

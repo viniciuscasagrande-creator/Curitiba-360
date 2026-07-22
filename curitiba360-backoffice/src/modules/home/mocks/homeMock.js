@@ -32,37 +32,37 @@ export const homeCategories = [
   {
     id: "gastronomia",
     label: "Gastronomia",
-    href: "/buscar?categoria=gastronomia",
+    href: "/categoria/gastronomia",
   },
   {
     id: "eventos",
     label: "Eventos",
-    href: "/buscar?categoria=eventos",
+    href: "/categoria/eventos",
   },
   {
     id: "turismo",
     label: "Turismo",
-    href: "/buscar?categoria=turismo",
+    href: "/categoria/turismo",
   },
   {
     id: "compras",
     label: "Compras",
-    href: "/buscar?categoria=compras",
+    href: "/categoria/compras",
   },
   {
     id: "hoteis",
     label: "Hotéis",
-    href: "/buscar?categoria=hoteis",
+    href: "/categoria/hoteis",
   },
   {
     id: "experiencias",
     label: "Experiências",
-    href: "/buscar?categoria=experiencias",
+    href: "/categoria/experiencias",
   },
   {
     id: "mobilidade",
     label: "Mobilidade",
-    href: "/buscar?categoria=mobilidade",
+    href: "/categoria/mobilidade",
   },
   {
     id: "favoritos",

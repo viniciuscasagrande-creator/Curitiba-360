@@ -116,6 +116,13 @@ function filterByOptions(items, filters) {
       return false;
     }
 
+    if (
+      filters.featured &&
+      item.featured !== true
+    ) {
+      return false;
+    }
+
     return true;
   });
 }

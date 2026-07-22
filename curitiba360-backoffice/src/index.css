@@ -92,3 +92,32 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+html.larger-text {
+  font-size: 17px;
+}
+
+html.high-contrast {
+  filter: contrast(1.15);
+}
+
+html.high-contrast body {
+  background-color: #ffffff;
+}
+
+html.high-contrast button,
+html.high-contrast a,
+html.high-contrast input,
+html.high-contrast select,
+html.high-contrast textarea {
+  outline-color: currentColor;
+}

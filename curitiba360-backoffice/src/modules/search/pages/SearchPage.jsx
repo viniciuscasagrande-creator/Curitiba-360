@@ -38,6 +38,7 @@ const defaultFilters = {
   partner: false,
   petFriendly: false,
   accessible: false,
+  featured: false,
 };
 
 function parseBoolean(value) {
@@ -109,6 +110,9 @@ export default function SearchPage() {
         searchParams.get(
           "acessivel"
         )
+      ),
+      featured: parseBoolean(
+        searchParams.get("destaque")
       ),
     }),
     [searchParams]
@@ -184,6 +188,8 @@ export default function SearchPage() {
         nextFilters.petFriendly,
       acessivel:
         nextFilters.accessible,
+      destaque:
+        nextFilters.featured,
     });
   }
 

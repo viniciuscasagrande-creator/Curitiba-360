@@ -23,6 +23,25 @@ import {
 import { PartnerRegisterPage, PartnerRequestSuccessPage } from '../modules/partners';
 import { HomePage } from '../modules/home';
 import { SearchPage } from '../modules/search';
+import { CategoryPage } from '../modules/categories';
+import { DetailPage } from '../modules/details';
+import { FavoritesPage } from '../modules/favorites';
+import { MapPage } from '../modules/map';
+import { CartPage } from '../modules/cart';
+import { CheckoutPage } from '../modules/checkout';
+import { CheckoutResultPage } from '../modules/checkout-result';
+import {
+  ProfilePage,
+  PersonalDataPage,
+  PreferencesPage,
+  SecurityPage,
+} from '../modules/profile';
+import {
+  OrdersHistoryPage,
+  OrderDetailPage,
+  OrderTicketsPage,
+  OrderReviewPage,
+} from '../modules/orders';
 
 // Phase 29 Business Operating System (Business OS) Pages (Lazy Loaded)
 const ExecutiveOperatingCenterPage = lazy(() => import('../pages/admin/businessos/ExecutiveOperatingCenterPage'));
@@ -356,6 +375,12 @@ export default function AppRoutes() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/buscar" element={<SearchPage />} />
+          <Route path="/categoria/:categorySlug" element={<CategoryPage />} />
+          <Route path="/local/:slug" element={<DetailPage />} />
+          <Route path="/evento/:slug" element={<DetailPage />} />
+          <Route path="/experiencia/:slug" element={<DetailPage />} />
+          <Route path="/favoritos" element={<FavoritesPage />} />
+          <Route path="/mapa" element={<MapPage />} />
 
           {/* === ROTAS DE AUTENTICAÇÃO === */}
           <Route element={<PublicRoute />}>
@@ -388,7 +413,8 @@ export default function AppRoutes() {
 
           {/* === ROTAS DO PARTICIPANTE (CARRINHO, CHECKOUT E CARTEIRA DIGITAL) === */}
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/carrinho" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           
           <Route element={<ProtectedRoute />}>
             <Route path="/my-tickets" element={<MyTickets />} />
@@ -488,7 +514,17 @@ export default function AppRoutes() {
           <Route path="/validacao" element={<ValidacaoIngressos />} />
 
           <Route element={<VerifiedRoute />}>
+            <Route path="/checkout/resultado/:orderId" element={<CheckoutResultPage />} />
             <Route path="/cadastro-concluido" element={<RegisterSuccessPage />} />
+            
+            <Route path="/perfil" element={<ProfilePage />} />
+            <Route path="/perfil/dados-pessoais" element={<PersonalDataPage />} />
+            <Route path="/perfil/preferencias" element={<PreferencesPage />} />
+            <Route path="/perfil/seguranca" element={<SecurityPage />} />
+            <Route path="/perfil/pedidos" element={<OrdersHistoryPage />} />
+            <Route path="/perfil/pedidos/:orderId" element={<OrderDetailPage />} />
+            <Route path="/perfil/pedidos/:orderId/ingressos" element={<OrderTicketsPage />} />
+            <Route path="/perfil/pedidos/:orderId/avaliar" element={<OrderReviewPage />} />
 
             <Route element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />

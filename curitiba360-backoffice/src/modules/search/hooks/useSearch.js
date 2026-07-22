@@ -63,9 +63,18 @@ export function useSearch({
     };
   }, [
     debounce,
-    filters,
     query,
     sort,
+    filters.category,
+    filters.rating,
+    filters.maxDistance,
+    filters.today,
+    filters.weekend,
+    filters.free,
+    filters.partner,
+    filters.petFriendly,
+    filters.accessible,
+    filters.featured,
   ]);
 
   return {

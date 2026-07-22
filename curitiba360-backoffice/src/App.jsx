@@ -1,10 +1,13 @@
-import { CartProvider } from './contexts/CartContext'
+import { CartProvider } from './modules/cart'
+import { CheckoutProvider } from './modules/checkout'
 import AppRoutes from './routes/AppRoutes'
 
 export default function App() {
   return (
     <CartProvider>
-      <AppRoutes />
+      <CheckoutProvider>
+        <AppRoutes />
+      </CheckoutProvider>
     </CartProvider>
   )
 }

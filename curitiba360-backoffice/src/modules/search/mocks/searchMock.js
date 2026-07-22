@@ -23,6 +23,8 @@ export const searchMock = [
     accessible: true,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.4429,
+    longitude: -49.2362,
     createdAt: "2026-06-10T10:00:00.000Z",
     tags: [
       "jardim",
@@ -57,6 +59,8 @@ export const searchMock = [
     accessible: true,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.3856,
+    longitude: -49.2765,
     createdAt: "2026-05-20T10:00:00.000Z",
     tags: [
       "ópera",
@@ -91,6 +95,8 @@ export const searchMock = [
     accessible: true,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.4101,
+    longitude: -49.2671,
     createdAt: "2026-04-15T10:00:00.000Z",
     tags: [
       "museu",
@@ -125,6 +131,8 @@ export const searchMock = [
     accessible: true,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.4235,
+    longitude: -49.3071,
     createdAt: "2026-03-12T10:00:00.000Z",
     tags: [
       "parque",
@@ -159,6 +167,8 @@ export const searchMock = [
     accessible: true,
     availableToday: false,
     availableWeekend: true,
+    latitude: -25.4295,
+    longitude: -49.2713,
     createdAt: "2026-07-01T10:00:00.000Z",
     tags: [
       "festival",
@@ -193,6 +203,8 @@ export const searchMock = [
     accessible: true,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.4414,
+    longitude: -49.2898,
     createdAt: "2026-06-28T10:00:00.000Z",
     tags: [
       "restaurante",
@@ -227,6 +239,8 @@ export const searchMock = [
     accessible: true,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.4168,
+    longitude: -49.2684,
     createdAt: "2026-06-18T10:00:00.000Z",
     tags: [
       "hotel",
@@ -260,6 +274,8 @@ export const searchMock = [
     accessible: false,
     availableToday: true,
     availableWeekend: true,
+    latitude: -25.4299,
+    longitude: -49.2719,
     createdAt: "2026-07-05T10:00:00.000Z",
     tags: [
       "tour",
