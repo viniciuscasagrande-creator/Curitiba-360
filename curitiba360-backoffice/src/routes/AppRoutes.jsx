@@ -42,6 +42,196 @@ import {
   OrderTicketsPage,
   OrderReviewPage,
 } from '../modules/orders';
+import {
+  LoyaltyDashboardPage,
+  BenefitsPage,
+  PointsPage,
+  CashbackPage,
+  MissionsPage,
+  CouponsPage,
+  ReferralsPage,
+  LoyaltyStatementPage,
+} from '../modules/loyalty';
+import {
+  PartnerLandingPage,
+  PartnerRegistrationPage,
+  PartnerRegistrationSuccessPage,
+  PartnerOnboardingPage,
+  PartnerDashboardPage,
+  PartnerProfilePage,
+  PartnerDocumentsPage,
+  PartnerTeamPage,
+  PartnerBankAccountPage,
+  PartnerSettingsPage,
+  PartnerRoute,
+  ApprovedPartnerRoute,
+  PartnerPermissionRoute,
+} from '../modules/partner';
+import {
+  ProductsPage,
+  ProductCreatePage,
+  ProductEditPage,
+  ProductPreviewPage,
+  ProductLotsPage,
+  ProductAgendaPage,
+  ProductImagesPage,
+  ProductSEOPage,
+  ProductPublishPage,
+} from '../modules/products';
+import {
+  PartnerOrdersPage,
+  PartnerOrderDetailPage,
+  ParticipantsPage,
+  ParticipantDetailPage,
+  CheckInDashboardPage,
+  CheckInScannerPage,
+  PartnerTicketsPage,
+  PartnerTicketDetailPage,
+  AccreditationPage,
+  GuestListsPage,
+  CourtesiesPage,
+  TicketBlocksPage,
+} from '../modules/partner-operations';
+import {
+  FinancialDashboardPage as PartnerFinancialDashboardPage,
+  PayoutRequestPage,
+  PayoutsPage,
+  FinancialStatementPage,
+  ReceivablesPage,
+  AnticipationPage,
+  FinancialFeesPage,
+  FinancialRefundsPage,
+  FinancialChargebacksPage,
+  ReconciliationPage as PartnerReconciliationPage,
+  FiscalDocumentsPage,
+  FinancialSettingsPage,
+} from '../modules/partner-financial';
+import {
+  ReportsDashboardPage,
+  SalesReportPage,
+  ConversionReportPage,
+  CustomersReportPage,
+  ProductsReportPage,
+  FinancialReportPage,
+  MarketingReportPage,
+  ExportReportsPage,
+  ScheduledReportsPage,
+  CheckInReportPage,
+} from '../modules/reports';
+import {
+  MarketingDashboardPage,
+  CampaignsPage,
+  CampaignCreatePage,
+  CampaignDetailPage,
+  CouponsPage as PartnerCouponsPage,
+  CouponCreatePage,
+  CashbackPage as PartnerCashbackPage,
+  AudiencesPage,
+  AudienceCreatePage,
+  AutomationsPage,
+  AutomationCreatePage,
+  JourneysPage,
+  AffiliatesPage as PartnerAffiliatesPage,
+  TrackingLinksPage,
+  RemarketingPage,
+  MarketingIntegrationsPage,
+  MarketingReportsPage,
+} from '../modules/marketing';
+import {
+  CRMDashboardPage,
+  CustomersPage,
+  CustomerDetailPage,
+  TicketsPage,
+  TicketDetailPage,
+  TasksPage,
+  PipelinePage,
+  SegmentsPage,
+  KnowledgeBasePage,
+  ReviewsPage,
+  TimelinePage,
+  SupportPage,
+  TagsPage,
+  CrmCampaignsPage,
+  CrmSettingsPage,
+} from '../modules/crm';
+import {
+  AdminRoute,
+  AdminPermissionRoute,
+  AdminLayout as NewAdminLayout,
+  AdminDashboardPage,
+  AdminUsersPage,
+  AdminUserDetailPage,
+  AdminPartnersPage,
+  AdminPartnerDetailPage,
+  AdminProductsPage,
+  AdminProductReviewPage,
+  AdminOrdersPage,
+  AdminOrderDetailPage,
+  AdminPaymentsPage,
+  AdminPayoutsPage,
+  AdminPayoutDetailPage,
+  AdminRolesPage,
+  AdminPermissionsPage,
+  AdminAuditPage,
+  AdminIntegrationsPage,
+  AdminFeatureFlagsPage,
+  AdminIncidentsPage,
+  AdminLGPDPage,
+  AdminSettingsPage,
+} from '../modules/admin';
+import {
+  ApiDashboardPage,
+  ApiKeysPage,
+  OAuthClientsPage,
+  WebhooksPage as ApiWebhooksPage,
+  MarketplacePage as ApiMarketplacePage,
+  SandboxPage,
+  ApiDocsPage as ApiPlatformDocsPage,
+} from '../modules/api-platform';
+import {
+  AIDashboardPage,
+  CopilotPage as AiCopilotPage,
+  ForecastPage,
+  InsightsPage,
+  RecommendationsPage,
+  PromptManagementPage,
+} from '../modules/ai';
+import {
+  ObservabilityDashboardPage,
+  ServicesPage,
+  LogsPage,
+  ErrorsPage,
+  TracesPage,
+  MetricsPage,
+  AlertsPage,
+  IncidentsPage as ObservabilityIncidentsPage,
+  WebhookMonitoringPage,
+  QueueMonitoringPage,
+  JobsMonitoringPage,
+  DatabaseMonitoringPage,
+  PaymentMonitoringPage,
+  SLOPage,
+} from '../modules/observability';
+import {
+  OrganizationsPage,
+  OrganizationDashboardPage,
+  BrandingPage,
+  DomainsPage,
+  PlansPage,
+  CompaniesPage,
+  BranchesPage,
+} from '../modules/organizations';
+import {
+  CustomerMobileSimulatorPage,
+  OperationsMobileSimulatorPage,
+  MobileDevicesPage,
+} from '../modules/mobile';
+import {
+  DevopsDashboardPage,
+  FeatureFlagsPage as DevopsFeatureFlagsPage,
+  PipelinesPage,
+  BackupsPage,
+} from '../modules/devops';
 
 // Phase 29 Business Operating System (Business OS) Pages (Lazy Loaded)
 const ExecutiveOperatingCenterPage = lazy(() => import('../pages/admin/businessos/ExecutiveOperatingCenterPage'));
@@ -330,6 +520,24 @@ const LoyaltyProgramPage = lazy(() => import('../modules/omnichannel/pages/Loyal
 const SmartVenueNocPage = lazy(() => import('../modules/smartvenue/pages/SmartVenueNocPage'));
 const IotDevicesPage = lazy(() => import('../modules/smartvenue/pages/IotDevicesPage'));
 const BiDashboardPage = lazy(() => import('../modules/bi/pages/BiDashboardPage'));
+const BIDatasetsPage = lazy(() => import('../modules/bi/pages/BIDatasetsPage'));
+const BIPipelinesPage = lazy(() => import('../modules/bi/pages/BIPipelinesPage'));
+const BIDataQualityPage = lazy(() => import('../modules/bi/pages/BIDataQualityPage'));
+const BIDataCatalogPage = lazy(() => import('../modules/bi/pages/BIDataCatalogPage'));
+const BIMetricsPage = lazy(() => import('../modules/bi/pages/BIMetricsPage'));
+const BIGovernancePage = lazy(() => import('../modules/bi/pages/BIGovernancePage'));
+const BIForecastsPage = lazy(() => import('../modules/bi/pages/BIForecastsPage'));
+const BIReportsPage = lazy(() => import('../modules/bi/pages/BIReportsPage'));
+const BIReportBuilderPage = lazy(() => import('../modules/bi/pages/BIReportBuilderPage'));
+
+// Security, Compliance & Fraud Prevention (WF-028) (Lazy Loaded)
+const SecurityDashboardPage = lazy(() => import('../modules/security/pages/SecurityDashboardPage'));
+const RiskManagementPage = lazy(() => import('../modules/security/pages/RiskManagementPage'));
+const MfaSettingsPage = lazy(() => import('../modules/security/pages/MfaSettingsPage'));
+const FraudPreventionPage = lazy(() => import('../modules/security/pages/FraudPreventionPage'));
+const LgpdConsentPage = lazy(() => import('../modules/security/pages/LgpdConsentPage'));
+const IncidentResponsePage = lazy(() => import('../modules/security/pages/IncidentResponsePage'));
+
 const GovernanceCompliancePage = lazy(() => import('../modules/governance/pages/GovernanceCompliancePage'));
 const CrmSalesHubPage = lazy(() => import('../modules/crm/pages/CrmSalesHubPage'));
 const MarketingCenterPage = lazy(() => import('../modules/marketing/pages/MarketingCenterPage'));
@@ -391,8 +599,10 @@ export default function AppRoutes() {
           <Route path="/recuperacao-enviada" element={<RecoveryEmailSentPage />} />
           <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
           <Route path="/confirmacao-enviada" element={<EmailConfirmationPage />} />
-          <Route path="/cadastro-parceiro" element={<PartnerRegisterPage />} />
-          <Route path="/cadastro-parceiro-enviado" element={<PartnerRequestSuccessPage />} />
+          {/* === WF-013: ÁREA DO PARCEIRO PÚBLICO === */}
+          <Route path="/parceiro" element={<PartnerLandingPage />} />
+          <Route path="/parceiro/cadastro" element={<PartnerRegistrationPage />} />
+          <Route path="/parceiro/cadastro/sucesso" element={<PartnerRegistrationSuccessPage />} />
 
           {/* === FASE 5: OPERAÇÃO DE ACESSO MOBILE === */}
           <Route path="/access" element={<AccessScanner />} />
@@ -526,12 +736,320 @@ export default function AppRoutes() {
             <Route path="/perfil/pedidos/:orderId/ingressos" element={<OrderTicketsPage />} />
             <Route path="/perfil/pedidos/:orderId/avaliar" element={<OrderReviewPage />} />
 
+            {/* === WF-012: CLUBE E FIDELIDADE === */}
+            <Route path="/clube" element={<LoyaltyDashboardPage />} />
+            <Route path="/clube/beneficios" element={<BenefitsPage />} />
+            <Route path="/clube/pontos" element={<PointsPage />} />
+            <Route path="/clube/cashback" element={<CashbackPage />} />
+            <Route path="/clube/missoes" element={<MissionsPage />} />
+            <Route path="/clube/cupons" element={<CouponsPage />} />
+            <Route path="/clube/indicacoes" element={<ReferralsPage />} />
+            <Route path="/clube/extrato" element={<LoyaltyStatementPage />} />
+
+            {/* === WF-013: ÁREA DO PARCEIRO PROTEGIDA === */}
+            <Route element={<PartnerRoute />}>
+              <Route path="/parceiro/onboarding" element={<PartnerOnboardingPage />} />
+              <Route path="/parceiro/perfil" element={<PartnerProfilePage />} />
+              <Route path="/parceiro/documentos" element={<PartnerDocumentsPage />} />
+              <Route path="/parceiro/equipe" element={<PartnerTeamPage />} />
+              <Route path="/parceiro/dados-bancarios" element={<PartnerBankAccountPage />} />
+              <Route path="/parceiro/configuracoes" element={<PartnerSettingsPage />} />
+            </Route>
+
+            <Route element={<ApprovedPartnerRoute />}>
+              <Route path="/parceiro/dashboard" element={<PartnerDashboardPage />} />
+              <Route path="/parceiro/produtos" element={<ProductsPage />} />
+              <Route path="/parceiro/produtos/novo" element={<ProductCreatePage />} />
+              <Route path="/parceiro/produtos/:id" element={<ProductPreviewPage />} />
+              <Route path="/parceiro/produtos/:id/editar" element={<ProductEditPage />} />
+              <Route path="/parceiro/produtos/:id/lotes" element={<ProductLotsPage />} />
+              <Route path="/parceiro/produtos/:id/agenda" element={<ProductAgendaPage />} />
+              <Route path="/parceiro/produtos/:id/imagens" element={<ProductImagesPage />} />
+              <Route path="/parceiro/produtos/:id/seo" element={<ProductSEOPage />} />
+              <Route path="/parceiro/produtos/:id/publicacao" element={<ProductPublishPage />} />
+              <Route path="/parceiro/pedidos" element={<PartnerOrdersPage />} />
+              <Route path="/parceiro/pedidos/:orderId" element={<PartnerOrderDetailPage />} />
+              <Route path="/parceiro/participantes" element={<ParticipantsPage />} />
+              <Route path="/parceiro/participantes/:participantId" element={<ParticipantDetailPage />} />
+              <Route path="/parceiro/check-in" element={<CheckInDashboardPage />} />
+              <Route path="/parceiro/check-in/:productId" element={<CheckInScannerPage />} />
+              <Route path="/parceiro/check-in/:productId/sessoes/:sessionId" element={<CheckInScannerPage />} />
+              <Route path="/parceiro/ingressos" element={<PartnerTicketsPage />} />
+              <Route path="/parceiro/ingressos/:ticketId" element={<PartnerTicketDetailPage />} />
+              <Route path="/parceiro/credenciamento" element={<AccreditationPage />} />
+              <Route path="/parceiro/listas" element={<GuestListsPage />} />
+              <Route path="/parceiro/cortesias" element={<CourtesiesPage />} />
+              <Route path="/parceiro/bloqueios" element={<TicketBlocksPage />} />
+              <Route path="/parceiro/financeiro" element={<PartnerFinancialDashboardPage />} />
+              <Route path="/parceiro/financeiro/saldo" element={<PartnerFinancialDashboardPage />} />
+              <Route path="/parceiro/financeiro/extrato" element={<FinancialStatementPage />} />
+              <Route path="/parceiro/financeiro/recebiveis" element={<ReceivablesPage />} />
+              <Route path="/parceiro/financeiro/repasses" element={<PayoutsPage />} />
+              <Route path="/parceiro/financeiro/repasses/solicitar" element={<PayoutRequestPage />} />
+              <Route path="/parceiro/financeiro/repasses/:payoutId" element={<PayoutsPage />} />
+              <Route path="/parceiro/financeiro/antecipacao" element={<AnticipationPage />} />
+              <Route path="/parceiro/financeiro/taxas" element={<FinancialFeesPage />} />
+              <Route path="/parceiro/financeiro/reembolsos" element={<FinancialRefundsPage />} />
+              <Route path="/parceiro/financeiro/chargebacks" element={<FinancialChargebacksPage />} />
+              <Route path="/parceiro/financeiro/conciliacao" element={<PartnerReconciliationPage />} />
+              <Route path="/parceiro/financeiro/notas-fiscais" element={<FiscalDocumentsPage />} />
+              <Route path="/parceiro/financeiro/configuracoes" element={<FinancialSettingsPage />} />
+
+              {/* Módulo de Relatórios e BI */}
+              <Route element={<PartnerPermissionRoute permission="reports.view" />}>
+                <Route path="/parceiro/relatorios" element={<ReportsDashboardPage />} />
+                <Route path="/parceiro/relatorios/dashboard" element={<ReportsDashboardPage />} />
+                <Route path="/parceiro/relatorios/vendas" element={<SalesReportPage />} />
+                <Route path="/parceiro/relatorios/produtos" element={<ProductsReportPage />} />
+                <Route path="/parceiro/relatorios/clientes" element={<CustomersReportPage />} />
+                <Route path="/parceiro/relatorios/checkin" element={<CheckInReportPage />} />
+                <Route path="/parceiro/relatorios/financeiro" element={<FinancialReportPage />} />
+                <Route path="/parceiro/relatorios/marketing" element={<MarketingReportPage />} />
+                <Route path="/parceiro/relatorios/conversao" element={<ConversionReportPage />} />
+                <Route path="/parceiro/relatorios/agendados" element={<ScheduledReportsPage />} />
+              </Route>
+              <Route element={<PartnerPermissionRoute permission="reports.export" />}>
+                <Route path="/parceiro/relatorios/exportacoes" element={<ExportReportsPage />} />
+              </Route>
+
+              {/* Módulo de Marketing e Automação */}
+              <Route element={<PartnerPermissionRoute permission="marketing.view" />}>
+                <Route path="/parceiro/marketing" element={<MarketingDashboardPage />} />
+                <Route path="/parceiro/marketing/campanhas" element={<CampaignsPage />} />
+                <Route path="/parceiro/marketing/campanhas/:campaignId" element={<CampaignDetailPage />} />
+                <Route path="/parceiro/marketing/cupons" element={<PartnerCouponsPage />} />
+                <Route path="/parceiro/marketing/cashback" element={<PartnerCashbackPage />} />
+                <Route path="/parceiro/marketing/publicos" element={<AudiencesPage />} />
+                <Route path="/parceiro/marketing/automacoes" element={<AutomationsPage />} />
+                <Route path="/parceiro/marketing/jornadas" element={<JourneysPage />} />
+                <Route path="/parceiro/marketing/afiliados" element={<PartnerAffiliatesPage />} />
+                <Route path="/parceiro/marketing/links" element={<TrackingLinksPage />} />
+                <Route path="/parceiro/marketing/remarketing" element={<RemarketingPage />} />
+                <Route path="/parceiro/marketing/integracoes" element={<MarketingIntegrationsPage />} />
+                <Route path="/parceiro/marketing/relatorios" element={<MarketingReportsPage />} />
+              </Route>
+              <Route element={<PartnerPermissionRoute permission="marketing.manage" />}>
+                <Route path="/parceiro/marketing/campanhas/nova" element={<CampaignCreatePage />} />
+                <Route path="/parceiro/marketing/campanhas/:campaignId/editar" element={<CampaignDetailPage />} />
+                <Route path="/parceiro/marketing/cupons/novo" element={<CouponCreatePage />} />
+                <Route path="/parceiro/marketing/cupons/:couponId" element={<CouponCreatePage />} />
+                <Route path="/parceiro/marketing/publicos/novo" element={<AudienceCreatePage />} />
+                <Route path="/parceiro/marketing/automacoes/nova" element={<AutomationCreatePage />} />
+              </Route>
+
+              {/* Módulo de CRM, Atendimento e Relacionamento */}
+              <Route element={<PartnerPermissionRoute permission="crm.view" />}>
+                <Route path="/parceiro/crm" element={<CRMDashboardPage />} />
+                <Route path="/parceiro/crm/clientes" element={<CustomersPage />} />
+                <Route path="/parceiro/crm/clientes/:customerId" element={<CustomerDetailPage />} />
+                <Route path="/parceiro/crm/timeline" element={<TimelinePage />} />
+                <Route path="/parceiro/crm/tickets" element={<TicketsPage />} />
+                <Route path="/parceiro/crm/tickets/:ticketId" element={<TicketDetailPage />} />
+                <Route path="/parceiro/crm/atendimentos" element={<SupportPage />} />
+                <Route path="/parceiro/crm/oportunidades" element={<PipelinePage />} />
+                <Route path="/parceiro/crm/tarefas" element={<TasksPage />} />
+                <Route path="/parceiro/crm/tags" element={<TagsPage />} />
+                <Route path="/parceiro/crm/segmentos" element={<SegmentsPage />} />
+                <Route path="/parceiro/crm/campanhas" element={<CrmCampaignsPage />} />
+                <Route path="/parceiro/crm/avaliacoes" element={<ReviewsPage />} />
+                <Route path="/parceiro/crm/base-conhecimento" element={<KnowledgeBasePage />} />
+                <Route path="/parceiro/crm/configuracoes" element={<CrmSettingsPage />} />
+              </Route>
+              <Route element={<PartnerPermissionRoute permission="crm.manage" />}>
+                <Route path="/parceiro/crm/tickets/novo" element={<TicketsPage />} />
+              </Route>
+
+              {/* === NOVO PAINEL ADMINISTRATIVO (WF-020) === */}
+              <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminDashboardPage />} />
+                <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+                
+                <Route path="/admin/usuarios" element={<AdminUsersPage />} />
+                <Route path="/admin/usuarios/:userId" element={<AdminUserDetailPage />} />
+                
+                <Route path="/admin/parceiros" element={<AdminPartnersPage />} />
+                <Route path="/admin/parceiros/:partnerId" element={
+                  <AdminPermissionRoute permission="admin.partners.view">
+                    <AdminPartnerDetailPage />
+                  </AdminPermissionRoute>
+                } />
+                <Route path="/admin/parceiros/:partnerId/documentos" element={<AdminPartnersPage />} />
+                <Route path="/admin/parceiros/:partnerId/financeiro" element={<AdminPartnersPage />} />
+                <Route path="/admin/parceiros/:partnerId/auditoria" element={<AdminPartnersPage />} />
+                
+                <Route path="/admin/conteudos" element={<AdminProductsPage />} />
+                <Route path="/admin/conteudos/produtos" element={<AdminProductsPage />} />
+                <Route path="/admin/conteudos/produtos/:productId" element={<AdminProductReviewPage />} />
+                <Route path="/admin/conteudos/categorias" element={<AdminProductsPage />} />
+                <Route path="/admin/conteudos/avaliacoes" element={<AdminProductsPage />} />
+                
+                <Route path="/admin/pedidos" element={<AdminOrdersPage />} />
+                <Route path="/admin/pedidos/:orderId" element={<AdminOrderDetailPage />} />
+                
+                <Route path="/admin/pagamentos" element={<AdminPaymentsPage />} />
+                <Route path="/admin/pagamentos/:paymentId" element={<AdminPaymentsPage />} />
+                
+                <Route path="/admin/financeiro" element={<AdminPayoutsPage />} />
+                <Route path="/admin/financeiro/repasses" element={<AdminPayoutsPage />} />
+                <Route path="/admin/financeiro/repasses/:payoutId" element={<AdminPayoutDetailPage />} />
+                <Route path="/admin/financeiro/reembolsos" element={<AdminPayoutsPage />} />
+                <Route path="/admin/financeiro/chargebacks" element={<AdminPayoutsPage />} />
+                <Route path="/admin/financeiro/conciliacao" element={<AdminPayoutsPage />} />
+                <Route path="/admin/financeiro/taxas" element={<AdminPayoutsPage />} />
+                
+                <Route path="/admin/suporte" element={<AdminDashboardPage />} />
+                <Route path="/admin/suporte/tickets" element={<AdminDashboardPage />} />
+                <Route path="/admin/suporte/tickets/:ticketId" element={<AdminDashboardPage />} />
+                
+                <Route path="/admin/seguranca" element={<AdminRolesPage />} />
+                <Route path="/admin/seguranca/usuarios" element={<AdminRolesPage />} />
+                <Route path="/admin/seguranca/perfis" element={<AdminRolesPage />} />
+                <Route path="/admin/seguranca/permissoes" element={<AdminPermissionsPage />} />
+                <Route path="/admin/seguranca/sessoes" element={<AdminRolesPage />} />
+                <Route path="/admin/seguranca/incidentes" element={<AdminIncidentsPage />} />
+                
+                <Route path="/admin/auditoria" element={<AdminAuditPage />} />
+                
+                <Route path="/admin/integracoes" element={<AdminIntegrationsPage />} />
+                <Route path="/admin/webhooks" element={<AdminIntegrationsPage />} />
+                <Route path="/admin/feature-flags" element={<AdminFeatureFlagsPage />} />
+                
+                <Route path="/admin/lgpd" element={<AdminLGPDPage />} />
+                <Route path="/admin/lgpd/solicitacoes" element={<AdminLGPDPage />} />
+                <Route path="/admin/lgpd/consentimentos" element={<AdminLGPDPage />} />
+                
+                <Route path="/admin/configuracoes" element={<AdminSettingsPage />} />
+                <Route path="/admin/configuracoes/gerais" element={<AdminSettingsPage />} />
+                <Route path="/admin/configuracoes/notificacoes" element={<AdminSettingsPage />} />
+                <Route path="/admin/configuracoes/financeiras" element={<AdminSettingsPage />} />
+                <Route path="/admin/configuracoes/plataforma" element={<AdminSettingsPage />} />
+
+                {/* === API & INTEGRATION PLATFORM ROUTES (WF-021) === */}
+                <Route path="/admin/apis" element={<ApiDashboardPage />} />
+                <Route path="/admin/apis/dashboard" element={<ApiDashboardPage />} />
+                <Route path="/admin/apis/apps" element={<ApiDashboardPage />} />
+                <Route path="/admin/apis/apps/new" element={<ApiDashboardPage />} />
+                <Route path="/admin/apis/apps/:appId" element={<ApiDashboardPage />} />
+                <Route path="/admin/apis/keys" element={<ApiKeysPage />} />
+                <Route path="/admin/apis/keys/:keyId" element={<ApiKeysPage />} />
+                <Route path="/admin/apis/oauth" element={<OAuthClientsPage />} />
+                <Route path="/admin/apis/oauth/clients" element={<OAuthClientsPage />} />
+                <Route path="/admin/apis/webhooks" element={<ApiWebhooksPage />} />
+                <Route path="/admin/apis/webhooks/:webhookId" element={<ApiWebhooksPage />} />
+                <Route path="/admin/apis/logs" element={<ApiDashboardPage />} />
+                <Route path="/admin/apis/sandbox" element={<SandboxPage />} />
+                <Route path="/admin/apis/docs" element={<ApiPlatformDocsPage />} />
+                <Route path="/admin/apis/sdk" element={<ApiPlatformDocsPage />} />
+                <Route path="/admin/apis/marketplace" element={<ApiMarketplacePage />} />
+                <Route path="/admin/apis/integrations" element={<ApiDashboardPage />} />
+
+                {/* === AI & PREDITIVE SYSTEM ROUTES (WF-022) === */}
+                <Route path="/admin/ai" element={<AIDashboardPage />} />
+                <Route path="/admin/ai/dashboard" element={<AIDashboardPage />} />
+                <Route path="/admin/ai/copilot" element={<AiCopilotPage />} />
+                <Route path="/admin/ai/insights" element={<InsightsPage />} />
+                <Route path="/admin/ai/forecast" element={<ForecastPage />} />
+                <Route path="/admin/ai/anomalias" element={<InsightsPage />} />
+                <Route path="/admin/ai/fraudes" element={<InsightsPage />} />
+                <Route path="/admin/ai/modelos" element={<AIDashboardPage />} />
+                <Route path="/admin/ai/prompts" element={<PromptManagementPage />} />
+                <Route path="/admin/ai/automacoes" element={<AIDashboardPage />} />
+                <Route path="/admin/ai/relatorios" element={<AIDashboardPage />} />
+
+                {/* === OBSERVABILITY, LOGS & MONITORING ROUTES (WF-023) === */}
+                <Route path="/admin/observabilidade" element={<ObservabilityDashboardPage />} />
+                <Route path="/admin/observabilidade/dashboard" element={<ObservabilityDashboardPage />} />
+                <Route path="/admin/observabilidade/servicos" element={<ServicesPage />} />
+                <Route path="/admin/observabilidade/servicos/:serviceId" element={<ServicesPage />} />
+                <Route path="/admin/observabilidade/logs" element={<LogsPage />} />
+                <Route path="/admin/observabilidade/logs/:logId" element={<LogsPage />} />
+                <Route path="/admin/observabilidade/erros" element={<ErrorsPage />} />
+                <Route path="/admin/observabilidade/erros/:errorId" element={<ErrorsPage />} />
+                <Route path="/admin/observabilidade/traces" element={<TracesPage />} />
+                <Route path="/admin/observabilidade/traces/:traceId" element={<TracesPage />} />
+                <Route path="/admin/observabilidade/metricas" element={<MetricsPage />} />
+                <Route path="/admin/observabilidade/alertas" element={<AlertsPage />} />
+                <Route path="/admin/observabilidade/alertas/novo" element={<AlertsPage />} />
+                <Route path="/admin/observabilidade/incidentes" element={<ObservabilityIncidentsPage />} />
+                <Route path="/admin/observabilidade/incidentes/:incidentId" element={<ObservabilityIncidentsPage />} />
+                <Route path="/admin/observabilidade/webhooks" element={<WebhookMonitoringPage />} />
+                <Route path="/admin/observabilidade/filas" element={<QueueMonitoringPage />} />
+                <Route path="/admin/observabilidade/jobs" element={<JobsMonitoringPage />} />
+                <Route path="/admin/observabilidade/banco-dados" element={<DatabaseMonitoringPage />} />
+                <Route path="/admin/observabilidade/pagamentos" element={<PaymentMonitoringPage />} />
+                <Route path="/admin/observabilidade/status" element={<SLOPage />} />
+                <Route path="/admin/observabilidade/slo" element={<SLOPage />} />
+                <Route path="/admin/observabilidade/configuracoes" element={<SLOPage />} />
+
+                {/* === MULTI-TENANT & ORGANIZATIONS ADMIN ROUTES (WF-024) === */}
+                <Route path="/admin/organizations" element={<OrganizationsPage />} />
+                <Route path="/admin/organizations/new" element={<OrganizationsPage />} />
+                <Route path="/admin/organizations/:organizationId" element={<OrganizationDashboardPage />} />
+                <Route path="/admin/organizations/:organizationId/settings" element={<OrganizationDashboardPage />} />
+                <Route path="/admin/organizations/:organizationId/billing" element={<PlansPage />} />
+                <Route path="/admin/organizations/:organizationId/domains" element={<DomainsPage />} />
+                <Route path="/admin/organizations/:organizationId/branding" element={<BrandingPage />} />
+                <Route path="/admin/organizations/:organizationId/limits" element={<PlansPage />} />
+                <Route path="/admin/organizations/:organizationId/users" element={<CompaniesPage />} />
+                <Route path="/admin/organizations/:organizationId/audit" element={<OrganizationDashboardPage />} />
+
+                {/* === MOBILE DEVICES ADMIN ROUTES (WF-025) === */}
+                <Route path="/admin/mobile/dispositivos" element={<MobileDevicesPage />} />
+
+                {/* === DEVOPS & INFRASTRUCTURE ADMIN ROUTES (WF-026) === */}
+                <Route path="/admin/devops/dashboard" element={<DevopsDashboardPage />} />
+                <Route path="/admin/devops/feature-flags" element={<DevopsFeatureFlagsPage />} />
+                <Route path="/admin/devops/pipelines" element={<PipelinesPage />} />
+                <Route path="/admin/devops/backups" element={<BackupsPage />} />
+              </Route>
+
+              {/* === ROTAS DO PARCEIRO PARA API E IA (WF-021 & WF-022) === */}
+              <Route element={<PartnerPermissionRoute permission="api.view" />}>
+                <Route path="/parceiro/integracoes" element={<ApiDashboardPage />} />
+                <Route path="/parceiro/integracoes/apps" element={<ApiMarketplacePage />} />
+                <Route path="/parceiro/integracoes/chaves" element={<ApiKeysPage />} />
+                <Route path="/parceiro/integracoes/webhooks" element={<ApiWebhooksPage />} />
+                <Route path="/parceiro/integracoes/logs" element={<ApiDashboardPage />} />
+                <Route path="/parceiro/integracoes/documentacao" element={<ApiPlatformDocsPage />} />
+
+                {/* === MULTI-TENANT & ORGANIZATIONS PARTNER ROUTES (WF-024) === */}
+                <Route path="/parceiro/organizacao" element={<OrganizationDashboardPage />} />
+                <Route path="/parceiro/organizacao/configuracoes" element={<OrganizationDashboardPage />} />
+                <Route path="/parceiro/organizacao/usuarios" element={<CompaniesPage />} />
+                <Route path="/parceiro/organizacao/filiais" element={<BranchesPage />} />
+                <Route path="/parceiro/organizacao/marcas" element={<BrandingPage />} />
+                <Route path="/parceiro/organizacao/dominios" element={<DomainsPage />} />
+                <Route path="/parceiro/organizacao/plano" element={<PlansPage />} />
+              </Route>
+
+              <Route element={<PartnerPermissionRoute permission="api.sandbox.use" />}>
+                <Route path="/parceiro/ia" element={<AIDashboardPage />} />
+                <Route path="/parceiro/ia/copilot" element={<AiCopilotPage />} />
+                <Route path="/parceiro/ia/chat" element={<AiCopilotPage />} />
+                <Route path="/parceiro/ia/insights" element={<InsightsPage />} />
+                <Route path="/parceiro/ia/forecast" element={<ForecastPage />} />
+                <Route path="/parceiro/ia/recomendacoes" element={<RecommendationsPage />} />
+                <Route path="/parceiro/ia/precos" element={<RecommendationsPage />} />
+                <Route path="/parceiro/ia/campanhas" element={<RecommendationsPage />} />
+                <Route path="/parceiro/ia/clientes" element={<RecommendationsPage />} />
+              </Route>
+            </Route>
+
             <Route element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/analytics" element={<DashboardAnalytics />} />
               <Route path="/perfil" element={<Perfil />} />
-              <Route path="/wireframes" element={<VisualizadorWireframes />} />
+                <Route path="/wireframes" element={<VisualizadorWireframes />} />
+
+              {/* === PUBLIC STATUS ROUTES (WF-023) === */}
+              <Route path="/status" element={<SLOPage />} />
+              <Route path="/status/historico" element={<SLOPage />} />
+              <Route path="/status/incidentes/:incidentId" element={<SLOPage />} />
+
+              {/* === MOBILE SIMULATOR ROUTES (WF-025) === */}
+              <Route path="/mobile/cliente" element={<CustomerMobileSimulatorPage />} />
+              <Route path="/mobile/operacoes" element={<OperationsMobileSimulatorPage />} />
 
               <Route path="/usuarios" element={<GestaoUsuarios />} />
               <Route path="/usuarios/novo" element={<CadastroUsuario />} />
@@ -856,6 +1374,22 @@ export default function AppRoutes() {
               {/* MOD-15 — Business Intelligence (BI), Data Lake e Decision Center */}
               <Route path="/bi" element={<BiDashboardPage />} />
               <Route path="/bi/dashboard" element={<BiDashboardPage />} />
+              <Route path="/bi/datasets" element={<BIDatasetsPage />} />
+              <Route path="/bi/pipelines" element={<BIPipelinesPage />} />
+              <Route path="/bi/quality" element={<BIDataQualityPage />} />
+              <Route path="/bi/catalog" element={<BIDataCatalogPage />} />
+              <Route path="/bi/metrics" element={<BIMetricsPage />} />
+              <Route path="/bi/governance" element={<BIGovernancePage />} />
+              <Route path="/bi/forecasts" element={<BIForecastsPage />} />
+              <Route path="/bi/reports" element={<BIReportsPage />} />
+              <Route path="/bi/report-builder" element={<BIReportBuilderPage />} />
+              {/* WF-028 — Segurança, Compliance e Prevenção a Fraudes */}
+              <Route path="/security" element={<SecurityDashboardPage />} />
+              <Route path="/security/risks" element={<RiskManagementPage />} />
+              <Route path="/security/mfa" element={<MfaSettingsPage />} />
+              <Route path="/security/fraud" element={<FraudPreventionPage />} />
+              <Route path="/security/lgpd" element={<LgpdConsentPage />} />
+              <Route path="/security/incidents" element={<IncidentResponsePage />} />
 
               {/* MOD-16 — Governança Corporativa, Compliance, Auditoria e Gestão de Riscos */}
               <Route path="/governance" element={<GovernanceCompliancePage />} />

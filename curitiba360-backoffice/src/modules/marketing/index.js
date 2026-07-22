@@ -1,0 +1,18 @@
+export { default as MarketingDashboardPage } from "./pages/MarketingDashboardPage";
+export { default as CampaignsPage } from "./pages/CampaignsPage";
+export { default as CampaignCreatePage } from "./pages/CampaignCreatePage";
+export { default as CampaignDetailPage } from "./pages/CampaignDetailPage";
+export { default as CouponsPage } from "./pages/CouponsPage";
+export { default as CouponCreatePage } from "./pages/CouponCreatePage";
+export { default as CashbackPage } from "./pages/CashbackPage";
+export { default as AudiencesPage } from "./pages/AudiencesPage";
+export { default as AudienceCreatePage } from "./pages/AudienceCreatePage";
+export { default as AutomationsPage } from "./pages/AutomationsPage";
+export { default as AutomationCreatePage } from "./pages/AutomationCreatePage";
+export { default as JourneysPage } from "./pages/JourneysPage";
+export { default as AffiliatesPage } from "./pages/AffiliatesPage";
+export { default as TrackingLinksPage } from "./pages/TrackingLinksPage";
+export { default as RemarketingPage } from "./pages/RemarketingPage";
+export { default as MarketingIntegrationsPage } from "./pages/MarketingIntegrationsPage";
+export { default as MarketingReportsPage } from "./pages/MarketingReportsPage";
+export { useMarketingDashboard } from "./hooks/useMarketingDashboard";
