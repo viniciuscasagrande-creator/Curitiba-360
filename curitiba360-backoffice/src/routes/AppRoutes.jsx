@@ -2,13 +2,27 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import ProtectedRoute from './ProtectedRoute';
-import RoleRoute from '../components/auth/RoleRoute';
+import LegacyRoleRoute from '../components/auth/RoleRoute';
 import AdminLayout from '../components/layout/AdminLayout';
 
+import PrivateRoute from '../app/guards/PrivateRoute';
+import PublicRoute from '../app/guards/PublicRoute';
+import RoleRoute from '../app/guards/RoleRoute';
+import VerifiedRoute from '../app/guards/VerifiedRoute';
+
 // Auth Pages (Static Import)
-import Login from '../pages/auth/Login';
-import Register from '../pages/auth/Register';
-import ForgotPassword from '../pages/auth/ForgotPassword';
+import {
+  LoginPage,
+  ForgotPasswordPage,
+  RecoveryEmailSentPage,
+  ResetPasswordPage,
+  RegisterPage,
+  EmailConfirmationPage,
+  RegisterSuccessPage,
+} from '../modules/auth';
+import { PartnerRegisterPage, PartnerRequestSuccessPage } from '../modules/partners';
+import { HomePage } from '../modules/home';
+import { SearchPage } from '../modules/search';
 
 // Phase 29 Business Operating System (Business OS) Pages (Lazy Loaded)
 const ExecutiveOperatingCenterPage = lazy(() => import('../pages/admin/businessos/ExecutiveOperatingCenterPage'));
@@ -133,7 +147,6 @@ const MyTickets = lazy(() => import('../pages/public/MyTickets'));
 
 // Layout & Private Route Legados/Sistemas (Lazy Loaded)
 const Layout = lazy(() => import('../components/Layout'));
-const PrivateRoute = lazy(() => import('../components/PrivateRoute'));
 
 // Páginas do Portal Público (Lazy Loaded)
 const PortalHome = lazy(() => import('../pages/portal/PortalHome'));
@@ -341,10 +354,20 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Suspense fallback={<SuspenseFallback />}>
         <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/buscar" element={<SearchPage />} />
+
           {/* === ROTAS DE AUTENTICAÇÃO === */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/criar-conta" element={<RegisterPage />} />
+            <Route path="/esqueci-minha-senha" element={<ForgotPasswordPage />} />
+          </Route>
+          <Route path="/recuperacao-enviada" element={<RecoveryEmailSentPage />} />
+          <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+          <Route path="/confirmacao-enviada" element={<EmailConfirmationPage />} />
+          <Route path="/cadastro-parceiro" element={<PartnerRegisterPage />} />
+          <Route path="/cadastro-parceiro-enviado" element={<PartnerRequestSuccessPage />} />
 
           {/* === FASE 5: OPERAÇÃO DE ACESSO MOBILE === */}
           <Route path="/access" element={<AccessScanner />} />
@@ -464,9 +487,11 @@ export default function AppRoutes() {
           {/* === ROTAS DO BACKOFFICE INTEGRADO === */}
           <Route path="/validacao" element={<ValidacaoIngressos />} />
 
-          <Route element={<PrivateRoute />}>
+          <Route element={<VerifiedRoute />}>
+            <Route path="/cadastro-concluido" element={<RegisterSuccessPage />} />
+
             <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/analytics" element={<DashboardAnalytics />} />
               <Route path="/perfil" element={<Perfil />} />
