@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { EventService } from '../services/EventService';
+import { EventService } from '../services/eventService';
 import { CartService } from '../services/CartService';
 
 export function useTicketSelection(eventId) {

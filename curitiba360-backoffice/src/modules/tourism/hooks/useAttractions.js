@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { tourismService } from '../services/TourismService';
+import { tourismService } from '../services/tourismService';
 
 export function useAttractions(initialFilters = {}) {
   const [attractions, setAttractions] = useState([]);

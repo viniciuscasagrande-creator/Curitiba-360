@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useEvents } from '../hooks/useEvents';
 import EventFilters from '../components/EventFilters';
 import EventGrid from '../components/EventGrid';
-import { EventService } from '../services/EventService';
+import { EventService } from '../services/eventService';
 import { Ticket, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function EventsPage() {

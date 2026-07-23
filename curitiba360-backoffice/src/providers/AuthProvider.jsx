@@ -33,15 +33,24 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(async (input) => {
-    await authService.login(input);
+    const res = await authService.login(input);
+    setUser(res);
+    setProfile(res);
+    return res;
   }, []);
 
   const register = useCallback(async (input) => {
-    await authService.register(input);
+    const res = await authService.register(input);
+    setUser(res);
+    setProfile(res);
+    return res;
   }, []);
 
   const loginWithGoogle = useCallback(async () => {
-    await authService.loginWithGoogle();
+    const res = await authService.loginWithGoogle();
+    setUser(res);
+    setProfile(res);
+    return res;
   }, []);
 
   const recoverPassword = useCallback(async (email) => {
@@ -50,6 +59,7 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     await authService.logout();
+    setUser(null);
     setProfile(null);
   }, []);
 

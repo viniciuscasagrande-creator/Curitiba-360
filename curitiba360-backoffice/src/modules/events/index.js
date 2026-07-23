@@ -31,7 +31,7 @@ export { useCheckout } from './hooks/useCheckout';
 export { useDigitalTicket } from './hooks/useDigitalTicket';
 
 // Services
-export { EventService } from './services/EventService';
+export { EventService } from './services/eventService';
 export { CartService } from './services/CartService';
 export { PaymentService } from './services/PaymentService';
 export { OrderService } from './services/OrderService';

@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthProvider } from "../../modules/auth/contexts/AuthContext";
+import { AuthProvider } from "../../providers/AuthProvider";
 import { ProfilePreferenceEffects } from "../../modules/profile";
 
 export default function AppProviders({ children }) {

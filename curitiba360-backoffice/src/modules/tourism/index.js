@@ -27,7 +27,7 @@ export { useReservation } from './hooks/useReservation';
 export { useTourismCategories } from './hooks/useTourismCategories';
 
 // Services
-export { TourismService, tourismService } from './services/TourismService';
+export { TourismService, tourismService } from './services/tourismService';
 export { ReservationService, reservationService } from './services/ReservationService';
 
 // Repositories

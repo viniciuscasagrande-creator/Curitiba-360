@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { EventService } from '../services/EventService';
+import { EventService } from '../services/eventService';
 
 export function useEvents(initialFilters = {}) {
   const [events, setEvents] = useState([]);

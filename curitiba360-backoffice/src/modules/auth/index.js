@@ -1,11 +1,11 @@
 import { FirebaseAuthRepository } from "./repositories/FirebaseAuthRepository";
-import { AuthService } from "./services/AuthService";
+import { AuthService } from "./services/authService";
 
 const authRepository = new FirebaseAuthRepository();
 export const authService = new AuthService(authRepository);
 
 export { FirebaseAuthRepository } from "./repositories/FirebaseAuthRepository";
-export { AuthService } from "./services/AuthService";
+export { AuthService } from "./services/authService";
 export { useAuth } from "./hooks/useAuth";
 
 export { default as LoginPage } from "./pages/LoginPage";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { tourismService } from '../services/TourismService';
+import { tourismService } from '../services/tourismService';
 
 export function useTourismCategories() {
   const [categories, setCategories] = useState([]);
