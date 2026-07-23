@@ -27,9 +27,11 @@ import { ExplorePage } from "../modules/search/pages/ExplorePage";
 
 import { EventsPage } from "../modules/events/pages/EventsPage";
 import { EventDetailsPage } from "../modules/events/pages/EventDetailsPage";
+import { TicketSelectionPage } from "../modules/events/pages/TicketSelectionPage";
 import { CartPage } from "../modules/events/pages/CartPage";
-import { CheckoutPage } from "../modules/payment/pages/CheckoutPage";
-import { OrderResultPage } from "../modules/orders/pages/OrderResultPage";
+import { CheckoutPage } from "../modules/events/pages/CheckoutPage";
+import { OrderSuccessPage } from "../modules/events/pages/OrderSuccessPage";
+import { DigitalTicketPage } from "../modules/events/pages/DigitalTicketPage";
 import { TicketsPage } from "../modules/tickets/pages/TicketsPage";
 import { TicketDetailsPage } from "../modules/tickets/pages/TicketDetailsPage";
 
@@ -186,7 +188,11 @@ export function AppRoutes() {
             <Route path={ROUTES.public.landing} element={<LandingPage />} />
             <Route path={ROUTES.public.explore} element={<ExplorePage />} />
             <Route path={ROUTES.public.events} element={<EventsPage />} />
+            <Route path="/events" element={<EventsPage />} />
             <Route path={ROUTES.public.eventDetails(":eventId")} element={<EventDetailsPage />} />
+            <Route path="/events/:id" element={<EventDetailsPage />} />
+            <Route path={ROUTES.public.ticketSelection(":id")} element={<TicketSelectionPage />} />
+            <Route path="/events/:id/tickets" element={<TicketSelectionPage />} />
             <Route path={ROUTES.public.places} element={<PlacesPage />} />
             <Route path={ROUTES.public.placeDetails(":placeId")} element={<PlaceDetailsPage />} />
           </Route>
@@ -206,10 +212,14 @@ export function AppRoutes() {
             <Route element={<AppLayout />}>
               <Route path={ROUTES.app.home} element={<HomePage />} />
               <Route path={ROUTES.app.cart} element={<CartPage />} />
+              <Route path="/events/cart" element={<CartPage />} />
               <Route path={ROUTES.app.checkout} element={<CheckoutPage />} />
-              <Route path={ROUTES.app.order(":orderId")} element={<OrderResultPage />} />
+              <Route path="/events/checkout" element={<CheckoutPage />} />
+              <Route path={ROUTES.app.order(":id")} element={<OrderSuccessPage />} />
+              <Route path="/events/orders/:id" element={<OrderSuccessPage />} />
               <Route path={ROUTES.app.tickets} element={<TicketsPage />} />
-              <Route path={ROUTES.app.ticket(":ticketId")} element={<TicketDetailsPage />} />
+              <Route path={ROUTES.app.ticket(":id")} element={<DigitalTicketPage />} />
+              <Route path="/events/tickets/:id" element={<DigitalTicketPage />} />
               <Route path={ROUTES.app.wallet} element={<WalletPage />} />
               <Route path={ROUTES.app.favorites} element={<FavoritesPage />} />
               <Route path={ROUTES.app.profile} element={<ProfilePage />} />

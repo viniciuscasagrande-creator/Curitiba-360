@@ -7,6 +7,7 @@ export const ROUTES = {
     explore: "/explorar",
     events: "/eventos",
     eventDetails: (eventId) => `/eventos/${eventId}`,
+    ticketSelection: (eventId) => `/eventos/${eventId}/ingressos`,
     places: "/atrativos",
     placeDetails: (placeId) => `/atrativos/${placeId}`,
   },
