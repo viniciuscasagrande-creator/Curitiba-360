@@ -1,54 +1,145 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Calendar,
+  CalendarDays,
+  Gift,
+  Heart,
+  Map,
+  Ticket,
   Trees,
   UtensilsCrossed,
-  ShoppingBag,
-  MapPin,
-  Ticket,
-  Wallet,
-  Gift,
-  Heart
+  Wallet
 } from 'lucide-react';
 
+import { ROUTES } from '../../../routes/routePaths';
+
 const actions = [
-  { id: 'events', label: 'Eventos', icon: Calendar, path: '/eventos', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { id: 'tourism', label: 'Turismo', icon: Trees, path: '/turismo', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-  { id: 'food', label: 'Gastronomia', icon: UtensilsCrossed, path: '/explorar?cat=gastronomia', color: 'bg-rose-100 text-rose-700 border-rose-200' },
-  { id: 'map', label: 'Mapa', icon: MapPin, path: '/turismo/mapa', color: 'bg-sky-100 text-sky-700 border-sky-200' },
-  { id: 'tickets', label: 'Ingressos', icon: Ticket, path: '/ingressos', color: 'bg-purple-100 text-purple-700 border-purple-200' },
-  { id: 'wallet', label: 'Carteira', icon: Wallet, path: '/carteira', color: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
-  { id: 'benefits', label: 'Benefícios', icon: Gift, path: '/carteira/beneficios', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { id: 'favorites', label: 'Favoritos', icon: Heart, path: '/favoritos', color: 'bg-rose-100 text-rose-700 border-rose-200' }
+  {
+    id: 'events',
+    label: 'Eventos',
+    description: 'Shows e cultura',
+    icon: CalendarDays,
+    path: ROUTES.public.events,
+    iconClass: 'bg-amber-50 text-amber-700'
+  },
+  {
+    id: 'tourism',
+    label: 'Turismo',
+    description: 'Conheça Curitiba',
+    icon: Trees,
+    path: ROUTES.public.tourism,
+    iconClass: 'bg-emerald-50 text-emerald-700'
+  },
+  {
+    id: 'food',
+    label: 'Gastronomia',
+    description: 'Sabores da cidade',
+    icon: UtensilsCrossed,
+    path: `${ROUTES.public.explore}?cat=gastronomia`,
+    iconClass: 'bg-rose-50 text-rose-700'
+  },
+  {
+    id: 'map',
+    label: 'Mapa',
+    description: 'Explore por perto',
+    icon: Map,
+    path: ROUTES.public.tourismMap,
+    iconClass: 'bg-sky-50 text-sky-700'
+  },
+  {
+    id: 'tickets',
+    label: 'Ingressos',
+    description: 'Seus acessos',
+    icon: Ticket,
+    path: ROUTES.app.tickets,
+    iconClass: 'bg-violet-50 text-violet-700'
+  },
+  {
+    id: 'wallet',
+    label: 'Carteira',
+    description: 'Saldo e pagamentos',
+    icon: Wallet,
+    path: ROUTES.app.wallet,
+    iconClass: 'bg-indigo-50 text-indigo-700'
+  },
+  {
+    id: 'benefits',
+    label: 'Benefícios',
+    description: 'Ofertas exclusivas',
+    icon: Gift,
+    path: ROUTES.app.walletBenefits,
+    iconClass: 'bg-orange-50 text-orange-700'
+  },
+  {
+    id: 'favorites',
+    label: 'Favoritos',
+    description: 'Itens salvos',
+    icon: Heart,
+    path: ROUTES.app.favorites,
+    iconClass: 'bg-pink-50 text-pink-700'
+  }
 ];
 
 export function QuickActions() {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-base font-bold text-slate-900 tracking-wide">Acesso Rápido</h3>
-      <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-4">
-        {actions.map((act) => {
-          const Icon = act.icon;
-          return (
+    <section aria-labelledby="quick-actions-title">
+      <div className="mb-4 flex items-end justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">
+            Curitiba na sua mão
+          </p>
+
+          <h2
+            id="quick-actions-title"
+            className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl"
+          >
+            O que você procura?
+          </h2>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-x-2 gap-y-5 sm:grid-cols-8 sm:gap-4">
+        {actions.map(
+          ({
+            id,
+            label,
+            description,
+            icon: Icon,
+            path,
+            iconClass
+          }) => (
             <button
-              key={act.id}
-              onClick={() => navigate(act.path)}
-              className="group flex flex-col items-center gap-2 text-center transition-transform hover:-translate-y-1"
+              key={id}
+              type="button"
+              onClick={() => navigate(path)}
+              className="group flex min-w-0 flex-col items-center text-center"
             >
-              <div className={`w-14 h-14 rounded-2xl ${act.color} border flex items-center justify-center shadow-xs transition-all group-hover:scale-105 group-hover:shadow-md`}>
-                <Icon size={24} />
-              </div>
-              <span className="text-xs font-bold text-slate-700 group-hover:text-slate-950 truncate w-full">
-                {act.label}
+              <span
+                className={[
+                  'flex h-14 w-14 items-center justify-center rounded-full transition duration-200 sm:h-16 sm:w-16',
+                  'shadow-sm ring-1 ring-inset ring-slate-900/5',
+                  'group-hover:-translate-y-1 group-hover:shadow-md',
+                  iconClass
+                ].join(' ')}
+              >
+                <Icon size={25} strokeWidth={2} />
+              </span>
+
+              <span className="mt-2 w-full truncate text-xs font-bold text-slate-800">
+                {label}
+              </span>
+
+              <span className="mt-0.5 hidden text-[10px] text-slate-400 lg:block">
+                {description}
               </span>
             </button>
-          );
-        })}
+          )
+        )}
       </div>
-    </div>
+    </section>
   );
 }
+
 export default QuickActions;
