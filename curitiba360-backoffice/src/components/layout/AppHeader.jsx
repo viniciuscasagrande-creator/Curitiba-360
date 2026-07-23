@@ -44,11 +44,13 @@ export function AppHeader() {
         <NavLink
           to={ROUTES.app.home}
           aria-label="Ir para a página inicial"
-          className="flex shrink-0 items-center gap-2.5"
+          className="flex shrink-0 items-center gap-3"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-600 text-sm font-black text-white shadow-sm">
-            360
-          </span>
+          <img
+            src="/logo-360-main.png"
+            alt="Curitiba 360"
+            className="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100"
+          />
 
           <div className="hidden sm:block">
             <p className="text-base font-black leading-none tracking-tight text-slate-950">

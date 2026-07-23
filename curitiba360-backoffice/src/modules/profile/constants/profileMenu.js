@@ -80,6 +80,20 @@ export const profileMenuSections = [
   },
 
   {
+    id: "admin",
+    title: "Gestão & Administração",
+
+    items: [
+      {
+        id: "admin-dashboard",
+        label: "Painel Administrativo",
+        description: "Dashboard comercial e Business OS",
+        href: "/admin/dashboard",
+        icon: SlidersHorizontal,
+      },
+    ],
+  },
+  {
     id: "settings",
     title: "Configurações",
 

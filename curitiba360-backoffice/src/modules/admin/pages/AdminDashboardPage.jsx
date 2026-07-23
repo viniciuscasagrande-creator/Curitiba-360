@@ -1,169 +1,359 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useMemo } from 'react';
 import {
   Users,
-  Building2,
-  Package,
+  FileText,
+  Trees,
+  DollarSign,
+  Search,
+  Filter,
   TrendingUp,
-  AlertTriangle,
-  Layers,
-  Heart,
-  Plus,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle,
-  Activity
-} from "lucide-react";
+  Ticket,
+  Gift,
+  ArrowUpRight,
+  ChevronRight,
+  MoreVertical,
+  SlidersHorizontal,
+  CheckCircle2,
+  XCircle,
+  Clock
+} from 'lucide-react';
 
-import AdminLayout from "../layouts/AdminLayout";
-import { useAdminDashboard } from "../hooks/useAdminDashboard";
-import { approvePartnerRepository } from "../repositories/adminRepository";
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(Number(value || 0));
-}
-
-export default function AdminDashboardPage() {
-  const { summary, pendingPartners, pendingPayouts, incidents, loading, error, reload } = useAdminDashboard();
-
-  const handleApprovePartner = async (partnerId) => {
-    await approvePartnerRepository(partnerId, "Cadastro validado pela auditoria administrativa.");
-    reload();
-  };
-
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div className="h-80 animate-pulse rounded-3xl bg-slate-200" />
-      </AdminLayout>
-    );
+const mockKPIs = [
+  {
+    title: 'Usuários Cadastrados',
+    value: '48.290',
+    change: '+14.2%',
+    icon: Users,
+    color: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+  },
+  {
+    title: 'Contratos Vigentes',
+    value: '142',
+    change: '+8 este mês',
+    icon: FileText,
+    color: 'bg-blue-50 text-blue-700 border-blue-200'
+  },
+  {
+    title: 'Atrações Ativas',
+    value: '38',
+    change: '98% operacional',
+    icon: Trees,
+    color: 'bg-amber-50 text-amber-700 border-amber-200'
+  },
+  {
+    title: 'Receita Total do Mês',
+    value: 'R$ 1.284.950,00',
+    change: '+22.5%',
+    icon: DollarSign,
+    color: 'bg-indigo-50 text-indigo-700 border-indigo-200'
   }
+];
 
-  if (error || !summary) {
-    return (
-      <AdminLayout>
-        <section className="rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700">
-          {error || "Erro ao carregar dados do painel administrativo."}
-        </section>
-      </AdminLayout>
-    );
+const mockAttractions = [
+  {
+    id: 'att-1',
+    name: 'Jardim Botânico de Curitiba',
+    category: 'Parque Urbano',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&auto=format&fit=crop',
+    ticketsSold: 14250,
+    courtesies: 340,
+    revenue: 427500,
+    occupation: 92,
+    sparkline: [40, 55, 75, 80, 95, 110, 140]
+  },
+  {
+    id: 'att-2',
+    name: 'Ópera de Arame & Parque das Pedreiras',
+    category: 'Teatro & Cultura',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop',
+    ticketsSold: 9800,
+    courtesies: 120,
+    revenue: 392000,
+    occupation: 88,
+    sparkline: [30, 45, 60, 70, 85, 90, 105]
+  },
+  {
+    id: 'att-3',
+    name: 'Museu Oscar Niemeyer (MON)',
+    category: 'Museu & Arte',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=600&auto=format&fit=crop',
+    ticketsSold: 11400,
+    courtesies: 280,
+    revenue: 228000,
+    occupation: 85,
+    sparkline: [25, 40, 55, 65, 70, 85, 95]
+  },
+  {
+    id: 'att-4',
+    name: 'Parque Tanguá & Mirante',
+    category: 'Parque & Sunset',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop',
+    ticketsSold: 18900,
+    courtesies: 500,
+    revenue: 189000,
+    occupation: 96,
+    sparkline: [50, 70, 85, 100, 120, 150, 170]
+  },
+  {
+    id: 'att-5',
+    name: 'Bosque Alemão & Trilha de João e Maria',
+    category: 'Cultura & Infantil',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&auto=format&fit=crop',
+    ticketsSold: 6400,
+    courtesies: 90,
+    revenue: 48000,
+    occupation: 74,
+    sparkline: [15, 25, 30, 45, 50, 60, 64]
+  },
+  {
+    id: 'att-6',
+    name: 'Passeio Público & Mini Zoo',
+    category: 'Histórico',
+    status: 'inactive',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&auto=format&fit=crop',
+    ticketsSold: 0,
+    courtesies: 0,
+    revenue: 0,
+    occupation: 0,
+    sparkline: [0, 0, 0, 0, 0, 0, 0]
   }
+];
 
-  const kpiCards = [
-    { label: "Usuários Ativos", value: summary.users.active, icon: Users, color: "text-blue-600 bg-blue-50" },
-    { label: "Parceiros Ativos", value: summary.partners.active, icon: Building2, color: "text-emerald-600 bg-emerald-50" },
-    { label: "Produtos Publicados", value: summary.products.published, icon: Package, color: "text-purple-600 bg-purple-50" },
-    { label: "Volume de Vendas", value: formatCurrency(summary.commerce.grossVolume), icon: TrendingUp, color: "text-indigo-600 bg-indigo-50" },
-    { label: "Faturamento Líquido", value: formatCurrency(summary.commerce.netRevenue), icon: Layers, color: "text-teal-600 bg-teal-50" },
-    { label: "Repasses Pendentes", value: summary.financial.pendingPayouts, icon: Layers, color: "text-orange-600 bg-orange-50" },
-    { label: "Incidentes Ativos", value: summary.platform.activeIncidents, icon: AlertTriangle, color: "text-red-600 bg-red-50" },
-    { label: "Uptime do Sistema", value: `${summary.platform.uptime}%`, icon: Activity, color: "text-pink-600 bg-pink-50" },
-  ];
+export function AdminDashboardPage() {
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'active' | 'inactive'
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredAttractions = useMemo(() => {
+    return mockAttractions.filter((item) => {
+      const matchesTab =
+        activeTab === 'all' ||
+        (activeTab === 'active' && item.status === 'active') ||
+        (activeTab === 'inactive' && item.status === 'inactive');
+
+      const matchesSearch = item.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase().trim());
+
+      return matchesTab && matchesSearch;
+    });
+  }, [activeTab, searchTerm]);
 
   return (
-    <AdminLayout>
-      <div className="space-y-6 text-left select-none">
-        <header className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 my-0">Painel Operacional</h1>
-            <p className="mt-2 text-sm text-slate-600 my-0 flex items-center gap-1.5">
-              <ShieldCheck size={16} className="text-emerald-600" />
-              Sessão Administrativa Segura com MFA ativa.
-            </p>
-          </div>
-        </header>
+    <div className="space-y-6 text-left">
+      {/* Title */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-emerald-600">
+            Console de Operações
+          </p>
+          <h1 className="text-2xl font-black text-slate-950">
+            Dashboard Operacional
+          </h1>
+        </div>
 
-        {/* KPIs Cards */}
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {kpiCards.map(({ label, value, icon: Icon, color }) => (
-            <article
-              key={label}
-              className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
-            >
-              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${color}`}>
-                <Icon size={21} />
-              </div>
-              <p className="mt-5 text-sm font-semibold text-slate-500 my-0">
-                {label}
-              </p>
-              <p className="mt-2 text-2xl font-bold text-slate-900 my-0">
-                {value}
-              </p>
-            </article>
-          ))}
-        </section>
-
-        {/* Content sections */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Parceiros Pendentes de Aprovação */}
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-slate-900 my-0">Parceiros Pendentes</h2>
-                <Link
-                  to="/admin/parceiros"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 text-decoration-none hover:underline"
-                >
-                  Ver todos
-                  <ArrowRight size={16} />
-                </Link>
-              </div>
-
-              <div className="mt-5 space-y-4">
-                {pendingPartners.length === 0 ? (
-                  <p className="text-sm text-slate-500 font-semibold my-4">Nenhum parceiro pendente de aprovação.</p>
-                ) : (
-                  pendingPartners.map((partner) => (
-                    <article
-                      key={partner.id}
-                      className="p-4 border border-slate-200 rounded-2xl flex items-center justify-between"
-                    >
-                      <div>
-                        <p className="font-bold text-slate-900 my-0">{partner.legalName}</p>
-                        <p className="text-xs text-slate-505 my-0 mt-0.5">{partner.document} • Risco: {partner.risk.level.toUpperCase()}</p>
-                      </div>
-                      <button
-                        onClick={() => handleApprovePartner(partner.id)}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-emerald-700 px-4 text-xs font-bold text-white hover:bg-emerald-800 transition cursor-pointer border-none"
-                      >
-                        <CheckCircle size={14} />
-                        Aprovar
-                      </button>
-                    </article>
-                  ))
-                )}
-              </div>
-            </div>
-          </section>
-
-          {/* Incidentes de Plataforma */}
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 my-0">Incidentes Ativos</h2>
-            <div className="mt-5 space-y-4">
-              {incidents.map((incident) => (
-                <div key={incident.id} className="p-4 border border-red-200 bg-red-50/50 rounded-2xl">
-                  <div className="flex items-center gap-2 text-red-700">
-                    <AlertTriangle size={18} />
-                    <h4 className="font-bold my-0">{incident.title}</h4>
-                  </div>
-                  <p className="text-xs text-slate-707 my-0 mt-1">{incident.description}</p>
-                  <div className="mt-3 flex items-center gap-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-100 border border-red-200 px-2.5 py-0.5 rounded-md">
-                      SEVERIDADE: {incident.severity.toUpperCase()}
-                    </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-100 border border-orange-200 px-2.5 py-0.5 rounded-md">
-                      STATUS: {incident.status.toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition"
+          >
+            <SlidersHorizontal size={15} />
+            Filtros Avançados
+          </button>
         </div>
       </div>
-    </AdminLayout>
+
+      {/* 1. KPIs Top Bar */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {mockKPIs.map(({ title, value, change, icon: Icon, color }) => (
+          <div
+            key={title}
+            className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                {title}
+              </span>
+              <span className={`flex h-9 w-9 items-center justify-center rounded-xl border ${color}`}>
+                <Icon size={18} />
+              </span>
+            </div>
+
+            <div className="mt-4 flex items-baseline justify-between">
+              <p className="text-2xl font-black text-slate-950">{value}</p>
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600">
+                <TrendingUp size={14} />
+                {change}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 2. Filter & Status Bar */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        {/* Status Tabs */}
+        <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab('all')}
+            className={`rounded-lg px-4 py-2 text-xs font-bold transition ${
+              activeTab === 'all'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            Todos ({mockAttractions.length})
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('active')}
+            className={`rounded-lg px-4 py-2 text-xs font-bold transition ${
+              activeTab === 'active'
+                ? 'bg-white text-emerald-700 shadow-sm'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            Ativos ({mockAttractions.filter((a) => a.status === 'active').length})
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('inactive')}
+            className={`rounded-lg px-4 py-2 text-xs font-bold transition ${
+              activeTab === 'inactive'
+                ? 'bg-white text-rose-700 shadow-sm'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            Inativos ({mockAttractions.filter((a) => a.status === 'inactive').length})
+          </button>
+        </div>
+
+        {/* Operational Search Bar */}
+        <div className="relative min-w-[280px]">
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Filtrar atração..."
+            className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-xs font-medium text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white placeholder:text-slate-400"
+          />
+        </div>
+      </div>
+
+      {/* 3. Attractions Operational Grid */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {filteredAttractions.map((attraction) => (
+          <div
+            key={attraction.id}
+            className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-slate-300 hover:shadow-md"
+          >
+            {/* Attraction Header & Image */}
+            <div className="relative h-44 w-full overflow-hidden bg-slate-900">
+              <img
+                src={attraction.image}
+                alt={attraction.name}
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+
+              {/* Status Badge */}
+              <div className="absolute left-3.5 top-3.5">
+                {attraction.status === 'active' ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/90 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-md">
+                    <CheckCircle2 size={12} />
+                    Operacional
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-700/90 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-md">
+                    <Clock size={12} />
+                    Inativo / Manutenção
+                  </span>
+                )}
+              </div>
+
+              {/* Category */}
+              <div className="absolute bottom-3 left-3.5 right-3.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">
+                  {attraction.category}
+                </span>
+                <h3 className="truncate text-base font-bold text-white">
+                  {attraction.name}
+                </h3>
+              </div>
+            </div>
+
+            {/* Metrics Details */}
+            <div className="p-4 space-y-3">
+              <div className="grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-3 text-center border border-slate-100">
+                <div>
+                  <span className="block text-[10px] font-semibold text-slate-400 uppercase">Vendas</span>
+                  <span className="text-xs font-black text-slate-900">
+                    {attraction.ticketsSold.toLocaleString()}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="block text-[10px] font-semibold text-slate-400 uppercase">Cortesias</span>
+                  <span className="text-xs font-black text-amber-700">
+                    {attraction.courtesies}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="block text-[10px] font-semibold text-slate-400 uppercase">Ocupação</span>
+                  <span className="text-xs font-black text-emerald-700">
+                    {attraction.occupation}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Revenue & Chart Bar */}
+              <div className="flex items-center justify-between pt-1">
+                <div>
+                  <span className="block text-[10px] font-semibold uppercase text-slate-400">Receita Bruta</span>
+                  <span className="text-base font-black text-slate-950">
+                    R$ {attraction.revenue.toLocaleString('pt-BR')}
+                  </span>
+                </div>
+
+                {/* Mini Sparkline Visualization */}
+                <div className="flex items-end gap-1 h-7">
+                  {attraction.sparkline.map((val, idx) => (
+                    <div
+                      key={idx}
+                      style={{ height: `${Math.max(15, (val / 170) * 100)}%` }}
+                      className="w-1.5 rounded-t bg-emerald-500/80"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Footer */}
+            <div className="border-t border-slate-100 bg-slate-50/50 px-4 py-3 flex items-center justify-between">
+              <span className="text-[11px] font-medium text-slate-500">ID: {attraction.id}</span>
+              <button
+                type="button"
+                onClick={() => alert(`Gerenciando atração: ${attraction.name}`)}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 transition"
+              >
+                Gerenciar
+                <ArrowUpRight size={14} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
+
+export default AdminDashboardPage;

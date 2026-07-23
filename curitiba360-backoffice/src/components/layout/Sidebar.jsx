@@ -412,14 +412,20 @@ export default function Sidebar({
         `}
       >
         <div className="flex h-20 items-center justify-between border-b border-white/10 px-6">
-          <div>
-            <h1 className="text-xl font-bold">
-              Curitiba 360
-            </h1>
-
-            <span className="text-xs text-slate-400">
-              Administração
-            </span>
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo-360-main.png"
+              alt="Curitiba 360"
+              className="h-10 w-auto rounded-lg object-contain bg-white p-0.5"
+            />
+            <div>
+              <h1 className="text-lg font-bold leading-tight">
+                Curitiba 360
+              </h1>
+              <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                Painel Admin
+              </span>
+            </div>
           </div>
 
           <button

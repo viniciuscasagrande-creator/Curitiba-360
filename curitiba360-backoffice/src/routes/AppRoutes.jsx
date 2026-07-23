@@ -54,7 +54,21 @@ import { StatementPage } from "../modules/wallet/pages/StatementPage";
 import { FavoritesPage } from "../modules/profile/pages/FavoritesPage";
 import ProfilePage from "../modules/profile/pages/ProfilePage";
 
-import AdminDashboardPage from "../modules/admin/pages/AdminDashboardPage";
+import OperationalDashboardPage from "../modules/admin/dashboard/pages/OperationalDashboardPage";
+import AdminUsersPage from "../modules/admin/users/pages/AdminUsersPage";
+import UserEditorPage from "../modules/admin/users/pages/UserEditorPage";
+import AdminContractsPage from "../modules/admin/contracts/pages/AdminContractsPage";
+import ContractEditorPage from "../modules/admin/contracts/pages/ContractEditorPage";
+import CommercialConditionsPage from "../modules/admin/commercial/pages/CommercialConditionsPage";
+import AdminAttractionsPage from "../modules/admin/attractions/pages/AdminAttractionsPage";
+import AttractionWizardPage from "../modules/admin/attractions/pages/AttractionWizardPage";
+import AdminAttractionDetailsPage from "../modules/admin/attractions/pages/AttractionDetailsPage";
+import AttractionCategoriesPage from "../modules/admin/attractions/pages/AttractionCategoriesPage";
+import AttractionTicketsPage from "../modules/admin/attractions/pages/AttractionTicketsPage";
+import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
+import UserProfilePage from "../modules/admin/profile/pages/UserProfilePage";
+import { AttractionTotalsPage } from "../modules/admin/attractions/pages/AttractionTotalsPage";
+import { ProfilePage as AdminProfilePage } from "../modules/account/pages/ProfilePage";
 import { AdminEventsPage } from "../modules/admin/pages/AdminEventsPage";
 import AdminOrdersPage from "../modules/admin/pages/AdminOrdersPage";
 
@@ -250,7 +264,41 @@ export function AppRoutes() {
             {/* Console de Admin Global (Apenas Admin) */}
             <Route element={<AdminGuard />}>
               <Route element={<AdminLayout />}>
-                <Route path={ROUTES.admin.dashboard} element={<AdminDashboardPage />} />
+                <Route path={ROUTES.admin.root} element={<OperationalDashboardPage />} />
+                <Route path={ROUTES.admin.dashboard} element={<OperationalDashboardPage />} />
+                <Route path={ROUTES.admin.users} element={<AdminUsersPage />} />
+                <Route path="/admin/users" element={<AdminUsersPage />} />
+                <Route path={ROUTES.admin.userCreate} element={<UserEditorPage />} />
+                <Route path={ROUTES.admin.userDetails(':userId')} element={<UserEditorPage />} />
+                <Route path="/admin/usuarios/novo" element={<UserEditorPage />} />
+                <Route path="/admin/usuarios/:userId" element={<UserEditorPage />} />
+                <Route path={ROUTES.admin.contracts} element={<AdminContractsPage />} />
+                <Route path="/admin/contracts" element={<AdminContractsPage />} />
+                <Route path={ROUTES.admin.contractCreate} element={<ContractEditorPage />} />
+                <Route path={ROUTES.admin.contractDetails(':contractId')} element={<ContractEditorPage />} />
+                <Route path="/admin/contratos/novo" element={<ContractEditorPage />} />
+                <Route path="/admin/contratos/:contractId" element={<ContractEditorPage />} />
+                <Route path={ROUTES.admin.commercialConditions} element={<CommercialConditionsPage />} />
+                <Route path="/admin/condicoes-comerciais" element={<CommercialConditionsPage />} />
+                <Route path={ROUTES.admin.commercialConditionCreate} element={<CommercialConditionsPage />} />
+                <Route path="/admin/condicoes-comerciais/nova" element={<CommercialConditionsPage />} />
+                <Route path="/admin/commercial" element={<CommercialConditionsPage />} />
+                <Route path={ROUTES.admin.attractions} element={<AdminAttractionsPage />} />
+                <Route path="/admin/atracoes" element={<AdminAttractionsPage />} />
+                <Route path="/admin/attractions" element={<AdminAttractionsPage />} />
+                <Route path={ROUTES.admin.attractionCreate} element={<AttractionWizardPage />} />
+                <Route path="/admin/atracoes/nova" element={<AttractionWizardPage />} />
+                <Route path="/admin/atracoes/:attractionId" element={<AdminAttractionDetailsPage />} />
+                <Route path="/admin/atracoes/:attractionId/editar" element={<AttractionWizardPage />} />
+                <Route path="/admin/atracoes/:attractionId/categorias" element={<AttractionCategoriesPage />} />
+                <Route path="/admin/atracoes/:attractionId/ingressos" element={<AttractionTicketsPage />} />
+                <Route path={ROUTES.admin.financialReports} element={<FinancialReportsPage />} />
+                <Route path="/admin/financial" element={<FinancialReportsPage />} />
+                <Route path={ROUTES.admin.profile} element={<UserProfilePage />} />
+                <Route path="/admin/perfil" element={<UserProfilePage />} />
+                <Route path={ROUTES.admin.myProfile} element={<AdminProfilePage />} />
+                <Route path={ROUTES.admin.attractionTotals(':attractionId')} element={<AttractionTotalsPage />} />
+                <Route path="/admin/atracoes/totais" element={<AttractionTotalsPage />} />
                 <Route path={ROUTES.admin.events} element={<AdminEventsPage />} />
                 <Route path={ROUTES.admin.orders} element={<AdminOrdersPage />} />
 
