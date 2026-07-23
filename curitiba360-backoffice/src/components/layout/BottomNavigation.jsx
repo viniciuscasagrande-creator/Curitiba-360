@@ -1,34 +1,59 @@
-import { NavLink } from 'react-router-dom';
-import { Home, Compass, Ticket, Wallet, User } from 'lucide-react';
+import React from "react";
+import { Compass, House, Ticket, UserRound, WalletCards } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { ROUTES } from "../../routes/routePaths";
 
-export default function BottomNavigation() {
-  const items = [
-    { label: 'Início', path: '/portal', icon: Home },
-    { label: 'Explorar', path: '/explore', icon: Compass },
-    { label: 'Pass', path: '/pass', icon: Ticket },
-    { label: 'Carteira', path: '/wallet', icon: Wallet },
-    { label: 'Perfil', path: '/profile', icon: User }
-  ];
+const items = [
+  {
+    label: "Início",
+    icon: House,
+    to: ROUTES.app.home,
+  },
+  {
+    label: "Explorar",
+    icon: Compass,
+    to: ROUTES.public.explore,
+  },
+  {
+    label: "Ingressos",
+    icon: Ticket,
+    to: ROUTES.app.tickets,
+  },
+  {
+    label: "Carteira",
+    icon: WalletCards,
+    to: ROUTES.app.wallet,
+  },
+  {
+    label: "Perfil",
+    icon: UserRound,
+    to: ROUTES.app.profile,
+  },
+];
 
+export function BottomNavigation() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-slate-800 bg-slate-950/95 px-2 backdrop-blur md:hidden">
-      {items.map((item) => {
-        const Icon = item.icon;
-        return (
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-800 bg-[#0d0f14]/95 backdrop-blur md:hidden">
+      <div className="grid grid-cols-5">
+        {items.map(({ label, icon: Icon, to }) => (
           <NavLink
-            key={item.path}
-            to={item.path}
+            key={to}
+            to={to}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 py-1 text-xs font-semibold transition ${
-                isActive ? 'text-blue-500 scale-105' : 'text-slate-400 hover:text-white'
-              }`
+              [
+                "flex min-h-16 flex-col items-center justify-center gap-1",
+                "text-[10px] transition-colors",
+                isActive
+                  ? "text-red-500 font-medium"
+                  : "text-gray-400 hover:text-white",
+              ].join(" ")
             }
           >
-            <Icon size={20} />
-            <span>{item.label}</span>
+            <Icon aria-hidden="true" className="size-5" />
+            <span>{label}</span>
           </NavLink>
-        );
-      })}
+        ))}
+      </div>
     </nav>
   );
 }
