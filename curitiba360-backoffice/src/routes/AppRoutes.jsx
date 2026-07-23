@@ -45,6 +45,12 @@ import { PlacesPage } from "../modules/tourism/pages/PlacesPage";
 import { PlaceDetailsPage } from "../modules/tourism/pages/PlaceDetailsPage";
 
 import { WalletPage } from "../modules/wallet/pages/WalletPage";
+import { CashbackPage } from "../modules/wallet/pages/CashbackPage";
+import { BenefitsPage } from "../modules/wallet/pages/BenefitsPage";
+import { CouponsPage } from "../modules/wallet/pages/CouponsPage";
+import { PixPage } from "../modules/wallet/pages/PixPage";
+import { CardsPage } from "../modules/wallet/pages/CardsPage";
+import { StatementPage } from "../modules/wallet/pages/StatementPage";
 import { FavoritesPage } from "../modules/profile/pages/FavoritesPage";
 import ProfilePage from "../modules/profile/pages/ProfilePage";
 
@@ -233,6 +239,12 @@ export function AppRoutes() {
               <Route path={ROUTES.app.reservations} element={<MyReservationsPage />} />
               <Route path={ROUTES.app.reservationConfirmation(":id")} element={<ReservationConfirmationPage />} />
               <Route path={ROUTES.app.wallet} element={<WalletPage />} />
+              <Route path={ROUTES.app.walletCashback} element={<CashbackPage />} />
+              <Route path={ROUTES.app.walletBenefits} element={<BenefitsPage />} />
+              <Route path={ROUTES.app.walletCoupons} element={<CouponsPage />} />
+              <Route path={ROUTES.app.walletPix} element={<PixPage />} />
+              <Route path={ROUTES.app.walletCards} element={<CardsPage />} />
+              <Route path={ROUTES.app.walletStatement} element={<StatementPage />} />
               <Route path={ROUTES.app.favorites} element={<FavoritesPage />} />
               <Route path={ROUTES.app.profile} element={<ProfilePage />} />
             </Route>
