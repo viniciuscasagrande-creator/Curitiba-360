@@ -195,9 +195,10 @@ export function AppRoutes() {
     }>
       <BrowserRouter>
         <Routes>
-          {/* Rotas Públicas de Visitante */}
-          <Route element={<PublicLayout />}>
-            <Route path={ROUTES.public.landing} element={<LandingPage />} />
+          {/* Rotas Públicas do Aplicativo SuperApp */}
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path={ROUTES.app.home} element={<HomePage />} />
             <Route path={ROUTES.public.explore} element={<ExplorePage />} />
             <Route path={ROUTES.public.events} element={<EventsPage />} />
             <Route path="/events" element={<EventsPage />} />
