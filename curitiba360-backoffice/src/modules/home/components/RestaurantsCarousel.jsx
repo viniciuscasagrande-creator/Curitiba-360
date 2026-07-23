@@ -39,16 +39,16 @@ export function RestaurantsCarousel() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <UtensilsCrossed size={20} className="text-rose-400" />
+          <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            <UtensilsCrossed size={20} className="text-rose-600" />
             Gastronomia Curitibana
           </h3>
-          <p className="text-xs text-slate-400">Restaurantes, cafés e feiras gastronômicas consagradas</p>
+          <p className="text-xs text-slate-500">Restaurantes, cafés e feiras gastronômicas consagradas</p>
         </div>
 
         <button
           onClick={() => navigate('/explorar?cat=gastronomia')}
-          className="text-xs font-bold text-amber-400 hover:underline flex items-center gap-1"
+          className="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1"
         >
           Ver Gastronomia
           <ArrowRight size={14} />
@@ -60,7 +60,7 @@ export function RestaurantsCarousel() {
           <div
             key={rest.id}
             onClick={() => navigate('/explorar')}
-            className="group bg-slate-900 border border-slate-800 hover:border-amber-500/40 rounded-3xl overflow-hidden shadow-xl transition-all cursor-pointer hover:-translate-y-1"
+            className="group bg-white border border-slate-200 hover:border-amber-400 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1"
           >
             <div className="relative h-44 w-full">
               <img src={rest.image} alt={rest.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -71,19 +71,19 @@ export function RestaurantsCarousel() {
 
             <div className="p-4 space-y-2">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">{rest.name}</h4>
-                <span className="text-xs font-bold text-amber-400 flex items-center gap-1">
-                  <Star size={12} className="fill-amber-400" />
+                <h4 className="text-sm font-bold text-slate-900 group-hover:text-amber-600 transition-colors">{rest.name}</h4>
+                <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
+                  <Star size={12} className="fill-amber-500 text-amber-500" />
                   {rest.rating}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-400">
+              <div className="flex items-center justify-between text-xs text-slate-500">
                 <span className="flex items-center gap-1">
-                  <MapPin size={12} className="text-amber-400" />
+                  <MapPin size={12} className="text-amber-600" />
                   {rest.neighborhood}
                 </span>
-                <span className="font-mono text-slate-300 font-bold">{rest.price}</span>
+                <span className="font-mono text-slate-700 font-bold">{rest.price}</span>
               </div>
             </div>
           </div>

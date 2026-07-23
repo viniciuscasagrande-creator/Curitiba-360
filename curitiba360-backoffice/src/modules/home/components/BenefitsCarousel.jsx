@@ -12,16 +12,16 @@ export function BenefitsCarousel() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Gift size={20} className="text-amber-400" />
+          <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            <Gift size={20} className="text-amber-600" />
             Benefícios e Cashback Municipal
           </h3>
-          <p className="text-xs text-slate-400">Vantagens exclusivas para moradores e visitantes de Curitiba</p>
+          <p className="text-xs text-slate-500">Vantagens exclusivas para moradores e visitantes de Curitiba</p>
         </div>
 
         <button
           onClick={() => navigate('/carteira/beneficios')}
-          className="text-xs font-bold text-amber-400 hover:underline flex items-center gap-1"
+          className="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1"
         >
           Ver Carteira
           <ArrowRight size={14} />

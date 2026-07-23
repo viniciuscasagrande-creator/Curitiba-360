@@ -197,15 +197,12 @@ export function AppRoutes() {
         <Routes>
           {/* Rotas Públicas do Aplicativo SuperApp */}
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/" element={<Navigate to={ROUTES.app.home} replace />} />
             <Route path={ROUTES.app.home} element={<HomePage />} />
             <Route path={ROUTES.public.explore} element={<ExplorePage />} />
             <Route path={ROUTES.public.events} element={<EventsPage />} />
-            <Route path="/events" element={<EventsPage />} />
             <Route path={ROUTES.public.eventDetails(":eventId")} element={<EventDetailsPage />} />
-            <Route path="/events/:id" element={<EventDetailsPage />} />
             <Route path={ROUTES.public.ticketSelection(":id")} element={<TicketSelectionPage />} />
-            <Route path="/events/:id/tickets" element={<TicketSelectionPage />} />
             <Route path={ROUTES.public.places} element={<PlacesPage />} />
             <Route path={ROUTES.public.placeDetails(":placeId")} element={<PlaceDetailsPage />} />
             <Route path={ROUTES.public.tourism} element={<TourismPage />} />
@@ -225,18 +222,13 @@ export function AppRoutes() {
 
           {/* Rotas Privadas (Requer Login) */}
           <Route element={<AuthGuard />}>
-            {/* SuperApp do Cidadão */}
+            {/* SuperApp do Cidadão - Funcionalidades Privadas */}
             <Route element={<AppLayout />}>
-              <Route path={ROUTES.app.home} element={<HomePage />} />
               <Route path={ROUTES.app.cart} element={<CartPage />} />
-              <Route path="/events/cart" element={<CartPage />} />
               <Route path={ROUTES.app.checkout} element={<CheckoutPage />} />
-              <Route path="/events/checkout" element={<CheckoutPage />} />
               <Route path={ROUTES.app.order(":id")} element={<OrderSuccessPage />} />
-              <Route path="/events/orders/:id" element={<OrderSuccessPage />} />
               <Route path={ROUTES.app.tickets} element={<TicketsPage />} />
               <Route path={ROUTES.app.ticket(":id")} element={<DigitalTicketPage />} />
-              <Route path="/events/tickets/:id" element={<DigitalTicketPage />} />
               <Route path={ROUTES.app.reservations} element={<MyReservationsPage />} />
               <Route path={ROUTES.app.reservationConfirmation(":id")} element={<ReservationConfirmationPage />} />
               <Route path={ROUTES.app.wallet} element={<WalletPage />} />

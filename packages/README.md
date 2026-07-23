@@ -6,4 +6,3 @@ Este repositório contém as bibliotecas compartilhadas:
 * `database-firebase`: Schemas do Firestore, triggers e regras de segurança
 * `ai-sdk`: Assistentes C-Level, copilotos e SDK de agentes autônomos
 * `shared-utils`: Validadores, formatadores e tipos TypeScript compartilhados
-

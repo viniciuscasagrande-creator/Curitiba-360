@@ -12,16 +12,16 @@ export function TourismCarousel() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Trees size={20} className="text-emerald-400" />
+          <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+            <Trees size={20} className="text-emerald-600" />
             Explore Curitiba
           </h3>
-          <p className="text-xs text-slate-400">Parques, museus e atrações imperdíveis da capital ecológica</p>
+          <p className="text-xs text-slate-500">Parques, museus e atrações imperdíveis da capital ecológica</p>
         </div>
 
         <button
           onClick={() => navigate('/turismo')}
-          className="text-xs font-bold text-amber-400 hover:underline flex items-center gap-1"
+          className="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1"
         >
           Ver Todos ({attractions.length})
           <ArrowRight size={14} />

@@ -13,27 +13,36 @@ const navItems = [
 
 export function BottomNavigation() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-800 bg-slate-950/95 backdrop-blur-md md:hidden">
-      <div className="grid grid-cols-5">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 px-2 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] backdrop-blur-xl md:hidden">
+      <div className="grid h-16 grid-cols-5">
         {navItems.map(({ label, icon: Icon, to }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
               [
-                'flex flex-col items-center justify-center py-2.5 gap-1 text-[10px] font-bold transition-all',
+                'relative flex flex-col items-center justify-center gap-1 text-[10px] font-semibold transition',
                 isActive
-                  ? 'text-amber-400 font-extrabold'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'text-amber-600 font-extrabold'
+                  : 'text-slate-500 hover:text-slate-900'
               ].join(' ')
             }
           >
-            <Icon size={20} />
-            <span>{label}</span>
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className="absolute top-0 h-0.5 w-8 rounded-full bg-amber-500" />
+                )}
+
+                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                <span>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>
     </nav>
   );
 }
+
 export default BottomNavigation;
