@@ -1,0 +1,24 @@
+export { default as ExperienceDashboardPage } from "./pages/ExperienceDashboardPage";
+export { default as CustomersPage } from "./pages/CustomersPage";
+export { default as CustomerDetailsPage } from "./pages/CustomerDetailsPage";
+export { default as JourneyPage } from "./pages/JourneyPage";
+export { default as OmnichannelInboxPage } from "./pages/OmnichannelInboxPage";
+export { default as CampaignsPage } from "./pages/CampaignsPage";
+export { default as CampaignBuilderPage } from "./pages/CampaignBuilderPage";
+export { default as LoyaltyPage } from "./pages/LoyaltyPage";
+export { default as SegmentsPage } from "./pages/SegmentsPage";
+export { default as SurveysPage } from "./pages/SurveysPage";
+export { default as AutomationsPage } from "./pages/AutomationsPage";
+export { default as PersonalizationPage } from "./pages/PersonalizationPage";
+export { default as RecommendationsPage } from "./pages/RecommendationsPage";
+export { default as CashbackPage } from "./pages/CashbackPage";
+export { default as CouponsPage } from "./pages/CouponsPage";
+export { default as GamificationPage } from "./pages/GamificationPage";
+export { default as ReviewsPage } from "./pages/ReviewsPage";
+export { default as CommunitiesPage } from "./pages/CommunitiesPage";
+export { default as ExperienceReportsPage } from "./pages/ExperienceReportsPage";
+export { default as ExperienceSettingsPage } from "./pages/ExperienceSettingsPage";
+
+export { useExperienceDashboard } from "./hooks/useExperienceDashboard";
+export { customerExperienceService } from "./services/customerExperienceService";
+export { customerExperienceMock } from "./mocks/customerExperienceMock";

@@ -1,6 +1,12 @@
 import { INITIAL_GOVERNANCE_DATA } from "../data/governanceMockData";
+import { governancePlatformMock } from "../mocks/governancePlatformMock";
 
 export const GOVERNANCE_KEY = "curitiba360:governance_data_v1";
+const GOVERNANCE_STORAGE_KEY = "curitiba360:governance-platform";
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
 
 function getStoredGovernance() {
   const stored = localStorage.getItem(GOVERNANCE_KEY);
@@ -61,8 +67,39 @@ export async function createBackupRepository(databaseName) {
 
 export async function triggerDrpSimulationRepository() {
   const data = getStoredGovernance();
-  // Simulate setting SLA status for testing
   data.summary.overallSla = "100.00%";
   localStorage.setItem(GOVERNANCE_KEY, JSON.stringify(data));
   return data.summary;
+}
+
+// WF-048 — Plataforma de Governança Executiva e Performance Corporativa methods
+export async function getGovernanceDashboard() {
+  await new Promise((resolve) => window.setTimeout(resolve, 180));
+  const stored = localStorage.getItem(GOVERNANCE_STORAGE_KEY);
+  if (stored) {
+    try {
+      return clone(JSON.parse(stored));
+    } catch {
+      localStorage.removeItem(GOVERNANCE_STORAGE_KEY);
+    }
+  }
+  localStorage.setItem(GOVERNANCE_STORAGE_KEY, JSON.stringify(governancePlatformMock));
+  return clone(governancePlatformMock);
+}
+
+export async function addResolution(resolution) {
+  const data = await getGovernanceDashboard();
+  data.resolutions.push(resolution);
+  localStorage.setItem(GOVERNANCE_STORAGE_KEY, JSON.stringify(data));
+  return data;
+}
+
+export async function updateOkrProgress(okrId, progress) {
+  const data = await getGovernanceDashboard();
+  const okr = data.okrs.find(o => o.id === okrId);
+  if (okr) {
+    okr.progress = progress;
+    localStorage.setItem(GOVERNANCE_STORAGE_KEY, JSON.stringify(data));
+  }
+  return data;
 }

@@ -539,6 +539,106 @@ const LgpdConsentPage = lazy(() => import('../modules/security/pages/LgpdConsent
 const IncidentResponsePage = lazy(() => import('../modules/security/pages/IncidentResponsePage'));
 
 const GovernanceCompliancePage = lazy(() => import('../modules/governance/pages/GovernanceCompliancePage'));
+const GovernanceDashboardPage = lazy(() => import('../modules/governance/pages/GovernanceDashboardPage'));
+const GovernancePoliciesPage = lazy(() => import('../modules/governance/pages/GovernancePoliciesPage'));
+const AssetsPage = lazy(() => import('../modules/governance/pages/AssetsPage'));
+const RisksPage = lazy(() => import('../modules/governance/pages/RisksPage'));
+const SuppliersPage = lazy(() => import('../modules/governance/pages/SuppliersPage'));
+const AuditsPage = lazy(() => import('../modules/governance/pages/AuditsPage'));
+const GovernanceSettingsPage = lazy(() => import('../modules/governance/pages/GovernanceSettingsPage'));
+const DRPPage = lazy(() => import('../modules/governance/pages/DRPPage'));
+const GovernanceBackupsPage = lazy(() => import('../modules/governance/pages/BackupsPage'));
+const RestoreTestsPage = lazy(() => import('../modules/governance/pages/RestoreTestsPage'));
+const ContinuityPage = lazy(() => import('../modules/governance/pages/ContinuityPage'));
+const GovernanceTestsPage = lazy(() => import('../modules/governance/pages/GovernanceTestsPage'));
+const SLAPage = lazy(() => import('../modules/governance/pages/SLAPage'));
+
+// WF-048 — Plataforma de Governança Executiva e Performance Corporativa (Lazy Loaded)
+const CorpGovDashboardPage = lazy(() => import('../modules/governance/pages/CorpGovDashboardPage'));
+const CorpGovExecutiveCockpitPage = lazy(() => import('../modules/governance/pages/CorpGovExecutiveCockpitPage'));
+const CorpGovStrategicPlanningPage = lazy(() => import('../modules/governance/pages/CorpGovStrategicPlanningPage'));
+const CorpGovStrategyMapPage = lazy(() => import('../modules/governance/pages/CorpGovStrategyMapPage'));
+const CorpGovBalancedScorecardPage = lazy(() => import('../modules/governance/pages/CorpGovBalancedScorecardPage'));
+const CorpGovCorporateObjectivesPage = lazy(() => import('../modules/governance/pages/CorpGovCorporateObjectivesPage'));
+const CorpGovCorporateOkrsPage = lazy(() => import('../modules/governance/pages/CorpGovCorporateOkrsPage'));
+const CorpGovExecutiveKpisPage = lazy(() => import('../modules/governance/pages/CorpGovExecutiveKpisPage'));
+const CorpGovCouncilsPage = lazy(() => import('../modules/governance/pages/CorpGovCouncilsPage'));
+const CorpGovCouncilDetailsPage = lazy(() => import('../modules/governance/pages/CorpGovCouncilDetailsPage'));
+const CorpGovCommitteesPage = lazy(() => import('../modules/governance/pages/CorpGovCommitteesPage'));
+const CorpGovMeetingsPage = lazy(() => import('../modules/governance/pages/CorpGovMeetingsPage'));
+const CorpGovMeetingDetailsPage = lazy(() => import('../modules/governance/pages/CorpGovMeetingDetailsPage'));
+const CorpGovResolutionsPage = lazy(() => import('../modules/governance/pages/CorpGovResolutionsPage'));
+const CorpGovActionPlansPage = lazy(() => import('../modules/governance/pages/CorpGovActionPlansPage'));
+const CorpGovCorporateRisksPage = lazy(() => import('../modules/governance/pages/CorpGovCorporateRisksPage'));
+const CorpGovInternalControlsPage = lazy(() => import('../modules/governance/pages/CorpGovInternalControlsPage'));
+const CorpGovCompliancePage = lazy(() => import('../modules/governance/pages/CorpGovCompliancePage'));
+const CorpGovLgpdGovernancePage = lazy(() => import('../modules/governance/pages/CorpGovLgpdGovernancePage'));
+const CorpGovPoliciesPage = lazy(() => import('../modules/governance/pages/CorpGovPoliciesPage'));
+const CorpGovAuditsPage = lazy(() => import('../modules/governance/pages/CorpGovAuditsPage'));
+const CorpGovApprovalsPage = lazy(() => import('../modules/governance/pages/CorpGovApprovalsPage'));
+const CorpGovExecutiveReportsPage = lazy(() => import('../modules/governance/pages/CorpGovExecutiveReportsPage'));
+const CorpGovAuditPage = lazy(() => import('../modules/governance/pages/CorpGovAuditPage'));
+const CorpGovSettingsPage = lazy(() => import('../modules/governance/pages/CorpGovSettingsPage'));
+
+// WF-049 — Plataforma de Inteligência Estratégica e Governo Digital (Lazy Loaded)
+const GovDashboardPage = lazy(() => import('../modules/government/pages/GovDashboardPage'));
+const GovProgramsPage = lazy(() => import('../modules/government/pages/GovProgramsPage'));
+const GovProjectsPage = lazy(() => import('../modules/government/pages/GovProjectsPage'));
+const GovGoalsPage = lazy(() => import('../modules/government/pages/GovGoalsPage'));
+const GovIndicatorsPage = lazy(() => import('../modules/government/pages/GovIndicatorsPage'));
+const GovOpenDataPage = lazy(() => import('../modules/government/pages/GovOpenDataPage'));
+const GovTransparencyPage = lazy(() => import('../modules/government/pages/GovTransparencyPage'));
+const GovBudgetPage = lazy(() => import('../modules/government/pages/GovBudgetPage'));
+const GovContractsPage = lazy(() => import('../modules/government/pages/GovContractsPage'));
+const GovProcurementPage = lazy(() => import('../modules/government/pages/GovProcurementPage'));
+const GovAgreementsPage = lazy(() => import('../modules/government/pages/GovAgreementsPage'));
+const GovObservatoryPage = lazy(() => import('../modules/government/pages/GovObservatoryPage'));
+const GovPublicServicesPage = lazy(() => import('../modules/government/pages/GovPublicServicesPage'));
+const GovCitizenPage = lazy(() => import('../modules/government/pages/GovCitizenPage'));
+const GovHearingsPage = lazy(() => import('../modules/government/pages/GovHearingsPage'));
+const GovOuvidoriaPage = lazy(() => import('../modules/government/pages/GovOuvidoriaPage'));
+const GovReportsPage = lazy(() => import('../modules/government/pages/GovReportsPage'));
+const GovSettingsPage = lazy(() => import('../modules/government/pages/GovSettingsPage'));
+
+// WF-030 — Qualidade, Testes e Homologação (Lazy Loaded)
+const QualityDashboardPage = lazy(() => import('../modules/quality/pages/QualityDashboardPage'));
+const QualityReleasesPage = lazy(() => import('../modules/quality/pages/ReleasesPage'));
+const QualityTestPlansPage = lazy(() => import('../modules/quality/pages/TestPlansPage'));
+const QualityBugsPage = lazy(() => import('../modules/quality/pages/BugsPage'));
+const QualityPerformancePage = lazy(() => import('../modules/quality/pages/PerformancePage'));
+const QualityAccessibilityPage = lazy(() => import('../modules/quality/pages/AccessibilityPage'));
+const QualitySecurityTestsPage = lazy(() => import('../modules/quality/pages/SecurityTestsPage'));
+
+// WF-031 — Roadmap 2027+ e Evolução da Plataforma (Lazy Loaded)
+const RoadmapDashboardPage = lazy(() => import('../modules/roadmap/pages/RoadmapDashboardPage'));
+const StrategicRoadmapPage = lazy(() => import('../modules/roadmap/pages/StrategicRoadmapPage'));
+const InitiativesPage = lazy(() => import('../modules/roadmap/pages/InitiativesPage'));
+const PortfolioPage = lazy(() => import('../modules/roadmap/pages/PortfolioPage'));
+const PrioritizationPage = lazy(() => import('../modules/roadmap/pages/PrioritizationPage'));
+const ObjectivesPage = lazy(() => import('../modules/roadmap/pages/ObjectivesPage'));
+const ScenariosPage = lazy(() => import('../modules/roadmap/pages/ScenariosPage'));
+const InnovationPage = lazy(() => import('../modules/roadmap/pages/InnovationPage'));
+const RoadmapSettingsPage = lazy(() => import('../modules/roadmap/pages/RoadmapSettingsPage'));
+
+// WF-033 — Central de Suporte, SLA e Customer Success (Lazy Loaded)
+const SupportDashboardPage = lazy(() => import('../modules/support/pages/SupportDashboardPage'));
+const SupportModuleTicketsPage = lazy(() => import('../modules/support/pages/SupportTicketsPage'));
+const SupportKnowledgeBasePage = lazy(() => import('../modules/support/pages/KnowledgeBasePage'));
+const SupportSlaPage = lazy(() => import('../modules/support/pages/SlaManagementPage'));
+const SupportCustomerSuccessPage = lazy(() => import('../modules/support/pages/CustomerSuccessPage'));
+const SupportIncidentPage = lazy(() => import('../modules/support/pages/IncidentManagementPage'));
+
+// WF-034 — Marketplace de Extensões e Plugins (Lazy Loaded)
+const MarketplaceDashboardPage = lazy(() => import('../modules/extensions/pages/MarketplaceDashboardPage'));
+const MarketplaceCatalogPage = lazy(() => import('../modules/extensions/pages/MarketplaceCatalogPage'));
+const ExtensionDetailsPage = lazy(() => import('../modules/extensions/pages/ExtensionDetailsPage'));
+const InstalledExtensionsPage = lazy(() => import('../modules/extensions/pages/InstalledExtensionsPage'));
+const ExtensionBillingPage = lazy(() => import('../modules/extensions/pages/ExtensionBillingPage'));
+const ExtensionLogsPage = lazy(() => import('../modules/extensions/pages/ExtensionLogsPage'));
+const DeveloperPortalPage = lazy(() => import('../modules/extensions/pages/DeveloperPortalPage'));
+const PublishExtensionPage = lazy(() => import('../modules/extensions/pages/PublishExtensionPage'));
+const MarketplaceSettingsPage = lazy(() => import('../modules/extensions/pages/MarketplaceSettingsPage'));
+
 const CrmSalesHubPage = lazy(() => import('../modules/crm/pages/CrmSalesHubPage'));
 const MarketingCenterPage = lazy(() => import('../modules/marketing/pages/MarketingCenterPage'));
 const SponsorsManagerPage = lazy(() => import('../modules/sponsorship/pages/SponsorsManagerPage'));
@@ -549,6 +649,231 @@ const SmartCityDashboardPage = lazy(() => import('../modules/smartcity/pages/Sma
 const DigitalLicensingPage = lazy(() => import('../modules/smartcity/pages/DigitalLicensingPage'));
 const EsgControlHubPage = lazy(() => import('../modules/esg/pages/EsgControlHubPage'));
 const CarbonCalculatorPage = lazy(() => import('../modules/esg/pages/CarbonCalculatorPage'));
+
+// WF-035 — Gestão de Conteúdo, SEO e Experiência Digital (Lazy Loaded)
+const CmsDashboardPage = lazy(() => import('../modules/cms/pages/CmsDashboardPage'));
+const CmsPagesListPage = lazy(() => import('../modules/cms/pages/CmsPagesListPage'));
+const CmsEditorPage = lazy(() => import('../modules/cms/pages/CmsEditorPage'));
+const CmsBannersPage = lazy(() => import('../modules/cms/pages/CmsBannersPage'));
+const CmsSeoPage = lazy(() => import('../modules/cms/pages/CmsSeoPage'));
+const CmsRedirectsPage = lazy(() => import('../modules/cms/pages/CmsRedirectsPage'));
+const CmsAbTestsPage = lazy(() => import('../modules/cms/pages/CmsAbTestsPage'));
+const CmsPersonalizationPage = lazy(() => import('../modules/cms/pages/CmsPersonalizationPage'));
+const CmsCalendarPage = lazy(() => import('../modules/cms/pages/CmsCalendarPage'));
+const CmsTranslationsPage = lazy(() => import('../modules/cms/pages/CmsTranslationsPage'));
+
+// WF-036 — Data & AI Platform Avançada (Lazy Loaded)
+const AiDashboardPage = lazy(() => import('../modules/ai-platform/pages/AiDashboardPage'));
+const AiAgentsPage = lazy(() => import('../modules/ai-platform/pages/AiAgentsPage'));
+const AiAgentDetailsPage = lazy(() => import('../modules/ai-platform/pages/AiAgentDetailsPage'));
+const AiModelsPage = lazy(() => import('../modules/ai-platform/pages/AiModelsPage'));
+const PromptLibraryPage = lazy(() => import('../modules/ai-platform/pages/PromptLibraryPage'));
+const KnowledgeBasesPage = lazy(() => import('../modules/ai-platform/pages/KnowledgeBasesPage'));
+const AiExecutionsPage = lazy(() => import('../modules/ai-platform/pages/AiExecutionsPage'));
+const AiPlaygroundPage = lazy(() => import('../modules/ai-platform/pages/AiPlaygroundPage'));
+
+// WF-037 — Centro de Operações Inteligente (Lazy Loaded)
+const OperationsDashboardPage = lazy(() => import('../modules/operations-center/pages/OperationsDashboardPage'));
+const LiveOperationsPage = lazy(() => import('../modules/operations-center/pages/LiveOperationsPage'));
+const OperationalMapPage = lazy(() => import('../modules/operations-center/pages/OperationalMapPage'));
+const DevicesPage = lazy(() => import('../modules/operations-center/pages/DevicesPage'));
+const OperationsIncidentsPage = lazy(() => import('../modules/operations-center/pages/IncidentsPage'));
+const OperationsIncidentDetailsPage = lazy(() => import('../modules/operations-center/pages/IncidentDetailsPage'));
+const ContingencyPlansPage = lazy(() => import('../modules/operations-center/pages/ContingencyPlansPage'));
+const OperationsReportsPage = lazy(() => import('../modules/operations-center/pages/OperationsReportsPage'));
+
+// WF-038 — Gestão Jurídica, Contratos e Documentos (Lazy Loaded)
+const LegalDashboardPage = lazy(() => import('../modules/legal/pages/LegalDashboardPage'));
+const ContractsPage = lazy(() => import('../modules/legal/pages/ContractsPage'));
+const ContractDetailsPage = lazy(() => import('../modules/legal/pages/ContractDetailsPage'));
+const LegalTemplatesPage = lazy(() => import('../modules/legal/pages/LegalTemplatesPage'));
+const CompliancePoliciesPage = lazy(() => import('../modules/legal/pages/CompliancePoliciesPage'));
+const LgpdRegistryPage = lazy(() => import('../modules/legal/pages/LgpdRegistryPage'));
+const JudicialProcessesPage = lazy(() => import('../modules/legal/pages/JudicialProcessesPage'));
+const LegalRisksPage = lazy(() => import('../modules/legal/pages/LegalRisksPage'));
+
+// WF-039 — Plataforma Financeira Avançada (Lazy Loaded)
+const FinanceDashboardPage = lazy(() => import('../modules/finance/pages/FinanceDashboardPage'));
+const TreasuryPage = lazy(() => import('../modules/finance/pages/TreasuryPage'));
+const AccountsPayablePage = lazy(() => import('../modules/finance/pages/AccountsPayablePage'));
+const AccountsReceivablePage = lazy(() => import('../modules/finance/pages/AccountsReceivablePage'));
+const SplitRulesPage = lazy(() => import('../modules/finance/pages/SplitRulesPage'));
+const SubscriptionsPage = lazy(() => import('../modules/finance/pages/SubscriptionsPage'));
+const BudgetsPage = lazy(() => import('../modules/finance/pages/BudgetsPage'));
+
+// WF-040 — Gestão de Mobilidade, Rotas e Logística (Lazy Loaded)
+const MobilityDashboardPage = lazy(() => import('../modules/mobility/pages/MobilityDashboardPage'));
+const LiveMobilityPage = lazy(() => import('../modules/mobility/pages/LiveMobilityPage'));
+const RoutesPage = lazy(() => import('../modules/mobility/pages/RoutesPage'));
+const TripsPage = lazy(() => import('../modules/mobility/pages/TripsPage'));
+const StopsPage = lazy(() => import('../modules/mobility/pages/StopsPage'));
+const ReservationsPage = lazy(() => import('../modules/mobility/pages/ReservationsPage'));
+const FleetPage = lazy(() => import('../modules/mobility/pages/FleetPage'));
+const DriversPage = lazy(() => import('../modules/mobility/pages/DriversPage'));
+const ParkingPage = lazy(() => import('../modules/mobility/pages/ParkingPage'));
+const LogisticsPage = lazy(() => import('../modules/mobility/pages/LogisticsPage'));
+const MobilityIncidentsPage = lazy(() => import('../modules/mobility/pages/MobilityIncidentsPage'));
+
+// WF-041 — Sustentabilidade, ESG e Impacto Turístico (Lazy Loaded)
+const EsgDashboardPage = lazy(() => import('../modules/esg/pages/EsgDashboardPage'));
+const EsgEnvironmentPage = lazy(() => import('../modules/esg/pages/EsgEnvironmentPage'));
+const EsgSocialPage = lazy(() => import('../modules/esg/pages/EsgSocialPage'));
+const EsgGovernancePage = lazy(() => import('../modules/esg/pages/EsgGovernancePage'));
+const EsgEconomicPage = lazy(() => import('../modules/esg/pages/EsgEconomicPage'));
+const EsgProjectsPage = lazy(() => import('../modules/esg/pages/EsgProjectsPage'));
+const EsgSuppliersPage = lazy(() => import('../modules/esg/pages/EsgSuppliersPage'));
+
+// WF-042 — Plataforma Omnichannel e Experiência do Visitante (Lazy Loaded)
+const ExperienceDashboardPage = lazy(() => import('../modules/customer-experience/pages/ExperienceDashboardPage'));
+const ExperienceCustomersPage = lazy(() => import('../modules/customer-experience/pages/CustomersPage'));
+const JourneyPage = lazy(() => import('../modules/customer-experience/pages/JourneyPage'));
+const OmnichannelInboxPage = lazy(() => import('../modules/customer-experience/pages/OmnichannelInboxPage'));
+const ExperienceCampaignsPage = lazy(() => import('../modules/customer-experience/pages/CampaignsPage'));
+const LoyaltyPage = lazy(() => import('../modules/customer-experience/pages/LoyaltyPage'));
+const ExperienceSegmentsPage = lazy(() => import('../modules/customer-experience/pages/SegmentsPage'));
+const SurveysPage = lazy(() => import('../modules/customer-experience/pages/SurveysPage'));
+const CustomerDetailsPage = lazy(() => import('../modules/customer-experience/pages/CustomerDetailsPage'));
+const CampaignBuilderPage = lazy(() => import('../modules/customer-experience/pages/CampaignBuilderPage'));
+const ExperienceAutomationsPage = lazy(() => import('../modules/customer-experience/pages/AutomationsPage'));
+const PersonalizationPage = lazy(() => import('../modules/customer-experience/pages/PersonalizationPage'));
+const ExperienceRecommendationsPage = lazy(() => import('../modules/customer-experience/pages/RecommendationsPage'));
+const ExperienceCashbackPage = lazy(() => import('../modules/customer-experience/pages/CashbackPage'));
+const ExperienceCouponsPage = lazy(() => import('../modules/customer-experience/pages/CouponsPage'));
+const GamificationPage = lazy(() => import('../modules/customer-experience/pages/GamificationPage'));
+const ExperienceReviewsPage = lazy(() => import('../modules/customer-experience/pages/ReviewsPage'));
+const CommunitiesPage = lazy(() => import('../modules/customer-experience/pages/CommunitiesPage'));
+const ExperienceReportsPage = lazy(() => import('../modules/customer-experience/pages/ExperienceReportsPage'));
+const ExperienceSettingsPage = lazy(() => import('../modules/customer-experience/pages/ExperienceSettingsPage'));
+
+// WF-043 — Gestão de Recursos Humanos e Workforce (Lazy Loaded)
+const WorkforceDashboardPage = lazy(() => import('../modules/workforce/pages/WorkforceDashboardPage'));
+const WorkforceEmployeesPage = lazy(() => import('../modules/workforce/pages/EmployeesPage'));
+const WorkforceEmployeeDetailsPage = lazy(() => import('../modules/workforce/pages/EmployeeDetailsPage'));
+const WorkforceOrganizationChartPage = lazy(() => import('../modules/workforce/pages/OrganizationChartPage'));
+const WorkforcePositionsPage = lazy(() => import('../modules/workforce/pages/PositionsPage'));
+const WorkforceRecruitmentPage = lazy(() => import('../modules/workforce/pages/RecruitmentPage'));
+const WorkforceCandidatesPage = lazy(() => import('../modules/workforce/pages/CandidatesPage'));
+const WorkforceOnboardingPage = lazy(() => import('../modules/workforce/pages/OnboardingPage'));
+const WorkforceSchedulesPage = lazy(() => import('../modules/workforce/pages/SchedulesPage'));
+const WorkforceShiftsPage = lazy(() => import('../modules/workforce/pages/ShiftsPage'));
+const WorkforceAttendancePage = lazy(() => import('../modules/workforce/pages/AttendancePage'));
+const WorkforceTimesheetsPage = lazy(() => import('../modules/workforce/pages/TimesheetsPage'));
+const WorkforceLeavesPage = lazy(() => import('../modules/workforce/pages/LeavesPage'));
+const WorkforcePayrollPage = lazy(() => import('../modules/workforce/pages/PayrollPage'));
+const WorkforceBenefitsPage = lazy(() => import('../modules/workforce/pages/BenefitsPage'));
+const WorkforceTrainingsPage = lazy(() => import('../modules/workforce/pages/TrainingsPage'));
+const WorkforceCertificationsPage = lazy(() => import('../modules/workforce/pages/CertificationsPage'));
+const WorkforcePerformancePage = lazy(() => import('../modules/workforce/pages/PerformancePage'));
+const WorkforceGoalsPage = lazy(() => import('../modules/workforce/pages/GoalsPage'));
+const WorkforceDevelopmentPage = lazy(() => import('../modules/workforce/pages/DevelopmentPage'));
+const WorkforceClimatePage = lazy(() => import('../modules/workforce/pages/ClimatePage'));
+const WorkforceOccupationalHealthPage = lazy(() => import('../modules/workforce/pages/OccupationalHealthPage'));
+const WorkforceContractorsPage = lazy(() => import('../modules/workforce/pages/ContractorsPage'));
+const WorkforcePlanningPage = lazy(() => import('../modules/workforce/pages/WorkforcePlanningPage'));
+const WorkforceReportsPage = lazy(() => import('../modules/workforce/pages/WorkforceReportsPage'));
+const WorkforceSettingsPage = lazy(() => import('../modules/workforce/pages/WorkforceSettingsPage'));
+
+// WF-044 — Gestão de Segurança, Emergências e Saúde Operacional (Lazy Loaded)
+const SafetyDashboardPage = lazy(() => import('../modules/safety/pages/SafetyDashboardPage'));
+const LiveSafetyPage = lazy(() => import('../modules/safety/pages/LiveSafetyPage'));
+const RiskMapPage = lazy(() => import('../modules/safety/pages/RiskMapPage'));
+const SafetyRisksPage = lazy(() => import('../modules/safety/pages/RisksPage'));
+const SafetyIncidentsPage = lazy(() => import('../modules/safety/pages/IncidentsPage'));
+const SafetyIncidentDetailsPage = lazy(() => import('../modules/safety/pages/IncidentDetailsPage'));
+const SafetyEmergencyPlansPage = lazy(() => import('../modules/safety/pages/EmergencyPlansPage'));
+const SafetyAccessControlPage = lazy(() => import('../modules/safety/pages/AccessControlPage'));
+const SafetyCredentialsPage = lazy(() => import('../modules/safety/pages/CredentialsPage'));
+const SafetyCamerasPage = lazy(() => import('../modules/safety/pages/CamerasPage'));
+const SafetySensorsPage = lazy(() => import('../modules/safety/pages/SensorsPage'));
+const SafetyCapacityPage = lazy(() => import('../modules/safety/pages/CapacityPage'));
+const SafetyEvacuationsPage = lazy(() => import('../modules/safety/pages/EvacuationsPage'));
+const SafetyMusterPointsPage = lazy(() => import('../modules/safety/pages/MusterPointsPage'));
+const SafetyMedicalPostsPage = lazy(() => import('../modules/safety/pages/MedicalPostsPage'));
+const SafetyAmbulancesPage = lazy(() => import('../modules/safety/pages/AmbulancesPage'));
+const SafetyMedicalOccurrencesPage = lazy(() => import('../modules/safety/pages/MedicalOccurrencesPage'));
+const SafetyMissingPersonsPage = lazy(() => import('../modules/safety/pages/MissingPersonsPage'));
+const SafetyCrisisRoomPage = lazy(() => import('../modules/safety/pages/CrisisRoomPage'));
+const SafetyAuthoritiesPage = lazy(() => import('../modules/safety/pages/AuthoritiesPage'));
+const SafetyReportsPage = lazy(() => import('../modules/safety/pages/SafetyReportsPage'));
+const SafetySettingsPage = lazy(() => import('../modules/safety/pages/SafetySettingsPage'));
+
+// WF-045 — Plataforma Smart City e Digital Twin (Lazy Loaded)
+const DigitalTwinDashboardPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinDashboardPage'));
+const DigitalTwinMapPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinMapPage'));
+const DigitalTwinCityPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinCityPage'));
+const DigitalTwinEventsPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinEventsPage'));
+const DigitalTwinAttractionsPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinAttractionsPage'));
+const DigitalTwinMobilityPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinMobilityPage'));
+const DigitalTwinParkingPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinParkingPage'));
+const DigitalTwinSecurityPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinSecurityPage'));
+const DigitalTwinEnvironmentPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinEnvironmentPage'));
+const DigitalTwinIotPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinIotPage'));
+const DigitalTwinSimulationsPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinSimulationsPage'));
+const DigitalTwinForecastPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinForecastPage'));
+const DigitalTwinReportsPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinReportsPage'));
+const DigitalTwinSettingsPage = lazy(() => import('../modules/digitalTwin/pages/DigitalTwinSettingsPage'));
+
+// WF-046 — Gestão de Ecossistema, Parceiros e Marketplace B2B (Lazy Loaded)
+const PartnersB2bDashboardPage = lazy(() => import('../modules/partnersB2b/pages/DashboardPage'));
+const PartnersB2bMarketplacePage = lazy(() => import('../modules/partnersB2b/pages/MarketplacePage'));
+const PartnersB2bHotelsPage = lazy(() => import('../modules/partnersB2b/pages/HotelsPage'));
+const PartnersB2bRestaurantsPage = lazy(() => import('../modules/partnersB2b/pages/RestaurantsPage'));
+const PartnersB2bGuidesPage = lazy(() => import('../modules/partnersB2b/pages/GuidesPage'));
+const PartnersB2bAgenciesPage = lazy(() => import('../modules/partnersB2b/pages/AgenciesPage'));
+const PartnersB2bTransportPage = lazy(() => import('../modules/partnersB2b/pages/TransportPage'));
+const PartnersB2bContractsPage = lazy(() => import('../modules/partnersB2b/pages/ContractsPage'));
+const PartnersB2bCatalogPage = lazy(() => import('../modules/partnersB2b/pages/CatalogPage'));
+const PartnersB2bSplitPage = lazy(() => import('../modules/partnersB2b/pages/SplitPage'));
+const PartnersB2bAffiliatesPage = lazy(() => import('../modules/partnersB2b/pages/AffiliatesPage'));
+const PartnersB2bIntegrationsPage = lazy(() => import('../modules/partnersB2b/pages/IntegrationsPage'));
+const PartnersB2bBookingsPage = lazy(() => import('../modules/partnersB2b/pages/BookingsPage'));
+const PartnersB2bPackagesPage = lazy(() => import('../modules/partnersB2b/pages/PackagesPage'));
+const PartnersB2bPricingPage = lazy(() => import('../modules/partnersB2b/pages/PricingPage'));
+const PartnersB2bReviewsPage = lazy(() => import('../modules/partnersB2b/pages/ReviewsPage'));
+
+// WF-047 — Gestão de Inovação, Portfólio e Projetos Estratégicos (Lazy Loaded)
+const PortfolioDashboardPage = lazy(() => import('../modules/portfolio/pages/PortfolioDashboardPage'));
+const PortfolioIdeasPage = lazy(() => import('../modules/portfolio/pages/PortfolioIdeasPage'));
+const PortfolioBusinessCasesPage = lazy(() => import('../modules/portfolio/pages/PortfolioBusinessCasesPage'));
+const PortfolioProjectsPage = lazy(() => import('../modules/portfolio/pages/PortfolioProjectsPage'));
+const PortfolioProgramsPage = lazy(() => import('../modules/portfolio/pages/PortfolioProgramsPage'));
+const PortfolioStructurePage = lazy(() => import('../modules/portfolio/pages/PortfolioStructurePage'));
+const PortfolioRoadmapsPage = lazy(() => import('../modules/portfolio/pages/PortfolioRoadmapsPage'));
+const PortfolioKanbanPage = lazy(() => import('../modules/portfolio/pages/PortfolioKanbanPage'));
+const PortfolioBacklogPage = lazy(() => import('../modules/portfolio/pages/PortfolioBacklogPage'));
+const PortfolioSprintsPage = lazy(() => import('../modules/portfolio/pages/PortfolioSprintsPage'));
+const PortfolioResourcesPage = lazy(() => import('../modules/portfolio/pages/PortfolioResourcesPage'));
+const PortfolioRisksPage = lazy(() => import('../modules/portfolio/pages/PortfolioRisksPage'));
+const PortfolioBenefitsPage = lazy(() => import('../modules/portfolio/pages/PortfolioBenefitsPage'));
+const PortfolioChangePage = lazy(() => import('../modules/portfolio/pages/PortfolioChangePage'));
+const PortfolioReportsPage = lazy(() => import('../modules/portfolio/pages/PortfolioReportsPage'));
+const PortfolioSettingsPage = lazy(() => import('../modules/portfolio/pages/PortfolioSettingsPage'));
+
+// WF-050 — Super App Curitiba 360 e Serviços Urbanos Digitais (Lazy Loaded)
+const SuperAppHomePage = lazy(() => import('../modules/superApp/pages/SuperAppHomePage'));
+const SuperAppExplorePage = lazy(() => import('../modules/superApp/pages/ExplorePage'));
+const SuperAppSmartMapPage = lazy(() => import('../modules/superApp/pages/SmartMapPage'));
+const SuperAppEventsPage = lazy(() => import('../modules/superApp/pages/EventsPage'));
+const SuperAppEventDetailsPage = lazy(() => import('../modules/superApp/pages/EventDetailsPage'));
+const SuperAppAttractionsPage = lazy(() => import('../modules/superApp/pages/AttractionsPage'));
+const SuperAppReservationsPage = lazy(() => import('../modules/superApp/pages/ReservationsPage'));
+const SuperAppTicketsPage = lazy(() => import('../modules/superApp/pages/TicketsPage'));
+const SuperAppWalletPage = lazy(() => import('../modules/superApp/pages/WalletPage'));
+const SuperAppMobilityPage = lazy(() => import('../modules/superApp/pages/MobilityPage'));
+const SuperAppParkingPage = lazy(() => import('../modules/superApp/pages/ParkingPage'));
+const SuperAppMarketplacePage = lazy(() => import('../modules/superApp/pages/MarketplacePage'));
+const SuperAppLoyaltyPage = lazy(() => import('../modules/superApp/pages/LoyaltyPage'));
+const SuperAppBenefitsPage = lazy(() => import('../modules/superApp/pages/BenefitsPage'));
+const SuperAppCityServicesPage = lazy(() => import('../modules/superApp/pages/CityServicesPage'));
+const SuperAppProtocolsPage = lazy(() => import('../modules/superApp/pages/ProtocolsPage'));
+const SuperAppOuvidoriaPage = lazy(() => import('../modules/superApp/pages/OuvidoriaPage'));
+const SuperAppEmergencyPage = lazy(() => import('../modules/superApp/pages/EmergencyPage'));
+const SuperAppNotificationsPage = lazy(() => import('../modules/superApp/pages/NotificationsPage'));
+const SuperAppAssistantPage = lazy(() => import('../modules/superApp/pages/AssistantPage'));
+const SuperAppMiniAppsPage = lazy(() => import('../modules/superApp/pages/MiniAppsPage'));
+const SuperAppProfilePage = lazy(() => import('../modules/superApp/pages/ProfilePage'));
+const SuperAppSettingsPage = lazy(() => import('../modules/superApp/pages/SettingsPage'));
+
 const AiControlCenterPage = lazy(() => import('../modules/aiagents/pages/AiControlCenterPage'));
 const AgentStudioPage = lazy(() => import('../modules/aiagents/pages/AgentStudioPage'));
 const GlobalDashboardPage = lazy(() => import('../modules/global/pages/GlobalDashboardPage'));
@@ -709,6 +1034,32 @@ export default function AppRoutes() {
               </Route>
             </Route>
           </Route>
+
+          {/* === WF-050: SUPER APP CURITIBA 360 E SERVIÇOS URBANOS DIGITAIS === */}
+          <Route path="/app" element={<Navigate to="/app/home" replace />} />
+          <Route path="/app/home" element={<SuperAppHomePage />} />
+          <Route path="/app/explore" element={<SuperAppExplorePage />} />
+          <Route path="/app/map" element={<SuperAppSmartMapPage />} />
+          <Route path="/app/events" element={<SuperAppEventsPage />} />
+          <Route path="/app/events/:eventId" element={<SuperAppEventDetailsPage />} />
+          <Route path="/app/attractions" element={<SuperAppAttractionsPage />} />
+          <Route path="/app/reservations" element={<SuperAppReservationsPage />} />
+          <Route path="/app/tickets" element={<SuperAppTicketsPage />} />
+          <Route path="/app/wallet" element={<SuperAppWalletPage />} />
+          <Route path="/app/mobility" element={<SuperAppMobilityPage />} />
+          <Route path="/app/parking" element={<SuperAppParkingPage />} />
+          <Route path="/app/marketplace" element={<SuperAppMarketplacePage />} />
+          <Route path="/app/loyalty" element={<SuperAppLoyaltyPage />} />
+          <Route path="/app/benefits" element={<SuperAppBenefitsPage />} />
+          <Route path="/app/services" element={<SuperAppCityServicesPage />} />
+          <Route path="/app/protocols" element={<SuperAppProtocolsPage />} />
+          <Route path="/app/ouvidoria" element={<SuperAppOuvidoriaPage />} />
+          <Route path="/app/emergency" element={<SuperAppEmergencyPage />} />
+          <Route path="/app/notifications" element={<SuperAppNotificationsPage />} />
+          <Route path="/app/assistant" element={<SuperAppAssistantPage />} />
+          <Route path="/app/miniapps" element={<SuperAppMiniAppsPage />} />
+          <Route path="/app/profile" element={<SuperAppProfilePage />} />
+          <Route path="/app/settings" element={<SuperAppSettingsPage />} />
 
           {/* === ROTAS DO PORTAL PÚBLICO (TURISTA) === */}
           <Route path="/portal" element={<PortalHome />} />
@@ -1392,8 +1743,338 @@ export default function AppRoutes() {
               <Route path="/security/incidents" element={<IncidentResponsePage />} />
 
               {/* MOD-16 — Governança Corporativa, Compliance, Auditoria e Gestão de Riscos */}
-              <Route path="/governance" element={<GovernanceCompliancePage />} />
+              <Route path="/governance" element={<GovernanceDashboardPage />} />
+              <Route path="/governance/dashboard" element={<GovernanceDashboardPage />} />
               <Route path="/governance/compliance" element={<GovernanceCompliancePage />} />
+              <Route path="/governance/policies" element={<GovernancePoliciesPage />} />
+              <Route path="/governance/assets" element={<AssetsPage />} />
+              <Route path="/governance/risks" element={<RisksPage />} />
+              <Route path="/governance/suppliers" element={<SuppliersPage />} />
+              <Route path="/governance/audits" element={<AuditsPage />} />
+              <Route path="/governance/settings" element={<GovernanceSettingsPage />} />
+              <Route path="/governance/drp" element={<DRPPage />} />
+              <Route path="/governance/backups" element={<GovernanceBackupsPage />} />
+              <Route path="/governance/restore" element={<RestoreTestsPage />} />
+              <Route path="/governance/continuity" element={<ContinuityPage />} />
+              <Route path="/governance/tests" element={<GovernanceTestsPage />} />
+               <Route path="/governance/sla" element={<SLAPage />} />
+
+              {/* WF-030 — Qualidade, Testes e Homologação */}
+              <Route path="/admin/quality" element={<QualityDashboardPage />} />
+              <Route path="/admin/quality/dashboard" element={<QualityDashboardPage />} />
+              <Route path="/admin/quality/releases" element={<QualityReleasesPage />} />
+              <Route path="/admin/quality/test-plans" element={<QualityTestPlansPage />} />
+              <Route path="/admin/quality/bugs" element={<QualityBugsPage />} />
+              <Route path="/admin/quality/performance" element={<QualityPerformancePage />} />
+              <Route path="/admin/quality/accessibility" element={<QualityAccessibilityPage />} />
+              <Route path="/admin/quality/security" element={<QualitySecurityTestsPage />} />
+
+              {/* WF-031 — Roadmap 2027+ e Evolução da Plataforma */}
+              <Route path="/admin/roadmap" element={<RoadmapDashboardPage />} />
+              <Route path="/admin/roadmap/dashboard" element={<RoadmapDashboardPage />} />
+              <Route path="/admin/roadmap/estrategico" element={<StrategicRoadmapPage />} />
+              <Route path="/admin/roadmap/iniciativas" element={<InitiativesPage />} />
+              <Route path="/admin/roadmap/portfolio" element={<PortfolioPage />} />
+              <Route path="/admin/roadmap/priorizacao" element={<PrioritizationPage />} />
+              <Route path="/admin/roadmap/objetivos" element={<ObjectivesPage />} />
+              <Route path="/admin/roadmap/cenarios" element={<ScenariosPage />} />
+              <Route path="/admin/roadmap/inovacao" element={<InnovationPage />} />
+              <Route path="/admin/roadmap/configuracoes" element={<RoadmapSettingsPage />} />
+
+              {/* WF-033 — Central de Suporte, SLA e Customer Success */}
+              <Route path="/admin/support" element={<SupportDashboardPage />} />
+              <Route path="/admin/support/dashboard" element={<SupportDashboardPage />} />
+              <Route path="/admin/support/tickets" element={<SupportModuleTicketsPage />} />
+              <Route path="/admin/support/knowledge-base" element={<SupportKnowledgeBasePage />} />
+              <Route path="/admin/support/slas" element={<SupportSlaPage />} />
+              <Route path="/admin/support/customer-success" element={<SupportCustomerSuccessPage />} />
+              <Route path="/admin/support/incidents" element={<SupportIncidentPage />} />
+
+              {/* WF-034 — Marketplace de Extensões e Plugins */}
+              <Route path="/admin/marketplace" element={<MarketplaceDashboardPage />} />
+              <Route path="/admin/marketplace/dashboard" element={<MarketplaceDashboardPage />} />
+              <Route path="/admin/marketplace/catalogo" element={<MarketplaceCatalogPage />} />
+              <Route path="/admin/marketplace/extensoes/:extensionId" element={<ExtensionDetailsPage />} />
+              <Route path="/admin/marketplace/instaladas" element={<InstalledExtensionsPage />} />
+              <Route path="/admin/marketplace/faturamento" element={<ExtensionBillingPage />} />
+              <Route path="/admin/marketplace/logs" element={<ExtensionLogsPage />} />
+              <Route path="/admin/marketplace/developers" element={<DeveloperPortalPage />} />
+              <Route path="/admin/marketplace/publicar" element={<PublishExtensionPage />} />
+              <Route path="/admin/marketplace/configuracoes" element={<MarketplaceSettingsPage />} />
+
+              {/* WF-035 — Gestão de Conteúdo, SEO e Experiência Digital */}
+              <Route path="/admin/cms" element={<CmsDashboardPage />} />
+              <Route path="/admin/cms/dashboard" element={<CmsDashboardPage />} />
+              <Route path="/admin/cms/pages" element={<CmsPagesListPage />} />
+              <Route path="/admin/cms/pages/new" element={<CmsEditorPage />} />
+              <Route path="/admin/cms/pages/:pageId" element={<CmsEditorPage />} />
+              <Route path="/admin/cms/banners" element={<CmsBannersPage />} />
+              <Route path="/admin/cms/seo" element={<CmsSeoPage />} />
+              <Route path="/admin/cms/redirects" element={<CmsRedirectsPage />} />
+              <Route path="/admin/cms/ab-tests" element={<CmsAbTestsPage />} />
+              <Route path="/admin/cms/personalization" element={<CmsPersonalizationPage />} />
+              <Route path="/admin/cms/calendar" element={<CmsCalendarPage />} />
+              <Route path="/admin/cms/translations" element={<CmsTranslationsPage />} />
+
+              {/* WF-036 — Data & AI Platform Avançada */}
+              <Route path="/admin/ai" element={<AiDashboardPage />} />
+              <Route path="/admin/ai/dashboard" element={<AiDashboardPage />} />
+              <Route path="/admin/ai/agents" element={<AiAgentsPage />} />
+              <Route path="/admin/ai/agents/new" element={<AiAgentDetailsPage />} />
+              <Route path="/admin/ai/agents/:agentId" element={<AiAgentDetailsPage />} />
+              <Route path="/admin/ai/models" element={<AiModelsPage />} />
+              <Route path="/admin/ai/prompts" element={<PromptLibraryPage />} />
+              <Route path="/admin/ai/knowledge" element={<KnowledgeBasesPage />} />
+              <Route path="/admin/ai/executions" element={<AiExecutionsPage />} />
+              <Route path="/admin/ai/playground" element={<AiPlaygroundPage />} />
+
+              {/* WF-037 — Centro de Operações Inteligente */}
+              <Route path="/admin/operations" element={<OperationsDashboardPage />} />
+              <Route path="/admin/operations/dashboard" element={<OperationsDashboardPage />} />
+              <Route path="/admin/operations/live" element={<LiveOperationsPage />} />
+              <Route path="/admin/operations/map" element={<OperationalMapPage />} />
+              <Route path="/admin/operations/devices" element={<DevicesPage />} />
+              <Route path="/admin/operations/incidents" element={<OperationsIncidentsPage />} />
+              <Route path="/admin/operations/incidents/:incidentId" element={<OperationsIncidentDetailsPage />} />
+              <Route path="/admin/operations/contingency" element={<ContingencyPlansPage />} />
+              <Route path="/admin/operations/reports" element={<OperationsReportsPage />} />
+
+              {/* WF-038 — Gestão Jurídica, Contratos e Documentos */}
+              <Route path="/admin/legal" element={<LegalDashboardPage />} />
+              <Route path="/admin/legal/dashboard" element={<LegalDashboardPage />} />
+              <Route path="/admin/legal/contracts" element={<ContractsPage />} />
+              <Route path="/admin/legal/contracts/new" element={<ContractDetailsPage />} />
+              <Route path="/admin/legal/contracts/:contractId" element={<ContractDetailsPage />} />
+              <Route path="/admin/legal/templates" element={<LegalTemplatesPage />} />
+              <Route path="/admin/legal/policies" element={<CompliancePoliciesPage />} />
+              <Route path="/admin/legal/lgpd" element={<LgpdRegistryPage />} />
+              <Route path="/admin/legal/processes" element={<JudicialProcessesPage />} />
+              <Route path="/admin/legal/risks" element={<LegalRisksPage />} />
+
+              {/* WF-039 — Plataforma Financeira Avançada */}
+              <Route path="/admin/finance" element={<FinanceDashboardPage />} />
+              <Route path="/admin/finance/dashboard" element={<FinanceDashboardPage />} />
+              <Route path="/admin/finance/treasury" element={<TreasuryPage />} />
+              <Route path="/admin/finance/payables" element={<AccountsPayablePage />} />
+              <Route path="/admin/finance/receivables" element={<AccountsReceivablePage />} />
+              <Route path="/admin/finance/splits" element={<SplitRulesPage />} />
+              <Route path="/admin/finance/subscriptions" element={<SubscriptionsPage />} />
+              <Route path="/admin/finance/budgets" element={<BudgetsPage />} />
+
+              {/* WF-040 — Gestão de Mobilidade, Rotas e Logística */}
+              <Route path="/admin/mobility" element={<MobilityDashboardPage />} />
+              <Route path="/admin/mobility/dashboard" element={<MobilityDashboardPage />} />
+              <Route path="/admin/mobility/live-map" element={<LiveMobilityPage />} />
+              <Route path="/admin/mobility/routes" element={<RoutesPage />} />
+              <Route path="/admin/mobility/trips" element={<TripsPage />} />
+              <Route path="/admin/mobility/stops" element={<StopsPage />} />
+              <Route path="/admin/mobility/reservations" element={<ReservationsPage />} />
+              <Route path="/admin/mobility/fleet" element={<FleetPage />} />
+              <Route path="/admin/mobility/drivers" element={<DriversPage />} />
+              <Route path="/admin/mobility/parking" element={<ParkingPage />} />
+              <Route path="/admin/mobility/logistics" element={<LogisticsPage />} />
+              <Route path="/admin/mobility/incidents" element={<MobilityIncidentsPage />} />
+
+              {/* WF-041 — Sustentabilidade, ESG e Impacto Turístico */}
+              <Route path="/admin/esg" element={<EsgDashboardPage />} />
+              <Route path="/admin/esg/dashboard" element={<EsgDashboardPage />} />
+              <Route path="/admin/esg/environment" element={<EsgEnvironmentPage />} />
+              <Route path="/admin/esg/social" element={<EsgSocialPage />} />
+              <Route path="/admin/esg/governance" element={<EsgGovernancePage />} />
+              <Route path="/admin/esg/economic" element={<EsgEconomicPage />} />
+              <Route path="/admin/esg/projects" element={<EsgProjectsPage />} />
+              <Route path="/admin/esg/suppliers" element={<EsgSuppliersPage />} />
+
+              {/* WF-042 — Plataforma Omnichannel e Experiência do Visitante */}
+              <Route path="/admin/experience" element={<ExperienceDashboardPage />} />
+              <Route path="/admin/experience/dashboard" element={<ExperienceDashboardPage />} />
+              <Route path="/admin/experience/customers" element={<ExperienceCustomersPage />} />
+              <Route path="/admin/experience/journeys" element={<JourneyPage />} />
+              <Route path="/admin/experience/inbox" element={<OmnichannelInboxPage />} />
+              <Route path="/admin/experience/campaigns" element={<ExperienceCampaignsPage />} />
+              <Route path="/admin/experience/loyalty" element={<LoyaltyPage />} />
+              <Route path="/admin/experience/segments" element={<ExperienceSegmentsPage />} />
+              <Route path="/admin/experience/nps" element={<SurveysPage />} />
+              <Route path="/admin/experience/customers/:customerId" element={<CustomerDetailsPage />} />
+              <Route path="/admin/experience/campaigns/new" element={<CampaignBuilderPage />} />
+              <Route path="/admin/experience/campaigns/:campaignId" element={<CampaignBuilderPage />} />
+              <Route path="/admin/experience/automations" element={<ExperienceAutomationsPage />} />
+              <Route path="/admin/experience/personalization" element={<PersonalizationPage />} />
+              <Route path="/admin/experience/recommendations" element={<ExperienceRecommendationsPage />} />
+              <Route path="/admin/experience/cashback" element={<ExperienceCashbackPage />} />
+              <Route path="/admin/experience/coupons" element={<ExperienceCouponsPage />} />
+              <Route path="/admin/experience/gamification" element={<GamificationPage />} />
+              <Route path="/admin/experience/reviews" element={<ExperienceReviewsPage />} />
+              <Route path="/admin/experience/communities" element={<CommunitiesPage />} />
+              <Route path="/admin/experience/reports" element={<ExperienceReportsPage />} />
+              <Route path="/admin/experience/settings" element={<ExperienceSettingsPage />} />
+
+              {/* WF-043 — Gestão de Recursos Humanos e Workforce */}
+              <Route path="/admin/workforce" element={<WorkforceDashboardPage />} />
+              <Route path="/admin/workforce/dashboard" element={<WorkforceDashboardPage />} />
+              <Route path="/admin/workforce/employees" element={<WorkforceEmployeesPage />} />
+              <Route path="/admin/workforce/employees/new" element={<WorkforceEmployeesPage />} />
+              <Route path="/admin/workforce/employees/:employeeId" element={<WorkforceEmployeeDetailsPage />} />
+              <Route path="/admin/workforce/organization-chart" element={<WorkforceOrganizationChartPage />} />
+              <Route path="/admin/workforce/departments" element={<WorkforceOrganizationChartPage />} />
+              <Route path="/admin/workforce/positions" element={<WorkforcePositionsPage />} />
+              <Route path="/admin/workforce/recruitment" element={<WorkforceRecruitmentPage />} />
+              <Route path="/admin/workforce/vacancies" element={<WorkforceRecruitmentPage />} />
+              <Route path="/admin/workforce/candidates" element={<WorkforceCandidatesPage />} />
+              <Route path="/admin/workforce/onboarding" element={<WorkforceOnboardingPage />} />
+              <Route path="/admin/workforce/offboarding" element={<WorkforceOnboardingPage />} />
+              <Route path="/admin/workforce/schedules" element={<WorkforceSchedulesPage />} />
+              <Route path="/admin/workforce/shifts" element={<WorkforceShiftsPage />} />
+              <Route path="/admin/workforce/attendance" element={<WorkforceAttendancePage />} />
+              <Route path="/admin/workforce/timesheets" element={<WorkforceTimesheetsPage />} />
+              <Route path="/admin/workforce/overtime" element={<WorkforceTimesheetsPage />} />
+              <Route path="/admin/workforce/leaves" element={<WorkforceLeavesPage />} />
+              <Route path="/admin/workforce/payroll" element={<WorkforcePayrollPage />} />
+              <Route path="/admin/workforce/benefits" element={<WorkforceBenefitsPage />} />
+              <Route path="/admin/workforce/trainings" element={<WorkforceTrainingsPage />} />
+              <Route path="/admin/workforce/certifications" element={<WorkforceCertificationsPage />} />
+              <Route path="/admin/workforce/performance" element={<WorkforcePerformancePage />} />
+              <Route path="/admin/workforce/goals" element={<WorkforceGoalsPage />} />
+              <Route path="/admin/workforce/development" element={<WorkforceDevelopmentPage />} />
+              <Route path="/admin/workforce/climate" element={<WorkforceClimatePage />} />
+              <Route path="/admin/workforce/communications" element={<WorkforceClimatePage />} />
+              <Route path="/admin/workforce/occupational-health" element={<WorkforceOccupationalHealthPage />} />
+              <Route path="/admin/workforce/safety" element={<WorkforceOccupationalHealthPage />} />
+              <Route path="/admin/workforce/contractors" element={<WorkforceContractorsPage />} />
+              <Route path="/admin/workforce/planning" element={<WorkforcePlanningPage />} />
+              <Route path="/admin/workforce/reports" element={<WorkforceReportsPage />} />
+              <Route path="/admin/workforce/audit" element={<WorkforceReportsPage />} />
+              <Route path="/admin/workforce/settings" element={<WorkforceSettingsPage />} />
+
+              {/* WF-044 — Gestão de Segurança, Emergências e Saúde Operacional */}
+              <Route path="/admin/safety" element={<SafetyDashboardPage />} />
+              <Route path="/admin/safety/dashboard" element={<SafetyDashboardPage />} />
+              <Route path="/admin/safety/live" element={<LiveSafetyPage />} />
+              <Route path="/admin/safety/risk-map" element={<RiskMapPage />} />
+              <Route path="/admin/safety/risks" element={<SafetyRisksPage />} />
+              <Route path="/admin/safety/incidents" element={<SafetyIncidentsPage />} />
+              <Route path="/admin/safety/incidents/:incidentId" element={<SafetyIncidentDetailsPage />} />
+              <Route path="/admin/safety/emergency-plans" element={<SafetyEmergencyPlansPage />} />
+              <Route path="/admin/safety/access-control" element={<SafetyAccessControlPage />} />
+              <Route path="/admin/safety/credentials" element={<SafetyCredentialsPage />} />
+              <Route path="/admin/safety/cameras" element={<SafetyCamerasPage />} />
+              <Route path="/admin/safety/sensors" element={<SafetySensorsPage />} />
+              <Route path="/admin/safety/capacity" element={<SafetyCapacityPage />} />
+              <Route path="/admin/safety/evacuations" element={<SafetyEvacuationsPage />} />
+              <Route path="/admin/safety/muster-points" element={<SafetyMusterPointsPage />} />
+              <Route path="/admin/safety/medical-posts" element={<SafetyMedicalPostsPage />} />
+              <Route path="/admin/safety/ambulances" element={<SafetyAmbulancesPage />} />
+              <Route path="/admin/safety/medical-occurrences" element={<SafetyMedicalOccurrencesPage />} />
+              <Route path="/admin/safety/missing-persons" element={<SafetyMissingPersonsPage />} />
+              <Route path="/admin/safety/crisis-room" element={<SafetyCrisisRoomPage />} />
+              <Route path="/admin/safety/authorities" element={<SafetyAuthoritiesPage />} />
+              <Route path="/admin/safety/reports" element={<SafetyReportsPage />} />
+              <Route path="/admin/safety/audit" element={<SafetyReportsPage />} />
+              <Route path="/admin/safety/settings" element={<SafetySettingsPage />} />
+
+              {/* WF-045 — Plataforma Smart City e Digital Twin */}
+              <Route path="/admin/digital-twin" element={<DigitalTwinDashboardPage />} />
+              <Route path="/admin/digital-twin/dashboard" element={<DigitalTwinDashboardPage />} />
+              <Route path="/admin/digital-twin/map" element={<DigitalTwinMapPage />} />
+              <Route path="/admin/digital-twin/city" element={<DigitalTwinCityPage />} />
+              <Route path="/admin/digital-twin/events" element={<DigitalTwinEventsPage />} />
+              <Route path="/admin/digital-twin/attractions" element={<DigitalTwinAttractionsPage />} />
+              <Route path="/admin/digital-twin/mobility" element={<DigitalTwinMobilityPage />} />
+              <Route path="/admin/digital-twin/parking" element={<DigitalTwinParkingPage />} />
+              <Route path="/admin/digital-twin/security" element={<DigitalTwinSecurityPage />} />
+              <Route path="/admin/digital-twin/environment" element={<DigitalTwinEnvironmentPage />} />
+              <Route path="/admin/digital-twin/iot" element={<DigitalTwinIotPage />} />
+              <Route path="/admin/digital-twin/simulations" element={<DigitalTwinSimulationsPage />} />
+              <Route path="/admin/digital-twin/forecast" element={<DigitalTwinForecastPage />} />
+              <Route path="/admin/digital-twin/reports" element={<DigitalTwinReportsPage />} />
+              <Route path="/admin/digital-twin/settings" element={<DigitalTwinSettingsPage />} />
+
+              {/* === GESTÃO DE ECOSSISTEMA, PARCEIROS E MARKETPLACE B2B (WF-046) === */}
+              <Route path="/admin/partners-b2b" element={<PartnersB2bDashboardPage />} />
+              <Route path="/admin/partners-b2b/dashboard" element={<PartnersB2bDashboardPage />} />
+              <Route path="/admin/partners-b2b/marketplace" element={<PartnersB2bMarketplacePage />} />
+              <Route path="/admin/partners-b2b/hotels" element={<PartnersB2bHotelsPage />} />
+              <Route path="/admin/partners-b2b/restaurants" element={<PartnersB2bRestaurantsPage />} />
+              <Route path="/admin/partners-b2b/guides" element={<PartnersB2bGuidesPage />} />
+              <Route path="/admin/partners-b2b/agencies" element={<PartnersB2bAgenciesPage />} />
+              <Route path="/admin/partners-b2b/transport" element={<PartnersB2bTransportPage />} />
+              <Route path="/admin/partners-b2b/contracts" element={<PartnersB2bContractsPage />} />
+              <Route path="/admin/partners-b2b/catalog" element={<PartnersB2bCatalogPage />} />
+              <Route path="/admin/partners-b2b/split" element={<PartnersB2bSplitPage />} />
+              <Route path="/admin/partners-b2b/affiliates" element={<PartnersB2bAffiliatesPage />} />
+              <Route path="/admin/partners-b2b/integrations" element={<PartnersB2bIntegrationsPage />} />
+              <Route path="/admin/partners-b2b/bookings" element={<PartnersB2bBookingsPage />} />
+              <Route path="/admin/partners-b2b/packages" element={<PartnersB2bPackagesPage />} />
+              <Route path="/admin/partners-b2b/pricing" element={<PartnersB2bPricingPage />} />
+              <Route path="/admin/partners-b2b/reviews" element={<PartnersB2bReviewsPage />} />
+
+              {/* === GESTÃO DE INOVAÇÃO, PORTFÓLIO E PROJETOS ESTRATÉGICOS (WF-047) === */}
+              <Route path="/admin/portfolio" element={<PortfolioDashboardPage />} />
+              <Route path="/admin/portfolio/dashboard" element={<PortfolioDashboardPage />} />
+              <Route path="/admin/portfolio/ideas" element={<PortfolioIdeasPage />} />
+              <Route path="/admin/portfolio/business-cases" element={<PortfolioBusinessCasesPage />} />
+              <Route path="/admin/portfolio/projects" element={<PortfolioProjectsPage />} />
+              <Route path="/admin/portfolio/programs" element={<PortfolioProgramsPage />} />
+              <Route path="/admin/portfolio/portfolio" element={<PortfolioStructurePage />} />
+              <Route path="/admin/portfolio/roadmaps" element={<PortfolioRoadmapsPage />} />
+              <Route path="/admin/portfolio/kanban" element={<PortfolioKanbanPage />} />
+              <Route path="/admin/portfolio/backlog" element={<PortfolioBacklogPage />} />
+              <Route path="/admin/portfolio/sprints" element={<PortfolioSprintsPage />} />
+              <Route path="/admin/portfolio/resources" element={<PortfolioResourcesPage />} />
+              <Route path="/admin/portfolio/risks" element={<PortfolioRisksPage />} />
+              <Route path="/admin/portfolio/benefits" element={<PortfolioBenefitsPage />} />
+              <Route path="/admin/portfolio/change" element={<PortfolioChangePage />} />
+              <Route path="/admin/portfolio/reports" element={<PortfolioReportsPage />} />
+              <Route path="/admin/portfolio/settings" element={<PortfolioSettingsPage />} />
+
+              {/* === PLATAFORMA DE GOVERNANÇA EXECUTIVA E PERFORMANCE CORPORATIVA (WF-048) === */}
+              <Route path="/admin/governance" element={<CorpGovDashboardPage />} />
+              <Route path="/admin/governance/dashboard" element={<CorpGovDashboardPage />} />
+              <Route path="/admin/governance/executive-cockpit" element={<CorpGovExecutiveCockpitPage />} />
+              <Route path="/admin/governance/strategic-planning" element={<CorpGovStrategicPlanningPage />} />
+              <Route path="/admin/governance/strategy-map" element={<CorpGovStrategyMapPage />} />
+              <Route path="/admin/governance/balanced-scorecard" element={<CorpGovBalancedScorecardPage />} />
+              <Route path="/admin/governance/objectives" element={<CorpGovCorporateObjectivesPage />} />
+              <Route path="/admin/governance/okrs" element={<CorpGovCorporateOkrsPage />} />
+              <Route path="/admin/governance/kpis" element={<CorpGovExecutiveKpisPage />} />
+              <Route path="/admin/governance/councils" element={<CorpGovCouncilsPage />} />
+              <Route path="/admin/governance/councils/:councilId" element={<CorpGovCouncilDetailsPage />} />
+              <Route path="/admin/governance/committees" element={<CorpGovCommitteesPage />} />
+              <Route path="/admin/governance/meetings" element={<CorpGovMeetingsPage />} />
+              <Route path="/admin/governance/meetings/:meetingId" element={<CorpGovMeetingDetailsPage />} />
+              <Route path="/admin/governance/resolutions" element={<CorpGovResolutionsPage />} />
+              <Route path="/admin/governance/action-plans" element={<CorpGovActionPlansPage />} />
+              <Route path="/admin/governance/risks" element={<CorpGovCorporateRisksPage />} />
+              <Route path="/admin/governance/internal-controls" element={<CorpGovInternalControlsPage />} />
+              <Route path="/admin/governance/compliance" element={<CorpGovCompliancePage />} />
+              <Route path="/admin/governance/lgpd" element={<CorpGovLgpdGovernancePage />} />
+              <Route path="/admin/governance/policies" element={<CorpGovPoliciesPage />} />
+              <Route path="/admin/governance/audits" element={<CorpGovAuditsPage />} />
+              <Route path="/admin/governance/approvals" element={<CorpGovApprovalsPage />} />
+              <Route path="/admin/governance/reports" element={<CorpGovExecutiveReportsPage />} />
+              <Route path="/admin/governance/audit" element={<CorpGovAuditPage />} />
+              <Route path="/admin/governance/settings" element={<CorpGovSettingsPage />} />
+
+              {/* === PLATAFORMA DE INTELIGÊNCIA ESTRATÉGICA E GOVERNO DIGITAL (WF-049) === */}
+              <Route path="/admin/government" element={<GovDashboardPage />} />
+              <Route path="/admin/government/dashboard" element={<GovDashboardPage />} />
+              <Route path="/admin/government/programs" element={<GovProgramsPage />} />
+              <Route path="/admin/government/projects" element={<GovProjectsPage />} />
+              <Route path="/admin/government/goals" element={<GovGoalsPage />} />
+              <Route path="/admin/government/indicators" element={<GovIndicatorsPage />} />
+              <Route path="/admin/government/open-data" element={<GovOpenDataPage />} />
+              <Route path="/admin/government/transparency" element={<GovTransparencyPage />} />
+              <Route path="/admin/government/budget" element={<GovBudgetPage />} />
+              <Route path="/admin/government/contracts" element={<GovContractsPage />} />
+              <Route path="/admin/government/procurement" element={<GovProcurementPage />} />
+              <Route path="/admin/government/agreements" element={<GovAgreementsPage />} />
+              <Route path="/admin/government/observatory" element={<GovObservatoryPage />} />
+              <Route path="/admin/government/public-services" element={<GovPublicServicesPage />} />
+              <Route path="/admin/government/citizen" element={<GovCitizenPage />} />
+              <Route path="/admin/government/hearings" element={<GovHearingsPage />} />
+              <Route path="/admin/government/ouvidoria" element={<GovOuvidoriaPage />} />
+              <Route path="/admin/government/reports" element={<GovReportsPage />} />
+              <Route path="/admin/government/settings" element={<GovSettingsPage />} />
 
               {/* MOD-18 — Plataforma Comercial, CRM 360º e Gestão do Relacionamento */}
               <Route path="/crm360" element={<CrmSalesHubPage />} />

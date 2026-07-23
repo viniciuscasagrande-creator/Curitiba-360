@@ -1,4 +1,46 @@
 export { default as GovernanceCompliancePage } from "./pages/GovernanceCompliancePage";
+export { default as GovernanceDashboardPage } from "./pages/GovernanceDashboardPage";
+export { default as GovernancePoliciesPage } from "./pages/GovernancePoliciesPage";
+export { default as AssetsPage } from "./pages/AssetsPage";
+export { default as RisksPage } from "./pages/RisksPage";
+export { default as SuppliersPage } from "./pages/SuppliersPage";
+export { default as AuditsPage } from "./pages/AuditsPage";
+export { default as GovernanceSettingsPage } from "./pages/GovernanceSettingsPage";
+export { default as DRPPage } from "./pages/DRPPage";
+export { default as BackupsPage } from "./pages/BackupsPage";
+export { default as RestoreTestsPage } from "./pages/RestoreTestsPage";
+export { default as ContinuityPage } from "./pages/ContinuityPage";
+export { default as GovernanceTestsPage } from "./pages/GovernanceTestsPage";
+export { default as SLAPage } from "./pages/SLAPage";
 export { useGovernanceDashboard } from "./hooks/useGovernanceDashboard";
 export { governanceService } from "./services/governanceService";
-export { INITIAL_GOVERNANCE_DATA } from "./data/governanceMockData";
+export { INITIAL_GOVERNANCE_DATA } from "./mocks/governanceMockData";
+export { INITIAL_GOVERNANCE_DASHBOARD_MOCK } from "./mocks/governanceDashboardMock";
+
+// WF-048 — Plataforma de Governança Executiva e Performance Corporativa Pages
+export { default as CorpGovDashboardPage } from "./pages/CorpGovDashboardPage";
+export { default as CorpGovExecutiveCockpitPage } from "./pages/CorpGovExecutiveCockpitPage";
+export { default as CorpGovStrategicPlanningPage } from "./pages/CorpGovStrategicPlanningPage";
+export { default as CorpGovStrategyMapPage } from "./pages/CorpGovStrategyMapPage";
+export { default as CorpGovBalancedScorecardPage } from "./pages/CorpGovBalancedScorecardPage";
+export { default as CorpGovCorporateObjectivesPage } from "./pages/CorpGovCorporateObjectivesPage";
+export { default as CorpGovCorporateOkrsPage } from "./pages/CorpGovCorporateOkrsPage";
+export { default as CorpGovExecutiveKpisPage } from "./pages/CorpGovExecutiveKpisPage";
+export { default as CorpGovCouncilsPage } from "./pages/CorpGovCouncilsPage";
+export { default as CorpGovCouncilDetailsPage } from "./pages/CorpGovCouncilDetailsPage";
+export { default as CorpGovCommitteesPage } from "./pages/CorpGovCommitteesPage";
+export { default as CorpGovMeetingsPage } from "./pages/CorpGovMeetingsPage";
+export { default as CorpGovMeetingDetailsPage } from "./pages/CorpGovMeetingDetailsPage";
+export { default as CorpGovResolutionsPage } from "./pages/CorpGovResolutionsPage";
+export { default as CorpGovActionPlansPage } from "./pages/CorpGovActionPlansPage";
+export { default as CorpGovCorporateRisksPage } from "./pages/CorpGovCorporateRisksPage";
+export { default as CorpGovInternalControlsPage } from "./pages/CorpGovInternalControlsPage";
+export { default as CorpGovCompliancePage } from "./pages/CorpGovCompliancePage";
+export { default as CorpGovLgpdGovernancePage } from "./pages/CorpGovLgpdGovernancePage";
+export { default as CorpGovPoliciesPage } from "./pages/CorpGovPoliciesPage";
+export { default as CorpGovAuditsPage } from "./pages/CorpGovAuditsPage";
+export { default as CorpGovApprovalsPage } from "./pages/CorpGovApprovalsPage";
+export { default as CorpGovExecutiveReportsPage } from "./pages/CorpGovExecutiveReportsPage";
+export { default as CorpGovAuditPage } from "./pages/CorpGovAuditPage";
+export { default as CorpGovSettingsPage } from "./pages/CorpGovSettingsPage";
+

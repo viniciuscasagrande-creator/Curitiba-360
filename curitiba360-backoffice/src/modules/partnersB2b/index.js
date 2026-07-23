@@ -1,0 +1,20 @@
+export { default as PartnersB2bDashboardPage } from "./pages/DashboardPage";
+export { default as PartnersB2bMarketplacePage } from "./pages/MarketplacePage";
+export { default as PartnersB2bHotelsPage } from "./pages/HotelsPage";
+export { default as PartnersB2bRestaurantsPage } from "./pages/RestaurantsPage";
+export { default as PartnersB2bGuidesPage } from "./pages/GuidesPage";
+export { default as PartnersB2bAgenciesPage } from "./pages/AgenciesPage";
+export { default as PartnersB2bTransportPage } from "./pages/TransportPage";
+export { default as PartnersB2bContractsPage } from "./pages/ContractsPage";
+export { default as PartnersB2bCatalogPage } from "./pages/CatalogPage";
+export { default as PartnersB2bSplitPage } from "./pages/SplitPage";
+export { default as PartnersB2bAffiliatesPage } from "./pages/AffiliatesPage";
+export { default as PartnersB2bIntegrationsPage } from "./pages/IntegrationsPage";
+export { default as PartnersB2bBookingsPage } from "./pages/BookingsPage";
+export { default as PartnersB2bPackagesPage } from "./pages/PackagesPage";
+export { default as PartnersB2bPricingPage } from "./pages/PricingPage";
+export { default as PartnersB2bReviewsPage } from "./pages/ReviewsPage";
+
+export { usePartnersB2b } from "./hooks/usePartnersB2b";
+export { partnersB2bService } from "./services/partnersB2bService";
+export { partnersB2bMock } from "./mocks/partnersB2bMock";

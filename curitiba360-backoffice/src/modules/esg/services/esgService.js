@@ -1,25 +1,39 @@
-import { INITIAL_ESG_DATA } from '../data/esgMockData';
-
-const STORAGE_KEY_ESG = 'curitiba360_esg_v1';
-
-function getStoredEsg() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY_ESG);
-    if (!data) {
-      localStorage.setItem(STORAGE_KEY_ESG, JSON.stringify(INITIAL_ESG_DATA));
-      return INITIAL_ESG_DATA;
-    }
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Erro ao ler dados de ESG:', error);
-    return INITIAL_ESG_DATA;
-  }
-}
+import * as esgRepository from "../repositories/esgRepository";
 
 export const esgService = {
-  async getEsgOverview() {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    const data = getStoredEsg();
-    return { success: true, data };
+  async getDashboard() {
+    try {
+      const data = await esgRepository.getEsgDashboard();
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  },
+
+  async saveProject(project) {
+    try {
+      const data = await esgRepository.saveEsgProjectRepository(project);
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  },
+
+  async saveGoal(goal) {
+    try {
+      const data = await esgRepository.saveEsgGoalRepository(goal);
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  },
+
+  async saveSupplier(supplier) {
+    try {
+      const data = await esgRepository.saveEsgSupplierRepository(supplier);
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
   }
 };
