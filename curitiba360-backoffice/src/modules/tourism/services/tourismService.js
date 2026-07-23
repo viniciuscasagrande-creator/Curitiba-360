@@ -1,25 +1,44 @@
-import { INITIAL_TOURISM_DATA } from '../data/tourismMockData';
+import { TourismRepository } from '../repositories/TourismRepository';
 
-const STORAGE_KEY_TOURISM = 'curitiba360_tourism_v1';
+export class TourismService {
+  constructor(repository = TourismRepository) {
+    this.repository = repository;
+  }
 
-function getStoredTourism() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY_TOURISM);
-    if (!data) {
-      localStorage.setItem(STORAGE_KEY_TOURISM, JSON.stringify(INITIAL_TOURISM_DATA));
-      return INITIAL_TOURISM_DATA;
+  async getCategories() {
+    return this.repository.getCategories();
+  }
+
+  async getAttractions(filters = {}) {
+    const attractions = await this.repository.getAttractions(filters);
+    return attractions
+      .filter((item) => item.status === 'active')
+      .sort((a, b) => {
+        if (a.featured !== b.featured) {
+          return a.featured ? -1 : 1;
+        }
+        return b.rating - a.rating;
+      });
+  }
+
+  async getAttraction(attractionId) {
+    const attraction = await this.repository.getAttraction(attractionId);
+    if (!attraction) {
+      throw new Error('Atrativo não encontrado.');
     }
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Erro ao ler dados de turismo:', error);
-    return INITIAL_TOURISM_DATA;
+    if (attraction.status !== 'active') {
+      throw new Error('Este atrativo não está disponível no momento.');
+    }
+    return attraction;
+  }
+
+  async getAvailableDates(attractionId) {
+    return this.repository.getAvailableDates(attractionId);
+  }
+
+  async getAvailableTimes(attractionId, date) {
+    return this.repository.getAvailableTimes(attractionId, date);
   }
 }
 
-export const tourismService = {
-  async getTourismOverview() {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    const data = getStoredTourism();
-    return { success: true, data };
-  }
-};
+export const tourismService = new TourismService(TourismRepository);

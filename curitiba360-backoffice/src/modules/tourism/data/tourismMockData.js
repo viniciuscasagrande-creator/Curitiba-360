@@ -1,21 +1,185 @@
-export const INITIAL_TOURISM_DATA = {
-  experiences: [
-    { id: 'EXP-01', nome: 'Trem do Pôr do Sol Especial', duracao: '4h', local: 'Curitiba a Morretes', preco: 290.00, disponibilidade: 'Diário' },
-    { id: 'EXP-02', nome: 'City Tour Linha Turismo Curitiba', duracao: '2.5h', local: '26 Pontos de Parada', preco: 50.00, disponibilidade: 'Terça a Domingo' },
-    { id: 'EXP-03', nome: 'Jantar Italiano Clássico Madalosso', duracao: '3h', local: 'Santa Felicidade', preco: 120.00, disponibilidade: 'Diário' }
-  ],
+export const TOURISM_CATEGORIES = [
+  { id: 'cat-1', name: 'Parques', slug: 'parques', icon: 'Trees', description: 'Parques e bosques preservados de Curitiba' },
+  { id: 'cat-2', name: 'Museus', slug: 'museus', icon: 'Building', description: 'Centros culturais e galerias de arte' },
+  { id: 'cat-3', name: 'Passeios', slug: 'passeios', icon: 'Compass', description: 'Tours guiados e rotas turísticas' },
+  { id: 'cat-4', name: 'Gastronomia', slug: 'gastronomia', icon: 'Utensils', description: 'Restaurantes e gastronomia típica paranaense' },
+  { id: 'cat-5', name: 'Arquitetura', slug: 'arquitetura', icon: 'Landmark', description: 'Monumentos históricos e arquitetura moderna' },
+  { id: 'cat-6', name: 'Feiras', slug: 'feiras', icon: 'ShoppingBag', description: 'Feiras de artesanato e feirões de rua' },
+  { id: 'cat-7', name: 'Cultura', slug: 'cultura', icon: 'Theater', description: 'Teatros, auditórios e centros culturais' },
+  { id: 'cat-8', name: 'Natureza', slug: 'natureza', icon: 'Sun', description: 'Ecoturismo e ar livre' }
+];
 
-  roteiroInteligente: [
-    { dia: 'Sexta-feira', atividades: ['Check-in Hotel Mabu', 'Jantar em Santa Felicidade'] },
-    { dia: 'Sábado', atividades: ['Passeio de Trem para Morretes', 'Visita ao Museu Oscar Niemeyer'] },
-    { dia: 'Domingo', atividades: ['Feira do Largo da Ordem', 'Almoço Costela e Retorno'] }
-  ],
-
-  metrics: {
-    totalVisitantes: 45000,
-    permanenciaMediaDias: 2.8,
-    gastoMedioDiario: 350.00,
-    pegadaCarbonoCompensada: '92.4%',
-    ocupacaoHoteleiraMedia: '84%'
+export const INITIAL_ATTRACTIONS = [
+  {
+    id: 'att-1',
+    name: 'Jardim Botânico de Curitiba',
+    slug: 'jardim-botanico',
+    shortDescription: 'Ícone postal de Curitiba com estufa metálica inspirada no Palácio de Cristal de Londres.',
+    description: 'O Jardim Botânico de Curitiba é um dos pontos turísticos mais visitados do Brasil. Conta com uma imponente estufa de ferro e vidro, jardins no estilo francês, o Jardim das Sensações e ampla área verde preservada.',
+    categoryId: 'cat-1',
+    categoryName: 'Parques',
+    coverImage: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&auto=format&fit=crop',
+    gallery: [
+      'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&auto=format&fit=crop'
+    ],
+    address: {
+      street: 'Rua Engenheiro Ostoja Roguski',
+      number: 's/n',
+      neighborhood: 'Jardim Botânico',
+      city: 'Curitiba',
+      state: 'PR',
+      zipCode: '80210-390'
+    },
+    location: { latitude: -25.4431, longitude: -49.2398 },
+    rating: 4.9,
+    reviewCount: 3420,
+    durationMinutes: 120,
+    priceFrom: 0,
+    free: true,
+    accessibility: true,
+    parking: true,
+    petFriendly: false,
+    familyFriendly: true,
+    reservationRequired: false,
+    phone: '(41) 3264-6724',
+    status: 'active',
+    featured: true
+  },
+  {
+    id: 'att-2',
+    name: 'Museu Oscar Niemeyer (MON)',
+    slug: 'museu-oscar-niemeyer',
+    shortDescription: 'O famoso "Museu do Olho", com arquitetura futurista de Oscar Niemeyer e acervo de arte moderna.',
+    description: 'Projetado pelo arquiteto Oscar Niemeyer, o MON é um dos maiores complexos culturais da América Latina, abrigando mais de 9 mil obras de arte visual, arquitetura e design.',
+    categoryId: 'cat-2',
+    categoryName: 'Museus',
+    coverImage: 'https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800&auto=format&fit=crop',
+    gallery: [
+      'https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800&auto=format&fit=crop'
+    ],
+    address: {
+      street: 'Rua Marechal Hermes',
+      number: '999',
+      neighborhood: 'Centro Cívico',
+      city: 'Curitiba',
+      state: 'PR',
+      zipCode: '80530-230'
+    },
+    location: { latitude: -25.4103, longitude: -49.2671 },
+    rating: 4.8,
+    reviewCount: 2150,
+    durationMinutes: 180,
+    priceFrom: 30.00,
+    free: false,
+    accessibility: true,
+    parking: true,
+    petFriendly: false,
+    familyFriendly: true,
+    reservationRequired: true,
+    phone: '(41) 3350-4400',
+    status: 'active',
+    featured: true
+  },
+  {
+    id: 'att-3',
+    name: 'Ópera de Arame & Pedreira Paulo Leminski',
+    slug: 'opera-de-arame',
+    shortDescription: 'Teatro tubular integrado à natureza sobre um lago nas pedreiras de Curitiba.',
+    description: 'Estrutura tubular transparente construída sobre o lago de uma antiga pedreira desativada. Sede de grandes espetáculos, shows e festivais culturais da cidade.',
+    categoryId: 'cat-7',
+    categoryName: 'Cultura',
+    coverImage: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop',
+    gallery: [
+      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop'
+    ],
+    address: {
+      street: 'Rua João Gava',
+      number: '970',
+      neighborhood: 'Abranches',
+      city: 'Curitiba',
+      state: 'PR',
+      zipCode: '82130-010'
+    },
+    location: { latitude: -25.3855, longitude: -49.2764 },
+    rating: 4.9,
+    reviewCount: 1890,
+    durationMinutes: 90,
+    priceFrom: 15.00,
+    free: false,
+    accessibility: true,
+    parking: true,
+    petFriendly: true,
+    familyFriendly: true,
+    reservationRequired: true,
+    phone: '(41) 3354-4417',
+    status: 'active',
+    featured: true
+  },
+  {
+    id: 'att-4',
+    name: 'Parque Tanguá',
+    slug: 'parque-tangua',
+    shortDescription: 'Espetacular parque sobre antiga pedreira com mirante panorâmico para o pôr do sol.',
+    description: 'O Parque Tanguá possui 235 mil m² e conta com dois lagos, cascata artificial, mirante elevado, restaurante e uma das vistas de pôr do sol mais incríveis de Curitiba.',
+    categoryId: 'cat-1',
+    categoryName: 'Parques',
+    coverImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop',
+    gallery: [],
+    address: {
+      street: 'Rua Oswaldo Maciel',
+      number: 's/n',
+      neighborhood: 'Pilarzinho',
+      city: 'Curitiba',
+      state: 'PR',
+      zipCode: '82130-310'
+    },
+    location: { latitude: -25.3789, longitude: -49.2818 },
+    rating: 4.9,
+    reviewCount: 2980,
+    durationMinutes: 120,
+    priceFrom: 0,
+    free: true,
+    accessibility: true,
+    parking: true,
+    petFriendly: true,
+    familyFriendly: true,
+    reservationRequired: false,
+    phone: '(41) 3350-8484',
+    status: 'active',
+    featured: true
+  },
+  {
+    id: 'att-5',
+    name: 'Feira do Largo da Ordem',
+    slug: 'feira-largo-da-ordem',
+    shortDescription: 'Tradicional feira dominical de artesanato e antiguidades no centro histórico de Curitiba.',
+    description: 'Todas os domingos, o Setor Histórico de Curitiba ganha vida com centenas de artesãos, gastronomia típica paranaense, apresentações culturais e antiguidades.',
+    categoryId: 'cat-6',
+    categoryName: 'Feiras',
+    coverImage: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop',
+    gallery: [],
+    address: {
+      street: 'Largo da Ordem',
+      number: 's/n',
+      neighborhood: 'São Francisco',
+      city: 'Curitiba',
+      state: 'PR',
+      zipCode: '80020-000'
+    },
+    location: { latitude: -25.4284, longitude: -49.2731 },
+    rating: 4.7,
+    reviewCount: 1420,
+    durationMinutes: 150,
+    priceFrom: 0,
+    free: true,
+    accessibility: true,
+    parking: false,
+    petFriendly: true,
+    familyFriendly: true,
+    reservationRequired: false,
+    phone: '(41) 3321-3200',
+    status: 'active',
+    featured: false
   }
-};
+];

@@ -35,6 +35,12 @@ import { DigitalTicketPage } from "../modules/events/pages/DigitalTicketPage";
 import { TicketsPage } from "../modules/tickets/pages/TicketsPage";
 import { TicketDetailsPage } from "../modules/tickets/pages/TicketDetailsPage";
 
+import { TourismPage } from "../modules/tourism/pages/TourismPage";
+import { AttractionDetailsPage } from "../modules/tourism/pages/AttractionDetailsPage";
+import { ReservationPage } from "../modules/tourism/pages/ReservationPage";
+import { ReservationConfirmationPage } from "../modules/tourism/pages/ReservationConfirmationPage";
+import { MyReservationsPage } from "../modules/tourism/pages/MyReservationsPage";
+import { TourismMapPage } from "../modules/tourism/pages/TourismMapPage";
 import { PlacesPage } from "../modules/tourism/pages/PlacesPage";
 import { PlaceDetailsPage } from "../modules/tourism/pages/PlaceDetailsPage";
 
@@ -195,6 +201,10 @@ export function AppRoutes() {
             <Route path="/events/:id/tickets" element={<TicketSelectionPage />} />
             <Route path={ROUTES.public.places} element={<PlacesPage />} />
             <Route path={ROUTES.public.placeDetails(":placeId")} element={<PlaceDetailsPage />} />
+            <Route path={ROUTES.public.tourism} element={<TourismPage />} />
+            <Route path={ROUTES.public.tourismMap} element={<TourismMapPage />} />
+            <Route path={ROUTES.public.attraction(":id")} element={<AttractionDetailsPage />} />
+            <Route path={ROUTES.public.reservation(":id")} element={<ReservationPage />} />
           </Route>
 
           {/* Rotas de Autenticação (Apenas Visitantes Não Logados) */}
@@ -220,6 +230,8 @@ export function AppRoutes() {
               <Route path={ROUTES.app.tickets} element={<TicketsPage />} />
               <Route path={ROUTES.app.ticket(":id")} element={<DigitalTicketPage />} />
               <Route path="/events/tickets/:id" element={<DigitalTicketPage />} />
+              <Route path={ROUTES.app.reservations} element={<MyReservationsPage />} />
+              <Route path={ROUTES.app.reservationConfirmation(":id")} element={<ReservationConfirmationPage />} />
               <Route path={ROUTES.app.wallet} element={<WalletPage />} />
               <Route path={ROUTES.app.favorites} element={<FavoritesPage />} />
               <Route path={ROUTES.app.profile} element={<ProfilePage />} />

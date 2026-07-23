@@ -10,6 +10,10 @@ export const ROUTES = {
     ticketSelection: (eventId) => `/eventos/${eventId}/ingressos`,
     places: "/atrativos",
     placeDetails: (placeId) => `/atrativos/${placeId}`,
+    tourism: "/turismo",
+    tourismMap: "/turismo/mapa",
+    attraction: (attractionId) => `/turismo/${attractionId}`,
+    reservation: (attractionId) => `/turismo/${attractionId}/reserva`,
   },
 
   app: {
@@ -20,6 +24,7 @@ export const ROUTES = {
     tickets: "/ingressos",
     ticket: (ticketId) => `/ingressos/${ticketId}`,
     reservations: "/reservas",
+    reservationConfirmation: (reservationId) => `/reservas/${reservationId}/confirmacao`,
     wallet: "/carteira",
     favorites: "/favoritos",
     notifications: "/notificacoes",

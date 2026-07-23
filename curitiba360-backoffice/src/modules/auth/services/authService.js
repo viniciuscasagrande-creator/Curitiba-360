@@ -1,104 +1,60 @@
-import {
-  registerUserRepository,
-  signInWithEmailRepository,
-  signInWithGoogleRepository,
-  signOutRepository,
-} from "../repositories/authRepository";
+import { FirebaseAuthRepository } from "../repositories/FirebaseAuthRepository";
 
-const AUTH_STORAGE_KEY = "curitiba360:auth-user";
+const defaultRepo = new FirebaseAuthRepository();
 
-function persistUser(user) {
-  localStorage.setItem(
-    AUTH_STORAGE_KEY,
-    JSON.stringify(user)
-  );
-}
-
-function removePersistedUser() {
-  localStorage.removeItem(AUTH_STORAGE_KEY);
-}
-
-export async function loginWithEmail(data) {
-  const user = await signInWithEmailRepository({
-    email: data.email.trim().toLowerCase(),
-    password: data.password,
-    rememberMe: Boolean(data.rememberMe),
-  });
-
-  persistUser(user);
-
-  return user;
-}
-
-export async function loginWithGoogle() {
-  const user = await signInWithGoogleRepository();
-
-  persistUser(user);
-
-  return user;
-}
-
-export async function registerUser(data) {
-  const user = await registerUserRepository({
-    name: data.name.trim(),
-    email: data.email.trim().toLowerCase(),
-    phone: data.phone.trim(),
-    password: data.password,
-  });
-
-  persistUser(user);
-
-  return user;
-}
-
-export async function logoutUser() {
-  await signOutRepository();
-  removePersistedUser();
-}
-
-export async function resendVerificationEmail() {
-  // Firebase:
-  //
-  // if (!auth.currentUser) {
-  //   throw new Error(
-  //     "Não existe usuário autenticado."
-  //   );
-  // }
-  //
-  // await sendEmailVerification(
-  //   auth.currentUser
-  // );
-  return true;
-}
-
-export async function reloadCurrentUser() {
-  // Firebase:
-  //
-  // if (!auth.currentUser) {
-  //   throw new Error(
-  //     "Não existe usuário autenticado."
-  //   );
-  // }
-  //
-  // await reload(auth.currentUser);
-  //
-  // const updatedUser = {
-  //   uid: auth.currentUser.uid,
-  //   email: auth.currentUser.email,
-  //   displayName:
-  //     auth.currentUser.displayName,
-  //   emailVerified:
-  //     auth.currentUser.emailVerified,
-  // };
-  //
-  // persistUser(updatedUser);
-  //
-  // return updatedUser;
-
-  const storedUser = localStorage.getItem(AUTH_STORAGE_KEY);
-  const user = storedUser ? JSON.parse(storedUser) : null;
-  if (user) {
-    persistUser(user);
+export class AuthService {
+  constructor(repository = defaultRepo) {
+    this.repository = repository;
   }
-  return user;
+
+  async login(input) {
+    const email = input.email.trim().toLowerCase();
+    return this.repository.login({
+      ...input,
+      email
+    });
+  }
+
+  async register(input) {
+    return this.repository.register({
+      ...input,
+      name: input.name.trim(),
+      email: input.email.trim().toLowerCase()
+    });
+  }
+
+  async loginWithGoogle() {
+    return this.repository.loginWithGoogle();
+  }
+
+  async logout() {
+    return this.repository.logout();
+  }
+
+  async recoverPassword(email) {
+    return this.repository.sendPasswordReset(email.trim().toLowerCase());
+  }
+
+  async getProfile(uid) {
+    const profile = await this.repository.getUserProfile(uid);
+
+    if (profile && !profile.active) {
+      throw new Error("Esta conta está desativada.");
+    }
+
+    return profile;
+  }
+
+  observeAuth(callback) {
+    return this.repository.observeAuth(callback);
+  }
 }
+
+export const authService = new AuthService(defaultRepo);
+
+export const loginWithEmail = (input) => authService.login(input);
+export const loginWithGoogle = () => authService.loginWithGoogle();
+export const logoutUser = () => authService.logout();
+export const registerUser = (input) => authService.register(input);
+export const reloadCurrentUser = async () => authService.repository.getUserProfile('current');
+export const resendVerificationEmail = async () => true;
