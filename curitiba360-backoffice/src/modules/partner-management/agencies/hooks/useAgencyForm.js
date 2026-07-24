@@ -1,69 +1,201 @@
-import { useState } from 'react';
-import { initialAgencyFormData } from '../utils/agencyFormMapper';
-import { validateAgencyStep } from '../schemas/agencySchema';
+import {
+  zodResolver,
+} from '@hookform/resolvers/zod';
 
-export function useAgencyForm(initialData = null) {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState(initialData ? { ...initialAgencyFormData, ...initialData } : initialAgencyFormData);
-  const [errors, setErrors] = useState({});
-  const [isSearchingCep, setIsSearchingCep] = useState(false);
+import {
+  useEffect,
+  useState,
+} from 'react';
 
-  function updateField(field, value) {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
+import {
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
+
+import {
+  agencySchema,
+  agencyStepFields,
+} from '../schemas/agencySchema';
+
+import {
+  mapAgencyToForm,
+  mapFormToAgency,
+} from '../utils/agencyFormMapper';
+
+export const agencyWizardSteps = [
+  {
+    id: 'company',
+    label: 'Empresa',
+  },
+  {
+    id: 'responsible',
+    label: 'Responsável',
+  },
+  {
+    id: 'address',
+    label: 'Endereço',
+  },
+  {
+    id: 'bank',
+    label: 'Banco',
+  },
+  {
+    id: 'managers',
+    label: 'Gestores',
+  },
+  {
+    id: 'documents',
+    label: 'Documentos',
+  },
+  {
+    id: 'review',
+    label: 'Revisão',
+  },
+];
+
+export function useAgencyForm({
+  agency,
+  open,
+  onCreate,
+  onUpdate,
+  onSuccess,
+}) {
+  const [currentStep, setCurrentStep] =
+    useState(0);
+
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+
+  const form = useForm({
+    resolver: zodResolver(agencySchema),
+    mode: 'onBlur',
+    defaultValues:
+      mapAgencyToForm(agency),
+  });
+
+  const managersArray = useFieldArray({
+    control: form.control,
+    name: 'managers',
+  });
+
+  const documentsArray = useFieldArray({
+    control: form.control,
+    name: 'documents',
+  });
+
+  useEffect(() => {
+    if (!open) {
+      return;
     }
-  }
 
-  async function searchCep(cep) {
-    const cleanCep = cep.replace(/\D/g, '');
-    if (cleanCep.length !== 8) return;
+    form.reset(mapAgencyToForm(agency));
+    setCurrentStep(0);
+  }, [agency, open, form]);
 
-    try {
-      setIsSearchingCep(true);
-      const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-      const data = await res.json();
-      if (!data.erro) {
-        setFormData((prev) => ({
-          ...prev,
-          street: data.logradouro || prev.street,
-          district: data.bairro || prev.district,
-          city: data.localidade || prev.city,
-          state: data.uf || prev.state,
-        }));
-      }
-    } catch {
-      // Ignorar falha de busca no ViaCEP
-    } finally {
-      setIsSearchingCep(false);
+  const currentStepData =
+    agencyWizardSteps[currentStep];
+
+  const isFirstStep =
+    currentStep === 0;
+
+  const isLastStep =
+    currentStep ===
+    agencyWizardSteps.length - 1;
+
+  async function nextStep() {
+    const fields =
+      agencyStepFields[
+        currentStepData.id
+      ] ?? [];
+
+    const valid =
+      fields.length === 0
+        ? true
+        : await form.trigger(fields, {
+            shouldFocus: true,
+          });
+
+    if (!valid) {
+      return;
     }
-  }
 
-  function nextStep() {
-    const validation = validateAgencyStep(step, formData);
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      return false;
-    }
-    setErrors({});
-    setStep((prev) => Math.min(prev + 1, 7));
-    return true;
+    setCurrentStep((current) =>
+      Math.min(
+        current + 1,
+        agencyWizardSteps.length -
+          1,
+      ),
+    );
   }
 
   function previousStep() {
-    setStep((prev) => Math.max(prev - 1, 1));
+    setCurrentStep((current) =>
+      Math.max(current - 1, 0),
+    );
   }
 
+  async function goToStep(index) {
+    if (index <= currentStep) {
+      setCurrentStep(index);
+      return;
+    }
+
+    const fields =
+      agencyStepFields[
+        currentStepData.id
+      ] ?? [];
+
+    const valid =
+      fields.length === 0
+        ? true
+        : await form.trigger(fields);
+
+    if (valid) {
+      setCurrentStep(index);
+    }
+  }
+
+  const submit = form.handleSubmit(
+    async (formData) => {
+      try {
+        setIsSubmitting(true);
+
+        const payload =
+          mapFormToAgency(
+            formData,
+            agency,
+          );
+
+        const result = agency
+          ? await onUpdate(
+              agency.id,
+              payload,
+            )
+          : await onCreate(payload);
+
+        onSuccess?.(result);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+  );
+
   return {
-    step,
-    setStep,
-    formData,
-    setFormData,
-    errors,
-    isSearchingCep,
-    updateField,
-    searchCep,
+    form,
+    managersArray,
+    documentsArray,
+
+    steps: agencyWizardSteps,
+    currentStep,
+    currentStepData,
+
+    isFirstStep,
+    isLastStep,
+    isSubmitting,
+
     nextStep,
     previousStep,
+    goToStep,
+    submit,
   };
 }

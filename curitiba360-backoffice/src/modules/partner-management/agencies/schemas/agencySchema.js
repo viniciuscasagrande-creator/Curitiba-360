@@ -1,26 +1,209 @@
-export function validateAgencyStep(step, formData) {
-  const errors = {};
+import { z } from 'zod';
 
-  if (step === 1) {
-    if (!formData.tradeName?.trim()) errors.tradeName = 'Nome fantasia é obrigatório.';
-    if (!formData.corporateName?.trim()) errors.corporateName = 'Razão social é obrigatória.';
-    if (!formData.cnpj?.trim()) errors.cnpj = 'CNPJ é obrigatório.';
-  }
+const requiredText = (message) =>
+  z
+    .string()
+    .trim()
+    .min(1, message);
 
-  if (step === 2) {
-    if (!formData.responsibleName?.trim()) errors.responsibleName = 'Nome do responsável é obrigatório.';
-    if (!formData.responsibleCpf?.trim()) errors.responsibleCpf = 'CPF é obrigatório.';
-    if (!formData.email?.trim()) errors.email = 'E-mail é obrigatório.';
-    if (!formData.responsiblePhone?.trim()) errors.responsiblePhone = 'Telefone do responsável é obrigatório.';
-  }
+const optionalText = z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(''));
 
-  if (step === 3) {
-    if (!formData.city?.trim()) errors.city = 'Cidade é obrigatória.';
-    if (!formData.state?.trim()) errors.state = 'UF é obrigatória.';
-  }
+const documentSchema = z.object({
+  id: z.string(),
+  name: requiredText(
+    'Informe o nome do documento.',
+  ),
+  type: requiredText(
+    'Informe o tipo do documento.',
+  ),
+  url: optionalText,
+  file: z.any().nullable().optional(),
+});
 
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors,
-  };
-}
+const managerSchema = z.object({
+  id: z.string(),
+  name: requiredText(
+    'Informe o nome do gestor.',
+  ),
+  role: optionalText,
+  email: z
+    .string()
+    .trim()
+    .email('Informe um e-mail válido.'),
+  phone: optionalText,
+  permission: z.enum([
+    'Administrador',
+    'Financeiro',
+    'Operacional',
+    'Consulta',
+  ]),
+});
+
+export const agencySchema = z.object({
+  tradeName: requiredText(
+    'Informe o nome fantasia.',
+  ),
+
+  corporateName: requiredText(
+    'Informe a razão social.',
+  ),
+
+  cnpj: requiredText('Informe o CNPJ.')
+    .refine(
+      (value) =>
+        value.replace(/\D/g, '')
+          .length === 14,
+      'O CNPJ deve possuir 14 números.',
+    ),
+
+  stateRegistration: optionalText,
+
+  companyType: requiredText(
+    'Selecione o tipo da empresa.',
+  ),
+
+  site: optionalText.refine(
+    (value) =>
+      !value ||
+      /^https?:\/\/.+/i.test(value),
+    'Informe um endereço iniciado por http:// ou https://.',
+  ),
+
+  commercialPhone: optionalText,
+
+  responsibleName: requiredText(
+    'Informe o nome do responsável.',
+  ),
+
+  responsibleCpf: requiredText(
+    'Informe o CPF do responsável.',
+  ).refine(
+    (value) =>
+      value.replace(/\D/g, '').length ===
+      11,
+    'O CPF deve possuir 11 números.',
+  ),
+
+  responsibleRg: optionalText,
+
+  responsibleBirthDate: optionalText,
+
+  email: z
+    .string()
+    .trim()
+    .email('Informe um e-mail válido.'),
+
+  responsiblePhone: requiredText(
+    'Informe o telefone do responsável.',
+  ),
+
+  responsibleRole: optionalText,
+
+  zipCode: requiredText('Informe o CEP.')
+    .refine(
+      (value) =>
+        value.replace(/\D/g, '').length ===
+        8,
+      'O CEP deve possuir 8 números.',
+    ),
+
+  street: requiredText(
+    'Informe o logradouro.',
+  ),
+
+  number: requiredText(
+    'Informe o número.',
+  ),
+
+  complement: optionalText,
+
+  district: requiredText(
+    'Informe o bairro.',
+  ),
+
+  city: requiredText(
+    'Informe a cidade.',
+  ),
+
+  state: requiredText(
+    'Informe o estado.',
+  ).max(2, 'Utilize a sigla da UF.'),
+
+  country: requiredText(
+    'Informe o país.',
+  ),
+
+  bankAccount: z.object({
+    bankCode: optionalText,
+    bankName: requiredText(
+      'Informe o banco.',
+    ),
+    agency: requiredText(
+      'Informe a agência bancária.',
+    ),
+    account: requiredText(
+      'Informe o número da conta.',
+    ),
+    operation: optionalText,
+    accountType: requiredText(
+      'Selecione o tipo da conta.',
+    ),
+    holder: requiredText(
+      'Informe o titular da conta.',
+    ),
+    holderDocument: requiredText(
+      'Informe o documento do titular.',
+    ),
+    pixKey: optionalText,
+    pixKeyType: optionalText,
+  }),
+
+  managers: z.array(managerSchema),
+  documents: z.array(documentSchema),
+
+  status: z.string().optional(),
+});
+
+export const agencyStepFields = {
+  company: [
+    'tradeName',
+    'corporateName',
+    'cnpj',
+    'companyType',
+    'site',
+    'commercialPhone',
+  ],
+
+  responsible: [
+    'responsibleName',
+    'responsibleCpf',
+    'email',
+    'responsiblePhone',
+  ],
+
+  address: [
+    'zipCode',
+    'street',
+    'number',
+    'district',
+    'city',
+    'state',
+    'country',
+  ],
+
+  bank: [
+    'bankAccount.bankName',
+    'bankAccount.agency',
+    'bankAccount.account',
+    'bankAccount.accountType',
+    'bankAccount.holder',
+    'bankAccount.holderDocument',
+  ],
+
+  managers: ['managers'],
+  documents: ['documents'],
+};

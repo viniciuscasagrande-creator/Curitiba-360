@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import AgencyHeader from '../components/AgencyHeader';
-import AgencySummaryCards from '../components/AgencySummaryCards';
-import AgencyStatusTabs from '../components/AgencyStatusTabs';
-import AgencyFilters from '../components/AgencyFilters';
-import AgencyTable from '../components/AgencyTable';
+import AgencyBulkActions from '../components/AgencyBulkActions';
 import AgencyDetailsDrawer from '../components/AgencyDetailsDrawer';
+import AgencyFilters from '../components/AgencyFilters';
 import AgencyFormDrawer from '../components/AgencyFormDrawer';
-
-import BulkActionBar from '../../shared/BulkActionBar';
-import TablePagination from '../../shared/TablePagination';
+import AgencyHeader from '../components/AgencyHeader';
+import AgencyStatusTabs from '../components/AgencyStatusTabs';
+import AgencySummaryCards from '../components/AgencySummaryCards';
+import AgencyTable from '../components/AgencyTable';
 
 import { useAgencies } from '../hooks/useAgencies';
 import { useAgencyFilters } from '../hooks/useAgencyFilters';
@@ -25,16 +23,22 @@ export default function AgenciesPage() {
     isMutating,
     error,
     reload,
+
     createAgency,
     updateAgency,
+
     approveAgency,
     approveMany,
+
     rejectAgency,
     rejectMany,
+
     suspendAgency,
     suspendMany,
+
     inactivateAgency,
     inactivateMany,
+
     removeAgency,
     removeMany,
   } = useAgencies();
@@ -56,7 +60,6 @@ export default function AgenciesPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedAgency, setSelectedAgency] = useState(null);
-  const [editingAgency, setEditingAgency] = useState(null);
   const [pendingAction, setPendingAction] = useState(null);
 
   useEffect(() => {
@@ -88,16 +91,6 @@ export default function AgenciesPage() {
     ]);
   }
 
-  async function handleSaveAgency(formData) {
-    if (editingAgency) {
-      await updateAgency(editingAgency.id, formData);
-    } else {
-      await createAgency(formData);
-    }
-    setIsFormOpen(false);
-    setEditingAgency(null);
-  }
-
   async function handleApproveMany() {
     await approveMany(selection.selectedIds);
     selection.clearSelection();
@@ -113,7 +106,7 @@ export default function AgenciesPage() {
   }
 
   function handleRowEdit(agency) {
-    setEditingAgency(agency);
+    setSelectedAgency(agency);
     setIsFormOpen(true);
   }
 
@@ -129,7 +122,7 @@ export default function AgenciesPage() {
           onRefresh={reload}
           onExport={exportAgencies}
           onAdd={() => {
-            setEditingAgency(null);
+            setSelectedAgency(null);
             setIsFormOpen(true);
           }}
         />
@@ -204,13 +197,17 @@ export default function AgenciesPage() {
       {/* Wizard Form Drawer */}
       <AgencyFormDrawer
         open={isFormOpen}
-        agency={editingAgency}
-        isSubmitting={isMutating}
+        agency={selectedAgency}
         onClose={() => {
           setIsFormOpen(false);
-          setEditingAgency(null);
+          setSelectedAgency(null);
         }}
-        onSave={handleSaveAgency}
+        onCreate={createAgency}
+        onUpdate={updateAgency}
+        onSuccess={(savedAgency) => {
+          setIsFormOpen(false);
+          setSelectedAgency(savedAgency ?? null);
+        }}
       />
 
       {/* Details Drawer */}
@@ -220,7 +217,7 @@ export default function AgenciesPage() {
         isMutating={isMutating}
         onClose={() => setSelectedAgency(null)}
         onEdit={(agency) => {
-          setEditingAgency(agency);
+          setSelectedAgency(agency);
           setIsFormOpen(true);
         }}
         onApprove={async (agency) => {
