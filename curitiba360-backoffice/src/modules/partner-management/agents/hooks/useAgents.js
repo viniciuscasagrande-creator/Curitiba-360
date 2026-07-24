@@ -154,18 +154,26 @@ export function useAgents({
         field,
         direction,
       ) => {
-        setSorting({
-          field,
+        setSorting(
+          (current) => {
+            const nextDirection =
+              direction ||
+              (
+                current.field ===
+                  field &&
+                current.direction ===
+                  'asc'
+                  ? 'desc'
+                  : 'asc'
+              );
 
-          direction:
-            direction ||
-            (
-              sorting.field === field &&
-              sorting.direction === 'asc'
-                ? 'desc'
-                : 'asc'
-            ),
-        });
+            return {
+              field,
+              direction:
+                nextDirection,
+            };
+          },
+        );
 
         setPagination(
           (current) => ({
@@ -174,10 +182,7 @@ export function useAgents({
           }),
         );
       },
-      [
-        sorting.field,
-        sorting.direction,
-      ],
+      [],
     );
 
   const goToPage =
