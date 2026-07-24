@@ -202,13 +202,6 @@ export const courtesyReasonOptions = [
   'Ação institucional',
 ];
 
-export const validationStatusOptions = [
-  "Validado",
-  "Rejeitado",
-  "Cancelado",
-  "Expirado"
-];
-
 export const validationReportMock = [
   {
     id: 'validation-001',
@@ -221,6 +214,7 @@ export const validationReportMock = [
     validator: 'Totem 01',
     operator: 'João Souza',
     status: 'Validado',
+    attempts: 1,
   },
   {
     id: 'validation-002',
@@ -233,6 +227,7 @@ export const validationReportMock = [
     validator: 'Totem 02',
     operator: 'Pedro Lima',
     status: 'Validado',
+    attempts: 1,
   },
   {
     id: 'validation-003',
@@ -245,6 +240,7 @@ export const validationReportMock = [
     validator: 'Leitor Manual',
     operator: 'Ana Paula',
     status: 'Rejeitado',
+    attempts: 2,
   },
   {
     id: 'validation-004',
@@ -257,6 +253,7 @@ export const validationReportMock = [
     validator: 'Totem 03',
     operator: 'Lucas Ferreira',
     status: 'Cancelado',
+    attempts: 1,
   },
   {
     id: 'validation-005',
@@ -269,5 +266,39 @@ export const validationReportMock = [
     validator: 'Totem 01',
     operator: 'João Souza',
     status: 'Expirado',
+    attempts: 3,
   },
+  {
+    id: 'validation-006',
+    validationDate: '2026-01-03T10:31:20',
+    ticketCode: '123456789006',
+    orderNumber: 'PED-1006',
+    customer: 'Mariana Souza',
+    category: 'Morador Curitiba Adulto',
+    gate: 'Portaria Principal',
+    validator: 'Totem 02',
+    operator: 'Pedro Lima',
+    status: 'Validado',
+    attempts: 1,
+  },
+  {
+    id: 'validation-007',
+    validationDate: '2026-01-03T10:47:13',
+    ticketCode: '123456789007',
+    orderNumber: 'PED-1007',
+    customer: 'Paulo Henrique',
+    category: 'Estudante',
+    gate: 'Portaria VIP',
+    validator: 'Leitor Manual',
+    operator: 'Ana Paula',
+    status: 'Rejeitado',
+    attempts: 2,
+  },
+];
+
+export const validationStatusOptions = [
+  'Validado',
+  'Rejeitado',
+  'Cancelado',
+  'Expirado',
 ];
