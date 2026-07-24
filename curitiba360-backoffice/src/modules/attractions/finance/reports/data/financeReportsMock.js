@@ -302,3 +302,60 @@ export const validationStatusOptions = [
   'Cancelado',
   'Expirado',
 ];
+
+export const paymentOptions = [
+  "PIX",
+  "Cartão",
+  "Dinheiro"
+];
+
+export const channelOptions = [
+  "Site",
+  "PDV",
+  "Aplicativo"
+];
+
+export const commissionReportMock = [
+  {
+    id: 1,
+    date: "2026-01-02T09:30:00",
+    seller: "João da Silva",
+    agency: "Portal Curitiba360",
+    channel: "Site",
+    category: "Adulto",
+    payment: "PIX",
+    gross: 350.00,
+    commissionPercent: 10,
+    commission: 35,
+    net: 315,
+    quantity: 20
+  },
+  {
+    id: 2,
+    date: "2026-01-02T10:10:00",
+    seller: "Maria Oliveira",
+    agency: "Bilheteria",
+    channel: "PDV",
+    category: "Estudante",
+    payment: "Cartão",
+    gross: 875,
+    commissionPercent: 8,
+    commission: 70,
+    net: 805,
+    quantity: 50
+  },
+  {
+    id: 3,
+    date: "2026-01-02T14:20:00",
+    seller: "Pedro Lima",
+    agency: "Portal",
+    channel: "Site",
+    category: "VIP",
+    payment: "PIX",
+    gross: 1200,
+    commissionPercent: 12,
+    commission: 144,
+    net: 1056,
+    quantity: 24
+  }
+];
