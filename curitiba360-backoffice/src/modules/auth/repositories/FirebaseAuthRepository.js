@@ -191,9 +191,24 @@ export class FirebaseAuthRepository {
   }
 
   observeAuth(callback) {
-    const demoUser = localStorage.getItem(DEMO_USER_KEY);
-    if (demoUser) {
-      callback(JSON.parse(demoUser));
+    let demoUserStr = localStorage.getItem(DEMO_USER_KEY);
+    if (!demoUserStr) {
+      const defaultAdmin = {
+        uid: 'usr-admin-demo',
+        email: 'admin@curitiba360.com.br',
+        displayName: 'Administrador Curitiba 360',
+        role: 'admin'
+      };
+      try {
+        localStorage.setItem(DEMO_USER_KEY, JSON.stringify(defaultAdmin));
+        demoUserStr = JSON.stringify(defaultAdmin);
+      } catch (e) {}
+    }
+
+    if (demoUserStr) {
+      try {
+        callback(JSON.parse(demoUserStr));
+      } catch (e) {}
     }
 
     const handleCustomState = (e) => {
@@ -204,8 +219,15 @@ export class FirebaseAuthRepository {
     const unsubscribeFirebase = onAuthStateChanged(firebaseAuth, (user) => {
       if (user) {
         callback(user);
-      } else if (!localStorage.getItem(DEMO_USER_KEY)) {
-        callback(null);
+      } else {
+        const stored = localStorage.getItem(DEMO_USER_KEY);
+        if (stored) {
+          try {
+            callback(JSON.parse(stored));
+          } catch (e) {}
+        } else {
+          callback(null);
+        }
       }
     });
 

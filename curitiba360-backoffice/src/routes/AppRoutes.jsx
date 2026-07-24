@@ -60,11 +60,34 @@ import UserEditorPage from "../modules/admin/users/pages/UserEditorPage";
 import AdminContractsPage from "../modules/admin/contracts/pages/AdminContractsPage";
 import ContractEditorPage from "../modules/admin/contracts/pages/ContractEditorPage";
 import CommercialConditionsPage from "../modules/admin/commercial/pages/CommercialConditionsPage";
-import AdminAttractionsPage from "../modules/admin/attractions/pages/AdminAttractionsPage";
-import AttractionWizardPage from "../modules/admin/attractions/pages/AttractionWizardPage";
-import AdminAttractionDetailsPage from "../modules/admin/attractions/pages/AttractionDetailsPage";
-import AttractionCategoriesPage from "../modules/admin/attractions/pages/AttractionCategoriesPage";
-import AttractionTicketsPage from "../modules/admin/attractions/pages/AttractionTicketsPage";
+import AttractionsPage from "../modules/attractions/pages/AttractionsPage";
+import AttractionWizardPage from "../modules/attractions/pages/AttractionWizardPage";
+import AttractionCategoriesPage from "../modules/attractions/pages/AttractionCategoriesPage";
+import AttractionTicketsPage from "../modules/attractions/pages/AttractionTicketsPage";
+import AttractionCouponsPage from "../modules/attractions/pages/AttractionCouponsPage";
+import AttractionAnalyticsPage from "../modules/attractions/analytics/pages/AttractionAnalyticsPage";
+import AttractionUsersPage from "../modules/attractions/users/pages/AttractionUsersPage";
+import AttractionCommercialConditionsPage from "../modules/attractions/finance/pages/AttractionCommercialConditionsPage";
+import AttractionFinancialInformationPage from "../modules/attractions/finance/pages/AttractionFinancialInformationPage";
+import AttractionExpensesPage from "../modules/attractions/finance/pages/AttractionExpensesPage";
+
+import SalesReportPage from "../modules/attractions/finance/reports/pages/SalesReportPage";
+import SalesReportPrintPage from "../modules/attractions/finance/reports/pages/SalesReportPrintPage";
+import CartAbandonmentReportPage from "../modules/attractions/finance/reports/pages/CartAbandonmentReportPage";
+import CartAbandonmentReportPrintPage from "../modules/attractions/finance/reports/pages/CartAbandonmentReportPrintPage";
+import DetailedTicketReportPage from "../modules/attractions/finance/reports/pages/DetailedTicketReportPage";
+import DetailedTicketReportPrintPage from "../modules/attractions/finance/reports/pages/DetailedTicketReportPrintPage";
+import CategoriesReportPage from "../modules/attractions/finance/reports/pages/CategoriesReportPage";
+import CategoriesReportPrintPage from "../modules/attractions/finance/reports/pages/CategoriesReportPrintPage";
+import CourtesyReportPage from "../modules/attractions/finance/reports/pages/CourtesyReportPage";
+import CourtesyReportPrintPage from "../modules/attractions/finance/reports/pages/CourtesyReportPrintPage";
+import ValidationReportPage from "../modules/attractions/finance/reports/pages/ValidationReportPage";
+import ValidationReportPrintPage from "../modules/attractions/finance/reports/pages/ValidationReportPrintPage";
+import CommissionReportPage from "../modules/attractions/finance/reports/pages/CommissionReportPage";
+import CommissionReportPrintPage from "../modules/attractions/finance/reports/pages/CommissionReportPrintPage";
+import BorderoReportPage from "../modules/attractions/finance/reports/pages/BorderoReportPage";
+import BorderoReportPrintPage from "../modules/attractions/finance/reports/pages/BorderoReportPrintPage";
+import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
 import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
 import UserProfilePage from "../modules/admin/profile/pages/UserProfilePage";
 import { AttractionTotalsPage } from "../modules/admin/attractions/pages/AttractionTotalsPage";
@@ -283,15 +306,49 @@ export function AppRoutes() {
                 <Route path={ROUTES.admin.commercialConditionCreate} element={<CommercialConditionsPage />} />
                 <Route path="/admin/condicoes-comerciais/nova" element={<CommercialConditionsPage />} />
                 <Route path="/admin/commercial" element={<CommercialConditionsPage />} />
-                <Route path={ROUTES.admin.attractions} element={<AdminAttractionsPage />} />
-                <Route path="/admin/atracoes" element={<AdminAttractionsPage />} />
-                <Route path="/admin/attractions" element={<AdminAttractionsPage />} />
+                <Route path={ROUTES.admin.attractions} element={<AttractionsPage />} />
+                <Route path="/admin/atracoes" element={<AttractionsPage />} />
+                <Route path="/admin/attractions" element={<AttractionsPage />} />
                 <Route path={ROUTES.admin.attractionCreate} element={<AttractionWizardPage />} />
                 <Route path="/admin/atracoes/nova" element={<AttractionWizardPage />} />
-                <Route path="/admin/atracoes/:attractionId" element={<AdminAttractionDetailsPage />} />
+                <Route path="/admin/atracoes/:attractionId" element={<AttractionCategoriesPage />} />
                 <Route path="/admin/atracoes/:attractionId/editar" element={<AttractionWizardPage />} />
                 <Route path="/admin/atracoes/:attractionId/categorias" element={<AttractionCategoriesPage />} />
                 <Route path="/admin/atracoes/:attractionId/ingressos" element={<AttractionTicketsPage />} />
+                <Route path="/admin/atracoes/:attractionId/cupons" element={<AttractionCouponsPage />} />
+                <Route path="/admin/atracoes/:attractionId/analytics" element={<AttractionAnalyticsPage />} />
+                <Route path="/admin/atracoes/:attractionId/usuarios" element={<AttractionUsersPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/condicoes-comerciais" element={<AttractionCommercialConditionsPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/informacoes" element={<AttractionFinancialInformationPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/despesas" element={<AttractionExpensesPage />} />
+
+                {/* Relatórios da Atração */}
+                <Route path="/admin/atracoes/:attractionId/relatorios/vendas" element={<SalesReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/vendas/print" element={<SalesReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/abandono-carrinho" element={<CartAbandonmentReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/abandono-carrinho/print" element={<CartAbandonmentReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/ingresso-detalhado" element={<DetailedTicketReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/ingresso-detalhado/print" element={<DetailedTicketReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/categorias" element={<CategoriesReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/categorias/print" element={<CategoriesReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/cortesias" element={<CourtesyReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/cortesias/print" element={<CourtesyReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/validacoes" element={<ValidationReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/validacoes/print" element={<ValidationReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/comissoes" element={<CommissionReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/comissoes/print" element={<CommissionReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/bordero" element={<BorderoReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/bordero/print" element={<BorderoReportPrintPage />} />
+
+                {/* Operação */}
+                <Route path="/admin/atracoes/:attractionId/validar-ingressos" element={<ValidateTicketsPage />} />
                 <Route path={ROUTES.admin.financialReports} element={<FinancialReportsPage />} />
                 <Route path="/admin/financial" element={<FinancialReportsPage />} />
                 <Route path={ROUTES.admin.profile} element={<UserProfilePage />} />

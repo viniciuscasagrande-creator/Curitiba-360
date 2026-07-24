@@ -121,3 +121,34 @@ html.high-contrast select,
 html.high-contrast textarea {
   outline-color: currentColor;
 }
+
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+
+  aside,
+  nav,
+  header button,
+  .print-hidden {
+    display: none !important;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  article,
+  section {
+    break-inside: avoid;
+  }
+
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: none !important;
+  }
+}
