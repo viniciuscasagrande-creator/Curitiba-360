@@ -1,6 +1,7 @@
 export * from './AgentAvatar';
 export * from './AgentAvailabilityBadge';
 export * from './AgentEmptyState';
+export * from './AgentFilters';
 export * from './AgentKpiCard';
 export * from './AgentKpiGrid';
 export * from './AgentModuleHeader';
