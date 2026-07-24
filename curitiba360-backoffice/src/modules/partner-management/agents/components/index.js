@@ -1,3 +1,4 @@
+export * from './AgentActiveFilters';
 export * from './AgentAvatar';
 export * from './AgentAvailabilityBadge';
 export * from './AgentEmptyState';
