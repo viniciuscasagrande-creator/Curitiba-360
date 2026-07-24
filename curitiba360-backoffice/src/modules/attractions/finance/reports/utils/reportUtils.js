@@ -15,6 +15,12 @@ export function formatDate(value) {
   return `${day}/${month}/${year}`;
 }
 
+export function formatDateTime(value) {
+  if (!value) return '-';
+  const date = new Date(value);
+  return date.toLocaleString('pt-BR');
+}
+
 export function sumBy(rows, property) {
   return rows.reduce(
     (total, row) =>

@@ -337,7 +337,9 @@ export function AppRoutes() {
                 <Route path="/admin/atracoes/:attractionId/relatorios/ingresso-detalhado/print" element={<DetailedTicketReportPrintPage />} />
 
                 <Route path="/admin/atracoes/:attractionId/relatorios/categorias" element={<CategoriesReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/categorias" element={<CategoriesReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/categorias/print" element={<CategoriesReportPrintPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/categorias/impressao" element={<CategoriesReportPrintPage />} />
 
                 <Route path="/admin/atracoes/:attractionId/relatorios/cortesias" element={<CourtesyReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/cortesias/print" element={<CourtesyReportPrintPage />} />
