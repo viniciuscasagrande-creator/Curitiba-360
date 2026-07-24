@@ -1,154 +1,211 @@
-import React, { useMemo, useState } from 'react';
-import { CheckCircle2, Filter, Printer, Download } from 'lucide-react';
-import { AttractionSidebar } from '../../../components/AttractionSidebar';
+import { useMemo, useState } from 'react';
 
-export const MOCK_VALIDATIONS = [
-  { category: 'Inteira - Parque Jaime Lerner', sold: 1250, validated: 1120, pending: 130 },
-  { category: 'Meia-Entrada (Estudante/Idoso)', sold: 840, validated: 790, pending: 50 },
-  { category: 'Combo Família (4 ingressos)', sold: 310, validated: 280, pending: 30 },
-  { category: 'VIP Pass & Lounge Exclusivo', sold: 180, validated: 175, pending: 5 }
-];
+import ReportHeader from '../components/ReportHeader';
+import ReportFilters from '../components/ReportFilters';
+import ReportTable from '../components/ReportTable';
 
-export function ValidationReportPage() {
-  const [period, setPeriod] = useState('30days');
-  const [allPeriod, setAllPeriod] = useState(false);
-  const [validationFilter, setValidationFilter] = useState('all');
+import {
+  agentOptions,
+  categoryOptions,
+  ticketTypeOptions,
+  validationReportMock,
+} from '../data/financeReportsMock';
 
-  const totals = useMemo(() => {
-    return MOCK_VALIDATIONS.reduce(
-      (acc, c) => ({
-        sold: acc.sold + c.sold,
-        validated: acc.validated + c.validated,
-        pending: acc.pending + c.pending
-      }),
-      { sold: 0, validated: 0, pending: 0 }
-    );
-  }, []);
+import {
+  exportCsv,
+  formatDateTime,
+} from '../utils/reportUtils';
 
-  function handlePrint() {
-    window.open('/admin/atracoes/attraction-001/relatorios/validacoes/print', '_blank');
+function StatusBadge({ status }) {
+  const colors = {
+    Validado: 'bg-green-100 text-green-700',
+    Rejeitado: 'bg-red-100 text-red-700',
+    Cancelado: 'bg-yellow-100 text-yellow-700',
+    Expirado: 'bg-gray-100 text-gray-700',
+  };
+
+  return (
+    <span
+      className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
+        colors[status] || 'bg-slate-100 text-slate-700'
+      }`}
+    >
+      {status}
+    </span>
+  );
+}
+
+export default function ValidationReportPage() {
+  const [period, setPeriod] = useState({
+    startDate: '2026-01-01',
+    endDate: '2026-01-31',
+  });
+
+  const [allPeriod, setAllPeriod] = useState(true);
+  const [category, setCategory] = useState('all');
+  const [agent, setAgent] = useState('all');
+  const [ticketType, setTicketType] = useState('all');
+
+  const rows = useMemo(() => {
+    return validationReportMock.filter((row) => {
+      const matchesCategory =
+        category === 'all' || row.category === category;
+      return matchesCategory;
+    });
+  }, [category]);
+
+  const columns = [
+    {
+      key: 'validationDate',
+      label: 'Data',
+      render: (r) => formatDateTime(r.validationDate),
+    },
+    {
+      key: 'ticketCode',
+      label: 'Ingresso',
+    },
+    {
+      key: 'orderNumber',
+      label: 'Pedido',
+    },
+    {
+      key: 'customer',
+      label: 'Cliente',
+    },
+    {
+      key: 'category',
+      label: 'Categoria',
+    },
+    {
+      key: 'gate',
+      label: 'Portaria',
+    },
+    {
+      key: 'validator',
+      label: 'Validador',
+    },
+    {
+      key: 'operator',
+      label: 'Operador',
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (r) => <StatusBadge status={r.status} />,
+    },
+  ];
+
+  function handleExportXlsx() {
+    exportCsv('validacoes.csv', [
+      [
+        'Data',
+        'Ingresso',
+        'Pedido',
+        'Cliente',
+        'Categoria',
+        'Portaria',
+        'Validador',
+        'Operador',
+        'Status',
+      ],
+      ...rows.map((r) => [
+        r.validationDate,
+        r.ticketCode,
+        r.orderNumber,
+        r.customer,
+        r.category,
+        r.gate,
+        r.validator,
+        r.operator,
+        r.status,
+      ]),
+    ]);
+  }
+
+  function openPrintPage() {
+    window.print();
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900">
-      <AttractionSidebar attractionId="attraction-001" attractionName="Parque Jaime Lerner" />
+    <div className="min-h-screen bg-slate-50 text-left">
+      <main className="mx-auto max-w-[1500px] px-4 py-7 sm:px-6 lg:px-8">
+        <ReportHeader
+          title="Relatório de Validações"
+          description="Conferência de todas as leituras de ingressos, catracas e portarias da atração."
+          onPrint={openPrintPage}
+          onExportXlsx={handleExportXlsx}
+          onExportPdf={openPrintPage}
+        />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 max-w-[1700px] mx-auto space-y-6 text-left">
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-5 gap-4">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600">
-              <CheckCircle2 size={15} />
-              Relatórios da Atração &bull; Controle de Acesso
-            </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-              Relatório de Validações
-            </h1>
-            <p className="mt-1 text-xs text-slate-500 font-medium">
-              Taxa de utilização e catraca: comparativo de vendidos vs. validados na portaria.
-            </p>
-          </div>
+        <ReportFilters
+          period={period}
+          allPeriod={allPeriod}
+          category={category}
+          agent={agent}
+          ticketType={ticketType}
+          categoryOptions={categoryOptions}
+          agentOptions={agentOptions}
+          ticketTypeOptions={ticketTypeOptions}
+          onPeriodChange={setPeriod}
+          onAllPeriodChange={setAllPeriod}
+          onCategoryChange={setCategory}
+          onAgentChange={setAgent}
+          onTicketTypeChange={setTicketType}
+        />
 
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="inline-flex h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 hover:bg-slate-100 transition shadow-2xs"
-          >
-            <Printer size={15} />
-            Imprimir / PDF
-          </button>
-        </header>
+        <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <SummaryCard
+            label="Validados"
+            value={rows.filter((x) => x.status === 'Validado').length}
+            badgeColor="bg-emerald-50 text-emerald-700"
+          />
 
-        {/* Filtros */}
-        <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <span className="text-xs font-black text-slate-900 flex items-center gap-2">
-              <Filter size={15} className="text-emerald-600" />
-              Filtros da Catraca
-            </span>
-            <label className="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={allPeriod}
-                onChange={(e) => setAllPeriod(e.target.checked)}
-                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-              />
-              Todo o Período
-            </label>
-          </div>
+          <SummaryCard
+            label="Rejeitados"
+            value={rows.filter((x) => x.status === 'Rejeitado').length}
+            badgeColor="bg-rose-50 text-rose-700"
+          />
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Período</label>
-              <select
-                disabled={allPeriod}
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-bold text-slate-800 outline-none disabled:opacity-40"
-              >
-                <option value="today">Hoje</option>
-                <option value="30days">Últimos 30 dias</option>
-              </select>
-            </div>
+          <SummaryCard
+            label="Cancelados"
+            value={rows.filter((x) => x.status === 'Cancelado').length}
+            badgeColor="bg-amber-50 text-amber-700"
+          />
 
-            <div>
-              <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status de Validação</label>
-              <select
-                value={validationFilter}
-                onChange={(e) => setValidationFilter(e.target.value)}
-                className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-bold text-slate-800 outline-none"
-              >
-                <option value="all">Todos os Ingressos</option>
-                <option value="validated">Apenas Validados</option>
-                <option value="pending">Apenas Pendentes</option>
-              </select>
-            </div>
-          </div>
+          <SummaryCard
+            label="Expirados"
+            value={rows.filter((x) => x.status === 'Expirado').length}
+            badgeColor="bg-slate-100 text-slate-700"
+          />
         </section>
 
-        {/* Tabela */}
-        <section className="rounded-3xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  <th className="p-4">Categoria</th>
-                  <th className="p-4 text-right">Ingressos Vendidos</th>
-                  <th className="p-4 text-right">Validados (Catraca)</th>
-                  <th className="p-4 text-right">Pendentes</th>
-                  <th className="p-4 text-right">Taxa de Uso</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs">
-                {MOCK_VALIDATIONS.map((item, idx) => {
-                  const rate = ((item.validated / item.sold) * 100).toFixed(1);
-                  return (
-                    <tr key={idx} className="hover:bg-slate-50/60 transition">
-                      <td className="p-4 font-bold text-slate-900">{item.category}</td>
-                      <td className="p-4 text-right font-semibold text-slate-700">{item.sold.toLocaleString('pt-BR')}</td>
-                      <td className="p-4 text-right font-black text-emerald-600">{item.validated.toLocaleString('pt-BR')}</td>
-                      <td className="p-4 text-right font-bold text-amber-600">{item.pending.toLocaleString('pt-BR')}</td>
-                      <td className="p-4 text-right font-black text-slate-900">{rate}%</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot>
-                <tr className="bg-slate-900 text-white font-black text-xs">
-                  <td className="p-4 uppercase tracking-wider text-[11px]">Totais Consolidados</td>
-                  <td className="p-4 text-right text-slate-300 text-sm">{totals.sold.toLocaleString('pt-BR')}</td>
-                  <td className="p-4 text-right text-emerald-400 text-sm">{totals.validated.toLocaleString('pt-BR')}</td>
-                  <td className="p-4 text-right text-amber-400 text-sm">{totals.pending.toLocaleString('pt-BR')}</td>
-                  <td className="p-4 text-right text-emerald-400 text-sm">
-                    {((totals.validated / totals.sold) * 100).toFixed(1)}%
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </section>
+        <ReportTable
+          columns={columns}
+          rows={rows}
+          footer={[
+            `Registros ${rows.length}`,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+          ]}
+        />
       </main>
     </div>
   );
 }
 
-export default ValidationReportPage;
+function SummaryCard({ label, value, badgeColor }) {
+  return (
+    <article className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
+      <span className="text-xs font-bold text-slate-500">{label}</span>
+      <strong className={`mt-3 block text-2xl font-black tracking-tight ${badgeColor.split(' ')[1]}`}>
+        {value}
+      </strong>
+    </article>
+  );
+}

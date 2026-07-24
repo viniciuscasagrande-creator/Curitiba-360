@@ -201,3 +201,73 @@ export const courtesyReasonOptions = [
   'Imprensa',
   'Ação institucional',
 ];
+
+export const validationStatusOptions = [
+  "Validado",
+  "Rejeitado",
+  "Cancelado",
+  "Expirado"
+];
+
+export const validationReportMock = [
+  {
+    id: 'validation-001',
+    validationDate: '2026-01-03T09:12:10',
+    ticketCode: '123456789001',
+    orderNumber: 'PED-1001',
+    customer: 'Carlos Eduardo',
+    category: 'Adulto',
+    gate: 'Portaria Principal',
+    validator: 'Totem 01',
+    operator: 'João Souza',
+    status: 'Validado',
+  },
+  {
+    id: 'validation-002',
+    validationDate: '2026-01-03T09:18:45',
+    ticketCode: '123456789002',
+    orderNumber: 'PED-1002',
+    customer: 'Maria Fernanda',
+    category: 'Estudante',
+    gate: 'Portaria Principal',
+    validator: 'Totem 02',
+    operator: 'Pedro Lima',
+    status: 'Validado',
+  },
+  {
+    id: 'validation-003',
+    validationDate: '2026-01-03T09:25:11',
+    ticketCode: '123456789003',
+    orderNumber: 'PED-1003',
+    customer: 'José Pereira',
+    category: 'Adulto',
+    gate: 'Portaria VIP',
+    validator: 'Leitor Manual',
+    operator: 'Ana Paula',
+    status: 'Rejeitado',
+  },
+  {
+    id: 'validation-004',
+    validationDate: '2026-01-03T09:40:55',
+    ticketCode: '123456789004',
+    orderNumber: 'PED-1004',
+    customer: 'Empresa XPTO',
+    category: 'Cortesia',
+    gate: 'Portaria Serviço',
+    validator: 'Totem 03',
+    operator: 'Lucas Ferreira',
+    status: 'Cancelado',
+  },
+  {
+    id: 'validation-005',
+    validationDate: '2026-01-03T10:15:33',
+    ticketCode: '123456789005',
+    orderNumber: 'PED-1005',
+    customer: 'Juliana Costa',
+    category: 'Adulto',
+    gate: 'Portaria Principal',
+    validator: 'Totem 01',
+    operator: 'João Souza',
+    status: 'Expirado',
+  },
+];

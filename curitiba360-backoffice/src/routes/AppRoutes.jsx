@@ -347,7 +347,9 @@ export function AppRoutes() {
                 <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/cortesias/impressao" element={<CourtesyReportPrintPage />} />
 
                 <Route path="/admin/atracoes/:attractionId/relatorios/validacoes" element={<ValidationReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/validacoes" element={<ValidationReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/validacoes/print" element={<ValidationReportPrintPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/validacoes/impressao" element={<ValidationReportPrintPage />} />
 
                 <Route path="/admin/atracoes/:attractionId/relatorios/comissoes" element={<CommissionReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/comissoes/print" element={<CommissionReportPrintPage />} />
