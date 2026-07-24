@@ -1,167 +1,471 @@
-import React from 'react';
+import BorderoStatusBadge from '../components/BorderoStatusBadge';
+
 import {
   attractionMock,
-  borderoMock,
-  transferHistoryMock,
+  borderoReportMock,
+  borderoTransferHistoryMock,
 } from '../data/financeReportsMock';
+
 import {
   formatCurrency,
   formatDate,
+  formatDateTime,
+  sumBy,
 } from '../utils/reportUtils';
 
 export default function BorderoReportPrintPage() {
-  const deductions = [
-    { label: 'Receita Bruta', value: borderoMock.grossRevenue, isTotal: true },
-    { label: '(-) Taxa Plataforma', value: borderoMock.platformFee, isDeduction: true },
-    { label: '(-) Taxa Gateway', value: borderoMock.gatewayFee, isDeduction: true },
-    { label: '(-) Antecipação', value: borderoMock.anticipationFee, isDeduction: true },
-    { label: '(-) Comissões', value: borderoMock.commissions, isDeduction: true },
-    { label: '(-) Impostos', value: borderoMock.taxes, isDeduction: true },
-    { label: '(-) Descontos', value: borderoMock.discounts, isDeduction: true },
-    { label: '(-) Estornos', value: borderoMock.refunds, isDeduction: true },
-    { label: '(-) Cortesias', value: borderoMock.courtesy, isDeduction: true },
-    { label: 'Receita Líquida', value: borderoMock.netRevenue, isTotal: true },
-    { label: 'Valor de Repasse', value: borderoMock.transferValue, isTotal: true, isRepasse: true },
+  const bordero = borderoReportMock;
+
+  const totalTransfers = sumBy(
+    borderoTransferHistoryMock,
+    'value',
+  );
+
+  const financialLines = [
+    {
+      label: 'Receita bruta',
+      value: bordero.grossRevenue,
+      subtraction: false,
+    },
+    {
+      label: 'Taxa da plataforma',
+      value: bordero.platformFee,
+      subtraction: true,
+    },
+    {
+      label: 'Taxa do gateway',
+      value: bordero.gatewayFee,
+      subtraction: true,
+    },
+    {
+      label: 'Taxa de antecipação',
+      value: bordero.anticipationFee,
+      subtraction: true,
+    },
+    {
+      label: 'Comissões',
+      value: bordero.commissions,
+      subtraction: true,
+    },
+    {
+      label: 'Impostos',
+      value: bordero.taxes,
+      subtraction: true,
+    },
+    {
+      label: 'Descontos',
+      value: bordero.discounts,
+      subtraction: true,
+    },
+    {
+      label: 'Estornos',
+      value: bordero.refunds,
+      subtraction: true,
+    },
+    {
+      label: 'Cortesias',
+      value: bordero.courtesyValue,
+      subtraction: true,
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-white p-8 text-slate-800 font-sans text-left text-xs leading-relaxed space-y-6 print:p-0">
-      {/* Header Oficial de Impressão */}
-      <header className="border-b-2 border-slate-900 pb-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <div className="flex h-16 w-24 shrink-0 items-center justify-center rounded-xl bg-slate-100 border border-slate-300">
-            <span className="text-center text-xs font-black text-emerald-600">
-              CURITIBA
-              <br />
-              360
-            </span>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-slate-950 uppercase tracking-tight">
-              Borderô Financeiro Oficial
-            </h1>
-            <p className="text-sm font-bold text-slate-600">
-              {attractionMock.name}
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-white px-7 py-8 text-slate-700 print:p-0 text-left">
+      <PrintHeader />
 
-        <div className="text-right">
-          <span className="text-[10px] font-black uppercase text-slate-400 block">
+      <section className="mt-7 grid grid-cols-4 gap-3">
+        <PrintSummary
+          label="Referência"
+          value={bordero.reference}
+        />
+
+        <PrintSummary
+          label="Período"
+          value={`${formatDate(
+            bordero.startDate,
+          )} até ${formatDate(
+            bordero.endDate,
+          )}`}
+        />
+
+        <PrintSummary
+          label="Pedidos"
+          value={bordero.orders}
+        />
+
+        <PrintSummary
+          label="Ingressos"
+          value={bordero.ticketsSold}
+        />
+      </section>
+
+      <section className="mt-7 grid grid-cols-4 gap-3">
+        <PrintSummary
+          label="Receita bruta"
+          value={formatCurrency(
+            bordero.grossRevenue,
+          )}
+        />
+
+        <PrintSummary
+          label="Receita líquida"
+          value={formatCurrency(
+            bordero.netRevenue,
+          )}
+        />
+
+        <PrintSummary
+          label="Valor do repasse"
+          value={formatCurrency(
+            bordero.transferValue,
+          )}
+        />
+
+        <article className="rounded-xl border border-slate-300 p-4">
+          <span className="text-xs font-bold text-slate-500">
             Situação
           </span>
-          <strong className="text-sm font-black text-emerald-700 block">
-            {borderoMock.status}
-          </strong>
-          <span className="text-[9px] text-slate-500 font-mono">
-            Emissão: {new Date().toLocaleDateString('pt-BR')}
-          </span>
-        </div>
-      </header>
 
-      {/* Dados do Evento e Atração */}
-      <section className="grid grid-cols-2 gap-4 border border-slate-300 p-4 rounded-xl">
-        <div>
-          <h3 className="font-black text-slate-900 uppercase text-[10px] mb-1">
-            Parceiro Comercial
-          </h3>
-          <p><strong>Razão Social:</strong> Instituto Curitiba de Arte & Cultura</p>
-          <p><strong>CNPJ:</strong> 12.345.678/0001-99</p>
-          <p><strong>Dados Bancários:</strong> Banco do Brasil (Ag: 3204-5 / CC: 10.450-8)</p>
-        </div>
-        <div>
-          <h3 className="font-black text-slate-900 uppercase text-[10px] mb-1">
-            Atração
-          </h3>
-          <p><strong>Nome:</strong> {attractionMock.name}</p>
-          <p><strong>Localidade:</strong> Curitiba / PR</p>
-          <p><strong>Período de Fechamento:</strong> 01/01/2026 a 31/01/2026</p>
-        </div>
+          <div className="mt-2">
+            <BorderoStatusBadge
+              status={bordero.status}
+            />
+          </div>
+        </article>
       </section>
 
-      {/* Resumo Financeiro */}
-      <section className="space-y-2">
-        <h3 className="font-black text-slate-900 uppercase text-xs border-b border-slate-300 pb-1">
-          Resumo Financeiro Consolidado
-        </h3>
-        <table className="w-full border-collapse border border-slate-300">
-          <thead>
-            <tr className="bg-slate-100 text-[10px] font-black text-slate-700 uppercase border-b border-slate-300">
-              <th className="p-2 text-left">Item / Descrição</th>
-              <th className="p-2 text-right">Valor</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200">
-            {deductions.map((item, idx) => (
-              <tr
-                key={idx}
-                className={
-                  item.isRepasse
-                    ? 'bg-slate-900 text-white font-black'
-                    : item.isTotal
-                    ? 'bg-slate-100 font-black text-slate-900'
-                    : ''
-                }
-              >
-                <td className="p-2">{item.label}</td>
-                <td
-                  className={`p-2 text-right ${
-                    item.isDeduction ? 'text-rose-600 font-semibold' : ''
-                  }`}
-                >
-                  {item.isDeduction
-                    ? `- ${formatCurrency(item.value)}`
-                    : formatCurrency(item.value)}
-                </td>
+      <section className="mt-8 grid grid-cols-[1.2fr_0.8fr] gap-6">
+        <div className="overflow-hidden rounded-xl border border-slate-300">
+          <table className="w-full border-collapse">
+            <thead className="bg-slate-100">
+              <tr>
+                <PrintHeading label="Composição financeira" />
+                <PrintHeading label="Valor" />
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+            </thead>
 
-      {/* Histórico de Repasses */}
-      <section className="space-y-2">
-        <h3 className="font-black text-slate-900 uppercase text-xs border-b border-slate-300 pb-1">
-          Histórico de Repasses Efetuados
-        </h3>
-        <table className="w-full border-collapse border border-slate-300">
-          <thead>
-            <tr className="bg-slate-100 text-[10px] font-black text-slate-700 uppercase border-b border-slate-300">
-              <th className="p-2 text-left">Data</th>
-              <th className="p-2 text-left">Banco</th>
-              <th className="p-2 text-right">Valor</th>
-              <th className="p-2 text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200">
-            {transferHistoryMock.map((t) => (
-              <tr key={t.id}>
-                <td className="p-2">{formatDate(t.date)}</td>
-                <td className="p-2 font-bold">{t.bank}</td>
-                <td className="p-2 text-right font-bold">{formatCurrency(t.value)}</td>
-                <td className="p-2 text-center font-bold">{t.status}</td>
+            <tbody>
+              {financialLines.map(
+                (line) => (
+                  <tr
+                    key={line.label}
+                    className="border-t border-slate-200"
+                  >
+                    <PrintCell strong>
+                      {line.subtraction
+                        ? '(-) '
+                        : ''}
+                      {line.label}
+                    </PrintCell>
+
+                    <PrintCell strong>
+                      {line.subtraction
+                        ? '- '
+                        : ''}
+                      {formatCurrency(
+                        line.value,
+                      )}
+                    </PrintCell>
+                  </tr>
+                ),
+              )}
+            </tbody>
+
+            <tfoot className="border-t-2 border-slate-300 bg-slate-100">
+              <tr>
+                <PrintCell strong>
+                  Receita líquida
+                </PrintCell>
+
+                <PrintCell strong>
+                  {formatCurrency(
+                    bordero.netRevenue,
+                  )}
+                </PrintCell>
               </tr>
-            ))}
-          </tbody>
-        </table>
+
+              <tr className="border-t border-slate-300">
+                <PrintCell strong>
+                  Valor do repasse
+                </PrintCell>
+
+                <PrintCell strong>
+                  {formatCurrency(
+                    bordero.transferValue,
+                  )}
+                </PrintCell>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div className="rounded-xl border border-slate-300 p-5">
+          <h2 className="text-sm font-black text-slate-800">
+            Conta para repasse
+          </h2>
+
+          <div className="mt-4 space-y-4">
+            <AccountField
+              label="Banco"
+              value={
+                bordero.bankAccount.bank
+              }
+            />
+
+            <AccountField
+              label="Agência"
+              value={
+                bordero.bankAccount.agency
+              }
+            />
+
+            <AccountField
+              label="Conta"
+              value={`${bordero.bankAccount.account} · ${bordero.bankAccount.accountType}`}
+            />
+
+            <AccountField
+              label="Titular"
+              value={
+                bordero.bankAccount.holder
+              }
+            />
+
+            <AccountField
+              label="Documento"
+              value={
+                bordero.bankAccount.document
+              }
+            />
+          </div>
+        </div>
       </section>
 
-      {/* Assinaturas de Homologação */}
-      <div className="pt-10 grid grid-cols-2 gap-12 text-center">
-        <div className="border-t border-slate-900 pt-2">
-          <strong>Curitiba 360 SA</strong>
-          <span className="block text-[9px] text-slate-500">Diretoria Financeira e Operações</span>
-        </div>
-        <div className="border-t border-slate-900 pt-2">
-          <strong>Instituto Curitiba de Arte & Cultura</strong>
-          <span className="block text-[9px] text-slate-500">Representante Legal / Parceiro</span>
-        </div>
-      </div>
+      <section className="mt-8">
+        <h2 className="text-lg font-black text-slate-800">
+          Histórico de repasses
+        </h2>
 
-      <footer className="mt-8 flex items-center justify-between border-t border-slate-200 pt-3 text-[10px] text-slate-500">
-        <span>Emitido digitalmente via Plataforma Curitiba 360</span>
-        <span>Página 1/1</span>
+        <div className="mt-4 overflow-hidden rounded-xl border border-slate-300">
+          <table className="w-full border-collapse">
+            <thead className="bg-slate-100">
+              <tr>
+                <PrintHeading label="Solicitado em" />
+                <PrintHeading label="Pago em" />
+                <PrintHeading label="Referência" />
+                <PrintHeading label="Banco" />
+                <PrintHeading label="Valor" />
+                <PrintHeading label="Status" />
+              </tr>
+            </thead>
+
+            <tbody>
+              {borderoTransferHistoryMock.map(
+                (row) => (
+                  <tr
+                    key={row.id}
+                    className="break-inside-avoid border-t border-slate-200"
+                  >
+                    <PrintCell>
+                      {formatDateTime(
+                        row.requestDate,
+                      )}
+                    </PrintCell>
+
+                    <PrintCell>
+                      {row.paymentDate
+                        ? formatDateTime(
+                            row.paymentDate,
+                          )
+                        : '—'}
+                    </PrintCell>
+
+                    <PrintCell strong>
+                      {row.reference}
+                    </PrintCell>
+
+                    <PrintCell>
+                      {row.bank}
+                    </PrintCell>
+
+                    <PrintCell strong>
+                      {formatCurrency(
+                        row.value,
+                      )}
+                    </PrintCell>
+
+                    <PrintCell>
+                      <BorderoStatusBadge
+                        status={row.status}
+                      />
+                    </PrintCell>
+                  </tr>
+                ),
+              )}
+            </tbody>
+
+            <tfoot className="border-t border-slate-300 bg-slate-100">
+              <tr>
+                <PrintCell strong>
+                  TOTAL
+                </PrintCell>
+
+                <PrintCell />
+                <PrintCell />
+                <PrintCell />
+
+                <PrintCell strong>
+                  {formatCurrency(
+                    totalTransfers,
+                  )}
+                </PrintCell>
+
+                <PrintCell />
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section className="mt-7 grid grid-cols-3 gap-4">
+        <TotalBox
+          label="Receita bruta"
+          value={formatCurrency(
+            bordero.grossRevenue,
+          )}
+        />
+
+        <TotalBox
+          label="Receita líquida"
+          value={formatCurrency(
+            bordero.netRevenue,
+          )}
+        />
+
+        <TotalBox
+          label="Repasse"
+          value={formatCurrency(
+            bordero.transferValue,
+          )}
+        />
+      </section>
+
+      <footer className="mt-14 flex items-center justify-between border-t border-slate-200 pt-4 text-xs font-black text-slate-600">
+        <span>
+          Emitido em{' '}
+          {new Intl.DateTimeFormat(
+            'pt-BR',
+            {
+              dateStyle: 'full',
+              timeStyle: 'medium',
+            },
+          ).format(new Date())}
+        </span>
+
+        <span>
+          Borderô {bordero.reference}
+        </span>
       </footer>
     </div>
+  );
+}
+
+function PrintHeader() {
+  return (
+    <header className="border border-slate-300 p-6">
+      <div className="flex items-center gap-8">
+        <div className="flex h-24 w-32 shrink-0 items-center justify-center rounded-2xl bg-slate-50">
+          <span className="text-center text-lg font-black text-emerald-600">
+            CURITIBA
+            <br />
+            360
+          </span>
+        </div>
+
+        <div>
+          <h1 className="text-4xl font-black tracking-tight text-slate-900">
+            Borderô Financeiro
+          </h1>
+
+          <p className="mt-2 text-xl font-black text-slate-600">
+            {attractionMock.name}
+          </p>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function AccountField({
+  label,
+  value,
+}) {
+  return (
+    <div>
+      <span className="block text-[9px] font-black uppercase tracking-[0.08em] text-slate-400">
+        {label}
+      </span>
+
+      <strong className="mt-1 block text-xs font-black text-slate-700">
+        {value}
+      </strong>
+    </div>
+  );
+}
+
+function PrintSummary({
+  label,
+  value,
+}) {
+  return (
+    <article className="rounded-xl border border-slate-300 p-4">
+      <span className="text-xs font-bold text-slate-500">
+        {label}
+      </span>
+
+      <strong className="mt-2 block text-base font-black text-slate-900">
+        {value}
+      </strong>
+    </article>
+  );
+}
+
+function TotalBox({ label, value }) {
+  return (
+    <article className="rounded-xl border border-slate-300 p-5">
+      <span className="text-[10px] font-black uppercase tracking-[0.08em] text-slate-500">
+        {label}
+      </span>
+
+      <strong className="mt-2 block text-xl font-black text-slate-900">
+        {value}
+      </strong>
+    </article>
+  );
+}
+
+function PrintHeading({ label }) {
+  return (
+    <th className="px-3 py-3 text-left text-[9px] font-black uppercase tracking-[0.04em] text-slate-500">
+      {label}
+    </th>
+  );
+}
+
+function PrintCell({
+  children,
+  strong = false,
+}) {
+  return (
+    <td
+      className={[
+        'px-3 py-3 text-[10px]',
+        strong
+          ? 'font-black text-slate-700'
+          : 'font-semibold text-slate-600',
+      ].join(' ')}
+    >
+      {children}
+    </td>
   );
 }

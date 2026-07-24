@@ -525,41 +525,83 @@ export const salesByPaymentTypeOptions = [
   'Cortesia',
 ];
 
-export const borderoMock = {
+export const borderoReportMock = {
+  id: 'bordero-2026-001',
+  reference: 'BOR-2026-0001',
+  startDate: '2026-01-01',
+  endDate: '2026-01-31',
+  closingDate: '2026-02-01T09:30:00',
+  attraction: 'Curitiba 360',
+  responsible: 'Financeiro Curitiba 360',
+  status: 'Aguardando repasse',
+
+  ticketsSold: 1126,
+  orders: 730,
+
   grossRevenue: 98540.25,
   platformFee: 3941.61,
   gatewayFee: 1720.84,
-  anticipationFee: 540.00,
-  commissions: 2480.00,
-  discounts: 615.20,
-  refunds: 1280.00,
-  courtesy: 950.00,
-  taxes: 2250.70,
-  netRevenue: 84761.90,
-  transferValue: 84761.90,
-  status: "Aguardando Repasse"
+  anticipationFee: 540,
+  commissions: 2480,
+  discounts: 615.2,
+  refunds: 1280,
+  courtesyValue: 950,
+  taxes: 2250.7,
+
+  netRevenue: 84761.9,
+  transferValue: 84761.9,
+
+  bankAccount: {
+    bank: 'Banco Santander',
+    agency: '0001',
+    account: '123456-7',
+    accountType: 'Conta corrente',
+    holder: 'Curitiba 360 Turismo Ltda.',
+    document: '00.000.000/0001-00',
+  },
 };
 
-export const transferHistoryMock = [
+export const borderoTransferHistoryMock = [
   {
-    id: 1,
-    date: "2026-01-08",
+    id: 'transfer-001',
+    requestDate: '2026-01-08T09:00:00',
+    paymentDate: '2026-01-09T14:35:00',
+    reference: 'REP-2026-0001',
+    bank: 'Banco do Brasil',
     value: 28000,
-    bank: "Banco do Brasil",
-    status: "Pago"
+    status: 'Pago',
   },
   {
-    id: 2,
-    date: "2026-01-15",
+    id: 'transfer-002',
+    requestDate: '2026-01-15T10:20:00',
+    paymentDate: '2026-01-16T16:10:00',
+    reference: 'REP-2026-0002',
+    bank: 'Banco Santander',
     value: 30000,
-    bank: "Santander",
-    status: "Pago"
+    status: 'Pago',
   },
   {
-    id: 3,
-    date: "2026-01-20",
-    value: 26761.90,
-    bank: "Santander",
-    status: "Pendente"
-  }
+    id: 'transfer-003',
+    requestDate: '2026-01-20T11:40:00',
+    paymentDate: null,
+    reference: 'REP-2026-0003',
+    bank: 'Banco Santander',
+    value: 26761.9,
+    status: 'Pendente',
+  },
+];
+
+export const borderoStatusOptions = [
+  'Aberto',
+  'Em conferência',
+  'Aguardando repasse',
+  'Pago',
+  'Cancelado',
+];
+
+export const transferStatusOptions = [
+  'Pago',
+  'Pendente',
+  'Em análise',
+  'Cancelado',
 ];
