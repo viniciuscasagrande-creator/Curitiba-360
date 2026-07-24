@@ -1,342 +1,273 @@
-import { useMemo, useState } from 'react';
 import {
-  AlertCircle,
-  ArrowUpRight,
+  useMemo,
+  useState,
+} from 'react';
+
+import {
+  Banknote,
   CheckCircle2,
-  Clock,
-  DollarSign,
-  Download,
+  Clock3,
   Eye,
-  FileCheck2,
-  FileSpreadsheet,
-  Filter,
-  HandCoins,
-  Landmark,
-  Layers,
-  Printer,
-  ReceiptText,
+  FileDown,
   SearchCheck,
-  ShieldAlert,
   ShieldCheck,
-  Wallet,
-  XCircle,
+  WalletCards,
 } from 'lucide-react';
 
 import ReportHeader from '../../reports/components/ReportHeader';
 import ReportTable from '../../reports/components/ReportTable';
-import ApprovalStatusBadge from '../components/ApprovalStatusBadge';
-import ApprovalFilters from '../components/ApprovalFilters';
-import ApprovalDrawer from '../components/ApprovalDrawer';
-import ApprovalModal from '../components/ApprovalModal';
-import ApprovalRejectModal from '../components/ApprovalRejectModal';
 
-import {
-  approvalDashboardMock,
-  approvalListMock,
-  approvalStatusOptions,
-  bankOptions,
-} from '../data/approvalMock';
+import ApprovalActionModal from '../components/ApprovalActionModal';
+import ApprovalDetailsDrawer from '../components/ApprovalDetailsDrawer';
+import ApprovalFilters from '../components/ApprovalFilters';
+import ApprovalStatusBadge from '../components/ApprovalStatusBadge';
+
+import { approvalStatusOptions } from '../data/approvalsMock';
+import { useApprovals } from '../hooks/useApprovals';
 
 import {
   exportCsv,
   formatCurrency,
-  formatDate,
   formatDateTime,
   sumBy,
 } from '../../reports/utils/reportUtils';
 
+const INITIAL_FILTERS = {
+  startDate: '2026-01-01',
+  endDate: '2026-12-31',
+  status: 'all',
+  producer: 'all',
+  search: '',
+};
+
 export default function ApprovalPage() {
-  const [approvals, setApprovals] = useState(approvalListMock);
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [activeDrawer, setActiveDrawer] = useState(null);
-  const [approveModalItem, setApproveModalItem] = useState(null);
-  const [rejectModalItem, setRejectModalItem] = useState(null);
+  const {
+    approvals,
+    isLoading,
+    isMutating,
+    error,
+    changeStatus,
+    approveMany,
+  } = useApprovals();
 
-  const [filters, setFilters] = useState({
-    startDate: '2026-01-01',
-    endDate: '2026-12-31',
-    status: 'all',
-    bank: 'all',
-    search: '',
-  });
+  const [filters, setFilters] = useState(
+    INITIAL_FILTERS,
+  );
 
-  const filteredApprovals = useMemo(() => {
-    const searchValue = filters.search.trim().toLocaleLowerCase('pt-BR');
+  const [selectedIds, setSelectedIds] =
+    useState([]);
 
-    return approvals.filter((item) => {
-      const itemDate = new Date(item.requestDate);
-      const startDate = new Date(`${filters.startDate}T00:00:00`);
-      const endDate = new Date(`${filters.endDate}T23:59:59`);
+  const [drawerApproval, setDrawerApproval] =
+    useState(null);
 
-      const matchesPeriod = itemDate >= startDate && itemDate <= endDate;
-      const matchesStatus = filters.status === 'all' || item.status === filters.status;
-      const matchesBank = filters.bank === 'all' || item.bank === filters.bank;
+  const [modalAction, setModalAction] =
+    useState(null);
+
+  const producers = useMemo(
+    () =>
+      [
+        ...new Set(
+          approvals.map(
+            (item) => item.producerName,
+          ),
+        ),
+      ].sort(),
+    [approvals],
+  );
+
+  const filteredRows = useMemo(() => {
+    const searchValue = filters.search
+      .trim()
+      .toLocaleLowerCase('pt-BR');
+
+    const initialDate = new Date(
+      `${filters.startDate}T00:00:00`,
+    );
+
+    const finalDate = new Date(
+      `${filters.endDate}T23:59:59`,
+    );
+
+    return approvals.filter((approval) => {
+      const requestDate = new Date(
+        approval.requestDate,
+      );
+
+      const matchesDate =
+        requestDate >= initialDate &&
+        requestDate <= finalDate;
+
+      const matchesStatus =
+        filters.status === 'all' ||
+        approval.status === filters.status;
+
+      const matchesProducer =
+        filters.producer === 'all' ||
+        approval.producerName ===
+          filters.producer;
 
       const matchesSearch =
         !searchValue ||
-        [item.id, item.producer, item.event, item.pixKey, item.requestedBy].some(
-          (val) => String(val || '').toLocaleLowerCase('pt-BR').includes(searchValue)
+        [
+          approval.reference,
+          approval.eventName,
+          approval.bank,
+          approval.producerName,
+        ].some((value) =>
+          value
+            .toLocaleLowerCase('pt-BR')
+            .includes(searchValue),
         );
 
-      return matchesPeriod && matchesStatus && matchesBank && matchesSearch;
+      return (
+        matchesDate &&
+        matchesStatus &&
+        matchesProducer &&
+        matchesSearch
+      );
     });
   }, [approvals, filters]);
 
-  // Dashboard Stats
-  const pendingCount = approvals.filter((a) => a.status === 'Pendente').length;
-  const inAnalysisCount = approvals.filter((a) => a.status === 'Em análise').length;
-  const approvedCount = approvals.filter((a) => a.status === 'Aprovado').length;
-  const paidCount = approvals.filter((a) => a.status === 'Pago').length;
-
-  const awaitingPaymentValue = sumBy(
-    approvals.filter((a) => ['Pendente', 'Em análise', 'Aprovado'].includes(a.status)),
-    'netAmount'
+  const summary = useMemo(
+    () => ({
+      pending: approvals.filter(
+        (item) => item.status === 'Pendente',
+      ).length,
+      analysis: approvals.filter(
+        (item) =>
+          item.status === 'Em análise',
+      ).length,
+      approved: approvals.filter(
+        (item) => item.status === 'Aprovado',
+      ).length,
+      paid: approvals.filter(
+        (item) => item.status === 'Pago',
+      ).length,
+      waitingValue: sumBy(
+        approvals.filter((item) =>
+          [
+            'Pendente',
+            'Em análise',
+            'Aprovado',
+          ].includes(item.status),
+        ),
+        'netAmount',
+      ),
+    }),
+    [approvals],
   );
-  const paidTotalValue = sumBy(
-    approvals.filter((a) => a.status === 'Pago'),
-    'netAmount'
-  );
 
-  // Handlers para Ações
-  function handleConfirmApprove({ id, observation }) {
-    setApprovals((current) =>
-      current.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status: 'Aprovado',
-              approvalDate: new Date().toISOString(),
-              observation: observation || item.observation,
-              timeline: item.timeline.map((t) =>
-                t.step === 'Aprovado'
-                  ? { ...t, completed: true, date: new Date().toISOString(), user: 'Financeiro Admin' }
-                  : t
-              ),
-              auditLogs: [
-                {
-                  id: `log-${Date.now()}`,
-                  date: new Date().toISOString(),
-                  user: 'Financeiro Admin',
-                  ip: '201.54.12.89',
-                  action: 'Solicitação Aprovada',
-                  observation: observation || 'Aprovação manual efetuada.',
-                },
-                ...item.auditLogs,
-              ],
-            }
-          : item
-      )
+  function toggleSelection(id) {
+    setSelectedIds((current) =>
+      current.includes(id)
+        ? current.filter(
+            (selectedId) =>
+              selectedId !== id,
+          )
+        : [...current, id],
     );
-    setApproveModalItem(null);
-    if (activeDrawer?.id === id) setActiveDrawer(null);
   }
 
-  function handleConfirmReject({ id, reason, observation }) {
-    setApprovals((current) =>
-      current.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status: 'Rejeitado',
-              observation: `[REJEITADO] ${reason}. ${observation}`,
-              timeline: item.timeline.map((t) =>
-                t.step === 'Rejeitado'
-                  ? { ...t, completed: true, date: new Date().toISOString(), user: 'Financeiro Admin' }
-                  : t
-              ),
-              auditLogs: [
-                {
-                  id: `log-${Date.now()}`,
-                  date: new Date().toISOString(),
-                  user: 'Financeiro Admin',
-                  ip: '201.54.12.89',
-                  action: 'Solicitação Rejeitada',
-                  observation: `Motivo: ${reason}. Obs: ${observation}`,
-                },
-                ...item.auditLogs,
-              ],
-            }
-          : item
-      )
+  async function handleModalConfirm(payload) {
+    const updated = await changeStatus(
+      drawerApproval.id,
+      payload,
     );
-    setRejectModalItem(null);
-    if (activeDrawer?.id === id) setActiveDrawer(null);
+
+    setDrawerApproval(updated);
+    setModalAction(null);
   }
 
-  function handleMarkPaid(item) {
-    const confirmed = window.confirm(`Marcar o repasse ${item.id} (${formatCurrency(item.netAmount)}) como PAGO?`);
-    if (!confirmed) return;
+  async function handleBulkApproval() {
+    if (!selectedIds.length) {
+      return;
+    }
 
-    setApprovals((current) =>
-      current.map((a) =>
-        a.id === item.id
-          ? {
-              ...a,
-              status: 'Pago',
-              paymentDate: new Date().toISOString(),
-              timeline: a.timeline.map((t) =>
-                ['Pagamento realizado', 'Comprovante enviado'].includes(t.step)
-                  ? { ...t, completed: true, date: new Date().toISOString(), user: 'Sistema Financeiro' }
-                  : t
-              ),
-              auditLogs: [
-                {
-                  id: `log-${Date.now()}`,
-                  date: new Date().toISOString(),
-                  user: 'Sistema Financeiro',
-                  ip: '10.0.0.1',
-                  action: 'Pagamento Concluído',
-                  observation: 'Pagamento marcado manualmente como efetuado.',
-                },
-                ...a.auditLogs,
-              ],
-            }
-          : a
-      )
-    );
-    if (activeDrawer?.id === item.id) setActiveDrawer(null);
-  }
-
-  // Aprovação em lote
-  function handleBatchApprove() {
-    if (selectedIds.length === 0) return;
-    const confirmed = window.confirm(`Deseja aprovar em lote as ${selectedIds.length} solicitações selecionadas?`);
-    if (!confirmed) return;
-
-    setApprovals((current) =>
-      current.map((item) =>
-        selectedIds.includes(item.id) && ['Pendente', 'Em análise'].includes(item.status)
-          ? {
-              ...item,
-              status: 'Aprovado',
-              approvalDate: new Date().toISOString(),
-            }
-          : item
-      )
-    );
+    await approveMany(selectedIds);
     setSelectedIds([]);
   }
 
-  function toggleSelectAll() {
-    if (selectedIds.length === filteredApprovals.length) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filteredApprovals.map((item) => item.id));
-    }
-  }
-
-  function toggleSelectItem(id) {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((item) => item !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
-  }
-
-  function handleExportXlsx() {
-    exportCsv('aprovacao-de-repasses.csv', [
-      ['PAINEL DE APROVAÇÃO DE REPASSES — CURITIBA 360'],
-      [''],
-      ['ID', 'Data Solicitação', 'Produtor', 'CNPJ', 'Evento', 'Banco', 'Chave PIX', 'Valor Bruto', 'Valor Líquido', 'Status', 'Solicitado Por'],
-      ...filteredApprovals.map((item) => [
-        item.id,
-        item.requestDate,
-        item.producer,
-        item.producerDocument,
-        item.event,
-        item.bank,
-        item.pixKey,
-        item.grossAmount,
-        item.netAmount,
-        item.status,
-        item.requestedBy,
-      ]),
+  function handleExport() {
+    exportCsv(
+      'aprovacao-de-repasses.csv',
       [
-        'TOTAL',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        sumBy(filteredApprovals, 'grossAmount'),
-        sumBy(filteredApprovals, 'netAmount'),
-        '',
-        '',
+        [
+          'Referência',
+          'Data',
+          'Produtor',
+          'Evento',
+          'Banco',
+          'Valor',
+          'Taxa',
+          'Valor líquido',
+          'Status',
+          'Solicitado por',
+        ],
+        ...filteredRows.map((row) => [
+          row.reference,
+          row.requestDate,
+          row.producerName,
+          row.eventName,
+          row.bank,
+          row.amount,
+          row.fee,
+          row.netAmount,
+          row.status,
+          row.requestedBy,
+        ]),
       ],
-    ]);
-  }
-
-  function openPrintPage() {
-    const currentPath = window.location.pathname.replace(/\/$/, '');
-    window.open(`${currentPath}/impressao`, '_blank', 'noopener,noreferrer');
+    );
   }
 
   const columns = [
     {
-      key: 'select',
-      label: (
-        <input
-          type="checkbox"
-          checked={selectedIds.length > 0 && selectedIds.length === filteredApprovals.length}
-          onChange={toggleSelectAll}
-          className="h-4 w-4 rounded border-slate-300 text-emerald-600"
-        />
-      ),
+      key: 'selection',
+      label: '',
       render: (row) => (
         <input
           type="checkbox"
-          checked={selectedIds.includes(row.id)}
-          onChange={() => toggleSelectItem(row.id)}
-          className="h-4 w-4 rounded border-slate-300 text-emerald-600"
+          checked={selectedIds.includes(
+            row.id,
+          )}
+          onChange={() =>
+            toggleSelection(row.id)
+          }
+          className="h-4 w-4 rounded border-slate-300 accent-emerald-600"
         />
-      ),
-    },
-    {
-      key: 'id',
-      label: 'Código',
-      render: (row) => (
-        <strong className="font-mono text-xs text-slate-900 font-black">
-          {row.id}
-        </strong>
       ),
     },
     {
       key: 'requestDate',
       label: 'Data',
-      render: (row) => formatDateTime(row.requestDate),
+      render: (row) =>
+        formatDateTime(row.requestDate),
     },
     {
-      key: 'producer',
-      label: 'Produtor / Evento',
+      key: 'reference',
+      label: 'Referência',
       render: (row) => (
-        <div>
-          <strong className="block text-slate-800 text-xs font-black truncate max-w-[180px]">
-            {row.producer}
-          </strong>
-          <span className="text-[10px] text-slate-400 font-semibold truncate block max-w-[180px]">
-            {row.event}
-          </span>
-        </div>
+        <strong className="text-slate-800">
+          {row.reference}
+        </strong>
       ),
+    },
+    {
+      key: 'producerName',
+      label: 'Produtor',
+    },
+    {
+      key: 'eventName',
+      label: 'Evento',
     },
     {
       key: 'bank',
-      label: 'Banco / PIX',
-      render: (row) => (
-        <div>
-          <strong className="block text-slate-700 text-xs font-bold">{row.bank}</strong>
-          <span className="text-[10px] text-slate-400 font-mono font-medium truncate block max-w-[140px]">
-            {row.pixKey}
-          </span>
-        </div>
-      ),
+      label: 'Banco',
     },
     {
       key: 'netAmount',
-      label: 'Valor Líquido',
+      label: 'Valor líquido',
       render: (row) => (
-        <strong className="text-emerald-700 font-black text-sm">
+        <strong className="text-emerald-700">
           {formatCurrency(row.netAmount)}
         </strong>
       ),
@@ -344,218 +275,227 @@ export default function ApprovalPage() {
     {
       key: 'status',
       label: 'Status',
-      render: (row) => <ApprovalStatusBadge status={row.status} />,
+      render: (row) => (
+        <ApprovalStatusBadge
+          status={row.status}
+        />
+      ),
     },
     {
       key: 'actions',
       label: 'Ações',
       render: (row) => (
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            title="Ver Detalhes (Drawer)"
-            onClick={() => setActiveDrawer(row)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition"
-          >
-            <Eye size={15} />
-          </button>
-
-          {['Pendente', 'Em análise'].includes(row.status) && (
-            <>
-              <button
-                type="button"
-                title="Aprovar Repasse"
-                onClick={() => setApproveModalItem(row)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition border border-emerald-200"
-              >
-                <ShieldCheck size={15} />
-              </button>
-
-              <button
-                type="button"
-                title="Rejeitar Repasse"
-                onClick={() => setRejectModalItem(row)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 transition border border-rose-200"
-              >
-                <XCircle size={15} />
-              </button>
-            </>
-          )}
-
-          {row.status === 'Aprovado' && (
-            <button
-              type="button"
-              title="Marcar como Pago"
-              onClick={() => handleMarkPaid(row)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition"
-            >
-              <CheckCircle2 size={15} />
-            </button>
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={() =>
+            setDrawerApproval(row)
+          }
+          className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 px-3 text-[10px] font-black text-slate-600 hover:bg-slate-50"
+        >
+          <Eye size={14} />
+          Analisar
+        </button>
       ),
     },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 text-left">
-      <main className="mx-auto max-w-[1700px] px-4 py-7 sm:px-6 lg:px-8 space-y-6">
+      <main className="mx-auto max-w-[1800px] px-4 py-7 sm:px-6 lg:px-8">
         <ReportHeader
-          title="Aprovação de Repasses (Módulo Operacional)"
-          description="Painel administrativo para conciliação, análise documental e liberação dos saques dos produtores."
-          onPrint={openPrintPage}
-          onExportXlsx={handleExportXlsx}
-          onExportPdf={openPrintPage}
+          title="Aprovação de Repasses"
+          description="Analise, aprove e registre o pagamento das solicitações financeiras."
+          onExportXlsx={handleExport}
+          onExportPdf={() =>
+            window.open(
+              `${window.location.pathname}/impressao`,
+              '_blank',
+            )
+          }
+          onPrint={() =>
+            window.open(
+              `${window.location.pathname}/impressao`,
+              '_blank',
+            )
+          }
         />
 
-        {/* Dashboard Cards Superiores */}
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
-          <SummaryCard icon={Clock} label="Pendentes" value={pendingCount} tone="amber" />
-          <SummaryCard icon={SearchCheck} label="Em Análise" value={inAnalysisCount} tone="blue" />
-          <SummaryCard icon={ShieldCheck} label="Aprovados" value={approvedCount} tone="indigo" />
-          <SummaryCard icon={CheckCircle2} label="Pagos" value={paidCount} tone="emerald" />
-          <SummaryCard icon={Wallet} label="Aguardando Pgto" value={formatCurrency(awaitingPaymentValue)} tone="amber" highlight />
-          <SummaryCard icon={DollarSign} label="Total Pago" value={formatCurrency(paidTotalValue)} tone="emerald" />
+        <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <SummaryCard
+            icon={Clock3}
+            label="Pendentes"
+            value={summary.pending}
+            tone="amber"
+          />
+
+          <SummaryCard
+            icon={SearchCheck}
+            label="Em análise"
+            value={summary.analysis}
+            tone="blue"
+          />
+
+          <SummaryCard
+            icon={ShieldCheck}
+            label="Aprovados"
+            value={summary.approved}
+            tone="violet"
+          />
+
+          <SummaryCard
+            icon={CheckCircle2}
+            label="Pagos"
+            value={summary.paid}
+            tone="emerald"
+          />
+
+          <SummaryCard
+            icon={WalletCards}
+            label="Aguardando pagamento"
+            value={formatCurrency(
+              summary.waitingValue,
+            )}
+            tone="red"
+          />
         </section>
 
-        {/* Barra de Ações em Lote */}
-        {selectedIds.length > 0 && (
-          <section className="flex items-center justify-between rounded-2xl bg-slate-900 px-5 py-3.5 text-white shadow-lg animate-in fade-in">
-            <span className="text-xs font-black">
-              {selectedIds.length} solicitações selecionadas
-            </span>
+        <section className="mt-6">
+          <ApprovalFilters
+            filters={filters}
+            statusOptions={
+              approvalStatusOptions
+            }
+            producers={producers}
+            onChange={setFilters}
+            onReset={() =>
+              setFilters(INITIAL_FILTERS)
+            }
+          />
+        </section>
 
-            <div className="flex items-center gap-2">
+        {selectedIds.length > 0 && (
+          <section className="mt-4 flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <strong className="text-sm font-black text-emerald-800">
+              {selectedIds.length}{' '}
+              solicitações selecionadas
+            </strong>
+
+            <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={handleBatchApprove}
-                className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-xs font-black text-white hover:bg-emerald-500 transition"
+                disabled={isMutating}
+                onClick={handleBulkApproval}
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-xs font-black text-white hover:bg-emerald-700 font-sans"
               >
                 <ShieldCheck size={15} />
-                Aprovar em Lote
+                Aprovar selecionados
               </button>
+
               <button
                 type="button"
-                onClick={() => setSelectedIds([])}
-                className="inline-flex h-9 items-center px-3 text-xs font-bold text-slate-400 hover:text-white"
+                onClick={handleExport}
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 text-xs font-black text-emerald-700 font-sans"
               >
-                Cancelar Seleção
+                <FileDown size={15} />
+                Exportar
               </button>
             </div>
           </section>
         )}
 
-        {/* Filtros */}
-        <ApprovalFilters
-          filters={filters}
-          statusOptions={approvalStatusOptions}
-          bankOptions={bankOptions}
-          onChange={setFilters}
-          onReset={() =>
-            setFilters({
-              startDate: '2026-01-01',
-              endDate: '2026-12-31',
-              status: 'all',
-              bank: 'all',
-              search: '',
-            })
-          }
-        />
+        {error && (
+          <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
+            {error}
+          </div>
+        )}
 
-        {/* Tabela Principal */}
-        <section className="space-y-4">
-          <ReportTable
-            columns={columns}
-            rows={filteredApprovals}
-            footer={[
-              '',
-              `Registros: ${filteredApprovals.length}`,
-              '',
-              '',
-              '',
-              formatCurrency(sumBy(filteredApprovals, 'netAmount')),
-              '',
-              '',
-            ]}
-          />
+        <section className="mt-4">
+          {isLoading ? (
+            <div className="rounded-[24px] border border-slate-200 bg-white p-16 text-center text-sm font-black text-slate-400">
+              Carregando solicitações...
+            </div>
+          ) : (
+            <ReportTable
+              columns={columns}
+              rows={filteredRows}
+              footer={[
+                '',
+                `Registros: ${filteredRows.length}`,
+                '',
+                '',
+                '',
+                '',
+                formatCurrency(
+                  sumBy(
+                    filteredRows,
+                    'netAmount',
+                  ),
+                ),
+                '',
+                '',
+              ]}
+            />
+          )}
         </section>
       </main>
 
-      {/* Drawer Lateral de Detalhes */}
-      <ApprovalDrawer
-        approval={activeDrawer}
-        onClose={() => setActiveDrawer(null)}
-        onApprove={(item) => {
-          setActiveDrawer(null);
-          setApproveModalItem(item);
-        }}
-        onReject={(item) => {
-          setActiveDrawer(null);
-          setRejectModalItem(item);
-        }}
-        onMarkPaid={(item) => {
-          handleMarkPaid(item);
-        }}
+      <ApprovalDetailsDrawer
+        approval={drawerApproval}
+        onClose={() =>
+          setDrawerApproval(null)
+        }
+        onAction={setModalAction}
       />
 
-      {/* Modal de Aprovação */}
-      <ApprovalModal
-        approval={approveModalItem}
-        onClose={() => setApproveModalItem(null)}
-        onConfirm={handleConfirmApprove}
-      />
-
-      {/* Modal de Rejeição */}
-      <ApprovalRejectModal
-        approval={rejectModalItem}
-        onClose={() => setRejectModalItem(null)}
-        onConfirm={handleConfirmReject}
+      <ApprovalActionModal
+        approval={drawerApproval}
+        action={modalAction}
+        isLoading={isMutating}
+        onClose={() =>
+          setModalAction(null)
+        }
+        onConfirm={handleModalConfirm}
       />
     </div>
   );
 }
 
-const TONE_CLASSES = {
+const TONES = {
   amber: 'bg-amber-50 text-amber-600',
   blue: 'bg-blue-50 text-blue-600',
-  indigo: 'bg-indigo-50 text-indigo-600',
-  emerald: 'bg-emerald-50 text-emerald-600',
-  slate: 'bg-slate-100 text-slate-600',
+  violet:
+    'bg-violet-50 text-violet-600',
+  emerald:
+    'bg-emerald-50 text-emerald-600',
+  red: 'bg-red-50 text-red-600',
 };
 
-function SummaryCard({ icon: Icon, label, value, tone, highlight }) {
+function SummaryCard({
+  icon: Icon,
+  label,
+  value,
+  tone,
+}) {
   return (
-    <article
-      className={`rounded-[22px] border p-4 shadow-sm transition ${
-        highlight
-          ? 'border-emerald-500 bg-emerald-600 text-white'
-          : 'border-slate-200 bg-white text-slate-900'
-      }`}
-    >
+    <article className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <span
-            className={`text-xs font-bold ${
-              highlight ? 'text-emerald-100' : 'text-slate-500'
-            }`}
-          >
+        <div className="min-w-0">
+          <span className="text-xs font-bold text-slate-500">
             {label}
           </span>
-          <strong
-            className={`mt-2 block text-lg font-black tracking-tight ${
-              highlight ? 'text-white' : 'text-slate-950'
-            }`}
-          >
+
+          <strong className="mt-3 block truncate text-xl font-black text-slate-950">
             {value}
           </strong>
         </div>
 
         <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-            highlight ? 'bg-emerald-500 text-white' : TONE_CLASSES[tone]
-          }`}
+          className={[
+            'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl',
+            TONES[tone],
+          ].join(' ')}
         >
-          <Icon size={17} />
+          <Icon size={19} />
         </span>
       </div>
     </article>

@@ -4,38 +4,55 @@ import {
   Clock3,
   SearchCheck,
   ShieldCheck,
+  SlidersHorizontal,
   XCircle,
 } from 'lucide-react';
 
 const STATUS_CONFIG = {
   Pendente: {
     icon: Clock3,
-    className: 'border-amber-200 bg-amber-50 text-amber-700',
+    className:
+      'border-amber-200 bg-amber-50 text-amber-700',
   },
   'Em análise': {
     icon: SearchCheck,
-    className: 'border-blue-200 bg-blue-50 text-blue-700',
+    className:
+      'border-blue-200 bg-blue-50 text-blue-700',
   },
   Aprovado: {
     icon: ShieldCheck,
-    className: 'border-violet-200 bg-violet-50 text-violet-700',
+    className:
+      'border-violet-200 bg-violet-50 text-violet-700',
   },
   Pago: {
     icon: CheckCircle2,
-    className: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    className:
+      'border-emerald-200 bg-emerald-50 text-emerald-700',
+  },
+  'Ajuste solicitado': {
+    icon: SlidersHorizontal,
+    className:
+      'border-orange-200 bg-orange-50 text-orange-700',
   },
   Rejeitado: {
     icon: XCircle,
-    className: 'border-rose-200 bg-rose-50 text-rose-700',
+    className:
+      'border-red-200 bg-red-50 text-red-700',
   },
   Cancelado: {
     icon: Ban,
-    className: 'border-slate-200 bg-slate-100 text-slate-600',
+    className:
+      'border-slate-200 bg-slate-100 text-slate-600',
   },
 };
 
-export default function ApprovalStatusBadge({ status }) {
-  const config = STATUS_CONFIG[status] ?? STATUS_CONFIG.Pendente;
+export default function ApprovalStatusBadge({
+  status,
+}) {
+  const config =
+    STATUS_CONFIG[status] ??
+    STATUS_CONFIG.Pendente;
+
   const Icon = config.icon;
 
   return (

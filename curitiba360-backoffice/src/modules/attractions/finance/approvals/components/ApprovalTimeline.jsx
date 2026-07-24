@@ -1,49 +1,66 @@
-import { CheckCircle2, Circle, Clock } from 'lucide-react';
-import { formatDateTime } from '../../reports/utils/reportUtils';
+import {
+  CheckCircle2,
+  Clock3,
+} from 'lucide-react';
 
-export default function ApprovalTimeline({ timeline = [] }) {
+function formatDateTime(value) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(value));
+}
+
+export default function ApprovalTimeline({
+  items = [],
+}) {
+  if (!items.length) {
+    return (
+      <p className="text-sm font-semibold text-slate-400">
+        Nenhum histórico disponível.
+      </p>
+    );
+  }
+
   return (
-    <div className="space-y-4 text-left">
-      <h3 className="text-xs font-black uppercase tracking-wider text-slate-500">
-        Linha do Tempo (Workflow)
-      </h3>
+    <div className="space-y-0 text-left">
+      {items.map((item, index) => {
+        const isLast =
+          index === items.length - 1;
 
-      <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
-        {timeline.map((item, idx) => (
-          <div key={idx} className="relative flex items-start gap-3">
-            <span
-              className={`absolute -left-6 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-white ${
-                item.completed
-                  ? 'text-emerald-600'
-                  : 'text-slate-300'
-              }`}
-            >
-              {item.completed ? (
-                <CheckCircle2 size={18} className="fill-emerald-100" />
+        return (
+          <div
+            key={item.id}
+            className="relative flex gap-4 pb-6"
+          >
+            {!isLast && (
+              <span className="absolute left-[15px] top-8 h-[calc(100%-20px)] w-px bg-slate-200" />
+            )}
+
+            <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+              {isLast ? (
+                <Clock3 size={14} />
               ) : (
-                <Circle size={16} />
+                <CheckCircle2 size={14} />
               )}
             </span>
 
-            <div className="min-w-0">
-              <strong
-                className={`block text-xs font-black ${
-                  item.completed ? 'text-slate-900' : 'text-slate-400'
-                }`}
-              >
-                {item.step}
+            <div>
+              <strong className="block text-sm font-black text-slate-800">
+                {item.status}
               </strong>
 
-              {item.completed && (
-                <div className="mt-0.5 text-[10px] text-slate-500 font-medium space-x-1">
-                  <span>{formatDateTime(item.date)}</span>
-                  {item.user && <span>• Por {item.user}</span>}
-                </div>
-              )}
+              <span className="mt-1 block text-[10px] font-bold text-slate-400">
+                {formatDateTime(item.date)} ·{' '}
+                {item.user}
+              </span>
+
+              <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">
+                {item.description}
+              </p>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
