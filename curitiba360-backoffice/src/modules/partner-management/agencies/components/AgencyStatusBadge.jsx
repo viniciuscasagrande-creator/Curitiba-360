@@ -1,45 +1,71 @@
-import { Ban, CheckCircle2, Clock, AlertTriangle, XCircle, RefreshCw } from 'lucide-react';
-import { AGENCY_STATUS } from '../../shared/constants/partnerStatus';
+import {
+  Ban,
+  CheckCircle2,
+  Clock3,
+  FileClock,
+  PauseCircle,
+  XCircle,
+} from 'lucide-react';
 
-const STATUS_CONFIG = {
-  [AGENCY_STATUS.ACTIVE]: {
+const statusConfiguration = {
+  Ativa: {
     icon: CheckCircle2,
-    className: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    className:
+      'border-emerald-200 bg-emerald-50 text-emerald-700',
   },
-  [AGENCY_STATUS.PENDING_APPROVAL]: {
-    icon: Clock,
-    className: 'border-amber-200 bg-amber-50 text-amber-700',
+
+  'Aguardando Contrato': {
+    icon: FileClock,
+    className:
+      'border-amber-200 bg-amber-50 text-amber-700',
   },
-  [AGENCY_STATUS.WAITING_CONTRACT]: {
-    icon: AlertTriangle,
-    className: 'border-blue-200 bg-blue-50 text-blue-700',
+
+  'Pendente de Aprovação': {
+    icon: Clock3,
+    className:
+      'border-blue-200 bg-blue-50 text-blue-700',
   },
-  [AGENCY_STATUS.SUSPENDED]: {
+
+  Suspensa: {
+    icon: PauseCircle,
+    className:
+      'border-orange-200 bg-orange-50 text-orange-700',
+  },
+
+  Inativa: {
     icon: Ban,
-    className: 'border-rose-200 bg-rose-50 text-rose-700',
+    className:
+      'border-slate-200 bg-slate-100 text-slate-600',
   },
-  [AGENCY_STATUS.INACTIVE]: {
+
+  Rejeitada: {
     icon: XCircle,
-    className: 'border-slate-200 bg-slate-100 text-slate-600',
-  },
-  [AGENCY_STATUS.REJECTED]: {
-    icon: XCircle,
-    className: 'border-rose-200 bg-rose-100 text-rose-800',
+    className:
+      'border-red-200 bg-red-50 text-red-700',
   },
 };
 
-export default function AgencyStatusBadge({ status }) {
-  const config = STATUS_CONFIG[status] ?? STATUS_CONFIG[AGENCY_STATUS.ACTIVE];
-  const Icon = config.icon;
+export default function AgencyStatusBadge({
+  status,
+}) {
+  const configuration =
+    statusConfiguration[status] ?? {
+      icon: Clock3,
+      className:
+        'border-slate-200 bg-slate-100 text-slate-600',
+    };
+
+  const Icon = configuration.icon;
 
   return (
     <span
       className={[
-        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] font-black',
-        config.className,
+        'inline-flex min-w-max items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-black',
+        configuration.className,
       ].join(' ')}
     >
       <Icon size={12} />
+
       {status}
     </span>
   );
