@@ -97,6 +97,7 @@ import ApprovalPrintPage from "../modules/attractions/finance/approvals/pages/Ap
 import AgenciesPage from "../modules/partner-management/agencies/pages/AgenciesPage";
 import AgencyCreatePage from "../modules/partner-management/agencies/pages/AgencyCreatePage";
 import AgentsPage from "../modules/partner-management/agents/pages/AgentsPage";
+import AgentsDashboardPage from "../modules/partner-management/agents/pages/AgentsDashboardPage";
 import PartnerManagementRoutes from "../modules/partner-management/routes/PartnerManagementRoutes";
 import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
 import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
@@ -391,9 +392,12 @@ export function AppRoutes() {
 
                 {/* Módulos 23 e 24 — Gestão de Parceiros Comerciais (B2B Agências e Agentes) */}
                 <Route path="/admin/parceiros/*" element={<PartnerManagementRoutes />} />
+                <Route path="/partner-management/agents/*" element={<PartnerManagementRoutes />} />
                 <Route path="/admin/parceiros/agencias" element={<AgenciesPage />} />
                 <Route path="/admin/parceiros/agencias/novo" element={<AgencyCreatePage />} />
                 <Route path="/admin/parceiros/agentes" element={<AgentsPage />} />
+                <Route path="/admin/parceiros/agentes/dashboard" element={<AgentsDashboardPage />} />
+                <Route path="/admin/parceiros/agentes/list" element={<AgentsPage />} />
 
                 {/* Operação */}
                 <Route path="/admin/atracoes/:attractionId/validar-ingressos" element={<ValidateTicketsPage />} />

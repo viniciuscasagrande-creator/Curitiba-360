@@ -1,108 +1,411 @@
-import { useCallback, useEffect, useState } from 'react';
-import { agentService } from '../services/agentService';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
-export function useAgents() {
-  const [agents, setAgents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isMutating, setIsMutating] = useState(false);
-  const [error, setError] = useState('');
+import {
+  AGENT_DEFAULT_FILTERS,
+  AGENT_DEFAULT_PAGINATION,
+  AGENT_DEFAULT_SORTING,
+} from '../constants';
 
-  const loadAgents = useCallback(async () => {
-    try {
+import {
+  agentService,
+} from '../services';
+
+export function useAgents({
+  initialFilters = {},
+  initialSorting = {},
+  initialPagination = {},
+  autoLoad = true,
+} = {}) {
+  const [agents, setAgents] =
+    useState([]);
+
+  const [filters, setFilters] =
+    useState({
+      ...AGENT_DEFAULT_FILTERS,
+      ...initialFilters,
+    });
+
+  const [sorting, setSorting] =
+    useState({
+      ...AGENT_DEFAULT_SORTING,
+      ...initialSorting,
+    });
+
+  const [pagination, setPagination] =
+    useState({
+      ...AGENT_DEFAULT_PAGINATION,
+      ...initialPagination,
+
+      total: 0,
+      totalPages: 1,
+    });
+
+  const [isLoading, setIsLoading] =
+    useState(false);
+
+  const [isMutating, setIsMutating] =
+    useState(false);
+
+  const [error, setError] =
+    useState(null);
+
+  const loadAgents =
+    useCallback(async () => {
       setIsLoading(true);
-      setError('');
-      const data = await agentService.list();
-      setAgents(data);
-    } catch (err) {
-      setError(err?.message ?? 'Falha ao carregar agentes.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      setError(null);
+
+      try {
+        const result =
+          await agentService.paginate({
+            filters,
+            sorting,
+
+            page:
+              pagination.page,
+
+            pageSize:
+              pagination.pageSize,
+          });
+
+        setAgents(
+          result.data,
+        );
+
+        setPagination(
+          (current) => ({
+            ...current,
+            ...result.pagination,
+          }),
+        );
+
+        return result;
+      } catch (loadError) {
+        setError(loadError);
+        throw loadError;
+      } finally {
+        setIsLoading(false);
+      }
+    }, [
+      filters,
+      sorting,
+      pagination.page,
+      pagination.pageSize,
+    ]);
 
   useEffect(() => {
-    loadAgents();
-  }, [loadAgents]);
-
-  async function createAgent(data) {
-    try {
-      setIsMutating(true);
-      const created = await agentService.create(data);
-      setAgents((prev) => [created, ...prev]);
-      return created;
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao criar agente.');
-      throw err;
-    } finally {
-      setIsMutating(false);
+    if (!autoLoad) {
+      return;
     }
-  }
 
-  async function approveAgent(id) {
-    try {
-      setIsMutating(true);
-      const updated = await agentService.approve(id);
-      setAgents((prev) => prev.map((a) => (a.id === id ? updated : a)));
-      return updated;
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao aprovar agente.');
-      throw err;
-    } finally {
-      setIsMutating(false);
-    }
-  }
+    loadAgents().catch(() => {
+      // O erro já foi salvo no estado.
+    });
+  }, [
+    autoLoad,
+    loadAgents,
+  ]);
 
-  async function rejectAgent(id) {
-    try {
-      setIsMutating(true);
-      const updated = await agentService.reject(id);
-      setAgents((prev) => prev.map((a) => (a.id === id ? updated : a)));
-      return updated;
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao rejeitar agente.');
-      throw err;
-    } finally {
-      setIsMutating(false);
-    }
-  }
+  const updateFilters =
+    useCallback(
+      (nextFilters) => {
+        setFilters(
+          (current) => ({
+            ...current,
 
-  async function transferAgentAgency(id, newAgencyId, newAgencyName, reason) {
-    try {
-      setIsMutating(true);
-      const updated = await agentService.transferAgency(id, newAgencyId, newAgencyName, reason);
-      setAgents((prev) => prev.map((a) => (a.id === id ? updated : a)));
-      return updated;
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao transferir agente de agência.');
-      throw err;
-    } finally {
-      setIsMutating(false);
-    }
-  }
+            ...(typeof nextFilters ===
+            'function'
+              ? nextFilters(current)
+              : nextFilters),
+          }),
+        );
 
-  async function deleteAgent(id) {
-    try {
-      setIsMutating(true);
-      await agentService.delete(id);
-      setAgents((prev) => prev.filter((a) => a.id !== id));
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao excluir agente.');
-      throw err;
-    } finally {
-      setIsMutating(false);
-    }
-  }
+        setPagination(
+          (current) => ({
+            ...current,
+            page: 1,
+          }),
+        );
+      },
+      [],
+    );
+
+  const resetFilters =
+    useCallback(() => {
+      setFilters({
+        ...AGENT_DEFAULT_FILTERS,
+      });
+
+      setPagination(
+        (current) => ({
+          ...current,
+          page: 1,
+        }),
+      );
+    }, []);
+
+  const updateSorting =
+    useCallback(
+      (
+        field,
+        direction,
+      ) => {
+        setSorting({
+          field,
+
+          direction:
+            direction ||
+            (
+              sorting.field === field &&
+              sorting.direction === 'asc'
+                ? 'desc'
+                : 'asc'
+            ),
+        });
+
+        setPagination(
+          (current) => ({
+            ...current,
+            page: 1,
+          }),
+        );
+      },
+      [
+        sorting.field,
+        sorting.direction,
+      ],
+    );
+
+  const goToPage =
+    useCallback((page) => {
+      setPagination(
+        (current) => ({
+          ...current,
+
+          page: Math.min(
+            Math.max(
+              Number(page) || 1,
+              1,
+            ),
+            current.totalPages || 1,
+          ),
+        }),
+      );
+    }, []);
+
+  const changePageSize =
+    useCallback(
+      (pageSize) => {
+        setPagination(
+          (current) => ({
+            ...current,
+
+            page: 1,
+
+            pageSize:
+              Number(pageSize) ||
+              current.pageSize,
+          }),
+        );
+      },
+      [],
+    );
+
+  const executeMutation =
+    useCallback(
+      async (
+        operation,
+        {
+          reload = true,
+        } = {},
+      ) => {
+        setIsMutating(true);
+        setError(null);
+
+        try {
+          const result =
+            await operation();
+
+          if (reload) {
+            await loadAgents();
+          }
+
+          return result;
+        } catch (mutationError) {
+          setError(
+            mutationError,
+          );
+
+          throw mutationError;
+        } finally {
+          setIsMutating(false);
+        }
+      },
+      [loadAgents],
+    );
+
+  const createAgent =
+    useCallback(
+      (payload) =>
+        executeMutation(
+          () =>
+            agentService.create(
+              payload,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const updateAgent =
+    useCallback(
+      (
+        agentId,
+        payload,
+      ) =>
+        executeMutation(
+          () =>
+            agentService.update(
+              agentId,
+              payload,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const removeAgent =
+    useCallback(
+      (agentId) =>
+        executeMutation(
+          () =>
+            agentService.remove(
+              agentId,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const approveAgent =
+    useCallback(
+      (
+        agentId,
+        metadata,
+      ) =>
+        executeMutation(
+          () =>
+            agentService.approve(
+              agentId,
+              metadata,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const suspendAgent =
+    useCallback(
+      (
+        agentId,
+        options,
+      ) =>
+        executeMutation(
+          () =>
+            agentService.suspend(
+              agentId,
+              options,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const reactivateAgent =
+    useCallback(
+      (
+        agentId,
+        metadata,
+      ) =>
+        executeMutation(
+          () =>
+            agentService.reactivate(
+              agentId,
+              metadata,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const inactivateAgent =
+    useCallback(
+      (
+        agentId,
+        metadata,
+      ) =>
+        executeMutation(
+          () =>
+            agentService.inactivate(
+              agentId,
+              metadata,
+            ),
+        ),
+      [executeMutation],
+    );
+
+  const hasActiveFilters =
+    useMemo(
+      () =>
+        Object.values(
+          filters,
+        ).some(
+          (value) =>
+            Array.isArray(value)
+              ? value.length > 0
+              : Boolean(value),
+        ),
+      [filters],
+    );
 
   return {
     agents,
+
+    filters,
+    sorting,
+    pagination,
+
     isLoading,
     isMutating,
     error,
-    reload: loadAgents,
+
+    hasActiveFilters,
+
+    setFilters:
+      updateFilters,
+
+    resetFilters,
+
+    setSorting:
+      updateSorting,
+
+    goToPage,
+    changePageSize,
+
+    reload:
+      loadAgents,
+
     createAgent,
+    updateAgent,
+    removeAgent,
+
     approveAgent,
-    rejectAgent,
-    transferAgentAgency,
-    deleteAgent,
+    suspendAgent,
+    reactivateAgent,
+    inactivateAgent,
+
+    clearError() {
+      setError(null);
+    },
   };
 }
+
+export default useAgents;

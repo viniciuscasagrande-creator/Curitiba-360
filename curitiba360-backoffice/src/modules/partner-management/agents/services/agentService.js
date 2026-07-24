@@ -1,69 +1,138 @@
-import { agentRepository } from '../repositories/agentRepository';
+import {
+  AGENT_STATUS,
+} from '../constants';
 
-import { AGENT_STATUS } from '../../shared/constants/partnerStatus';
+import {
+  agentRepository,
+} from '../repositories';
 
-function validateRequiredFields(payload) {
-  const requiredFields = [
-    ['name', 'Nome'],
-    ['cpf', 'CPF'],
-    ['email', 'E-mail'],
-    ['agencyId', 'Agência'],
-    ['agencyName', 'Nome da agência'],
-  ];
+function validateAgentId(agentId) {
+  const normalizedId =
+    String(agentId || '').trim();
 
-  const missingFields = requiredFields
-    .filter(([field]) => {
-      return !String(
-        payload[field] ?? '',
-      ).trim();
-    })
-    .map(([, label]) => label);
-
-  if (missingFields.length) {
+  if (!normalizedId) {
     throw new Error(
-      `Preencha os campos obrigatórios: ${missingFields.join(
-        ', ',
-      )}.`,
+      'O identificador do agente é obrigatório.',
     );
   }
+
+  return normalizedId;
 }
 
-function validateIds(ids) {
-  if (!Array.isArray(ids) || !ids.length) {
+function validateAgentPayload(
+  payload,
+) {
+  if (
+    !payload ||
+    typeof payload !== 'object'
+  ) {
     throw new Error(
-      'Selecione pelo menos um agente.',
+      'Os dados do agente são obrigatórios.',
     );
   }
+
+  const name =
+    String(payload.name || '').trim();
+
+  if (!name) {
+    throw new Error(
+      'O nome do agente é obrigatório.',
+    );
+  }
+
+  const email =
+    String(
+      payload.contact?.email ||
+        payload.email ||
+        '',
+    ).trim();
+
+  if (!email) {
+    throw new Error(
+      'O e-mail do agente é obrigatório.',
+    );
+  }
+
+  return {
+    ...payload,
+    name,
+    contact: {
+      ...(payload.contact || {}),
+      email,
+    },
+  };
 }
 
 export const agentService = {
-  list() {
-    return agentRepository.list();
+  async list(options = {}) {
+    return agentRepository.list(
+      options,
+    );
   },
 
-  findById(id) {
-    if (!id) {
-      throw new Error(
-        'Informe o identificador do agente.',
+  async paginate(options = {}) {
+    return agentRepository.paginate(
+      options,
+    );
+  },
+
+  async findById(agentId) {
+    const id =
+      validateAgentId(agentId);
+
+    return agentRepository.findById(
+      id,
+    );
+  },
+
+  async create(payload) {
+    const normalizedPayload =
+      validateAgentPayload(
+        payload,
       );
-    }
-
-    return agentRepository.findById(id);
-  },
-
-  create(payload) {
-    validateRequiredFields(payload);
 
     return agentRepository.create({
-      ...payload,
+      ...normalizedPayload,
+
       status:
-        payload.status ??
+        normalizedPayload.status ||
         AGENT_STATUS.PENDING,
     });
   },
 
-  update(id, payload) {
-    validateRequiredFields(payload);
+  async update(
+    agentId,
+    payload,
+  ) {
+    const id =
+      validateAgentId(agentId);
+
+    const normalizedPayload =
+      validateAgentPayload(
+        payload,
+      );
+
+    return agentRepository.update(
+      id,
+      normalizedPayload,
+    );
+  },
+
+  async updatePartial(
+    agentId,
+    payload,
+  ) {
+    const id =
+      validateAgentId(agentId);
+
+    if (
+      !payload ||
+      typeof payload !== 'object'
+    ) {
+      throw new Error(
+        'Os dados da atualização são obrigatórios.',
+      );
+    }
 
     return agentRepository.update(
       id,
@@ -71,104 +140,101 @@ export const agentService = {
     );
   },
 
-  approve(id) {
+  async approve(
+    agentId,
+    metadata = {},
+  ) {
+    const id =
+      validateAgentId(agentId);
+
     return agentRepository.updateStatus(
       id,
       AGENT_STATUS.ACTIVE,
-      '',
+      {
+        approvedAt:
+          new Date().toISOString(),
+        ...metadata,
+      },
     );
   },
 
-  approveMany(ids) {
-    validateIds(ids);
+  async suspend(
+    agentId,
+    {
+      reason = '',
+      ...metadata
+    } = {},
+  ) {
+    const id =
+      validateAgentId(agentId);
 
-    return agentRepository.updateMany(ids, {
-      status: AGENT_STATUS.ACTIVE,
-      statusReason: '',
-    });
-  },
-
-  reject(id, reason) {
-    if (!reason?.trim()) {
+    if (!String(reason).trim()) {
       throw new Error(
-        'Informe o motivo da rejeição.',
+        'Informe o motivo da suspensão.',
       );
     }
 
     return agentRepository.updateStatus(
       id,
-      AGENT_STATUS.REJECTED,
-      reason.trim(),
+      AGENT_STATUS.SUSPENDED,
+      {
+        suspensionReason:
+          String(reason).trim(),
+
+        suspendedAt:
+          new Date().toISOString(),
+
+        ...metadata,
+      },
     );
   },
 
-  rejectMany(ids, reason) {
-    validateIds(ids);
+  async reactivate(
+    agentId,
+    metadata = {},
+  ) {
+    const id =
+      validateAgentId(agentId);
 
-    if (!reason?.trim()) {
-      throw new Error(
-        'Informe o motivo da rejeição.',
-      );
-    }
-
-    return agentRepository.updateMany(ids, {
-      status: AGENT_STATUS.REJECTED,
-      statusReason: reason.trim(),
-    });
+    return agentRepository.updateStatus(
+      id,
+      AGENT_STATUS.ACTIVE,
+      {
+        suspensionReason: '',
+        suspendedAt: null,
+        suspendedBy: null,
+        ...metadata,
+      },
+    );
   },
 
-  inactivate(id) {
+  async inactivate(
+    agentId,
+    metadata = {},
+  ) {
+    const id =
+      validateAgentId(agentId);
+
     return agentRepository.updateStatus(
       id,
       AGENT_STATUS.INACTIVE,
-      '',
+      metadata,
     );
   },
 
-  inactivateMany(ids) {
-    validateIds(ids);
+  async remove(agentId) {
+    const id =
+      validateAgentId(agentId);
 
-    return agentRepository.updateMany(ids, {
-      status: AGENT_STATUS.INACTIVE,
-    });
-  },
-
-  activateMany(ids) {
-    validateIds(ids);
-
-    return agentRepository.updateMany(ids, {
-      status: AGENT_STATUS.ACTIVE,
-      statusReason: '',
-    });
-  },
-
-  transferMany(
-    ids,
-    agencyId,
-    agencyName,
-  ) {
-    validateIds(ids);
-
-    if (!agencyId || !agencyName) {
-      throw new Error(
-        'Selecione a nova agência.',
-      );
-    }
-
-    return agentRepository.transferMany(
-      ids,
-      agencyId,
-      agencyName,
+    return agentRepository.remove(
+      id,
     );
   },
 
-  remove(id) {
-    return agentRepository.remove(id);
-  },
-
-  removeMany(ids) {
-    validateIds(ids);
-
-    return agentRepository.removeMany(ids);
+  async getDashboard() {
+    return agentRepository
+      .getDashboard();
   },
 };
+
+export default agentService;
