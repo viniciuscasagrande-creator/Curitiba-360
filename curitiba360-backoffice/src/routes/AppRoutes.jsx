@@ -90,8 +90,8 @@ import SalesByPaymentReportPrintPage from "../modules/attractions/finance/report
 import BorderoReportPage from "../modules/attractions/finance/reports/pages/BorderoReportPage";
 import BorderoReportPrintPage from "../modules/attractions/finance/reports/pages/BorderoReportPrintPage";
 
-import WithdrawalRequestPage from "../modules/attractions/finance/pages/WithdrawalRequestPage";
-import WithdrawalRequestPrintPage from "../modules/attractions/finance/pages/WithdrawalRequestPrintPage";
+import WithdrawalRequestPage from "../modules/attractions/finance/withdrawals/pages/WithdrawalRequestPage";
+import WithdrawalRequestPrintPage from "../modules/attractions/finance/withdrawals/pages/WithdrawalRequestPrintPage";
 import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
 import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
 import UserProfilePage from "../modules/admin/profile/pages/UserProfilePage";
