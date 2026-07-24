@@ -1,124 +1,258 @@
-import { useCallback, useEffect, useState } from 'react';
-import { agencyService } from '../services/agencyService';
-import { agencyRepository } from '../repositories/agencyRepository';
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  agencyService,
+} from '../services/agencyService';
 
 export function useAgencies() {
-  const [agencies, setAgencies] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isMutating, setIsMutating] = useState(false);
-  const [error, setError] = useState(null);
-  const [toast, setToast] = useState(null);
+  const [agencies, setAgencies] =
+    useState([]);
 
-  function showToast(message, type = 'success') {
-    setToast({ message, type });
-  }
+  const [isLoading, setIsLoading] =
+    useState(true);
 
-  function clearToast() {
-    setToast(null);
-  }
+  const [isMutating, setIsMutating] =
+    useState(false);
 
-  const reload = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await agencyService.list();
-      setAgencies(data);
-    } catch (err) {
-      setError(err.message || 'Erro ao carregar agências.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const [error, setError] =
+    useState(null);
+
+  const loadAgencies =
+    useCallback(async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const result =
+          await agencyService.list({
+            pageSize: 100,
+          });
+
+        setAgencies(result);
+      } catch (loadError) {
+        setError(loadError);
+      } finally {
+        setIsLoading(false);
+      }
+    }, []);
 
   useEffect(() => {
-    reload();
+    loadAgencies();
+  }, [loadAgencies]);
 
-    const unsubscribe = agencyRepository.subscribeRealtime((updatedList) => {
-      setAgencies(updatedList);
-      setIsLoading(false);
-    });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [reload]);
-
-  async function handleMutation(actionCallback, successMessage) {
+  async function executeMutation(
+    operation,
+  ) {
     try {
       setIsMutating(true);
       setError(null);
-      const result = await actionCallback();
-      if (successMessage) showToast(successMessage, 'success');
+
+      const result =
+        await operation();
+
       return result;
-    } catch (err) {
-      const msg = err.message || 'Ocorreu um erro ao processar a operação.';
-      setError(msg);
-      showToast(msg, 'error');
-      throw err;
+    } catch (mutationError) {
+      setError(mutationError);
+      throw mutationError;
     } finally {
       setIsMutating(false);
     }
   }
 
-  const createAgency = (payload) =>
-    handleMutation(() => agencyService.create(payload), 'Agência criada com sucesso!');
+  async function createAgency(
+    payload,
+  ) {
+    return executeMutation(
+      async () => {
+        const created =
+          await agencyService.create(
+            payload,
+          );
 
-  const updateAgency = (id, payload) =>
-    handleMutation(() => agencyService.update(id, payload), 'Agência atualizada com sucesso!');
+        setAgencies((current) => [
+          created,
+          ...current,
+        ]);
 
-  const approveAgency = (id) =>
-    handleMutation(() => agencyService.approve(id), 'Aprovação realizada com sucesso!');
+        return created;
+      },
+    );
+  }
 
-  const approveMany = (ids) =>
-    handleMutation(() => agencyService.approveMany(ids), `${ids.length} agência(s) aprovada(s)!`);
+  async function updateAgency(
+    id,
+    payload,
+  ) {
+    return executeMutation(
+      async () => {
+        const updated =
+          await agencyService.update(
+            id,
+            payload,
+          );
 
-  const rejectAgency = (id, reason) =>
-    handleMutation(() => agencyService.reject(id, reason), 'Agência rejeitada com sucesso.');
+        setAgencies((current) =>
+          current.map((agency) =>
+            agency.id === id
+              ? updated
+              : agency,
+          ),
+        );
 
-  const rejectMany = (ids, reason) =>
-    handleMutation(() => agencyService.rejectMany(ids, reason), `${ids.length} agência(s) rejeitada(s).`);
+        return updated;
+      },
+    );
+  }
 
-  const suspendAgency = (id, reason) =>
-    handleMutation(() => agencyService.suspend(id, reason), 'Agência suspensa.');
+  async function patchAgency(
+    id,
+    changes,
+  ) {
+    return executeMutation(
+      async () => {
+        const updated =
+          await agencyService.patch(
+            id,
+            changes,
+          );
 
-  const suspendMany = (ids, reason) =>
-    handleMutation(() => agencyService.suspendMany(ids, reason), `${ids.length} agência(s) suspensa(s).`);
+        setAgencies((current) =>
+          current.map((agency) =>
+            agency.id === id
+              ? updated
+              : agency,
+          ),
+        );
 
-  const inactivateAgency = (id) =>
-    handleMutation(() => agencyService.inactivate(id), 'Agência inativada.');
+        return updated;
+      },
+    );
+  }
 
-  const inactivateMany = (ids) =>
-    handleMutation(() => agencyService.inactivateMany(ids), `${ids.length} agência(s) inativada(s).`);
+  async function executeStatusAction(
+    id,
+    action,
+  ) {
+    return executeMutation(
+      async () => {
+        const updated =
+          await action();
 
-  const reactivateAgency = (id) =>
-    handleMutation(() => agencyService.reactivate(id), 'Agência reativada com sucesso!');
+        setAgencies((current) =>
+          current.map((agency) =>
+            agency.id === id
+              ? updated
+              : agency,
+          ),
+        );
 
-  const removeAgency = (id) =>
-    handleMutation(() => agencyService.remove(id), 'Exclusão concluída com sucesso.');
+        return updated;
+      },
+    );
+  }
 
-  const removeMany = (ids) =>
-    handleMutation(() => agencyService.removeMany(ids), `${ids.length} agência(s) excluída(s).`);
+  async function approveAgency(id) {
+    return executeStatusAction(
+      id,
+      () =>
+        agencyService.approve(id),
+    );
+  }
+
+  async function rejectAgency(
+    id,
+    reason,
+  ) {
+    return executeStatusAction(
+      id,
+      () =>
+        agencyService.reject(
+          id,
+          reason,
+        ),
+    );
+  }
+
+  async function suspendAgency(
+    id,
+    reason,
+  ) {
+    return executeStatusAction(
+      id,
+      () =>
+        agencyService.suspend(
+          id,
+          reason,
+        ),
+    );
+  }
+
+  async function inactivateAgency(
+    id,
+  ) {
+    return executeStatusAction(
+      id,
+      () =>
+        agencyService.inactivate(id),
+    );
+  }
+
+  async function reactivateAgency(
+    id,
+  ) {
+    return executeStatusAction(
+      id,
+      () =>
+        agencyService.reactivate(id),
+    );
+  }
+
+  async function removeAgency(id) {
+    return executeMutation(
+      async () => {
+        const removed =
+          await agencyService.remove(
+            id,
+          );
+
+        if (removed) {
+          setAgencies((current) =>
+            current.filter(
+              (agency) =>
+                agency.id !== id,
+            ),
+          );
+        }
+
+        return removed;
+      },
+    );
+  }
 
   return {
     agencies,
     isLoading,
     isMutating,
     error,
-    toast,
-    clearToast,
-    reload,
+
+    reload: loadAgencies,
+
     createAgency,
     updateAgency,
+    patchAgency,
+
     approveAgency,
-    approveMany,
     rejectAgency,
-    rejectMany,
     suspendAgency,
-    suspendMany,
     inactivateAgency,
-    inactivateMany,
     reactivateAgency,
+
     removeAgency,
-    removeMany,
   };
 }
+
+export default useAgencies;

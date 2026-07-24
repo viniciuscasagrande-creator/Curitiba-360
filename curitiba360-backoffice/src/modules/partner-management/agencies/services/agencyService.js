@@ -2,7 +2,15 @@ import {
   agencyRepository,
 } from '../repositories/agencyRepository';
 
-function validateAgency(payload) {
+function validateRequiredFields(
+  payload,
+) {
+  if (!payload) {
+    throw new Error(
+      'Os dados da agência são obrigatórios.',
+    );
+  }
+
   if (!payload.tradeName?.trim()) {
     throw new Error(
       'O nome fantasia é obrigatório.',
@@ -21,7 +29,9 @@ function validateAgency(payload) {
     );
   }
 
-  if (!payload.responsibleName?.trim()) {
+  if (
+    !payload.responsibleName?.trim()
+  ) {
     throw new Error(
       'O responsável é obrigatório.',
     );
@@ -34,27 +44,55 @@ function validateAgency(payload) {
   }
 }
 
+function validateAgencyId(id) {
+  if (!id) {
+    throw new Error(
+      'O identificador da agência é obrigatório.',
+    );
+  }
+}
+
 export const agencyService = {
-  async list() {
-    return agencyRepository.list();
+  async list(options) {
+    return agencyRepository.list(
+      options,
+    );
   },
 
   async findById(id) {
-    return agencyRepository.findById(
-      id,
-    );
+    validateAgencyId(id);
+
+    const agency =
+      await agencyRepository.findById(
+        id,
+      );
+
+    if (!agency) {
+      throw new Error(
+        'Agência não encontrada.',
+      );
+    }
+
+    return agency;
   },
 
   async create(payload) {
-    validateAgency(payload);
+    validateRequiredFields(payload);
 
-    return agencyRepository.create(
-      payload,
-    );
+    return agencyRepository.create({
+      ...payload,
+      status:
+        payload.status ||
+        'Pendente de Aprovação',
+    });
   },
 
-  async update(id, payload) {
-    validateAgency(payload);
+  async update(
+    id,
+    payload,
+  ) {
+    validateAgencyId(id);
+    validateRequiredFields(payload);
 
     return agencyRepository.update(
       id,
@@ -62,29 +100,49 @@ export const agencyService = {
     );
   },
 
+  async patch(
+    id,
+    changes,
+  ) {
+    validateAgencyId(id);
+
+    if (
+      !changes ||
+      Object.keys(changes).length ===
+        0
+    ) {
+      throw new Error(
+        'Nenhuma alteração foi informada.',
+      );
+    }
+
+    return agencyRepository.patch(
+      id,
+      changes,
+    );
+  },
+
   async approve(id) {
+    validateAgencyId(id);
+
     return agencyRepository.updateStatus(
       id,
       'Ativa',
       {
         approvedAt:
           new Date().toISOString(),
+
+        statusReason: '',
       },
     );
   },
 
-  async approveMany(ids) {
-    return agencyRepository.updateMany(
-      ids,
-      {
-        status: 'Ativa',
-        approvedAt:
-          new Date().toISOString(),
-      },
-    );
-  },
+  async reject(
+    id,
+    reason,
+  ) {
+    validateAgencyId(id);
 
-  async reject(id, reason) {
     if (!reason?.trim()) {
       throw new Error(
         'Informe o motivo da rejeição.',
@@ -95,82 +153,67 @@ export const agencyService = {
       id,
       'Rejeitada',
       {
-        statusReason: reason,
+        rejectedAt:
+          new Date().toISOString(),
+
+        statusReason:
+          reason.trim(),
       },
     );
   },
 
-  async rejectMany(ids, reason) {
-    if (!reason?.trim()) {
-      throw new Error(
-        'Informe o motivo da rejeição.',
-      );
-    }
+  async suspend(
+    id,
+    reason = '',
+  ) {
+    validateAgencyId(id);
 
-    return agencyRepository.updateMany(
-      ids,
-      {
-        status: 'Rejeitada',
-        statusReason: reason,
-      },
-    );
-  },
-
-  async suspend(id, reason) {
     return agencyRepository.updateStatus(
       id,
       'Suspensa',
       {
-        statusReason:
-          reason || '',
-      },
-    );
-  },
+        suspendedAt:
+          new Date().toISOString(),
 
-  async suspendMany(ids, reason) {
-    return agencyRepository.updateMany(
-      ids,
-      {
-        status: 'Suspensa',
         statusReason:
-          reason || '',
+          reason.trim(),
       },
     );
   },
 
   async inactivate(id) {
+    validateAgencyId(id);
+
     return agencyRepository.updateStatus(
       id,
       'Inativa',
-    );
-  },
-
-  async inactivateMany(ids) {
-    return agencyRepository.updateMany(
-      ids,
       {
-        status: 'Inativa',
+        inactivatedAt:
+          new Date().toISOString(),
       },
     );
   },
 
   async reactivate(id) {
+    validateAgencyId(id);
+
     return agencyRepository.updateStatus(
       id,
       'Ativa',
       {
+        reactivatedAt:
+          new Date().toISOString(),
+
         statusReason: '',
       },
     );
   },
 
   async remove(id) {
+    validateAgencyId(id);
+
     return agencyRepository.remove(id);
   },
-
-  async removeMany(ids) {
-    return agencyRepository.removeMany(
-      ids,
-    );
-  },
 };
+
+export default agencyService;
