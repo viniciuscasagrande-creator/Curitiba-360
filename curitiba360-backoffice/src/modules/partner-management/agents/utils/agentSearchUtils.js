@@ -82,3 +82,65 @@ export function matchesAgentSearch(
     normalizedSearch,
   );
 }
+
+export function countActiveAgentFilters(
+  filters = {},
+  {
+    ignoreKeys = [
+      'search',
+    ],
+  } = {},
+) {
+  return Object.entries(
+    filters,
+  ).reduce(
+    (
+      total,
+      [
+        key,
+        value,
+      ],
+    ) => {
+      if (
+        ignoreKeys.includes(
+          key,
+        )
+      ) {
+        return total;
+      }
+
+      if (
+        Array.isArray(value)
+      ) {
+        return (
+          total +
+          (value.length > 0
+            ? 1
+            : 0)
+        );
+      }
+
+      if (
+        typeof value ===
+        'boolean'
+      ) {
+        return (
+          total +
+          (value ? 1 : 0)
+        );
+      }
+
+      if (
+        value !== null &&
+        value !== undefined &&
+        String(value).trim() !==
+          ''
+      ) {
+        return total + 1;
+      }
+
+      return total;
+    },
+    0,
+  );
+}

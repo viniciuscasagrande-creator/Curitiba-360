@@ -1,4 +1,5 @@
 import {
+  useMemo,
   useState,
 } from 'react';
 
@@ -13,11 +14,16 @@ import {
 import {
   AgentModuleHeader,
   AgentTable,
+  AgentToolbar,
 } from '../components';
 
 import {
   useAgents,
 } from '../hooks';
+
+import {
+  countActiveAgentFilters,
+} from '../utils';
 
 export function AgentsPage() {
   const navigate =
@@ -28,19 +34,49 @@ export function AgentsPage() {
     setSelectedAgent,
   ] = useState(null);
 
+  const [
+    viewMode,
+    setViewMode,
+  ] = useState('table');
+
+  const [
+    isFiltersOpen,
+    setIsFiltersOpen,
+  ] = useState(false);
+
   const {
     agents,
+    filters,
     sorting,
     pagination,
 
     isLoading,
+    isMutating,
     error,
     hasActiveFilters,
 
     reload,
+    setFilters,
     resetFilters,
     setSorting,
   } = useAgents();
+
+  const activeFiltersCount =
+    useMemo(
+      () =>
+        countActiveAgentFilters(
+          filters,
+        ),
+      [filters],
+    );
+
+  function handleSearchChange(
+    search,
+  ) {
+    setFilters({
+      search,
+    });
+  }
 
   function handleAgentClick(
     agent,
@@ -53,8 +89,8 @@ export function AgentsPage() {
     );
 
     /*
-     * Na Parte 4.1.2-D:
-     * este método abrirá o AgentDrawer.
+     * O AgentDrawer será conectado
+     * na Parte 4.1.2-D.
      */
   }
 
@@ -73,11 +109,27 @@ export function AgentsPage() {
     );
 
     /*
-     * Na Parte 4.1.2-C:
-     * este método abrirá o menu
-     * AgentActions.
+     * O menu de ações será conectado
+     * na Parte 4.1.2-C.
      */
   }
+
+  function handleOpenFilters() {
+    setIsFiltersOpen(true);
+
+    console.info(
+      'Abrir painel de filtros.',
+    );
+
+    /*
+     * O AgentFilterDrawer será conectado
+     * na Parte 4.1.2-B3.
+     */
+  }
+
+  const totalResults =
+    pagination.total ??
+    agents.length;
 
   return (
     <main className="space-y-6 text-left">
@@ -102,11 +154,14 @@ export function AgentsPage() {
         <div
           role="alert"
           className={[
-            'rounded-xl border',
+            'rounded-xl',
+            'border',
             'border-red-200',
             'bg-red-50',
-            'px-4 py-3',
-            'text-sm text-red-700',
+            'px-4',
+            'py-3',
+            'text-sm',
+            'text-red-700',
           ].join(' ')}
         >
           <strong>
@@ -120,78 +175,143 @@ export function AgentsPage() {
           <button
             type="button"
             onClick={reload}
-            className="mt-3 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50"
+            className={[
+              'mt-3',
+              'rounded-lg',
+              'border',
+              'border-red-200',
+              'bg-white',
+              'px-3',
+              'py-1.5',
+              'text-xs',
+              'font-semibold',
+              'text-red-700',
+              'hover:bg-red-50',
+            ].join(' ')}
           >
             Tentar novamente
           </button>
         </div>
       )}
 
-      <section className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-sm font-bold text-slate-900">
-            Agentes cadastrados
-          </h2>
-
-          <p className="mt-1 text-xs text-slate-500">
-            {pagination.total ||
-              agents.length}{' '}
-            registro
-            {(pagination.total ||
-              agents.length) !== 1
-              ? 's'
-              : ''}{' '}
-            encontrado
-            {(pagination.total ||
-              agents.length) !== 1
-              ? 's'
-              : ''}
-          </p>
-        </div>
-
-        <div className="text-xs text-slate-400">
-          Ordenação:{' '}
-          <strong className="font-semibold text-slate-600">
-            {sorting.field}
-          </strong>{' '}
-          —{' '}
-          {sorting.direction ===
-          'asc'
-            ? 'crescente'
-            : 'decrescente'}
-        </div>
-      </section>
-
-      <AgentTable
-        agents={agents}
+      <AgentToolbar
+        search={
+          filters.search
+        }
         sorting={sorting}
+        viewMode={viewMode}
+        resultCount={
+          totalResults
+        }
+        activeFiltersCount={
+          activeFiltersCount
+        }
         isLoading={
           isLoading
         }
-        hasActiveFilters={
-          hasActiveFilters
+        disabled={
+          isMutating
         }
-        onSort={setSorting}
-        onAgentClick={
-          handleAgentClick
+        onSearchChange={
+          handleSearchChange
         }
-        onOpenActions={
-          handleOpenActions
+        onSortingChange={
+          setSorting
+        }
+        onViewModeChange={
+          setViewMode
+        }
+        onOpenFilters={
+          handleOpenFilters
         }
         onClearFilters={
           resetFilters
         }
-        onCreate={() =>
-          navigate(
-            AGENT_ROUTES.CREATE,
-          )
-        }
       />
+
+      {viewMode ===
+      'table' ? (
+        <AgentTable
+          agents={agents}
+          sorting={sorting}
+          isLoading={
+            isLoading
+          }
+          hasActiveFilters={
+            hasActiveFilters
+          }
+          onSort={
+            setSorting
+          }
+          onAgentClick={
+            handleAgentClick
+          }
+          onOpenActions={
+            handleOpenActions
+          }
+          onClearFilters={
+            resetFilters
+          }
+          onCreate={() =>
+            navigate(
+              AGENT_ROUTES.CREATE,
+            )
+          }
+        />
+      ) : (
+        <section
+          className={[
+            'rounded-2xl text-left',
+            'border',
+            'border-dashed',
+            'border-slate-300',
+            'bg-white',
+            'p-10',
+            'text-center',
+          ].join(' ')}
+        >
+          <h2 className="text-base font-bold text-slate-900">
+            Visualização em cartões
+          </h2>
+
+          <p className="mt-2 text-sm text-slate-500">
+            O grid completo de agentes será implementado posteriormente.
+          </p>
+
+          <button
+            type="button"
+            onClick={() =>
+              setViewMode(
+                'table',
+              )
+            }
+            className={[
+              'mt-5',
+              'rounded-xl',
+              'bg-slate-950',
+              'px-4',
+              'py-2.5',
+              'text-sm',
+              'font-semibold',
+              'text-white',
+              'hover:bg-slate-800',
+            ].join(' ')}
+          >
+            Voltar para lista
+          </button>
+        </section>
+      )}
 
       {selectedAgent && (
         <div className="sr-only">
           Agente selecionado:{' '}
           {selectedAgent.name}
+        </div>
+      )}
+
+      {isFiltersOpen && (
+        <div className="sr-only">
+          Painel de filtros aberto.
         </div>
       )}
     </main>
