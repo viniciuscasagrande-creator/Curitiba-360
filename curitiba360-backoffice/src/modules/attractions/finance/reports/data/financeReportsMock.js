@@ -524,3 +524,42 @@ export const salesByPaymentTypeOptions = [
   'Crédito interno',
   'Cortesia',
 ];
+
+export const borderoMock = {
+  grossRevenue: 98540.25,
+  platformFee: 3941.61,
+  gatewayFee: 1720.84,
+  anticipationFee: 540.00,
+  commissions: 2480.00,
+  discounts: 615.20,
+  refunds: 1280.00,
+  courtesy: 950.00,
+  taxes: 2250.70,
+  netRevenue: 84761.90,
+  transferValue: 84761.90,
+  status: "Aguardando Repasse"
+};
+
+export const transferHistoryMock = [
+  {
+    id: 1,
+    date: "2026-01-08",
+    value: 28000,
+    bank: "Banco do Brasil",
+    status: "Pago"
+  },
+  {
+    id: 2,
+    date: "2026-01-15",
+    value: 30000,
+    bank: "Santander",
+    status: "Pago"
+  },
+  {
+    id: 3,
+    date: "2026-01-20",
+    value: 26761.90,
+    bank: "Santander",
+    status: "Pendente"
+  }
+];

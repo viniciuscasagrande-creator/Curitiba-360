@@ -1,205 +1,313 @@
-import React, { useState } from 'react';
-import { FileText, Printer, Download, Building, ShieldCheck, DollarSign, CheckCircle2, Signature } from 'lucide-react';
-import { AttractionSidebar } from '../../../components/AttractionSidebar';
+import React from 'react';
+import {
+  Banknote,
+  Building,
+  CheckCircle2,
+  Clock3,
+  CreditCard,
+  DollarSign,
+  FileSpreadsheet,
+  FileText,
+  Percent,
+  Printer,
+  ReceiptText,
+  ShieldCheck,
+  TrendingDown,
+  Wallet,
+  XCircle,
+} from 'lucide-react';
 
-export function BorderoReportPage() {
+import ReportHeader from '../components/ReportHeader';
+import {
+  borderoMock,
+  transferHistoryMock,
+} from '../data/financeReportsMock';
+import {
+  exportCsv,
+  formatCurrency,
+  formatDate,
+} from '../utils/reportUtils';
+
+export default function BorderoReportPage() {
   function handlePrint() {
-    window.open('/admin/atracoes/attraction-001/relatorios/bordero/print', '_blank');
+    const currentPath = window.location.pathname.replace(/\/$/, '');
+    window.open(`${currentPath}/impressao`, '_blank', 'noopener,noreferrer');
   }
 
+  function handleExportXlsx() {
+    exportCsv('bordero-financeiro.csv', [
+      ['BORDERÔ FINANCEIRO OFICIAL'],
+      ['Atração', 'Parque Jaime Lerner'],
+      ['Status', borderoMock.status],
+      [''],
+      ['RESUMO FINANCEIRO', 'VALOR'],
+      ['Receita Bruta', borderoMock.grossRevenue],
+      ['(-) Taxa Plataforma', borderoMock.platformFee],
+      ['(-) Taxa Gateway', borderoMock.gatewayFee],
+      ['(-) Antecipação', borderoMock.anticipationFee],
+      ['(-) Comissões', borderoMock.commissions],
+      ['(-) Impostos', borderoMock.taxes],
+      ['(-) Descontos', borderoMock.discounts],
+      ['(-) Estornos', borderoMock.refunds],
+      ['(-) Cortesias', borderoMock.courtesy],
+      ['Receita Líquida', borderoMock.netRevenue],
+      ['Valor de Repasse', borderoMock.transferValue],
+      [''],
+      ['HISTÓRICO DE REPASSES'],
+      ['Data', 'Banco', 'Valor', 'Status'],
+      ...transferHistoryMock.map((t) => [
+        t.date,
+        t.bank,
+        t.value,
+        t.status,
+      ]),
+    ]);
+  }
+
+  const deductions = [
+    { label: 'Receita Bruta', value: borderoMock.grossRevenue, isTotal: true },
+    { label: '(-) Taxa Plataforma', value: borderoMock.platformFee, isDeduction: true },
+    { label: '(-) Taxa Gateway', value: borderoMock.gatewayFee, isDeduction: true },
+    { label: '(-) Antecipação', value: borderoMock.anticipationFee, isDeduction: true },
+    { label: '(-) Comissões', value: borderoMock.commissions, isDeduction: true },
+    { label: '(-) Impostos', value: borderoMock.taxes, isDeduction: true },
+    { label: '(-) Descontos', value: borderoMock.discounts, isDeduction: true },
+    { label: '(-) Estornos', value: borderoMock.refunds, isDeduction: true },
+    { label: '(-) Cortesias', value: borderoMock.courtesy, isDeduction: true },
+    { label: 'Receita Líquida', value: borderoMock.netRevenue, isTotal: true, isHighlight: true },
+    { label: 'Valor de Repasse', value: borderoMock.transferValue, isTotal: true, isRepasse: true },
+  ];
+
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900">
-      <AttractionSidebar attractionId="attraction-001" attractionName="Parque Jaime Lerner" />
+    <div className="min-h-screen bg-slate-50 text-left">
+      <main className="mx-auto max-w-[1700px] px-4 py-7 sm:px-6 lg:px-8 space-y-6">
+        <ReportHeader
+          title="Borderô Financeiro"
+          description="Documento oficial consolidado de conciliação financeira, receitas, encargos e repasse da atração."
+          onPrint={handlePrint}
+          onExportXlsx={handleExportXlsx}
+          onExportPdf={handlePrint}
+        />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 max-w-[1700px] mx-auto space-y-6 text-left">
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-5 gap-4">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600">
-              <FileText size={15} />
-              Relatórios da Atração &bull; Fechamento Financeiro
-            </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-              Borderô Resumido Oficial
-            </h1>
-            <p className="mt-1 text-xs text-slate-500 font-medium">
-              Documento contratual consolidado de conciliação financeira, receitas, encargos e repasse líquido.
-            </p>
+        {/* Status Badge Top Bar */}
+        <section className="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white font-black">
+              ✓
+            </span>
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">
+                Situação do Fechamento
+              </span>
+              <h2 className="text-lg font-black text-emerald-950">
+                {borderoMock.status}
+              </h2>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="inline-flex h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-black text-slate-700 hover:bg-slate-100 transition shadow-2xs"
-          >
-            <Printer size={15} />
-            Imprimir / Gerar Borderô PDF
-          </button>
-        </header>
+          <div className="text-right">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+              Valor Total do Repasse
+            </span>
+            <strong className="text-xl font-black text-emerald-700">
+              {formatCurrency(borderoMock.transferValue)}
+            </strong>
+          </div>
+        </section>
 
-        {/* 1. Dados do Parceiro & 2. Dados da Atração */}
-        <div className="grid gap-5 md:grid-cols-2">
-          <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
-              <Building size={16} className="text-emerald-600" />
-              1. Dados do Parceiro Comercial
-            </h3>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Razão Social</span>
-                <strong className="text-slate-800">Instituto Curitiba de Arte & Cultura</strong>
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">CNPJ</span>
-                <strong className="text-slate-800">12.345.678/0001-99</strong>
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Banco / Agência</span>
-                <strong className="text-slate-800">Banco do Brasil / Ag: 3204-5</strong>
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Conta Corrente</span>
-                <strong className="text-slate-800">10.450-8 (PIX Ativo)</strong>
-              </div>
+        {/* Cards Superiores */}
+        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+          <SummaryCard
+            icon={ReceiptText}
+            label="Receita Bruta"
+            value={formatCurrency(borderoMock.grossRevenue)}
+            tone="blue"
+          />
+          <SummaryCard
+            icon={Percent}
+            label="Taxa Plataforma"
+            value={`- ${formatCurrency(borderoMock.platformFee)}`}
+            tone="amber"
+          />
+          <SummaryCard
+            icon={CreditCard}
+            label="Gateway"
+            value={`- ${formatCurrency(borderoMock.gatewayFee)}`}
+            tone="amber"
+          />
+          <SummaryCard
+            icon={TrendingDown}
+            label="Antecipação"
+            value={`- ${formatCurrency(borderoMock.anticipationFee)}`}
+            tone="amber"
+          />
+          <SummaryCard
+            icon={Wallet}
+            label="Comissões"
+            value={`- ${formatCurrency(borderoMock.commissions)}`}
+            tone="amber"
+          />
+          <SummaryCard
+            icon={DollarSign}
+            label="Impostos"
+            value={`- ${formatCurrency(borderoMock.taxes)}`}
+            tone="amber"
+          />
+          <SummaryCard
+            icon={Banknote}
+            label="Receita Líquida"
+            value={formatCurrency(borderoMock.netRevenue)}
+            tone="emerald"
+          />
+          <SummaryCard
+            icon={Building}
+            label="Repasse Final"
+            value={formatCurrency(borderoMock.transferValue)}
+            tone="emerald"
+            highlight
+          />
+        </section>
+
+        {/* Resumo Financeiro & Histórico de Repasses */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Tabela de Resumo Financeiro */}
+          <section className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-sm font-black text-slate-900 border-b border-slate-100 pb-3 mb-4">
+              Resumo Financeiro Consolidado
+            </h2>
+
+            <div className="space-y-2">
+              {deductions.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-between p-3 rounded-xl transition ${
+                    item.isRepasse
+                      ? 'bg-emerald-600 text-white font-black'
+                      : item.isHighlight
+                      ? 'bg-emerald-50 text-emerald-950 font-black border border-emerald-200'
+                      : item.isTotal
+                      ? 'bg-slate-100 text-slate-900 font-black'
+                      : 'bg-slate-50/70 text-slate-700 hover:bg-slate-100/70'
+                  }`}
+                >
+                  <span className="text-xs font-bold">{item.label}</span>
+                  <strong className={`text-xs ${item.isDeduction ? 'text-rose-600 font-semibold' : ''}`}>
+                    {item.isDeduction ? `- ${formatCurrency(item.value)}` : formatCurrency(item.value)}
+                  </strong>
+                </div>
+              ))}
             </div>
           </section>
 
-          <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
-              <ShieldCheck size={16} className="text-emerald-600" />
-              2. Dados da Atração
-            </h3>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Nome da Atração</span>
-                <strong className="text-slate-800">Parque Jaime Lerner</strong>
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Código Interno</span>
-                <strong className="text-slate-800">ATR-0001</strong>
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Cidade / UF</span>
-                <strong className="text-slate-800">Curitiba / PR</strong>
-              </div>
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase block">Período de Fechamento</span>
-                <strong className="text-emerald-700 font-black">01/07/2026 a 31/07/2026</strong>
-              </div>
+          {/* Histórico de Repasses */}
+          <section className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-sm font-black text-slate-900">
+                Histórico de Repasses Bancários
+              </h2>
+              <span className="text-xs font-bold text-slate-500">
+                Total: {transferHistoryMock.length} lançamentos
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="bg-slate-50 text-[10px] font-black uppercase text-slate-400">
+                  <tr>
+                    <th className="p-3">Data</th>
+                    <th className="p-3">Banco</th>
+                    <th className="p-3 text-right">Valor</th>
+                    <th className="p-3 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {transferHistoryMock.map((t) => (
+                    <tr key={t.id} className="hover:bg-slate-50/50">
+                      <td className="p-3 font-semibold text-slate-600">
+                        {formatDate(t.date)}
+                      </td>
+                      <td className="p-3 font-bold text-slate-800">{t.bank}</td>
+                      <td className="p-3 text-right font-black text-slate-900">
+                        {formatCurrency(t.value)}
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatusBadge status={t.status} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs font-semibold text-slate-600">
+              <span className="font-black text-slate-800">Observação:</span> Os repasses são processados via PIX/TED diretamente na conta bancária homologada da atração.
             </div>
           </section>
         </div>
-
-        {/* 3. Vendas & 4. Ingresso Detalhado */}
-        <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-4">
-          <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-            3. Vendas e Ingresso Detalhado
-          </h3>
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase text-slate-400">
-                <th className="p-3">Categoria</th>
-                <th className="p-3 text-right">Qtd Vendida</th>
-                <th className="p-3 text-right">Preço Praticado</th>
-                <th className="p-3 text-right">Subtotal Bruto</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
-              <tr>
-                <td className="p-3 font-bold">Inteira - Parque Jaime Lerner</td>
-                <td className="p-3 text-right font-bold">1.250</td>
-                <td className="p-3 text-right">R$ 50,00</td>
-                <td className="p-3 text-right font-bold text-slate-900">R$ 62.500,00</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-bold">Meia-Entrada (Estudante/Idoso)</td>
-                <td className="p-3 text-right font-bold">840</td>
-                <td className="p-3 text-right">R$ 25,00</td>
-                <td className="p-3 text-right font-bold text-slate-900">R$ 21.000,00</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        {/* 5. Cortesias & 6. Resumo de Preços & 7. Resumo de Pagamentos */}
-        <div className="grid gap-5 md:grid-cols-3">
-          <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-              5. Cortesias Emitidas
-            </h3>
-            <div className="text-xs space-y-2">
-              <div className="flex justify-between"><span>Imprensa / Protocolo:</span><strong>80 ingressos</strong></div>
-              <div className="flex justify-between font-black text-slate-900"><span>Total Cortesias:</span><span className="text-amber-600">R$ 0,00</span></div>
-            </div>
-          </section>
-
-          <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-              6. Resumo de Preços
-            </h3>
-            <div className="text-xs space-y-2">
-              <div className="flex justify-between"><span>Ticket Médio:</span><strong>R$ 40,00</strong></div>
-              <div className="flex justify-between"><span>Total Bruto:</span><strong>R$ 83.500,00</strong></div>
-            </div>
-          </section>
-
-          <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs space-y-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-              7. Resumo de Pagamentos
-            </h3>
-            <div className="text-xs space-y-2">
-              <div className="flex justify-between"><span>Cartão de Crédito:</span><strong>R$ 50.000,00</strong></div>
-              <div className="flex justify-between"><span>PIX Instantâneo:</span><strong>R$ 33.500,00</strong></div>
-            </div>
-          </section>
-        </div>
-
-        {/* 8. Despesas & 9. Resumo de Fechamento & 10. Resumo Geral */}
-        <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4 bg-emerald-50/40 border-emerald-200/80">
-          <h3 className="text-xs font-black text-emerald-900 uppercase tracking-wider border-b border-emerald-200 pb-2">
-            8, 9 & 10. Despesas, Fechamento e Repasse Geral
-          </h3>
-          <div className="grid gap-4 sm:grid-cols-4 text-xs font-bold">
-            <div className="p-3 rounded-2xl bg-white border border-slate-200">
-              <span className="text-[10px] text-slate-400 block uppercase">Receita Bruta Total</span>
-              <strong className="text-base font-black text-slate-900">R$ 83.500,00</strong>
-            </div>
-            <div className="p-3 rounded-2xl bg-white border border-slate-200">
-              <span className="text-[10px] text-slate-400 block uppercase">(-) Taxa Intermediação (10%)</span>
-              <strong className="text-base font-black text-rose-600">- R$ 8.350,00</strong>
-            </div>
-            <div className="p-3 rounded-2xl bg-white border border-slate-200">
-              <span className="text-[10px] text-slate-400 block uppercase">(-) Comissões / Encargos</span>
-              <strong className="text-base font-black text-rose-600">- R$ 1.250,00</strong>
-            </div>
-            <div className="p-3 rounded-2xl bg-emerald-600 text-white border border-emerald-700">
-              <span className="text-[10px] text-emerald-200 block uppercase font-bold">(=) REPASSE LÍQUIDO FINAL</span>
-              <strong className="text-lg font-black text-white">R$ 73.900,00</strong>
-            </div>
-          </div>
-        </section>
-
-        {/* 11 & 12. Assinaturas Curitiba 360 e Parceiro */}
-        <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-6">
-          <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-            11 & 12. Assinaturas de Homologação do Borderô
-          </h3>
-          <div className="grid gap-8 sm:grid-cols-2 pt-6">
-            <div className="text-center space-y-2">
-              <div className="border-b border-slate-400 w-3/4 mx-auto" />
-              <strong className="block text-xs text-slate-900">Assinatura — Curitiba 360 (Diretoria Financeira)</strong>
-              <span className="text-[10px] text-slate-400 font-mono">Assinado digitalmente por Curitiba 360 SA</span>
-            </div>
-
-            <div className="text-center space-y-2">
-              <div className="border-b border-slate-400 w-3/4 mx-auto" />
-              <strong className="block text-xs text-slate-900">Assinatura — Parceiro Comercial / Representante</strong>
-              <span className="text-[10px] text-slate-400 font-mono">Instituto Curitiba de Arte & Cultura</span>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   );
 }
 
-export default BorderoReportPage;
+function StatusBadge({ status }) {
+  const colors = {
+    Pago: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    Pendente: 'bg-amber-100 text-amber-800 border-amber-200',
+    Cancelado: 'bg-rose-100 text-rose-800 border-rose-200',
+  };
+
+  return (
+    <span
+      className={`inline-block rounded-full border px-2.5 py-0.5 text-[10px] font-black ${
+        colors[status] || 'bg-slate-100 text-slate-700'
+      }`}
+    >
+      {status}
+    </span>
+  );
+}
+
+const TONE_CLASSES = {
+  blue: 'bg-blue-50 text-blue-600',
+  amber: 'bg-amber-50 text-amber-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+};
+
+function SummaryCard({ icon: Icon, label, value, tone, highlight }) {
+  return (
+    <article
+      className={`rounded-[22px] border p-5 shadow-sm transition ${
+        highlight
+          ? 'border-emerald-500 bg-emerald-600 text-white'
+          : 'border-slate-200 bg-white text-slate-900'
+      }`}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <span
+            className={`text-xs font-bold ${
+              highlight ? 'text-emerald-100' : 'text-slate-500'
+            }`}
+          >
+            {label}
+          </span>
+          <strong
+            className={`mt-2 block text-xl font-black tracking-tight ${
+              highlight ? 'text-white' : 'text-slate-950'
+            }`}
+          >
+            {value}
+          </strong>
+        </div>
+
+        <span
+          className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
+            highlight ? 'bg-emerald-500 text-white' : TONE_CLASSES[tone]
+          }`}
+        >
+          <Icon size={18} />
+        </span>
+      </div>
+    </article>
+  );
+}
