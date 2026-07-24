@@ -13,10 +13,12 @@ import {
   X,
   XCircle,
   Ban,
+  Mail,
 } from 'lucide-react';
 import AgencyStatusBadge from './AgencyStatusBadge';
+import { AGENCY_STATUS } from '../../shared/constants/partnerStatus';
 
-export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReject, onSuspend }) {
+export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReject, onSuspend, onInactivate, onReactivate }) {
   const [activeTab, setActiveTab] = useState('dados');
 
   if (!agency) return null;
@@ -27,20 +29,16 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
         {/* Header */}
         <header className="flex items-center justify-between border-b border-slate-200 px-6 py-5 bg-slate-50">
           <div className="flex items-center gap-4">
-            {agency.logo && (
-              <img
-                src={agency.logo}
-                alt={agency.tradeName}
-                className="h-12 w-12 rounded-2xl object-cover border border-slate-200 shadow-xs"
-              />
-            )}
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 font-black text-white text-base">
+              {agency.tradeName ? agency.tradeName[0] : 'A'}
+            </div>
             <div>
               <div className="flex items-center gap-3">
                 <h2 className="text-lg font-black text-slate-900">{agency.tradeName}</h2>
                 <AgencyStatusBadge status={agency.status} />
               </div>
               <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                {agency.companyName} &bull; CNPJ: {agency.document}
+                {agency.corporateName || agency.companyName} &bull; CNPJ: {agency.cnpj || agency.document}
               </p>
             </div>
           </div>
@@ -57,7 +55,7 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
         {/* Tabs Navigation */}
         <div className="flex border-b border-slate-200 px-6 bg-white overflow-x-auto gap-2">
           <TabButton active={activeTab === 'dados'} onClick={() => setActiveTab('dados')} label="Empresa & Endereço" />
-          <TabButton active={activeTab === 'responsavel'} onClick={() => setActiveTab('responsavel')} label="Responsável" />
+          <TabButton active={activeTab === 'responsavel'} onClick={() => setActiveTab('responsavel')} label="Responsável & Gestores" />
           <TabButton active={activeTab === 'banco'} onClick={() => setActiveTab('banco')} label="Dados Bancários" />
           <TabButton active={activeTab === 'documentos'} onClick={() => setActiveTab('documentos')} label="Documentos & Anexos" />
         </div>
@@ -69,8 +67,8 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
               <div className="grid grid-cols-2 gap-4">
                 <InfoBox label="Tipo de Empresa" value={agency.companyType} />
                 <InfoBox label="Inscrição Estadual" value={agency.stateRegistration || 'Isento'} />
-                <InfoBox label="Telefone" value={agency.phone} icon={Phone} />
-                <InfoBox label="Website" value={agency.website} icon={Globe} />
+                <InfoBox label="Telefone Comercial" value={agency.commercialPhone || agency.phone} icon={Phone} />
+                <InfoBox label="Website" value={agency.site || agency.website} icon={Globe} />
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
@@ -79,17 +77,24 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
                   Endereço Principal
                 </h4>
                 <p className="font-semibold text-slate-700">
-                  {agency.address}, {agency.number} {agency.complement && `(${agency.complement})`}
+                  {agency.street || agency.address}, {agency.number} {agency.complement && `(${agency.complement})`}
                 </p>
                 <p className="text-slate-500">
-                  {agency.city} - {agency.state}, CEP: {agency.zipCode} &bull; {agency.country}
+                  {agency.district && `${agency.district} - `}{agency.city} - {agency.state}, CEP: {agency.zipCode} &bull; {agency.country}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <InfoBox label="Agentes Cadastrados" value={`${agency.agentsCount} agentes`} />
-                <InfoBox label="Atrações Liberadas" value={`${agency.attractionsCount} atrações`} />
+                <InfoBox label="Agentes Vinculados" value={`${agency.agentsCount || 0} agentes`} />
+                <InfoBox label="Atrações Habilitadas" value={`${agency.attractions?.length || 0} atrações`} />
               </div>
+
+              {agency.statusReason && (
+                <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 space-y-1">
+                  <span className="text-[10px] font-black uppercase text-rose-800">Observação / Motivo de Status</span>
+                  <p className="text-rose-950 font-bold">{agency.statusReason}</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -98,47 +103,71 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
                 <h4 className="font-black text-slate-800 flex items-center gap-2">
                   <User size={15} className="text-emerald-600" />
-                  Dados do Gestor Principal
+                  Gestor Principal / Responsável Legal
                 </h4>
                 <p><strong>Nome:</strong> {agency.responsibleName}</p>
                 <p><strong>CPF:</strong> {agency.responsibleCpf}</p>
-                <p><strong>Data de Nascimento:</strong> {agency.responsibleBirthDate}</p>
-                <p><strong>E-mail:</strong> {agency.responsibleEmail}</p>
-                <p><strong>Telefone Celular:</strong> {agency.responsiblePhone}</p>
-                <p><strong>Idioma de Preferência:</strong> {agency.language}</p>
+                <p className="flex items-center gap-1.5">
+                  <Mail size={13} className="text-slate-400" />
+                  <strong>E-mail:</strong> {agency.email || agency.responsibleEmail}
+                </p>
+                <p className="flex items-center gap-1.5">
+                  <Phone size={13} className="text-slate-400" />
+                  <strong>Telefone Celular:</strong> {agency.responsiblePhone}
+                </p>
               </div>
+
+              {agency.managers?.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-black text-slate-800 uppercase text-[10px] tracking-wider">
+                    Gestores Adicionais ({agency.managers.length})
+                  </h4>
+                  {agency.managers.map((m) => (
+                    <div key={m.id} className="rounded-xl border border-slate-200 bg-white p-3 space-y-1">
+                      <strong className="block text-slate-900">{m.name}</strong>
+                      <p className="text-slate-500">{m.email} &bull; {m.phone}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === 'banco' && (
             <div className="space-y-4 text-xs">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
-                <h4 className="font-black text-slate-800 flex items-center gap-2">
-                  <Landmark size={15} className="text-emerald-600" />
-                  Conta Bancária
-                </h4>
-                <p><strong>Banco:</strong> {agency.bank} ({agency.bankCode})</p>
-                <p><strong>Tipo de Conta:</strong> {agency.accountType}</p>
-                <p><strong>Agência:</strong> {agency.agency} &bull; <strong>Conta:</strong> {agency.account}</p>
-                <p><strong>Titular da Conta:</strong> {agency.bankHolder}</p>
-              </div>
+              {agency.bankAccount?.bankName || agency.bank ? (
+                <>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
+                    <h4 className="font-black text-slate-800 flex items-center gap-2">
+                      <Landmark size={15} className="text-emerald-600" />
+                      Conta Bancária Oficial
+                    </h4>
+                    <p><strong>Banco:</strong> {agency.bankAccount?.bankName || agency.bank} ({agency.bankAccount?.bankCode || agency.bankCode})</p>
+                    <p><strong>Tipo de Conta:</strong> {agency.bankAccount?.accountType || agency.accountType}</p>
+                    <p><strong>Agência:</strong> {agency.bankAccount?.agency || agency.agency} &bull; <strong>Conta:</strong> {agency.bankAccount?.account || agency.account}</p>
+                    <p><strong>Titular da Conta:</strong> {agency.bankAccount?.holder || agency.bankHolder || agency.corporateName}</p>
+                  </div>
 
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 space-y-1">
-                <h4 className="font-black text-emerald-900 flex items-center gap-2">
-                  <CreditCard size={15} className="text-emerald-600" />
-                  Chave PIX ({agency.pixType})
-                </h4>
-                <strong className="font-mono text-sm block font-black text-emerald-950">
-                  {agency.pixKey}
-                </strong>
-              </div>
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 space-y-1">
+                    <h4 className="font-black text-emerald-900 flex items-center gap-2">
+                      <CreditCard size={15} className="text-emerald-600" />
+                      Chave PIX ({agency.bankAccount?.pixKeyType || agency.pixType || 'Chave'})
+                    </h4>
+                    <strong className="font-mono text-sm block font-black text-emerald-950">
+                      {agency.bankAccount?.pixKey || agency.pixKey}
+                    </strong>
+                  </div>
+                </>
+              ) : (
+                <p className="text-slate-400 font-medium italic">Dados bancários ainda não cadastrados.</p>
+              )}
             </div>
           )}
 
           {activeTab === 'documentos' && (
             <div className="space-y-3 text-xs">
               <h4 className="font-black text-slate-800 uppercase text-[10px] tracking-wider">
-                Documentos Anexados no Cadastro
+                Documentos e Anexos Digitais
               </h4>
               {agency.documents?.length ? (
                 agency.documents.map((doc) => (
@@ -147,7 +176,7 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
                       <FileText size={16} className="text-emerald-600" />
                       <div>
                         <strong className="block text-slate-800 font-bold">{doc.name}</strong>
-                        <span className="text-[10px] text-slate-400">Enviado em {doc.uploadedAt}</span>
+                        <span className="text-[10px] text-slate-400">Tipo: {doc.type}</span>
                       </div>
                     </div>
                     <button type="button" className="text-xs font-black text-emerald-600 hover:underline">
@@ -164,7 +193,7 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
 
         {/* Footer Actions */}
         <footer className="border-t border-slate-200 p-4 bg-slate-50 flex gap-2 justify-end">
-          {agency.status === 'Pendente Aprovação' && (
+          {agency.status === AGENCY_STATUS.PENDING_APPROVAL && (
             <>
               <button
                 type="button"
@@ -185,14 +214,34 @@ export default function AgencyDetailsDrawer({ agency, onClose, onApprove, onReje
             </>
           )}
 
-          {agency.status === 'Ativa' && (
+          {agency.status === AGENCY_STATUS.ACTIVE && (
+            <>
+              <button
+                type="button"
+                onClick={() => onSuspend(agency)}
+                className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-rose-200 bg-white px-4 text-xs font-black text-rose-700 hover:bg-rose-50"
+              >
+                <Ban size={15} />
+                Suspender
+              </button>
+              <button
+                type="button"
+                onClick={() => onInactivate(agency)}
+                className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 text-xs font-black text-slate-700 hover:bg-slate-100"
+              >
+                Inativar
+              </button>
+            </>
+          )}
+
+          {agency.status === AGENCY_STATUS.INACTIVE && (
             <button
               type="button"
-              onClick={() => onSuspend(agency)}
-              className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-rose-200 bg-white px-4 text-xs font-black text-rose-700 hover:bg-rose-50"
+              onClick={() => onReactivate(agency)}
+              className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-xs font-black text-white hover:bg-emerald-700 shadow-xs"
             >
-              <Ban size={15} />
-              Suspender Agência
+              <CheckCircle2 size={15} />
+              Reativar Agência
             </button>
           )}
         </footer>

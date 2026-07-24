@@ -24,11 +24,11 @@ export function useAgencies() {
     loadAgencies();
   }, [loadAgencies]);
 
-  async function createAgency(formData) {
+  async function createAgency(payload) {
     try {
       setIsMutating(true);
       setError('');
-      const created = await agencyService.create(formData);
+      const created = await agencyService.create(payload);
       setAgencies((prev) => [created, ...prev]);
       return created;
     } catch (err) {
@@ -39,42 +39,30 @@ export function useAgencies() {
     }
   }
 
+  async function updateAgency(id, payload) {
+    try {
+      setIsMutating(true);
+      setError('');
+      const updated = await agencyService.update(id, payload);
+      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      return updated;
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao atualizar agência.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
   async function approveAgency(id) {
     try {
       setIsMutating(true);
+      setError('');
       const updated = await agencyService.approve(id);
       setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
       return updated;
     } catch (err) {
-      setError(err?.message ?? 'Erro ao aprovar agência.');
-      throw err;
-    } finally {
-      setIsMutating(false);
-    }
-  }
-
-  async function rejectAgency(id, reason) {
-    try {
-      setIsMutating(true);
-      const updated = await agencyService.reject(id, reason);
-      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
-      return updated;
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao rejeitar agência.');
-      throw err;
-    } finally {
-      setIsMutating(false);
-    }
-  }
-
-  async function suspendAgency(id, reason) {
-    try {
-      setIsMutating(true);
-      const updated = await agencyService.suspend(id, reason);
-      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
-      return updated;
-    } catch (err) {
-      setError(err?.message ?? 'Erro ao suspender agência.');
+      setError(err?.message ?? 'Falha ao aprovar agência.');
       throw err;
     } finally {
       setIsMutating(false);
@@ -84,23 +72,115 @@ export function useAgencies() {
   async function approveManyAgencies(ids) {
     try {
       setIsMutating(true);
-      const updatedList = await agencyService.approveMany(ids);
-      setAgencies(updatedList);
+      setError('');
+      const updatedItems = await agencyService.approveMany(ids);
+      const map = new Map(updatedItems.map((a) => [a.id, a]));
+      setAgencies((prev) => prev.map((a) => map.get(a.id) ?? a));
     } catch (err) {
-      setError(err?.message ?? 'Erro ao aprovar agências em lote.');
+      setError(err?.message ?? 'Falha ao aprovar agências em lote.');
       throw err;
     } finally {
       setIsMutating(false);
     }
   }
 
-  async function rejectManyAgencies(ids) {
+  async function rejectAgency(id, reason) {
     try {
       setIsMutating(true);
-      const updatedList = await agencyService.rejectMany(ids);
-      setAgencies(updatedList);
+      setError('');
+      const updated = await agencyService.reject(id, reason);
+      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      return updated;
     } catch (err) {
-      setError(err?.message ?? 'Erro ao rejeitar agências em lote.');
+      setError(err?.message ?? 'Falha ao rejeitar agência.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
+  async function rejectManyAgencies(ids, reason) {
+    try {
+      setIsMutating(true);
+      setError('');
+      const updatedItems = await agencyService.rejectMany(ids, reason);
+      const map = new Map(updatedItems.map((a) => [a.id, a]));
+      setAgencies((prev) => prev.map((a) => map.get(a.id) ?? a));
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao rejeitar agências em lote.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
+  async function suspendAgency(id, reason) {
+    try {
+      setIsMutating(true);
+      setError('');
+      const updated = await agencyService.suspend(id, reason);
+      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      return updated;
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao suspender agência.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
+  async function inactivateAgency(id) {
+    try {
+      setIsMutating(true);
+      setError('');
+      const updated = await agencyService.inactivate(id);
+      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      return updated;
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao inativar agência.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
+  async function reactivateAgency(id) {
+    try {
+      setIsMutating(true);
+      setError('');
+      const updated = await agencyService.reactivate(id);
+      setAgencies((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      return updated;
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao reativar agência.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
+  async function removeAgency(id) {
+    try {
+      setIsMutating(true);
+      setError('');
+      await agencyService.remove(id);
+      setAgencies((prev) => prev.filter((a) => a.id !== id));
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao remover agência.');
+      throw err;
+    } finally {
+      setIsMutating(false);
+    }
+  }
+
+  async function removeManyAgencies(ids) {
+    try {
+      setIsMutating(true);
+      setError('');
+      await agencyService.removeMany(ids);
+      setAgencies((prev) => prev.filter((a) => !ids.includes(a.id)));
+    } catch (err) {
+      setError(err?.message ?? 'Falha ao remover agências em lote.');
       throw err;
     } finally {
       setIsMutating(false);
@@ -114,10 +194,15 @@ export function useAgencies() {
     error,
     reload: loadAgencies,
     createAgency,
+    updateAgency,
     approveAgency,
-    rejectAgency,
-    suspendAgency,
     approveManyAgencies,
+    rejectAgency,
     rejectManyAgencies,
+    suspendAgency,
+    inactivateAgency,
+    reactivateAgency,
+    removeAgency,
+    removeManyAgencies,
   };
 }
