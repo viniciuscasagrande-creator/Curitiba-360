@@ -9,6 +9,9 @@ import AgencyStatusTabs from '../components/AgencyStatusTabs';
 import AgencySummaryCards from '../components/AgencySummaryCards';
 import AgencyTable from '../components/AgencyTable';
 
+import TableSkeleton from '../../shared/TableSkeleton';
+import PartnerToast from '../../shared/PartnerToast';
+
 import { useAgencies } from '../hooks/useAgencies';
 import { useAgencyFilters } from '../hooks/useAgencyFilters';
 import { useAgencyPagination } from '../hooks/useAgencyPagination';
@@ -22,6 +25,8 @@ export default function AgenciesPage() {
     isLoading,
     isMutating,
     error,
+    toast,
+    clearToast,
     reload,
 
     createAgency,
@@ -171,26 +176,30 @@ export default function AgenciesPage() {
         </section>
 
         <section>
-          <AgencyTable
-            agencies={pagination.paginatedAgencies}
-            isLoading={isLoading}
-            sorting={sorting}
-            onSort={toggleSorting}
-            selectedIds={selection.selectedIds}
-            allVisibleSelected={selection.allVisibleSelected}
-            someVisibleSelected={selection.someVisibleSelected}
-            onToggleSelection={selection.toggle}
-            onToggleAll={selection.toggleAllVisible}
-            pagination={pagination}
-            onView={handleRowView}
-            onEdit={handleRowEdit}
-            onApprove={(agency) => approveAgency(agency.id)}
-            onReject={(agency) => requestAction('reject-one', agency)}
-            onSuspend={(agency) => requestAction('suspend-one', agency)}
-            onInactivate={(agency) => inactivateAgency(agency.id)}
-            onReactivate={(agency) => approveAgency(agency.id)}
-            onDelete={(agency) => requestAction('delete-one', agency)}
-          />
+          {isLoading ? (
+            <TableSkeleton rows={6} />
+          ) : (
+            <AgencyTable
+              agencies={pagination.paginatedAgencies}
+              isLoading={isLoading}
+              sorting={sorting}
+              onSort={toggleSorting}
+              selectedIds={selection.selectedIds}
+              allVisibleSelected={selection.allVisibleSelected}
+              someVisibleSelected={selection.someVisibleSelected}
+              onToggleSelection={selection.toggle}
+              onToggleAll={selection.toggleAllVisible}
+              pagination={pagination}
+              onView={handleRowView}
+              onEdit={handleRowEdit}
+              onApprove={(agency) => approveAgency(agency.id)}
+              onReject={(agency) => requestAction('reject-one', agency)}
+              onSuspend={(agency) => requestAction('suspend-one', agency)}
+              onInactivate={(agency) => inactivateAgency(agency.id)}
+              onReactivate={(agency) => approveAgency(agency.id)}
+              onDelete={(agency) => requestAction('delete-one', agency)}
+            />
+          )}
         </section>
       </main>
 
@@ -258,6 +267,9 @@ export default function AgenciesPage() {
           }}
         />
       )}
+
+      {/* Toast Feedback */}
+      <PartnerToast toast={toast} onClose={clearToast} />
     </div>
   );
 }
