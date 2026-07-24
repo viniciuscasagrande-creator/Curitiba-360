@@ -1,28 +1,36 @@
 export const FIREBASE_COLLECTIONS = {
   AGENCIES: 'agencies',
 
-  AGENCY_LOGS: 'agency_logs',
-
   AGENCY_DOCUMENTS:
     'agency_documents',
 
-  AGENCY_USERS: 'agency_users',
+  AGENCY_BANK_ACCOUNTS:
+    'agency_bank_accounts',
+
+  AGENCY_USERS:
+    'agency_users',
 
   AGENCY_HISTORY:
     'agency_history',
 
-  USERS: 'users',
+  AGENCY_LOGS:
+    'agency_logs',
 
-  USER_ROLES: 'user_roles',
+  AGENTS:
+    'agents',
+
+  USERS:
+    'users',
 };
 
 export const FIREBASE_STORAGE_PATHS = {
   AGENCIES: 'agencies',
 
-  AGENCY_DOCUMENTS:
-    'agencies/documents',
+  agencyDocuments(agencyId) {
+    return `agencies/${agencyId}/documents`;
+  },
 
-  AGENCY_LOGOS: 'agencies/logos',
-
-  USER_AVATARS: 'users/avatars',
+  agencyLogo(agencyId) {
+    return `agencies/${agencyId}/logo`;
+  },
 };
