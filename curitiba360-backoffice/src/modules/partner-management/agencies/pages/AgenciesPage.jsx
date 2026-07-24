@@ -1,22 +1,39 @@
-import {
-  useState,
-} from 'react';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import AgencyFilters from '../components/AgencyFilters';
 import AgencyHeader from '../components/AgencyHeader';
-import AgencyStatusTabs from '../components/AgencyStatusTabs';
 import AgencySummaryCards from '../components/AgencySummaryCards';
+import AgencyStatusTabs from '../components/AgencyStatusTabs';
+import AgencyFilters from '../components/AgencyFilters';
+import AgencyTable from '../components/AgencyTable';
+import AgencyDetailsDrawer from '../components/AgencyDetailsDrawer';
+import AgencySuspendModal from '../components/AgencySuspendModal';
+import AgencyRejectModal from '../components/AgencyRejectModal';
+
+import BulkActionBar from '../../shared/BulkActionBar';
+import TablePagination from '../../shared/TablePagination';
 
 import { useAgencies } from '../hooks/useAgencies';
 import { useAgencyFilters } from '../hooks/useAgencyFilters';
+import { exportCsv } from '../../shared/utils/partnerFormatters';
 
 export default function AgenciesPage() {
+  const navigate = useNavigate();
   const {
     agencies,
     isLoading,
     isMutating,
     error,
     reload,
+    approveAgency,
+    approveMany,
+    rejectAgency,
+    rejectMany,
+    suspendAgency,
+    inactivateAgency,
+    reactivateAgency,
+    removeAgency,
+    removeMany,
   } = useAgencies();
 
   const {
@@ -29,180 +46,199 @@ export default function AgenciesPage() {
     resetFilters,
   } = useAgencyFilters(agencies);
 
-  const [isFormOpen, setIsFormOpen] =
-    useState(false);
+  // Seleção e Paginação
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  function exportAgencies() {
-    const headers = [
-      'ID',
-      'Nome Fantasia',
-      'Razão Social',
-      'CNPJ',
-      'Responsável',
-      'E-mail',
-      'Status',
-      'Agentes',
-      'Cidade',
-      'UF',
-    ];
+  // Drawers e Modais
+  const [drawerAgency, setDrawerAgency] = useState(null);
+  const [suspendModalAgency, setSuspendModalAgency] = useState(null);
+  const [rejectModalAgency, setRejectModalAgency] = useState(null);
 
-    const rows = filteredAgencies.map(
-      (agency) => [
-        agency.id,
-        agency.tradeName,
-        agency.corporateName,
-        agency.cnpj,
-        agency.responsibleName,
-        agency.email,
-        agency.status,
-        agency.agentsCount,
-        agency.city,
-        agency.state,
-      ],
+  // Paginação dos dados filtrados
+  const totalPages = Math.ceil(filteredAgencies.length / pageSize) || 1;
+  const paginatedAgencies = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredAgencies.slice(start, start + pageSize);
+  }, [filteredAgencies, currentPage, pageSize]);
+
+  function toggleSelectAll() {
+    if (selectedIds.length === paginatedAgencies.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(paginatedAgencies.map((a) => a.id));
+    }
+  }
+
+  function toggleSelectItem(id) {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+  }
 
-    const csvContent = [
-      headers,
-      ...rows,
-    ]
-      .map((row) =>
-        row
-          .map((cell) => {
-            const value = String(
-              cell ?? '',
-            ).replaceAll('"', '""');
+  async function handleBatchApprove() {
+    if (!selectedIds.length) return;
+    const confirmed = window.confirm(`Aprovar ${selectedIds.length} agências selecionadas?`);
+    if (!confirmed) return;
+    await approveMany(selectedIds);
+    setSelectedIds([]);
+  }
 
-            return `"${value}"`;
-          })
-          .join(';'),
-      )
-      .join('\n');
+  async function handleBatchReject() {
+    if (!selectedIds.length) return;
+    const reason = window.prompt('Motivo da rejeição em lote:');
+    if (!reason?.trim()) return;
+    await rejectMany(selectedIds, reason.trim());
+    setSelectedIds([]);
+  }
 
-    const blob = new Blob(
-      [`\uFEFF${csvContent}`],
-      {
-        type: 'text/csv;charset=utf-8;',
-      },
-    );
-
-    const url =
-      URL.createObjectURL(blob);
-
-    const link =
-      document.createElement('a');
-
-    link.href = url;
-
-    link.download =
-      'gestao-de-agencias.csv';
-
-    document.body.appendChild(link);
-
-    link.click();
-    link.remove();
-
-    URL.revokeObjectURL(url);
+  function handleExportCsv() {
+    exportCsv('gestao-de-agencias-b2b.csv', [
+      ['ID', 'Nome Fantasia', 'Razão Social', 'CNPJ', 'Responsável', 'E-mail', 'Cidade', 'UF', 'Status', 'Qtd Agentes'],
+      ...filteredAgencies.map((a) => [
+        a.id,
+        a.tradeName,
+        a.corporateName || a.companyName,
+        a.cnpj || a.document,
+        a.responsibleName,
+        a.email || a.responsibleEmail,
+        a.city,
+        a.state,
+        a.status,
+        a.agentsCount || 0,
+      ]),
+    ]);
   }
 
   return (
     <div className="min-h-screen bg-slate-50 text-left">
-      <main className="mx-auto max-w-[1800px] px-4 py-7 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-[1800px] px-4 py-7 sm:px-6 lg:px-8 space-y-6">
         <AgencyHeader
-          isRefreshing={
-            isLoading || isMutating
-          }
+          isRefreshing={isLoading || isMutating}
           onRefresh={reload}
-          onExport={exportAgencies}
-          onAdd={() =>
-            setIsFormOpen(true)
-          }
+          onExport={handleExportCsv}
+          onAdd={() => navigate('/admin/parceiros/agencias/novo')}
         />
 
-        <section className="mt-6">
-          <AgencySummaryCards
-            agencies={agencies}
-          />
+        <section>
+          <AgencySummaryCards agencies={agencies} />
         </section>
 
-        <section className="mt-6 rounded-[24px] border border-slate-200 bg-white px-5 shadow-sm">
+        <section className="rounded-[24px] border border-slate-200 bg-white px-5 shadow-sm">
           <AgencyStatusTabs
             activeStatus={filters.status}
             agencies={agencies}
-            onChange={(status) =>
-              updateFilter(
-                'status',
-                status,
-              )
-            }
+            onChange={(status) => {
+              updateFilter('status', status);
+              setCurrentPage(1);
+            }}
           />
         </section>
 
-        <section className="mt-4">
+        <section>
           <AgencyFilters
             filters={filters}
             cities={cities}
             states={states}
-            companyTypes={
-              companyTypes
-            }
-            onChange={updateFilter}
-            onReset={resetFilters}
+            companyTypes={companyTypes}
+            onChange={(field, val) => {
+              updateFilter(field, val);
+              setCurrentPage(1);
+            }}
+            onReset={() => {
+              resetFilters();
+              setCurrentPage(1);
+            }}
           />
         </section>
 
+        <BulkActionBar
+          selectedCount={selectedIds.length}
+          onApprove={handleBatchApprove}
+          onReject={handleBatchReject}
+          onClear={() => setSelectedIds([])}
+        />
+
         {error && (
-          <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
             {error}
           </div>
         )}
 
-        <section className="mt-4 rounded-[24px] border border-dashed border-slate-300 bg-white p-12 text-center">
-          {isLoading ? (
-            <p className="text-sm font-black text-slate-400">
-              Carregando agências...
-            </p>
-          ) : (
-            <>
-              <strong className="block text-lg font-black text-slate-800">
-                {
-                  filteredAgencies.length
-                }{' '}
-                agência(s) encontrada(s)
-              </strong>
+        <section className="space-y-0">
+          <AgencyTable
+            agencies={paginatedAgencies}
+            selectedIds={selectedIds}
+            onToggleSelectAll={toggleSelectAll}
+            onToggleSelectItem={toggleSelectItem}
+            onViewDrawer={(agency) => setDrawerAgency(agency)}
+            onApprove={(id) => approveAgency(id)}
+            onRejectModal={(agency) => setRejectModalAgency(agency)}
+            onSuspendModal={(agency) => setSuspendModalAgency(agency)}
+            onInactivate={(id) => inactivateAgency(id)}
+            onRemove={(id) => {
+              if (window.confirm('Excluir esta agência permanentemente?')) removeAgency(id);
+            }}
+          />
 
-              <p className="mt-2 text-sm font-medium text-slate-500">
-                A tabela completa será
-                adicionada no bloco 2.2.
-              </p>
-            </>
-          )}
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredAgencies.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setCurrentPage(1);
+            }}
+          />
         </section>
       </main>
 
-      {isFormOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-[28px] bg-white p-6 shadow-2xl">
-            <h2 className="text-xl font-black text-slate-900">
-              Cadastro de Agência
-            </h2>
+      {/* Drawer & Modais */}
+      <AgencyDetailsDrawer
+        agency={drawerAgency}
+        onClose={() => setDrawerAgency(null)}
+        onApprove={(agency) => {
+          setDrawerAgency(null);
+          approveAgency(agency.id);
+        }}
+        onReject={(agency) => {
+          setDrawerAgency(null);
+          setRejectModalAgency(agency);
+        }}
+        onSuspend={(agency) => {
+          setDrawerAgency(null);
+          setSuspendModalAgency(agency);
+        }}
+        onInactivate={(agency) => {
+          setDrawerAgency(null);
+          inactivateAgency(agency.id);
+        }}
+        onReactivate={(agency) => {
+          setDrawerAgency(null);
+          reactivateAgency(agency.id);
+        }}
+      />
 
-            <p className="mt-2 text-sm font-medium text-slate-500">
-              O Wizard completo será
-              implementado na Parte 3.
-            </p>
+      <AgencySuspendModal
+        agency={suspendModalAgency}
+        onClose={() => setSuspendModalAgency(null)}
+        onConfirm={(id, reason) => {
+          setSuspendModalAgency(null);
+          suspendAgency(id, reason);
+        }}
+      />
 
-            <button
-              type="button"
-              onClick={() =>
-                setIsFormOpen(false)
-              }
-              className="mt-6 h-11 w-full rounded-xl bg-slate-900 text-xs font-black text-white"
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
-      )}
+      <AgencyRejectModal
+        agency={rejectModalAgency}
+        onClose={() => setRejectModalAgency(null)}
+        onConfirm={(id, reason) => {
+          setRejectModalAgency(null);
+          rejectAgency(id, reason);
+        }}
+      />
     </div>
   );
 }
