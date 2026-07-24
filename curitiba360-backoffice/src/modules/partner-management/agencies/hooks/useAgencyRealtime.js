@@ -275,6 +275,26 @@ export function useAgencyRealtime({
     }, [start, stop]);
 
   useEffect(() => {
+    function handleOnline() {
+      if (enabled) {
+        restart();
+      }
+    }
+
+    window.addEventListener(
+      'online',
+      handleOnline,
+    );
+
+    return () => {
+      window.removeEventListener(
+        'online',
+        handleOnline,
+      );
+    };
+  }, [enabled, restart]);
+
+  useEffect(() => {
     mountedRef.current = true;
 
     if (!enabled) {

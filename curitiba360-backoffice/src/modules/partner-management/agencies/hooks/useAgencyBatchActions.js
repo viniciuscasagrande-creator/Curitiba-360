@@ -12,6 +12,7 @@ export function useAgencyBatchActions({
   onError,
   reload,
   clearSelection,
+  realtimeEnabled = false,
 } = {}) {
   const [isProcessing, setIsProcessing] =
     useState(false);
@@ -41,7 +42,7 @@ export function useAgencyBatchActions({
 
           setLastResult(result);
 
-          if (typeof reload === 'function') {
+          if (!realtimeEnabled && typeof reload === 'function') {
             await reload();
           }
 
@@ -86,6 +87,7 @@ export function useAgencyBatchActions({
         clearSelection,
         onError,
         onSuccess,
+        realtimeEnabled,
         reload,
       ],
     );

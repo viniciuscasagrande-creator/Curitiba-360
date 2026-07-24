@@ -5,6 +5,7 @@ import AgencyDetailsDrawer from '../components/AgencyDetailsDrawer';
 import AgencyFilters from '../components/AgencyFilters';
 import AgencyFormDrawer from '../components/AgencyFormDrawer';
 import AgencyHeader from '../components/AgencyHeader';
+import AgencyRealtimeStatus from '../components/AgencyRealtimeStatus';
 import AgencyStatusTabs from '../components/AgencyStatusTabs';
 import AgencySummaryCards from '../components/AgencySummaryCards';
 import AgencyTable from '../components/AgencyTable';
@@ -28,6 +29,11 @@ export default function AgenciesPage() {
     toast,
     clearToast,
     reload,
+
+    realtime,
+    realtimeEnabled,
+    toggleRealtime,
+    lastRealtimeChange,
 
     createAgency,
     updateAgency,
@@ -132,6 +138,43 @@ export default function AgenciesPage() {
           }}
         />
 
+        {/* Realtime Status Bar & Toggle */}
+        <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3">
+            <AgencyRealtimeStatus
+              status={realtime?.realtimeStatus || 'idle'}
+              isFromCache={realtime?.isFromCache || false}
+              hasPendingWrites={realtime?.hasPendingWrites || false}
+              lastSyncedAt={realtime?.lastSyncedAt || null}
+              onRestart={realtime?.restart}
+            />
+
+            {lastRealtimeChange && (
+              <span className="text-xs font-medium text-slate-500">
+                Última atualização às{' '}
+                {new Intl.DateTimeFormat('pt-BR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                }).format(lastRealtimeChange)}
+              </span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={toggleRealtime}
+            className={[
+              'rounded-xl border px-3.5 py-1.5 text-xs font-bold transition-all',
+              realtimeEnabled
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                : 'border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200',
+            ].join(' ')}
+          >
+            {realtimeEnabled ? '● Realtime Ativo' : '○ Realtime Desativado'}
+          </button>
+        </section>
+
         <section>
           <AgencySummaryCards agencies={agencies} />
         </section>
@@ -157,96 +200,83 @@ export default function AgenciesPage() {
 
         {error && (
           <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
-            {error}
+            {error?.message || String(error)}
           </div>
         )}
 
         <section>
           <AgencyBulkActions
             selectedCount={selection.selectedCount}
-            activeStatus={filters.status}
-            disabled={isMutating}
             onApprove={handleApproveMany}
-            onReject={() => requestAction('reject-many', null)}
-            onSuspend={() => requestAction('suspend-many', null)}
+            onReject={() => requestAction('reject-many')}
+            onSuspend={() => requestAction('suspend-many')}
             onInactivate={handleInactivateMany}
-            onDelete={() => requestAction('delete-many', null)}
+            onReactivate={() => requestAction('reactivate-many')}
+            onDelete={() => requestAction('delete-many')}
             onClear={selection.clearSelection}
           />
         </section>
 
-        <section>
+        <section className="space-y-4">
           {isLoading ? (
-            <TableSkeleton rows={6} />
+            <TableSkeleton rows={10} cols={6} />
           ) : (
             <AgencyTable
               agencies={pagination.paginatedAgencies}
-              isLoading={isLoading}
+              selectedIds={selection.selectedIds}
+              isAllSelected={selection.isAllSelected}
+              onToggleAll={selection.toggleAll}
+              onToggleSelect={selection.toggleSelection}
               sorting={sorting}
               onSort={toggleSorting}
-              selectedIds={selection.selectedIds}
-              allVisibleSelected={selection.allVisibleSelected}
-              someVisibleSelected={selection.someVisibleSelected}
-              onToggleSelection={selection.toggle}
-              onToggleAll={selection.toggleAllVisible}
-              pagination={pagination}
               onView={handleRowView}
               onEdit={handleRowEdit}
-              onApprove={(agency) => approveAgency(agency.id)}
+              onApprove={approveAgency}
               onReject={(agency) => requestAction('reject-one', agency)}
               onSuspend={(agency) => requestAction('suspend-one', agency)}
-              onInactivate={(agency) => inactivateAgency(agency.id)}
-              onReactivate={(agency) => approveAgency(agency.id)}
+              onInactivate={inactivateAgency}
+              onReactivate={approveAgency}
               onDelete={(agency) => requestAction('delete-one', agency)}
+              pagination={pagination}
             />
           )}
         </section>
       </main>
 
-      {/* Wizard Form Drawer */}
+      {/* Drawer Form Editor / Create */}
       <AgencyFormDrawer
-        open={isFormOpen}
+        isOpen={isFormOpen}
         agency={selectedAgency}
         onClose={() => {
           setIsFormOpen(false);
           setSelectedAgency(null);
         }}
-        onCreate={createAgency}
-        onUpdate={updateAgency}
-        onSuccess={(savedAgency) => {
+        onSubmit={async (formData) => {
+          if (selectedAgency?.id) {
+            await updateAgency(selectedAgency.id, formData);
+          } else {
+            await createAgency(formData);
+          }
           setIsFormOpen(false);
-          setSelectedAgency(savedAgency ?? null);
+          setSelectedAgency(null);
         }}
       />
 
-      {/* Details Drawer */}
-      <AgencyDetailsDrawer
-        open={Boolean(selectedAgency) && !isFormOpen}
-        agency={selectedAgency}
-        isMutating={isMutating}
-        onClose={() => setSelectedAgency(null)}
-        onEdit={(agency) => {
-          setSelectedAgency(agency);
-          setIsFormOpen(true);
-        }}
-        onApprove={async (agency) => {
-          await approveAgency(agency.id);
-          setSelectedAgency(null);
-        }}
-        onReject={(agency) => requestAction('reject-one', agency)}
-        onSuspend={(agency) => requestAction('suspend-one', agency)}
-        onInactivate={async (agency) => {
-          await inactivateAgency(agency.id);
-          setSelectedAgency(null);
-        }}
-        onReactivate={async (agency) => {
-          await approveAgency(agency.id);
-          setSelectedAgency(null);
-        }}
-        onDelete={(agency) => requestAction('delete-one', agency)}
-      />
+      {/* Drawer Details View */}
+      {selectedAgency && !isFormOpen && (
+        <AgencyDetailsDrawer
+          agency={selectedAgency}
+          onClose={() => setSelectedAgency(null)}
+          onEdit={() => setIsFormOpen(true)}
+          onApprove={() => approveAgency(selectedAgency.id)}
+          onReject={() => requestAction('reject-one', selectedAgency)}
+          onSuspend={() => requestAction('suspend-one', selectedAgency)}
+          onInactivate={() => inactivateAgency(selectedAgency.id)}
+          onReactivate={() => approveAgency(selectedAgency.id)}
+        />
+      )}
 
-      {/* Modais de Confirmação */}
+      {/* Modal Confirmations */}
       {pendingAction && (
         <ActionConfirmationModal
           action={pendingAction}
