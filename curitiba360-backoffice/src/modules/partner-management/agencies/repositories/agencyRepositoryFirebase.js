@@ -39,6 +39,10 @@ import {
   agencyBatchRepository,
 } from './agencyBatchRepository';
 
+import {
+  agencyRealtimeRepository,
+} from './agencyRealtimeRepository';
+
 const COLLECTION_NAME =
   FIREBASE_COLLECTIONS.AGENCIES;
 
@@ -339,6 +343,15 @@ export const agencyRepositoryFirebase = {
 
   async removeMany(ids, metadata = {}) {
     return agencyBatchRepository.removeMany(ids, metadata);
+  },
+
+  // Realtime Subscriptions
+  subscribeToList(options = {}) {
+    return agencyRealtimeRepository.subscribeToList(options);
+  },
+
+  subscribeToAgency(options = {}) {
+    return agencyRealtimeRepository.subscribeToAgency(options);
   },
 };
 
