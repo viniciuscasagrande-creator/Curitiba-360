@@ -85,6 +85,8 @@ import ValidationReportPage from "../modules/attractions/finance/reports/pages/V
 import ValidationReportPrintPage from "../modules/attractions/finance/reports/pages/ValidationReportPrintPage";
 import CommissionReportPage from "../modules/attractions/finance/reports/pages/CommissionReportPage";
 import CommissionReportPrintPage from "../modules/attractions/finance/reports/pages/CommissionReportPrintPage";
+import SalesByPaymentReportPage from "../modules/attractions/finance/reports/pages/SalesByPaymentReportPage";
+import SalesByPaymentReportPrintPage from "../modules/attractions/finance/reports/pages/SalesByPaymentReportPrintPage";
 import BorderoReportPage from "../modules/attractions/finance/reports/pages/BorderoReportPage";
 import BorderoReportPrintPage from "../modules/attractions/finance/reports/pages/BorderoReportPrintPage";
 import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
@@ -355,6 +357,11 @@ export function AppRoutes() {
                 <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/comissoes" element={<CommissionReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/comissoes/print" element={<CommissionReportPrintPage />} />
                 <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/comissoes/impressao" element={<CommissionReportPrintPage />} />
+
+                <Route path="/admin/atracoes/:attractionId/relatorios/pagamentos" element={<SalesByPaymentReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/pagamentos" element={<SalesByPaymentReportPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/pagamentos/print" element={<SalesByPaymentReportPrintPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/pagamentos/impressao" element={<SalesByPaymentReportPrintPage />} />
 
                 <Route path="/admin/atracoes/:attractionId/relatorios/bordero" element={<BorderoReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/bordero/print" element={<BorderoReportPrintPage />} />
