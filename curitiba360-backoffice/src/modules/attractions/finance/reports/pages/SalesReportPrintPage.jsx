@@ -1,86 +1,199 @@
-import React from 'react';
-import { MOCK_SALES } from './SalesReportPage';
+import {
+  attractionMock,
+  salesReportMock,
+} from '../data/financeReportsMock';
 
-export function SalesReportPrintPage() {
-  const totalQuantity = MOCK_SALES.reduce((acc, curr) => acc + curr.quantity, 0);
-  const grandTotal = MOCK_SALES.reduce((acc, curr) => acc + curr.total, 0);
-  const emitDate = new Date().toLocaleString('pt-BR');
+import {
+  formatCurrency,
+  formatDate,
+  sumBy,
+} from '../utils/reportUtils';
+
+export default function SalesReportPrintPage() {
+  const filters = {
+    period: {
+      startDate: '2026-01-01',
+      endDate: '2026-01-01',
+    },
+    category: 'Todos',
+    agent: 'Todos',
+    ticketType: 'Todos',
+  };
+
+  const totalQuantity = sumBy(
+    salesReportMock,
+    'quantity',
+  );
+
+  const totalValue = sumBy(
+    salesReportMock,
+    'total',
+  );
 
   return (
-    <div className="min-h-screen bg-white p-8 text-slate-900 font-sans text-left">
-      {/* Cabeçalho de Impressão */}
-      <header className="flex items-center justify-between border-b-2 border-slate-900 pb-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-black text-slate-950 uppercase tracking-tight">Curitiba 360</h1>
-          <p className="text-xs font-bold text-slate-500">Sistema Integrado de Gestão de Atrações</p>
-        </div>
-        <div className="text-right">
-          <h2 className="text-lg font-black text-emerald-700 uppercase">Relatório Oficial de Vendas</h2>
-          <span className="text-xs font-bold text-slate-600 block">Atração: Parque Jaime Lerner</span>
+    <div className="min-h-screen bg-white px-10 py-8 text-slate-700 print:p-0 text-left">
+      <header className="border border-slate-300 p-6">
+        <div className="flex items-center gap-8">
+          <div className="flex h-24 w-32 items-center justify-center rounded-2xl bg-slate-50">
+            <span className="text-center text-lg font-black text-emerald-600">
+              CURITIBA
+              <br />
+              360
+            </span>
+          </div>
+
+          <div>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">
+              Relatório de Vendas
+            </h1>
+
+            <p className="mt-2 text-xl font-black text-slate-600">
+              {attractionMock.name}
+            </p>
+          </div>
         </div>
       </header>
 
-      {/* Meta Informações e Filtros Aplicados */}
-      <section className="mb-6 p-4 rounded-xl bg-slate-50 border border-slate-200 grid grid-cols-3 gap-4 text-xs">
-        <div>
-          <span className="font-bold text-slate-400 block uppercase text-[10px]">Período de Emissão</span>
-          <strong className="text-slate-800">Todo o Período Registrado</strong>
-        </div>
-        <div>
-          <span className="font-bold text-slate-400 block uppercase text-[10px]">Data de Emissão</span>
-          <strong className="text-slate-800">{emitDate}</strong>
-        </div>
-        <div>
-          <span className="font-bold text-slate-400 block uppercase text-[10px]">Status do Relatório</span>
-          <strong className="text-emerald-700">Consolidado e Auditado</strong>
+      <section className="mt-7">
+        <h2 className="text-xl font-black text-slate-800">
+          Filtros aplicados
+        </h2>
+
+        <div className="mt-4 flex flex-wrap gap-4">
+          <FilterBadge
+            label="Período"
+            value={`${formatDate(
+              filters.period.startDate,
+            )} - ${formatDate(
+              filters.period.endDate,
+            )}`}
+          />
+
+          <FilterBadge
+            label="Categoria"
+            value={filters.category}
+          />
+
+          <FilterBadge
+            label="Agente"
+            value={filters.agent}
+          />
+
+          <FilterBadge
+            label="Tipo de ingresso"
+            value={filters.ticketType}
+          />
         </div>
       </section>
 
-      {/* Tabela de Impressão */}
-      <table className="w-full border-collapse text-xs mb-8">
-        <thead>
-          <tr className="border-b-2 border-slate-300 bg-slate-100 text-slate-700 text-[10px] font-black uppercase">
-            <th className="p-3 text-left">Categoria</th>
-            <th className="p-3 text-center">Tipo</th>
-            <th className="p-3 text-left">Agente</th>
-            <th className="p-3 text-right">Qtd</th>
-            <th className="p-3 text-right">Unitário</th>
-            <th className="p-3 text-right">Total</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-200">
-          {MOCK_SALES.map((item, idx) => (
-            <tr key={idx}>
-              <td className="p-3 font-bold">{item.category}</td>
-              <td className="p-3 text-center">{item.ticketType}</td>
-              <td className="p-3">{item.agent}</td>
-              <td className="p-3 text-right font-bold">{item.quantity.toLocaleString('pt-BR')}</td>
-              <td className="p-3 text-right">R$ {item.unitPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-              <td className="p-3 text-right font-bold text-slate-950">
-                R$ {item.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </td>
+      <section className="mt-10 overflow-hidden rounded-2xl border border-slate-200">
+        <table className="w-full border-collapse">
+          <thead className="bg-slate-100">
+            <tr>
+              <PrintHeading label="Categoria" />
+              <PrintHeading label="Quantidade" />
+              <PrintHeading label="Unitário" />
+              <PrintHeading label="Total" />
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr className="border-t-2 border-slate-900 bg-slate-900 text-white font-black">
-            <td colSpan={3} className="p-3 uppercase">Total Geral</td>
-            <td className="p-3 text-right">{totalQuantity.toLocaleString('pt-BR')}</td>
-            <td className="p-3 text-right">-</td>
-            <td className="p-3 text-right text-emerald-400">
-              R$ {grandTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
 
-      {/* Rodapé de Impressão */}
-      <footer className="border-t border-slate-200 pt-4 flex justify-between items-center text-[10px] font-bold text-slate-400">
-        <span>Documento gerado automaticamente via Curitiba 360 Backoffice</span>
-        <span>Página 1 de 1</span>
+          <tbody>
+            {salesReportMock.map((row) => (
+              <tr
+                key={row.id}
+                className="border-t border-slate-200"
+              >
+                <PrintCell strong>
+                  {row.category}
+                </PrintCell>
+
+                <PrintCell>
+                  {row.quantity}
+                </PrintCell>
+
+                <PrintCell strong>
+                  {formatCurrency(
+                    row.unitPrice,
+                  )}
+                </PrintCell>
+
+                <PrintCell strong>
+                  {formatCurrency(row.total)}
+                </PrintCell>
+              </tr>
+            ))}
+          </tbody>
+
+          <tfoot className="border-t border-slate-300 bg-slate-100">
+            <tr>
+              <PrintCell strong>
+                Quantidade:{' '}
+                {salesReportMock.length}
+              </PrintCell>
+
+              <PrintCell strong>
+                {totalQuantity}
+              </PrintCell>
+
+              <PrintCell />
+
+              <PrintCell strong>
+                Total:{' '}
+                {formatCurrency(totalValue)}
+              </PrintCell>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+
+      <footer className="mt-20 border-t border-slate-200 pt-4 text-xs font-black text-slate-600">
+        Emitido em{' '}
+        {new Intl.DateTimeFormat('pt-BR', {
+          dateStyle: 'full',
+          timeStyle: 'medium',
+        }).format(new Date())}{' '}
+        — Página 1/5
       </footer>
     </div>
   );
 }
 
-export default SalesReportPrintPage;
+function FilterBadge({ label, value }) {
+  return (
+    <div>
+      <span className="block text-[10px] font-black uppercase text-slate-500">
+        {label}
+      </span>
+
+      <span className="mt-2 inline-flex rounded-xl border border-slate-300 px-4 py-3 text-xs font-black">
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function PrintHeading({ label }) {
+  return (
+    <th className="px-4 py-4 text-left text-xs font-black text-slate-600">
+      {label}
+    </th>
+  );
+}
+
+function PrintCell({
+  children,
+  strong = false,
+}) {
+  return (
+    <td
+      className={[
+        'px-4 py-4 text-xs',
+        strong
+          ? 'font-black text-slate-700'
+          : 'font-semibold text-slate-600',
+      ].join(' ')}
+    >
+      {children}
+    </td>
+  );
+}

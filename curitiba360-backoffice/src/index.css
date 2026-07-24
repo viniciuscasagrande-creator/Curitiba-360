@@ -130,7 +130,8 @@ html.high-contrast textarea {
   aside,
   nav,
   header button,
-  .print-hidden {
+  .print-hidden,
+  button {
     display: none !important;
   }
 
@@ -139,6 +140,7 @@ html.high-contrast textarea {
     padding: 0 !important;
   }
 
+  table,
   article,
   section {
     break-inside: avoid;
@@ -150,5 +152,10 @@ html.high-contrast textarea {
   .shadow-xl,
   .shadow-2xl {
     box-shadow: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 14mm;
   }
 }
