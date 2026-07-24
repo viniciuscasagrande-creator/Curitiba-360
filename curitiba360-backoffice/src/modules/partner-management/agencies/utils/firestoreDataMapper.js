@@ -24,9 +24,6 @@ export function isFirestoreTimestamp(
 
 /**
  * Converte Timestamp do Firestore para string ISO.
- *
- * Exemplo:
- * Timestamp -> "2026-07-24T12:30:00.000Z"
  */
 export function timestampToISOString(
   value,
@@ -84,8 +81,7 @@ export function valueToTimestamp(
 }
 
 /**
- * Percorre arrays e objetos convertendo todos os Timestamps
- * encontrados em strings ISO.
+ * Percorre arrays e objetos convertendo todos os Timestamps em strings ISO.
  */
 export function normalizeFirestoreValue(
   value,
@@ -127,8 +123,6 @@ export function normalizeFirestoreValue(
 
 /**
  * Remove campos undefined.
- *
- * O Firestore não aceita undefined por padrão.
  */
 export function removeUndefinedValues(
   value,
@@ -169,8 +163,6 @@ export function removeUndefinedValues(
 
 /**
  * Remove arquivos locais antes de enviar o payload para o Firestore.
- *
- * Os arquivos serão enviados ao Firebase Storage na Parte 2.5.3.
  */
 export function removeLocalFiles(
   value,
@@ -207,7 +199,7 @@ export function removeLocalFiles(
 }
 
 /**
- * Prepara uma agência para ser salva no Firestore.
+ * Prepara uma agência para ser salva no Firestore com controle de versão.
  */
 export function serializeAgencyForFirestore(
   agency,
@@ -260,6 +252,11 @@ export function serializeAgencyForFirestore(
       sanitized.responsibleName?.trim() ??
       '',
 
+    version:
+      Number(
+        sanitized.version || 1,
+      ),
+
     documents:
       sanitized.documents ?? [],
 
@@ -280,7 +277,7 @@ export function serializeAgencyForFirestore(
 }
 
 /**
- * Converte um documento do Firestore para o formato usado pela interface.
+ * Converte um documento do Firestore para a interface.
  */
 export function deserializeAgencyFromFirestore(
   documentSnapshot,
@@ -297,6 +294,8 @@ export function deserializeAgencyFromFirestore(
   return {
     id: documentSnapshot.id,
     ...data,
+
+    version: Number(data.version || 1),
 
     documents:
       data.documents ?? [],

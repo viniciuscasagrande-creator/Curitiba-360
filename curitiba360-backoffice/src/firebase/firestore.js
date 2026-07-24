@@ -1,39 +1,45 @@
 import {
-  connectFirestoreEmulator,
-  getFirestore,
+  initializeFirestore,
+  memoryLocalCache,
+  persistentLocalCache,
+  persistentMultipleTabManager,
 } from 'firebase/firestore';
 
 import {
   firebaseApp,
-  useFirebaseEmulators,
 } from './firebase';
 
-export const firestore =
-  getFirestore(firebaseApp);
-
-let emulatorConnected = false;
-
-export function connectFirestoreDevelopmentEmulator() {
-  if (
-    !useFirebaseEmulators ||
-    emulatorConnected
-  ) {
-    return;
-  }
-
-  connectFirestoreEmulator(
-    firestore,
-    '127.0.0.1',
-    8080,
-  );
-
-  emulatorConnected = true;
-
-  console.info(
-    '[Firebase] Firestore Emulator conectado em 127.0.0.1:8080',
+function shouldUsePersistentCache() {
+  return (
+    import.meta.env
+      .VITE_FIREBASE_PERSISTENCE !==
+    'false'
   );
 }
 
-connectFirestoreDevelopmentEmulator();
+function createFirestoreSettings() {
+  if (!shouldUsePersistentCache()) {
+    return {
+      localCache: memoryLocalCache(),
+    };
+  }
+
+  return {
+    localCache: persistentLocalCache({
+      tabManager:
+        persistentMultipleTabManager(),
+    }),
+  };
+}
+
+export const firestore =
+  initializeFirestore(
+    firebaseApp,
+    createFirestoreSettings(),
+  );
+
+export function connectFirestoreDevelopmentEmulator() {
+  // Configurações do emulador local, se necessário.
+}
 
 export default firestore;
