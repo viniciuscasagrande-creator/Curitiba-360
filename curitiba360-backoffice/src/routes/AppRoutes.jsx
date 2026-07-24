@@ -92,6 +92,8 @@ import BorderoReportPrintPage from "../modules/attractions/finance/reports/pages
 
 import WithdrawalRequestPage from "../modules/attractions/finance/withdrawals/pages/WithdrawalRequestPage";
 import WithdrawalRequestPrintPage from "../modules/attractions/finance/withdrawals/pages/WithdrawalRequestPrintPage";
+import ApprovalPage from "../modules/attractions/finance/approvals/pages/ApprovalPage";
+import ApprovalPrintPage from "../modules/attractions/finance/approvals/pages/ApprovalPrintPage";
 import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
 import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
 import UserProfilePage from "../modules/admin/profile/pages/UserProfilePage";
@@ -376,6 +378,12 @@ export function AppRoutes() {
                 <Route path="/admin/atracoes/:attractionId/relatorios/repasses" element={<WithdrawalRequestPage />} />
                 <Route path="/admin/atracoes/:attractionId/financeiro/repasses/impressao" element={<WithdrawalRequestPrintPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/repasses/print" element={<WithdrawalRequestPrintPage />} />
+
+                {/* Aprovações de Repasse (Admin / Financeiro Operacional) */}
+                <Route path="/admin/financeiro/repasses/aprovacoes" element={<ApprovalPage />} />
+                <Route path="/admin/financeiro/repasses/aprovacoes/impressao" element={<ApprovalPrintPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/repasses/aprovacoes" element={<ApprovalPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/repasses/aprovacoes/impressao" element={<ApprovalPrintPage />} />
 
                 {/* Operação */}
                 <Route path="/admin/atracoes/:attractionId/validar-ingressos" element={<ValidateTicketsPage />} />
