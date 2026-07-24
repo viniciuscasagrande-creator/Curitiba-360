@@ -59,6 +59,32 @@ export const agencyService = {
     );
   },
 
+  async paginate(options) {
+    return agencyRepository.paginate(
+      options,
+    );
+  },
+
+  async findByCnpj(cnpj) {
+    if (!cnpj) {
+      return null;
+    }
+
+    return agencyRepository.findByCnpj(
+      cnpj,
+    );
+  },
+
+  async findByEmail(email) {
+    if (!email) {
+      return null;
+    }
+
+    return agencyRepository.findByEmail(
+      email,
+    );
+  },
+
   async findById(id) {
     validateAgencyId(id);
 
@@ -78,6 +104,28 @@ export const agencyService = {
 
   async create(payload) {
     validateRequiredFields(payload);
+
+    const existingByCnpj =
+      await agencyRepository.findByCnpj(
+        payload.cnpj,
+      );
+
+    if (existingByCnpj) {
+      throw new Error(
+        'Já existe uma agência cadastrada com este CNPJ.',
+      );
+    }
+
+    const existingByEmail =
+      await agencyRepository.findByEmail(
+        payload.email,
+      );
+
+    if (existingByEmail) {
+      throw new Error(
+        'Já existe uma agência cadastrada com este e-mail.',
+      );
+    }
 
     return agencyRepository.create({
       ...payload,

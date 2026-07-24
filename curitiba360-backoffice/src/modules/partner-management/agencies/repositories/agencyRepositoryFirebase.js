@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 
 import {
@@ -29,6 +30,10 @@ import {
   deserializeAgencyFromFirestore,
   serializeAgencyForFirestore,
 } from '../utils/firestoreDataMapper';
+
+import {
+  buildAgencyQuery,
+} from './agencyQueryBuilder';
 
 const COLLECTION_NAME =
   FIREBASE_COLLECTIONS.AGENCIES;
@@ -84,6 +89,174 @@ export const agencyRepositoryFirebase = {
       throw mapFirebaseError(
         error,
         'Não foi possível carregar as agências.',
+      );
+    }
+  },
+
+  /**
+   * Lista agências paginadas com filtros e ordenação.
+   */
+  async paginate({
+    filters = {},
+    sorting = {
+      field: 'createdAt',
+      direction: 'desc',
+    },
+    pageSize = 20,
+    cursor = null,
+  } = {}) {
+    try {
+      const {
+        firestoreQuery,
+        metadata,
+      } = buildAgencyQuery({
+        collectionReference:
+          getAgenciesCollection(),
+
+        filters,
+        sorting,
+        pageSize,
+        cursor,
+      });
+
+      const snapshot =
+        await getDocs(
+          firestoreQuery,
+        );
+
+      const documents =
+        snapshot.docs;
+
+      const hasNextPage =
+        documents.length > pageSize;
+
+      const visibleDocuments =
+        hasNextPage
+          ? documents.slice(
+              0,
+              pageSize,
+            )
+          : documents;
+
+      const agencies =
+        visibleDocuments.map(
+          deserializeAgencyFromFirestore,
+        );
+
+      const lastDocument =
+        visibleDocuments[
+          visibleDocuments.length - 1
+        ] || null;
+
+      return {
+        data: agencies,
+
+        pagination: {
+          pageSize,
+          hasNextPage,
+
+          nextCursor:
+            hasNextPage
+              ? lastDocument
+              : null,
+
+          returned:
+            agencies.length,
+        },
+
+        metadata,
+      };
+    } catch (error) {
+      throw mapFirebaseError(
+        error,
+        'Não foi possível carregar as agências.',
+      );
+    }
+  },
+
+  /**
+   * Busca uma agência pelo CNPJ.
+   */
+  async findByCnpj(cnpj) {
+    try {
+      const normalizedCnpj =
+        String(cnpj || '')
+          .replace(/\D/g, '');
+
+      if (!normalizedCnpj) {
+        return null;
+      }
+
+      const cnpjQuery = query(
+        getAgenciesCollection(),
+
+        where(
+          'searchCnpj',
+          '==',
+          normalizedCnpj,
+        ),
+
+        limit(1),
+      );
+
+      const snapshot =
+        await getDocs(cnpjQuery);
+
+      if (snapshot.empty) {
+        return null;
+      }
+
+      return deserializeAgencyFromFirestore(
+        snapshot.docs[0],
+      );
+    } catch (error) {
+      throw mapFirebaseError(
+        error,
+        'Não foi possível pesquisar o CNPJ.',
+      );
+    }
+  },
+
+  /**
+   * Busca uma agência pelo E-mail.
+   */
+  async findByEmail(email) {
+    try {
+      const normalizedEmail =
+        String(email || '')
+          .trim()
+          .toLowerCase();
+
+      if (!normalizedEmail) {
+        return null;
+      }
+
+      const emailQuery = query(
+        getAgenciesCollection(),
+
+        where(
+          'searchEmail',
+          '==',
+          normalizedEmail,
+        ),
+
+        limit(1),
+      );
+
+      const snapshot =
+        await getDocs(emailQuery);
+
+      if (snapshot.empty) {
+        return null;
+      }
+
+      return deserializeAgencyFromFirestore(
+        snapshot.docs[0],
+      );
+    } catch (error) {
+      throw mapFirebaseError(
+        error,
+        'Não foi possível pesquisar o e-mail.',
       );
     }
   },
@@ -191,8 +364,6 @@ export const agencyRepositoryFirebase = {
 
   /**
    * Cria uma agência usando um ID informado.
-   *
-   * Útil durante importações ou migração de dados.
    */
   async createWithId(
     id,
@@ -320,8 +491,6 @@ export const agencyRepositoryFirebase = {
 
   /**
    * Atualização parcial.
-   *
-   * Use quando apenas alguns campos forem alterados.
    */
   async patch(
     id,

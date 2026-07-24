@@ -2,6 +2,10 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
+import {
+  buildAgencySearchFields,
+} from './agencySearchUtils';
+
 /**
  * Verifica se o valor recebido é um Timestamp do Firestore.
  */
@@ -216,7 +220,7 @@ export function serializeAgencyForFirestore(
       withoutFiles,
     );
 
-  return {
+  const normalizedAgency = {
     ...sanitized,
 
     tradeName:
@@ -237,6 +241,16 @@ export function serializeAgencyForFirestore(
     city:
       sanitized.city?.trim() ?? '',
 
+    cityNormalized:
+      sanitized.city
+        ?.normalize('NFD')
+        .replace(
+          /[\u0300-\u036f]/g,
+          '',
+        )
+        .trim()
+        .toLowerCase() ?? '',
+
     state:
       sanitized.state
         ?.trim()
@@ -255,6 +269,13 @@ export function serializeAgencyForFirestore(
     bankAccount: {
       ...(sanitized.bankAccount ?? {}),
     },
+  };
+
+  return {
+    ...normalizedAgency,
+    ...buildAgencySearchFields(
+      normalizedAgency,
+    ),
   };
 }
 
