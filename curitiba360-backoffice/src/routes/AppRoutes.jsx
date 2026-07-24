@@ -89,6 +89,9 @@ import SalesByPaymentReportPage from "../modules/attractions/finance/reports/pag
 import SalesByPaymentReportPrintPage from "../modules/attractions/finance/reports/pages/SalesByPaymentReportPrintPage";
 import BorderoReportPage from "../modules/attractions/finance/reports/pages/BorderoReportPage";
 import BorderoReportPrintPage from "../modules/attractions/finance/reports/pages/BorderoReportPrintPage";
+
+import WithdrawalRequestPage from "../modules/attractions/finance/pages/WithdrawalRequestPage";
+import WithdrawalRequestPrintPage from "../modules/attractions/finance/pages/WithdrawalRequestPrintPage";
 import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
 import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
 import UserProfilePage from "../modules/admin/profile/pages/UserProfilePage";
@@ -367,6 +370,12 @@ export function AppRoutes() {
                 <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/bordero" element={<BorderoReportPage />} />
                 <Route path="/admin/atracoes/:attractionId/relatorios/bordero/print" element={<BorderoReportPrintPage />} />
                 <Route path="/admin/atracoes/:attractionId/financeiro/relatorios/bordero/impressao" element={<BorderoReportPrintPage />} />
+
+                {/* Financeiro Operacional - Repasses */}
+                <Route path="/admin/atracoes/:attractionId/financeiro/repasses" element={<WithdrawalRequestPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/repasses" element={<WithdrawalRequestPage />} />
+                <Route path="/admin/atracoes/:attractionId/financeiro/repasses/impressao" element={<WithdrawalRequestPrintPage />} />
+                <Route path="/admin/atracoes/:attractionId/relatorios/repasses/print" element={<WithdrawalRequestPrintPage />} />
 
                 {/* Operação */}
                 <Route path="/admin/atracoes/:attractionId/validar-ingressos" element={<ValidateTicketsPage />} />

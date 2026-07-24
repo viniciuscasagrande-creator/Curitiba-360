@@ -49,6 +49,7 @@ export function AttractionSidebar({ attractionId = 'attraction-001', attractionN
         <SidebarLink to={attractionRoutes.commercialConditions(attractionId)} label="Condições Comerciais" icon={FileText} active={location.pathname.includes('/condicoes-comerciais')} />
         <SidebarLink to={attractionRoutes.financialInfo(attractionId)} label="Informações Financeiras" icon={Wallet} active={location.pathname.includes('/informacoes')} />
         <SidebarLink to={attractionRoutes.expenses(attractionId)} label="Resumo das Despesas" icon={DollarSign} active={location.pathname.includes('/despesas')} />
+        <SidebarLink to={`/admin/atracoes/${attractionId}/financeiro/repasses`} label="Solicitações de Repasse" icon={Wallet} active={location.pathname.includes('/repasses')} />
 
         <div className="pt-2 pb-1 border-t border-slate-100">
           <button
