@@ -4,6 +4,7 @@ import {
 } from 'react';
 
 import AgencyBulkActions from '../components/AgencyBulkActions';
+import AgencyDetailsDrawer from '../components/AgencyDetailsDrawer';
 import AgencyFilters from '../components/AgencyFilters';
 import AgencyHeader from '../components/AgencyHeader';
 import AgencyStatusTabs from '../components/AgencyStatusTabs';
@@ -92,6 +93,23 @@ export default function AgenciesPage() {
     filters.state,
     filters.companyType,
   ]);
+
+  useEffect(() => {
+    if (!selectedAgency) {
+      return;
+    }
+
+    const updatedAgency = agencies.find(
+      (agency) =>
+        agency.id === selectedAgency.id,
+    );
+
+    if (updatedAgency) {
+      setSelectedAgency(
+        updatedAgency,
+      );
+    }
+  }, [agencies]);
 
   function exportAgencies() {
     const headers = [
@@ -366,18 +384,54 @@ export default function AgenciesPage() {
         />
       )}
 
-      {selectedAgency &&
-        !isFormOpen && (
-          <TemporaryModal
-            title={
-              selectedAgency.tradeName
-            }
-            description={`${selectedAgency.cnpj} • ${selectedAgency.city}/${selectedAgency.state}`}
-            onClose={() =>
-              setSelectedAgency(null)
-            }
-          />
-        )}
+      <AgencyDetailsDrawer
+        open={
+          Boolean(selectedAgency) &&
+          !isFormOpen
+        }
+        agency={selectedAgency}
+        isMutating={isMutating}
+        onClose={() =>
+          setSelectedAgency(null)
+        }
+        onEdit={(agency) => {
+          setSelectedAgency(agency);
+          setIsFormOpen(true);
+        }}
+        onApprove={async (agency) => {
+          await approveAgency(agency.id);
+          setSelectedAgency(null);
+        }}
+        onReject={(agency) => {
+          requestAction(
+            'reject-one',
+            agency,
+          );
+        }}
+        onSuspend={(agency) => {
+          requestAction(
+            'suspend-one',
+            agency,
+          );
+        }}
+        onInactivate={async (agency) => {
+          await inactivateAgency(
+            agency.id,
+          );
+
+          setSelectedAgency(null);
+        }}
+        onReactivate={async (agency) => {
+          await approveAgency(agency.id);
+          setSelectedAgency(null);
+        }}
+        onDelete={(agency) => {
+          requestAction(
+            'delete-one',
+            agency,
+          );
+        }}
+      />
 
       {pendingAction && (
         <ActionConfirmationModal
@@ -447,6 +501,7 @@ export default function AgenciesPage() {
             }
 
             selection.clearSelection();
+            setSelectedAgency(null);
             setPendingAction(null);
           }}
         />
@@ -461,7 +516,7 @@ function TemporaryModal({
   onClose,
 }) {
   return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-955/40 p-4 backdrop-blur-xs">
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-xs">
       <div className="w-full max-w-lg rounded-[28px] bg-white p-6 shadow-2xl">
         <h2 className="text-xl font-black text-slate-900">
           {title}
