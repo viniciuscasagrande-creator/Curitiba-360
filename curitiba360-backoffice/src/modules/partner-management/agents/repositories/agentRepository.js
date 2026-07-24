@@ -1,70 +1,156 @@
-import { agentsMock } from '../mocks/agentsMock';
+import { agentsMock } from '../data/agentsMock';
 
-let database = structuredClone(agentsMock);
+import {
+  cloneData,
+  generateCode,
+} from '../../shared/utils/partnerFormatters';
 
-function wait(ms = 250) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+let database = cloneData(agentsMock);
+
+function wait(milliseconds = 250) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, milliseconds);
+  });
+}
+
+function findAgentIndex(id) {
+  return database.findIndex(
+    (agent) => agent.id === id,
+  );
 }
 
 export const agentRepository = {
   async list() {
     await wait();
-    return structuredClone(database);
+
+    return cloneData(database);
   },
 
   async findById(id) {
     await wait(150);
-    const agent = database.find((a) => a.id === id);
-    if (!agent) throw new Error('Agente não encontrado.');
-    return structuredClone(agent);
+
+    const agent = database.find(
+      (item) => item.id === id,
+    );
+
+    if (!agent) {
+      throw new Error(
+        'Agente não encontrado.',
+      );
+    }
+
+    return cloneData(agent);
   },
 
-  async create(data) {
+  async create(payload) {
     await wait();
-    const newAgent = {
-      ...data,
-      id: `agent-${Date.now()}`,
-      status: data.status || 'Pendente',
-      createdAt: new Date().toISOString(),
-      attractionsCount: data.attractionsCount || 3,
-      permissions: data.permissions || ['Emitir Ingressos'],
+
+    const now = new Date().toISOString();
+
+    const agent = {
+      ...payload,
+
+      id: generateCode(database),
+
+      attractionsCount:
+        payload.attractionsCount ?? 0,
+
+      attractionIds:
+        payload.attractionIds ?? [],
+
+      status: payload.status ?? 'Pendente',
+      statusReason:
+        payload.statusReason ?? '',
+
+      createdAt: now,
+      updatedAt: now,
     };
-    database.unshift(newAgent);
-    return structuredClone(newAgent);
+
+    database = [agent, ...database];
+
+    return cloneData(agent);
   },
 
-  async update(id, data) {
+  async update(id, payload) {
     await wait();
-    const index = database.findIndex((a) => a.id === id);
-    if (index < 0) throw new Error('Agente não encontrado.');
-    database[index] = { ...database[index], ...data };
-    return structuredClone(database[index]);
-  },
 
-  async updateStatus(id, status) {
-    await wait();
-    const index = database.findIndex((a) => a.id === id);
-    if (index < 0) throw new Error('Agente não encontrado.');
-    database[index].status = status;
-    return structuredClone(database[index]);
-  },
+    const index = findAgentIndex(id);
 
-  async transferAgency(id, newAgencyId, newAgencyName, reason) {
-    await wait();
-    const index = database.findIndex((a) => a.id === id);
-    if (index < 0) throw new Error('Agente não encontrado.');
+    if (index < 0) {
+      throw new Error(
+        'Agente não encontrado.',
+      );
+    }
+
     database[index] = {
       ...database[index],
-      agencyId: newAgencyId,
-      agencyName: newAgencyName,
-      transferReason: reason,
+      ...payload,
+      updatedAt: new Date().toISOString(),
     };
-    return structuredClone(database[index]);
+
+    return cloneData(database[index]);
   },
 
-  async delete(id) {
+  async updateStatus(
+    id,
+    status,
+    reason = '',
+  ) {
+    return this.update(id, {
+      status,
+      statusReason: reason,
+    });
+  },
+
+  async updateMany(ids, payload) {
     await wait();
-    database = database.filter((a) => a.id !== id);
-    return true;
+
+    const updatedAt =
+      new Date().toISOString();
+
+    database = database.map((agent) => {
+      if (!ids.includes(agent.id)) {
+        return agent;
+      }
+
+      return {
+        ...agent,
+        ...payload,
+        updatedAt,
+      };
+    });
+
+    return cloneData(
+      database.filter((agent) =>
+        ids.includes(agent.id),
+      ),
+    );
+  },
+
+  async transferMany(
+    ids,
+    agencyId,
+    agencyName,
+  ) {
+    return this.updateMany(ids, {
+      agencyId,
+      agencyName,
+    });
+  },
+
+  async remove(id) {
+    await wait();
+
+    database = database.filter(
+      (agent) => agent.id !== id,
+    );
+  },
+
+  async removeMany(ids) {
+    await wait();
+
+    database = database.filter(
+      (agent) => !ids.includes(agent.id),
+    );
   },
 };

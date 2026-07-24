@@ -1,69 +1,165 @@
-import { agenciesMock } from '../mocks/agenciesMock';
+import { agenciesMock } from '../data/agenciesMock';
 
-let database = structuredClone(agenciesMock);
+import {
+  cloneData,
+  generateCode,
+} from '../../shared/utils/partnerFormatters';
 
-function wait(ms = 250) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+let database = cloneData(agenciesMock);
+
+function wait(milliseconds = 250) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, milliseconds);
+  });
+}
+
+function findAgencyIndex(id) {
+  return database.findIndex(
+    (agency) => agency.id === id,
+  );
 }
 
 export const agencyRepository = {
   async list() {
     await wait();
-    return structuredClone(database);
+
+    return cloneData(database);
   },
 
   async findById(id) {
     await wait(150);
-    const agency = database.find((a) => a.id === id);
-    if (!agency) throw new Error('Agência não encontrada.');
-    return structuredClone(agency);
-  },
 
-  async create(data) {
-    await wait();
-    const newAgency = {
-      ...data,
-      id: `agency-${Date.now()}`,
-      status: data.status || 'Pendente Aprovação',
-      createdAt: new Date().toISOString(),
-      agentsCount: 0,
-      attractionsCount: data.attractionsCount || 0,
-      documents: data.documents || [],
-    };
-    database.unshift(newAgency);
-    return structuredClone(newAgency);
-  },
-
-  async update(id, data) {
-    await wait();
-    const index = database.findIndex((a) => a.id === id);
-    if (index < 0) throw new Error('Agência não encontrada.');
-
-    database[index] = {
-      ...database[index],
-      ...data,
-    };
-    return structuredClone(database[index]);
-  },
-
-  async updateStatus(id, status, reason = '') {
-    await wait();
-    const index = database.findIndex((a) => a.id === id);
-    if (index < 0) throw new Error('Agência não encontrada.');
-
-    database[index] = {
-      ...database[index],
-      status,
-      suspensionReason: status === 'Suspensa' ? reason : undefined,
-    };
-    return structuredClone(database[index]);
-  },
-
-  async updateManyStatus(ids, status) {
-    await wait();
-    database = database.map((a) =>
-      ids.includes(a.id) ? { ...a, status } : a
+    const agency = database.find(
+      (item) => item.id === id,
     );
-    return structuredClone(database);
+
+    if (!agency) {
+      throw new Error(
+        'Agência não encontrada.',
+      );
+    }
+
+    return cloneData(agency);
+  },
+
+  async create(payload) {
+    await wait();
+
+    const now = new Date().toISOString();
+
+    const agency = {
+      ...payload,
+
+      id: generateCode(database),
+      agentsCount: 0,
+
+      createdAt: now,
+      updatedAt: now,
+
+      status:
+        payload.status ??
+        'Pendente de Aprovação',
+
+      statusReason:
+        payload.statusReason ?? '',
+
+      attractions:
+        payload.attractions ?? [],
+
+      managers:
+        payload.managers ?? [],
+
+      documents:
+        payload.documents ?? [],
+
+      bankAccount:
+        payload.bankAccount ?? {},
+    };
+
+    database = [agency, ...database];
+
+    return cloneData(agency);
+  },
+
+  async update(id, payload) {
+    await wait();
+
+    const index = findAgencyIndex(id);
+
+    if (index < 0) {
+      throw new Error(
+        'Agência não encontrada.',
+      );
+    }
+
+    database[index] = {
+      ...database[index],
+      ...payload,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return cloneData(database[index]);
+  },
+
+  async updateStatus(
+    id,
+    status,
+    reason = '',
+  ) {
+    return this.update(id, {
+      status,
+      statusReason: reason,
+    });
+  },
+
+  async updateMany(ids, payload) {
+    await wait();
+
+    const updatedAt =
+      new Date().toISOString();
+
+    database = database.map((agency) => {
+      if (!ids.includes(agency.id)) {
+        return agency;
+      }
+
+      return {
+        ...agency,
+        ...payload,
+        updatedAt,
+      };
+    });
+
+    return cloneData(
+      database.filter((agency) =>
+        ids.includes(agency.id),
+      ),
+    );
+  },
+
+  async remove(id) {
+    await wait();
+
+    const exists = database.some(
+      (agency) => agency.id === id,
+    );
+
+    if (!exists) {
+      throw new Error(
+        'Agência não encontrada.',
+      );
+    }
+
+    database = database.filter(
+      (agency) => agency.id !== id,
+    );
+  },
+
+  async removeMany(ids) {
+    await wait();
+
+    database = database.filter(
+      (agency) => !ids.includes(agency.id),
+    );
   },
 };

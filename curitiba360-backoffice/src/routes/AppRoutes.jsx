@@ -97,6 +97,7 @@ import ApprovalPrintPage from "../modules/attractions/finance/approvals/pages/Ap
 import AgenciesPage from "../modules/partner-management/agencies/pages/AgenciesPage";
 import AgencyCreatePage from "../modules/partner-management/agencies/pages/AgencyCreatePage";
 import AgentsPage from "../modules/partner-management/agents/pages/AgentsPage";
+import PartnerManagementRoutes from "../modules/partner-management/routes/PartnerManagementRoutes";
 import ValidateTicketsPage from "../modules/attractions/finance/reports/pages/ValidateTicketsPage";
 import FinancialReportsPage from "../modules/admin/financial/pages/FinancialReportsPage";
 import UserProfilePage from "../modules/admin/profile/pages/UserProfilePage";
@@ -389,6 +390,7 @@ export function AppRoutes() {
                 <Route path="/admin/atracoes/:attractionId/financeiro/repasses/aprovacoes/impressao" element={<ApprovalPrintPage />} />
 
                 {/* Módulos 23 e 24 — Gestão de Parceiros Comerciais (B2B Agências e Agentes) */}
+                <Route path="/admin/parceiros/*" element={<PartnerManagementRoutes />} />
                 <Route path="/admin/parceiros/agencias" element={<AgenciesPage />} />
                 <Route path="/admin/parceiros/agencias/novo" element={<AgencyCreatePage />} />
                 <Route path="/admin/parceiros/agentes" element={<AgentsPage />} />

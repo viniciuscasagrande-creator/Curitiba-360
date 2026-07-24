@@ -1,45 +1,174 @@
 import { agentRepository } from '../repositories/agentRepository';
 
+import { AGENT_STATUS } from '../../shared/constants/partnerStatus';
+
+function validateRequiredFields(payload) {
+  const requiredFields = [
+    ['name', 'Nome'],
+    ['cpf', 'CPF'],
+    ['email', 'E-mail'],
+    ['agencyId', 'Agência'],
+    ['agencyName', 'Nome da agência'],
+  ];
+
+  const missingFields = requiredFields
+    .filter(([field]) => {
+      return !String(
+        payload[field] ?? '',
+      ).trim();
+    })
+    .map(([, label]) => label);
+
+  if (missingFields.length) {
+    throw new Error(
+      `Preencha os campos obrigatórios: ${missingFields.join(
+        ', ',
+      )}.`,
+    );
+  }
+}
+
+function validateIds(ids) {
+  if (!Array.isArray(ids) || !ids.length) {
+    throw new Error(
+      'Selecione pelo menos um agente.',
+    );
+  }
+}
+
 export const agentService = {
   list() {
     return agentRepository.list();
   },
 
   findById(id) {
+    if (!id) {
+      throw new Error(
+        'Informe o identificador do agente.',
+      );
+    }
+
     return agentRepository.findById(id);
   },
 
-  create(data) {
-    if (!data.name || !data.cpf || !data.email || !data.agencyId) {
-      throw new Error('Nome, CPF, E-mail e Agência são obrigatórios.');
-    }
-    return agentRepository.create(data);
+  create(payload) {
+    validateRequiredFields(payload);
+
+    return agentRepository.create({
+      ...payload,
+      status:
+        payload.status ??
+        AGENT_STATUS.PENDING,
+    });
   },
 
-  update(id, data) {
-    return agentRepository.update(id, data);
+  update(id, payload) {
+    validateRequiredFields(payload);
+
+    return agentRepository.update(
+      id,
+      payload,
+    );
   },
 
   approve(id) {
-    return agentRepository.updateStatus(id, 'Ativo');
+    return agentRepository.updateStatus(
+      id,
+      AGENT_STATUS.ACTIVE,
+      '',
+    );
   },
 
-  reject(id) {
-    return agentRepository.updateStatus(id, 'Inativo');
+  approveMany(ids) {
+    validateIds(ids);
+
+    return agentRepository.updateMany(ids, {
+      status: AGENT_STATUS.ACTIVE,
+      statusReason: '',
+    });
+  },
+
+  reject(id, reason) {
+    if (!reason?.trim()) {
+      throw new Error(
+        'Informe o motivo da rejeição.',
+      );
+    }
+
+    return agentRepository.updateStatus(
+      id,
+      AGENT_STATUS.REJECTED,
+      reason.trim(),
+    );
+  },
+
+  rejectMany(ids, reason) {
+    validateIds(ids);
+
+    if (!reason?.trim()) {
+      throw new Error(
+        'Informe o motivo da rejeição.',
+      );
+    }
+
+    return agentRepository.updateMany(ids, {
+      status: AGENT_STATUS.REJECTED,
+      statusReason: reason.trim(),
+    });
   },
 
   inactivate(id) {
-    return agentRepository.updateStatus(id, 'Inativo');
+    return agentRepository.updateStatus(
+      id,
+      AGENT_STATUS.INACTIVE,
+      '',
+    );
   },
 
-  transferAgency(id, newAgencyId, newAgencyName, reason) {
-    if (!newAgencyId || !reason?.trim()) {
-      throw new Error('Selecione a nova agência e informe o motivo.');
+  inactivateMany(ids) {
+    validateIds(ids);
+
+    return agentRepository.updateMany(ids, {
+      status: AGENT_STATUS.INACTIVE,
+    });
+  },
+
+  activateMany(ids) {
+    validateIds(ids);
+
+    return agentRepository.updateMany(ids, {
+      status: AGENT_STATUS.ACTIVE,
+      statusReason: '',
+    });
+  },
+
+  transferMany(
+    ids,
+    agencyId,
+    agencyName,
+  ) {
+    validateIds(ids);
+
+    if (!agencyId || !agencyName) {
+      throw new Error(
+        'Selecione a nova agência.',
+      );
     }
-    return agentRepository.transferAgency(id, newAgencyId, newAgencyName, reason);
+
+    return agentRepository.transferMany(
+      ids,
+      agencyId,
+      agencyName,
+    );
   },
 
-  delete(id) {
-    return agentRepository.delete(id);
+  remove(id) {
+    return agentRepository.remove(id);
+  },
+
+  removeMany(ids) {
+    validateIds(ids);
+
+    return agentRepository.removeMany(ids);
   },
 };
