@@ -1,6 +1,7 @@
 // src/pages/GestaoAtracoes.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { platformSyncService } from '../services/platformSyncService';
 
 export default function GestaoAtracoes() {
   const navigate = useNavigate();
@@ -8,12 +9,26 @@ export default function GestaoAtracoes() {
   const [selecionados, setSelecionados] = useState([]);
   const [termoBusca, setTermoBusca] = useState('');
 
-  // Mock de Atrações (RF-012.10)
-  const [atracoes, setAtracoes] = useState([
-    { id: 1, nome: 'Jardim Botânico', parceiro: 'Parque Jaime Lerner S/A', status: 'Ativo', dataCriacao: '01/07/2026', foto: 'https://via.placeholder.com/40' },
-    { id: 2, nome: 'Ópera de Arame', parceiro: 'Ópera Eventos', status: 'Pendente de Contrato', dataCriacao: '05/07/2026', foto: 'https://via.placeholder.com/40' },
-    { id: 3, nome: 'Tour Histórico CWB', parceiro: 'Tour CWB', status: 'Rascunho', dataCriacao: '10/07/2026', foto: 'https://via.placeholder.com/40' }
+  const defaultAtracoes = [
+    { id: 1, nome: 'Jardim Botânico de Curitiba', parceiro: 'Parque Jaime Lerner S/A', status: 'Ativo', dataCriacao: '01/07/2026', foto: '/jardim_botanico.jpg' },
+    { id: 2, nome: 'Ópera de Arame & Vale da Música', parceiro: 'Ópera Eventos', status: 'Ativo', dataCriacao: '05/07/2026', foto: '/opera_de_arame.jpg' },
+    { id: 3, nome: 'Museu Oscar Niemeyer (MON)', parceiro: 'Tour CWB', status: 'Ativo', dataCriacao: '10/07/2026', foto: '/museu_niemeyer.jpg' },
+    { id: 4, nome: 'Parque Jaime Lerner', parceiro: 'Parque Jaime Lerner S/A', status: 'Ativo', dataCriacao: '15/07/2026', foto: '/parque_jaime_lerner.jpg' }
+  ];
+
+  const [atracoes, setAtracoes] = useState(() => [
+    ...platformSyncService.getCustomAttractions(),
+    ...defaultAtracoes
   ]);
+
+  useEffect(() => {
+    return platformSyncService.subscribe(() => {
+      setAtracoes([
+        ...platformSyncService.getCustomAttractions(),
+        ...defaultAtracoes
+      ]);
+    });
+  }, []);
 
   const filtrados = atracoes.filter(a => {
     const matchBusca = a.nome.toLowerCase().includes(termoBusca.toLowerCase()) || a.parceiro.toLowerCase().includes(termoBusca.toLowerCase());

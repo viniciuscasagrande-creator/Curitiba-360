@@ -478,6 +478,7 @@ const RelatoriosAtracao = lazy(() => import("../pages/RelatoriosAtracao"));
 const VisualizadorWireframes = lazy(() => import("../pages/VisualizadorWireframes"));
 const Gallery = lazy(() => import("../pages/Gallery"));
 const ScreenViewer = lazy(() => import("../pages/ScreenViewer"));
+const SitePublicoApp = lazy(() => import("../modules/sitePublico/App"));
 
 export function AppRoutes() {
   return (
@@ -493,6 +494,10 @@ export function AppRoutes() {
     >
       <BrowserRouter>
         <Routes>
+          {/* === PORTAL PÚBLICO OFICIAL CWB 360 UNIFICADO === */}
+          <Route path="/site" element={<SitePublicoApp />} />
+          <Route path="/portal-cwb" element={<SitePublicoApp />} />
+
           {/* === GALERIA DE WIREFRAMES E TELAS OFICIAIS === */}
           <Route path="/telas" element={<Gallery />} />
           <Route path="/tela/:slug" element={<ScreenViewer />} />

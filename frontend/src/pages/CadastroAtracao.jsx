@@ -1,6 +1,7 @@
 // src/pages/CadastroAtracao.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { platformSyncService } from '../services/platformSyncService';
 
 export default function CadastroAtracao() {
   const navigate = useNavigate();
@@ -51,10 +52,19 @@ export default function CadastroAtracao() {
     navigate('/atracoes');
   };
 
-  // RF-013.05 e RN-013.03: Finalizar
+  // RF-013.05 e RN-013.03: Finalizar e Publicar em Tempo Real no Site Público
   const handleFinalizar = (e) => {
     e.preventDefault();
-    alert(`Atração "${nomeAtracao}" finalizada! Status: Pendente de Contrato.`);
+    const parceiroObj = parceiros.find(p => String(p.id) === String(parceiroId));
+    platformSyncService.addAttraction({
+      nome: nomeAtracao,
+      parceiro: parceiroObj ? parceiroObj.nome : 'Parque Jaime Lerner S/A',
+      local: `${endereco.logradouro || 'Centro'} • ${endereco.cidade || 'Curitiba'}`,
+      release: release || `Atração oficial ${nomeAtracao} em Curitiba.`,
+      valor: ingressos[0]?.valor || 45.00,
+      status: 'Ativo'
+    });
+    alert(`Atração "${nomeAtracao}" publicada! Ela já está disponível na Gestão de Atrações e na vitrine do Site Público (/site).`);
     navigate('/atracoes');
   };
 

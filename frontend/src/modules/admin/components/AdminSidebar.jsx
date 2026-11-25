@@ -60,6 +60,7 @@ const menuGroups = [
     label: 'Atalhos Principais & Navegação',
     items: [
       { label: 'Dashboard Operacional', path: ROUTES.admin.dashboard, icon: LayoutDashboard },
+      { label: 'Portal Público CWB 360 (/site)', path: '/site', icon: Globe },
       { label: 'Dashboard Comercial', path: '/admin/commercial-dashboard', icon: BarChart3 },
       { label: 'Backoffice Clássico (MOD 1-26)', path: '/dashboard', icon: Building2 },
       { label: 'SuperApp Cidadão (/home)', path: '/home', icon: Compass },

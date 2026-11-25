@@ -1,7 +1,8 @@
 // src/components/Layout.jsx
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { platformSyncService } from '../services/platformSyncService';
 
 export default function Layout() {
   const location = useLocation();
@@ -9,6 +10,18 @@ export default function Layout() {
   const { user, logout } = useContext(AuthContext);
 
   const [openGroup, setOpenGroup] = useState('comercial');
+  const [activeRole, setActiveRole] = useState(() => platformSyncService.getActiveRole());
+
+  useEffect(() => {
+    return platformSyncService.subscribe(() => {
+      setActiveRole(platformSyncService.getActiveRole());
+    });
+  }, []);
+
+  const handleRoleChange = (newRole) => {
+    platformSyncService.setActiveRole(newRole);
+    setActiveRole(newRole);
+  };
 
   const handleLogout = () => {
     logout();
@@ -25,6 +38,12 @@ export default function Layout() {
       label: 'Dashboard Principal',
       path: '/dashboard',
       icon: '📊'
+    },
+    {
+      id: 'site-cwb-360',
+      label: 'Portal Público CWB 360 (/site)',
+      path: '/site',
+      icon: '🌐'
     },
     {
       id: 'enterprise-admin',
@@ -225,21 +244,40 @@ export default function Layout() {
         flexShrink: 0 
       }}>
         
-        {/* Perfil Header */}
-        <div 
-          onClick={() => navigate('/perfil-admin')}
-          style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #f0f2f5', flexShrink: 0, cursor: 'pointer' }}
-        >
-          <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: '#718096', fontSize: '1.25rem' }}>👤</span>
+        {/* Perfil Header + Seletor RBAC Multi-Perfil */}
+        <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #f0f2f5', flexShrink: 0 }}>
+          <div 
+            onClick={() => navigate('/perfil-admin')}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', cursor: 'pointer', marginBottom: '0.75rem' }}
+          >
+            <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#718096', fontSize: '1.15rem' }}>👤</span>
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <h2 style={{ fontSize: '0.85rem', fontWeight: '700', margin: 0, color: '#1e293b' }}>
+                {user ? (user.displayName || user.name) : 'João da Silva'}
+              </h2>
+              <p style={{ fontSize: '0.7rem', color: '#059669', fontWeight: '700', margin: 0 }}>
+                Perfil: {activeRole}
+              </p>
+            </div>
           </div>
-          <div style={{ textAlign: 'left' }}>
-            <h2 style={{ fontSize: '0.875rem', fontWeight: '600', margin: 0, color: '#374151' }}>
-              {user ? (user.displayName || user.name) : 'João da Silva'}
-            </h2>
-            <p style={{ fontSize: '0.75rem', color: '#718096', margin: 0 }}>
-              {user?.role || 'Administrador 360'}
-            </p>
+
+          <div style={{ backgroundColor: '#f8fafc', padding: '0.45rem 0.6rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', marginBottom: '3px' }}>
+              🔐 Alternar Visão RBAC:
+            </label>
+            <select
+              value={activeRole}
+              onChange={(e) => handleRoleChange(e.target.value)}
+              style={{ width: '100%', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '3px 6px', fontSize: '0.75rem', fontWeight: '700', color: '#0f172a', backgroundColor: 'white', cursor: 'pointer' }}
+            >
+              <option value="ADMINISTRADOR">👑 Administrador 360</option>
+              <option value="PARCEIRO">🏛️ Parceiro / Atração</option>
+              <option value="AGENCIA">🏨 Hotel / Agência B2B</option>
+              <option value="AGENTE">💼 Agente Comercial</option>
+              <option value="PORTARIA">📷 Operador de Catraca</option>
+            </select>
           </div>
         </div>
 

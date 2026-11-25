@@ -4,17 +4,17 @@ import { ATTRACTIONS } from '../data/attractions';
 import { useLanguage } from '../context/LanguageContext';
 
 const QUICK_SUGGESTIONS = [
+  "🗓️ Monte um roteiro completo de 3 dias em Curitiba",
   "🛍️ Quais os melhores Shoppings de Curitiba?",
   "🌲 Quais os parques imperdíveis?",
   "🍺 Bares para tomar Chopp Submarino e Carne de Onça?",
   "🍝 Onde comer o tradicional rodízio em Santa Felicidade?",
   "🏨 Recomende hotéis 5 estrelas no Batel",
   "🚂 Como funciona o passeio de trem para Morretes?",
-  "🎭 Programação de shows, festivais e teatros",
-  "🚌 Como andar na Linha Turismo e nos Tubos BRT?"
+  "🎭 Programação de shows, festivais e teatros"
 ];
 
-export default function AIAssistantWidget({ onSelectAttraction }) {
+export default function AIAssistantWidget({ onSelectAttraction, onAddItineraryToCart }) {
   const { t, currentLang } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [inputQuery, setInputQuery] = useState('');
@@ -51,8 +51,13 @@ export default function AIAssistantWidget({ onSelectAttraction }) {
     let replyText = "";
     let recommendations = [];
 
+    // ROTEIRO DE 3 DIAS COM COMPRA EM 1 CLIQUE
+    if (textLower.includes('roteiro') || textLower.includes('3 dias') || textLower.includes('fim de semana') || textLower.includes('itinerary')) {
+      replyText = "Monte seu **Roteiro Oficial Curitiba 360° de 3 Dias**! 🌲✨\n\n• **Dia 1 (Ícones & Cultura)**: Jardim Botânico + Museu Oscar Niemeyer (MON) + Linha Turismo Panorâmica.\n• **Dia 2 (Música & Gastronomia)**: Ópera de Arame & Vale da Música + Jantar Italiano no Madalosso em Santa Felicidade.\n• **Dia 3 (Serra do Mar)**: Passeio de Trem Serra Verde Express até Morretes com Barreado.\n\n👇 Você pode clicar em **Adicionar Roteiro Completo ao Carrinho (1 Clique)** abaixo para reservar todos os ingressos pagos de uma só vez!";
+      recommendations = ATTRACTIONS.filter(a => !a.isFree && a.price > 0).slice(0, 4);
+    }
     // SHOPPING & COMPRAS
-    if (textLower.includes('shopping') || textLower.includes('compra') || textLower.includes('loja') || textLower.includes('mueller') || textLower.includes('patio batel') || textLower.includes('estacao') || textLower.includes('souvenir')) {
+    else if (textLower.includes('shopping') || textLower.includes('compra') || textLower.includes('loja') || textLower.includes('mueller') || textLower.includes('patio batel') || textLower.includes('estacao') || textLower.includes('souvenir')) {
       replyText = currentLang === 'en'
         ? "Curitiba has amazing malls and traditional crafts fairs! 🛍️✨\n\n1. **Pátio Batel**: The most luxurious mall in South Brazil with VIP cinemas & fine dining.\n2. **Shopping Mueller**: The first shopping mall in Curitiba.\n3. **Shopping Estação**: Integrated with the historical railway station and Railway Museum.\n4. **Largo da Ordem Sunday Fair**: Over 1,000 artisans in the Historical Center every Sunday."
         : currentLang === 'es'
@@ -310,6 +315,34 @@ export default function AIAssistantWidget({ onSelectAttraction }) {
                         <ChevronRight size={16} color="#00a896" />
                       </div>
                     ))}
+                    {onAddItineraryToCart && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onAddItineraryToCart(msg.recommendations);
+                          setIsOpen(false);
+                        }}
+                        style={{
+                          marginTop: '4px',
+                          background: 'linear-gradient(135deg, #00a896 0%, #2563eb 100%)',
+                          color: '#ffffff',
+                          border: 'none',
+                          borderRadius: '10px',
+                          padding: '10px 14px',
+                          fontSize: '12px',
+                          fontWeight: '800',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          boxShadow: '0 4px 12px rgba(0,168,150,0.3)'
+                        }}
+                      >
+                        <Ticket size={15} />
+                        <span>Adicionar Roteiro ao Carrinho (1 Clique)</span>
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

@@ -1,39 +1,40 @@
 // src/pages/OperacaoComercial.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
+import { platformSyncService } from '../services/platformSyncService';
 
 export default function OperacaoComercial() {
-  // SIMULAÇÃO DE PERFIL: Troque para 'AGENTE', 'AGENCIA' ou 'ADMINISTRADOR' para ver a tela mudando (RN-029.01 a RN-029.03)
-  const perfilLogado = 'AGENCIA'; 
-
-  // --- Filtros (RF-029.02 a RF-029.06) ---
+  const navigate = useNavigate();
+  const [perfilLogado, setPerfilLogado] = useState(() => platformSyncService.getActiveRole());
+  const [transacoes, setTransacoes] = useState(() => platformSyncService.getOrders());
   const [periodo, setPeriodo] = useState('Este mês');
-  const [dataInicial, setDataInicial] = useState('');
-  const [dataFinal, setDataFinal] = useState('');
   const [atracaoFiltro, setAtracaoFiltro] = useState('');
-  const [agenteFiltro, setAgenteFiltro] = useState('');
-  const [agenciaFiltro, setAgenciaFiltro] = useState('');
-  const [itensPorPagina, setItensPorPagina] = useState(10);
-
-  // Modal de Detalhes da Transação (RF-029.16)
+  const [parceiroFiltro, setParceiroFiltro] = useState('');
   const [transacaoSelecionada, setTransacaoSelecionada] = useState(null);
 
-  // --- Mock de Dados (KPIs e Tabela) ---
+  useEffect(() => {
+    return platformSyncService.subscribe(() => {
+      setTransacoes(platformSyncService.getOrders());
+      setPerfilLogado(platformSyncService.getActiveRole());
+    });
+  }, []);
+
+  const transacoesFiltradas = transacoes.filter((t) => {
+    if (atracaoFiltro && !t.atracao.toLowerCase().includes(atracaoFiltro.toLowerCase())) return false;
+    if (parceiroFiltro && t.parceiroRef !== parceiroFiltro) return false;
+    return true;
+  });
+
+  const confirmadas = transacoesFiltradas.filter(t => t.status === 'Confirmado');
   const kpis = {
-    totalVendas: 15450.00,
-    qtdIngressos: 309,
-    comissaoAcumulada: 1545.00,
-    cuponsEmitidos: 15,
-    cuponsUtilizados: 8,
-    vendasCanceladas: 3
+    totalVendas: confirmadas.reduce((acc, t) => acc + Number(t.valorTotal || 0), 0),
+    qtdIngressos: confirmadas.reduce((acc, t) => acc + Number(t.qtd || 0), 0),
+    comissaoAcumulada: confirmadas.reduce((acc, t) => acc + Number(t.comissaoRs || 0), 0),
+    splitAtracoes: confirmadas.reduce((acc, t) => acc + Number(t.splitAtracaoRs || 0), 0),
+    vendasCanceladas: transacoesFiltradas.filter(t => t.status.includes('Cancelado') || t.status === 'Reembolsado').length
   };
 
-  const transacoes = [
-    { id: '10293', dataHora: '20/07/2026 10:30', turistaNome: 'João Silva', turistaEmail: 'joao@email.com', telefone: '(41) 99999-1111', atracao: 'Ópera de Arame', qtd: 2, valorTotal: 100.00, cupom: '-', comissaoRs: 10.00, comissaoPct: 10, status: 'Confirmado', formaPagamento: 'PIX' },
-    { id: '10294', dataHora: '19/07/2026 14:15', turistaNome: 'Maria Souza', turistaEmail: 'maria@email.com', telefone: '(41) 98888-2222', atracao: 'Parque Jaime Lerner', qtd: 1, valorTotal: 50.00, cupom: 'TOUR10', comissaoRs: 5.00, comissaoPct: 10, status: 'Cancelado Parcial', formaPagamento: 'Cartão de Crédito' },
-    { id: '10295', dataHora: '18/07/2026 09:00', turistaNome: 'Carlos Eduardo', turistaEmail: 'carlos@email.com', telefone: '(11) 97777-3333', atracao: 'Jardim Botânico', qtd: 4, valorTotal: 200.00, cupom: '-', comissaoRs: 20.00, comissaoPct: 10, status: 'Reembolsado', formaPagamento: 'PIX' }
-  ];
-
-  // RF-029.17: Badges de Status
   const getBadgeStatus = (status) => {
     switch(status) {
       case 'Confirmado': return { bg: '#d1fae5', text: '#065f46' };
@@ -44,119 +45,102 @@ export default function OperacaoComercial() {
     }
   };
 
-  // RF-029.23 a RF-029.25: Cancelamento de Venda
   const handleCancelarVenda = () => {
-    const motivo = prompt("Informe o motivo do cancelamento (Obrigatório):");
+    const motivo = prompt("Informe o motivo do cancelamento e estorno:");
     if (motivo) {
-      alert(`Solicitação de estorno enviada ao gateway para o pedido #${transacaoSelecionada.id}. O ingresso será invalidado e o turista notificado.`);
+      platformSyncService.cancelOrder(transacaoSelecionada.id, motivo);
+      setTransacoes(platformSyncService.getOrders());
       setTransacaoSelecionada(null);
-    } else {
-      alert("O motivo é obrigatório para cancelar a venda.");
     }
   };
 
   return (
     <div>
-      {/* CABEÇALHO E EXPORTAÇÃO (RF-029.01 e RF-029.07) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+      {/* CABEÇALHO */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Operação Comercial</h1>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Painel de vendas e acompanhamento de transações</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>Operação Comercial & Split B2B em Tempo Real</h1>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '4px 0 0 0' }}>
+            Todas as compras realizadas no Portal Público (/site) entram aqui instantaneamente com Split e QR Code
+          </p>
         </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>📄 Exportar CSV</button>
-          <button style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>📕 Exportar PDF</button>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button onClick={() => navigate('/site')} style={{ padding: '0.5rem 1rem', backgroundColor: '#00a896', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+            + Simular Compra no Site (/site)
+          </button>
+          <button onClick={() => navigate('/financeiro/comissionamento')} style={{ padding: '0.5rem 1rem', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+            💰 Ver Comissionamento B2B
+          </button>
         </div>
       </div>
 
-      {/* ÁREA DE FILTROS (RF-029.02 a RF-029.06) */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap', background: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      {/* ÁREA DE FILTROS */}
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', background: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <div>
           <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Período</label>
           <select value={periodo} onChange={(e) => setPeriodo(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
             <option value="Hoje">Hoje</option>
             <option value="Esta semana">Esta semana</option>
             <option value="Este mês">Este mês</option>
-            <option value="Personalizado">Período personalizado...</option>
           </select>
         </div>
-
-        {periodo === 'Personalizado' && (
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Data Inicial</label>
-              <input type="date" value={dataInicial} onChange={(e) => setDataInicial(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Data Final</label>
-              <input type="date" value={dataFinal} onChange={(e) => setDataFinal(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
-            </div>
-          </div>
-        )}
 
         <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Atração</label>
-          <select value={atracaoFiltro} onChange={(e) => setAtracaoFiltro(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-            <option value="">Todas as atrações</option>
-            <option value="1">Ópera de Arame</option>
-            <option value="2">Parque Jaime Lerner</option>
+          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Buscar Atração</label>
+          <input
+            type="text"
+            placeholder="Ex: Ópera, Trem, Jardim..."
+            value={atracaoFiltro}
+            onChange={(e) => setAtracaoFiltro(e.target.value)}
+            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Canal B2B / QR Code Hotel</label>
+          <select value={parceiroFiltro} onChange={(e) => setParceiroFiltro(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+            <option value="">Todos os Canais & Hotéis</option>
+            <option value="hotel-pestana">Hotel Pestana Curitiba 5★</option>
+            <option value="hotel-radisson">Radisson Hotel Curitiba</option>
+            <option value="hotel-nomaa">Nomaa Hotel Boutique</option>
+            <option value="serra-verde">Serra Verde Express</option>
+            <option value="tour-cwb">Agência Tour CWB</option>
+            <option value="direto">Venda Direta Portal 360</option>
           </select>
         </div>
 
-        {/* Filtro por Agente (Apenas Agência e Admin) */}
-        {(perfilLogado === 'AGENCIA' || perfilLogado === 'ADMINISTRADOR') && (
-          <div>
-            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Agente</label>
-            <select value={agenteFiltro} onChange={(e) => setAgenteFiltro(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-              <option value="">Todos os Agentes</option>
-              <option value="1">Carlos (ID: 101)</option>
-              <option value="2">Ana (ID: 102)</option>
-            </select>
-          </div>
-        )}
-
-        {/* Filtro por Agência (Apenas Admin) */}
-        {perfilLogado === 'ADMINISTRADOR' && (
-          <div>
-            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Agência</label>
-            <select value={agenciaFiltro} onChange={(e) => setAgenciaFiltro(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
-              <option value="">Todas as Agências</option>
-              <option value="1">Tour CWB</option>
-              <option value="2">Viagens Sul</option>
-            </select>
-          </div>
-        )}
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.75rem', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '0.35rem 0.75rem', borderRadius: '999px', fontWeight: 'bold' }}>
+            Visão RBAC Ativa: {perfilLogado}
+          </span>
+        </div>
       </div>
 
-      {/* CARDS DE KPIS (RF-029.09 a RF-029.12) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #3b82f6', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Total de Vendas</h3>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>R$ {kpis.totalVendas.toFixed(2)}</p>
+      {/* CARDS DE KPIS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+        <div style={{ background: 'white', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid #3b82f6', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>Total de Vendas (GMV)</h3>
+          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '6px 0 0 0' }}>R$ {kpis.totalVendas.toFixed(2)}</p>
         </div>
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #10b981', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Ingressos Vendidos</h3>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{kpis.qtdIngressos}</p>
+        <div style={{ background: 'white', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid #10b981', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>Ingressos Emitidos</h3>
+          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '6px 0 0 0' }}>{kpis.qtdIngressos}</p>
         </div>
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #f59e0b', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Comissão Acumulada</h3>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>R$ {kpis.comissaoAcumulada.toFixed(2)}</p>
+        <div style={{ background: 'white', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid #f59e0b', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>Comissão B2B (Hotéis/Agências)</h3>
+          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '6px 0 0 0', color: '#d97706' }}>R$ {kpis.comissaoAcumulada.toFixed(2)}</p>
         </div>
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #8b5cf6', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Cupons (Emitidos/Usados)</h3>
-          <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{kpis.cuponsEmitidos} / {kpis.cuponsUtilizados}</p>
+        <div style={{ background: 'white', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid #8b5cf6', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>Split Líquido Atrações</h3>
+          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '6px 0 0 0', color: '#7c3aed' }}>R$ {kpis.splitAtracoes.toFixed(2)}</p>
         </div>
-        
-        {/* KPI exclusivo de Agência/Admin (RF-029.12A) */}
-        {(perfilLogado === 'AGENCIA' || perfilLogado === 'ADMINISTRADOR') && (
-          <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #ef4444', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <h3 style={{ fontSize: '0.875rem', color: '#6b7280' }}>Vendas Canceladas</h3>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{kpis.vendasCanceladas}</p>
-          </div>
-        )}
+        <div style={{ background: 'white', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid #ef4444', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>Vendas Canceladas</h3>
+          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '6px 0 0 0' }}>{kpis.vendasCanceladas}</p>
+        </div>
       </div>
 
-      {/* TABELA DE TRANSAÇÕES (RF-029.13) */}
+      {/* TABELA DE TRANSAÇÕES */}
       <div style={{ background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ backgroundColor: '#f9fafb' }}>
@@ -164,36 +148,38 @@ export default function OperacaoComercial() {
               <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>ID Pedido</th>
               <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Data/Hora</th>
               <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Turista</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Atração</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Atração / Pacote</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Canal B2B (QR Ref)</th>
               <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Qtd</th>
               <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Valor Total</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Cupom</th>
-              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Comissão</th>
+              <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Split Comissão</th>
               <th style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>Status</th>
             </tr>
           </thead>
           <tbody>
-            {transacoes.map((t) => (
+            {transacoesFiltradas.map((t) => (
               <tr 
                 key={t.id} 
                 onClick={() => setTransacaoSelecionada(t)}
                 style={{ borderBottom: '1px solid #e5e7eb', cursor: 'pointer' }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'white'}
               >
-                <td style={{ padding: '0.75rem', color: '#3b82f6', fontWeight: 'bold' }}>#{t.id}</td>
-                <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{t.dataHora}</td>
+                <td style={{ padding: '0.75rem', color: '#2563eb', fontWeight: 'bold' }}>#{t.id}</td>
+                <td style={{ padding: '0.75rem', fontSize: '0.825rem' }}>{t.dataHora}</td>
                 <td style={{ padding: '0.75rem' }}>
-                  <div style={{ fontWeight: 'bold' }}>{t.turistaNome}</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '0.875rem' }}>{t.turistaNome}</div>
                   <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{t.turistaEmail}</div>
                 </td>
-                <td style={{ padding: '0.75rem' }}>{t.atracao}</td>
-                <td style={{ padding: '0.75rem', textAlign: 'center' }}>{t.qtd}</td>
-                <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>R$ {t.valorTotal.toFixed(2)}</td>
-                <td style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#6b7280' }}>{t.cupom}</td>
+                <td style={{ padding: '0.75rem', fontSize: '0.875rem', fontWeight: '600' }}>{t.atracao}</td>
+                <td style={{ padding: '0.75rem', fontSize: '0.8rem' }}>
+                  <span style={{ backgroundColor: '#f1f5f9', padding: '3px 8px', borderRadius: '6px', fontWeight: '600', color: '#334155' }}>
+                    {t.parceiroNome || 'Venda Direta'}
+                  </span>
+                </td>
+                <td style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>{t.qtd}</td>
+                <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>R$ {Number(t.valorTotal || 0).toFixed(2)}</td>
                 <td style={{ padding: '0.75rem' }}>
-                  <div style={{ fontWeight: 'bold', color: '#10b981' }}>R$ {t.comissaoRs.toFixed(2)}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>({t.comissaoPct}%)</div>
+                  <div style={{ fontWeight: 'bold', color: '#10b981' }}>R$ {Number(t.comissaoRs || 0).toFixed(2)}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#6b7280' }}>({t.comissaoPct}%)</div>
                 </td>
                 <td style={{ padding: '0.75rem' }}>
                   <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', backgroundColor: getBadgeStatus(t.status).bg, color: getBadgeStatus(t.status).text }}>
@@ -204,67 +190,66 @@ export default function OperacaoComercial() {
             ))}
           </tbody>
         </table>
-        
-        {/* RF-029.15: Paginação */}
-        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb' }}>
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>Mostrando 1 a {transacoes.length} de {transacoes.length} transações</span>
-          <select value={itensPorPagina} onChange={(e) => setItensPorPagina(e.target.value)} style={{ padding: '0.25rem', borderRadius: '4px' }}>
-            <option value="10">10 por página</option>
-            <option value="20">20 por página</option>
-            <option value="50">50 por página</option>
-          </select>
-        </div>
       </div>
 
-      {/* MODAL DE DETALHES DA TRANSAÇÃO (RF-029.18 a RF-029.22) */}
+      {/* MODAL DE DETALHES DA TRANSAÇÃO E VOUCHERS QR CODE */}
       {transacaoSelecionada && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
+          <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', width: '100%', maxWidth: '620px', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Detalhes do Pedido #{transacaoSelecionada.id}</h2>
-                <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Data/Hora: {transacaoSelecionada.dataHora}</p>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>Pedido #{transacaoSelecionada.id}</h2>
+                <p style={{ color: '#6b7280', fontSize: '0.825rem', margin: '4px 0 0 0' }}>
+                  Data/Hora: {transacaoSelecionada.dataHora} • Canal: <strong>{transacaoSelecionada.parceiroNome || 'Direto'}</strong>
+                </p>
               </div>
               <button onClick={() => setTransacaoSelecionada(null)} style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              <div>
-                <h4 style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>Turista</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem', fontSize: '0.875rem' }}>
+              <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+                <h4 style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0 0 4px 0', textTransform: 'uppercase' }}>Turista</h4>
                 <p style={{ fontWeight: 'bold', margin: 0 }}>{transacaoSelecionada.turistaNome}</p>
-                <p style={{ fontSize: '0.875rem', margin: 0 }}>{transacaoSelecionada.turistaEmail}</p>
-                <p style={{ fontSize: '0.875rem', margin: 0 }}>{transacaoSelecionada.telefone}</p>
+                <p style={{ margin: 0 }}>{transacaoSelecionada.turistaEmail}</p>
+                <p style={{ margin: 0 }}>CPF: {transacaoSelecionada.turistaCpf || '123.456.789-00'}</p>
               </div>
-              <div>
-                <h4 style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>Pagamento</h4>
-                <p style={{ fontWeight: 'bold', margin: 0 }}>{transacaoSelecionada.formaPagamento}</p>
-                <p style={{ fontSize: '0.875rem', margin: 0 }}>Status: <strong style={{ color: getBadgeStatus(transacaoSelecionada.status).text }}>{transacaoSelecionada.status}</strong></p>
+              <div style={{ backgroundColor: '#f0fdf4', padding: '0.75rem', borderRadius: '8px' }}>
+                <h4 style={{ fontSize: '0.75rem', color: '#065f46', margin: '0 0 4px 0', textTransform: 'uppercase' }}>Split Financeiro ({transacaoSelecionada.formaPagamento})</h4>
+                <p style={{ margin: 0 }}>Total Pago: <strong>R$ {Number(transacaoSelecionada.valorTotal || 0).toFixed(2)}</strong></p>
+                <p style={{ margin: 0, color: '#047857' }}>Comissão B2B ({transacaoSelecionada.comissaoPct}%): <strong>R$ {Number(transacaoSelecionada.comissaoRs || 0).toFixed(2)}</strong></p>
+                <p style={{ margin: 0 }}>Líquido Atração: <strong>R$ {Number(transacaoSelecionada.splitAtracaoRs || (transacaoSelecionada.valorTotal * 0.8)).toFixed(2)}</strong></p>
               </div>
             </div>
 
-            {/* Ingressos Individuais (RF-029.20 e RF-029.22A) */}
-            <h4 style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '1rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>Ingressos</h4>
-            <div style={{ marginBottom: '1.5rem' }}>
-              {Array.from({ length: transacaoSelecionada.qtd }).map((_, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '4px', marginBottom: '0.5rem' }}>
+            <h4 style={{ fontSize: '0.95rem', fontWeight: 'bold', marginBottom: '0.75rem' }}>Vouchers QR Code Emitidos</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginBottom: '1.5rem' }}>
+              {(transacaoSelecionada.vouchers || ['ING8001']).map((vCode, idx) => (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', border: '1px solid #e5e7eb', borderRadius: '8px' }}>
                   <div>
                     <p style={{ fontWeight: 'bold', margin: 0 }}>{transacaoSelecionada.atracao}</p>
-                    <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Ingresso {idx + 1} de {transacaoSelecionada.qtd}</p>
+                    <p style={{ fontSize: '0.8rem', color: '#2563eb', fontWeight: 'bold', margin: '2px 0' }}>Código Voucher: {vCode}</p>
                   </div>
-                  <div style={{ width: '50px', height: '50px', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem' }}>
-                    QR CODE
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <QRCodeSVG value={vCode} size={46} />
+                    <button
+                      onClick={() => {
+                        setTransacaoSelecionada(null);
+                        navigate(`/validacao?code=${vCode}`);
+                      }}
+                      style={{ padding: '0.4rem 0.75rem', backgroundColor: '#0f172a', color: 'white', border: 'none', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer' }}
+                    >
+                      Validar na Catraca
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-              <button onClick={() => setTransacaoSelecionada(null)} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>Fechar</button>
-              
-              {/* Botão de Cancelar exibido apenas se status incluir "Confirmado" (Simulando a regra de 24h descrita in RF-029.23) */}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <button onClick={() => setTransacaoSelecionada(null)} style={{ padding: '0.5rem 1rem', border: '1px solid #ccc', borderRadius: '6px', background: 'white', cursor: 'pointer' }}>Fechar</button>
               {transacaoSelecionada.status === 'Confirmado' && (
-                <button onClick={handleCancelarVenda} style={{ padding: '0.5rem 1rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-                  Cancelar Venda
+                <button onClick={handleCancelarVenda} style={{ padding: '0.5rem 1rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+                  Cancelar Venda & Invalidar QR Code
                 </button>
               )}
             </div>
