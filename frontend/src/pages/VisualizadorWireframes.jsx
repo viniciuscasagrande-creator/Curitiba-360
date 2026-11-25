@@ -1,6 +1,7 @@
 // src/pages/VisualizadorWireframes.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { screens } from '../data/screens';
 
 export default function VisualizadorWireframes() {
   const navigate = useNavigate();
@@ -8,73 +9,59 @@ export default function VisualizadorWireframes() {
   const [modalImagem, setModalImagem] = useState(null);
   const [abaVisualizador, setAbaVisualizador] = useState('backoffice'); // backoffice, portal-desktop, portal-mobile
 
-  // 1. Backoffice Wireframes
-  const backofficeWireframes = [
-    { code: 'WF-001', name: 'Tela de login', route: '/login', img: '/wireframes/WF-001 - Tela de login.png' },
-    { code: 'WF-002', name: 'Dashboard', route: '/dashboard', img: '/wireframes/WF-002 - Dashboard.png' },
-    { code: 'WF-003', name: 'Detalhes da Atração (Totais)', route: '/atracoes/1/totais', img: '/wireframes/WF-003 - Detalhes da Atração_Totais da atração.png' },
-    { code: 'WF-004', name: 'Perfil', route: '/perfil', img: '/wireframes/WF-004 - Perfil.png' },
-    { code: 'WF-005', name: 'Gestão de Usuários', route: '/usuarios', img: '/wireframes/WF-005 - Gestão de Usuários.png' },
-    { code: 'WF-006', name: 'Adicionar Usuários', route: '/usuarios/novo', img: '/wireframes/WF-006 - Adicionar Usuários.png' },
-    { code: 'WF-007', name: 'Gestão de Contratos', route: '/comercial/contratos', img: '/wireframes/WF-007 - Gestão de Contratos.png' },
-    { code: 'WF-008', name: 'Adicionar Contrato', route: '/comercial/contratos/novo', img: '/wireframes/WF-008 - Gestão de contratos_adicionar contrato.png' },
-    { code: 'WF-009', name: 'Configurações Comerciais', route: '/comercial/configuracoes', img: '/wireframes/WF-009 - Configurações Comerciais.png' },
-    { code: 'WF-010', name: 'Configurações Comerciais - Condição Comercial', route: '/comercial/configuracoes', img: '/wireframes/WF-010 - Configurações Comerciais_condição comercial.png' },
-    { code: 'WF-011', name: 'Configurações Comerciais - Informação Financeira', route: '/comercial/configuracoes', img: '/wireframes/WF-011 - Configurações Comerciais_informação financeira.png' },
-    { code: 'WF-012', name: 'Gestão de Atrações', route: '/atracoes', img: '/wireframes/WF-012 - Gestão de Atrações.png' },
-    { code: 'WF-013', name: 'Adicionar Atração - Etapa 1', route: '/atracoes/nova', img: '/wireframes/WF-013 - Gestão de atrações_Adicionar Atração 1.png' },
-    { code: 'WF-014', name: 'Adicionar Atração - Etapa 2', route: '/atracoes/nova', img: '/wireframes/WF-014 - Gestão de atrações_Adicionar Atração 2.png' },
-    { code: 'WF-015', name: 'Adicionar Atração - Etapa 3', route: '/atracoes/nova', img: '/wireframes/WF-015 - Gestão de atrações_Adicionar Atração 3.png' },
-    { code: 'WF-016', name: 'Detalhes da Atração - Categorias', route: '/atracoes/1/ingressos', img: '/wireframes/WF-016 - Detalhes da Atração_Categorias.png' },
-    { code: 'WF-017', name: 'Pesquisar Ingresso - Administrador', route: '/atendimento/pesquisar', img: '/wireframes/WF-017 - Detalhes da Atrações_Pesquisar Ingresso – Administrador.png' },
-    { code: 'WF-018', name: 'Pesquisar Ingresso - Detalhe do Ingresso', route: '/atendimento/pesquisar', img: '/wireframes/WF-018 - Detalhes da Atração_Pesquisar Ingresso_Detalhe do Ingresso.png' },
-    { code: 'WF-019', name: 'Gestão de Ingresso', route: '/atracoes/1/ingressos', img: '/wireframes/WF-019 - Detalhes da Atração_Gestão de ingresso.png' },
-    { code: 'WF-020', name: 'Adicionar Ingresso', route: '/atracoes/1/ingressos', img: '/wireframes/WF-020 - Detalhes da Atração_Gestão de Ingresso_Adicionar Ingresso.png' },
-    { code: 'WF-021', name: 'Gestão de Cupons', route: '/atracoes/1/cupons', img: '/wireframes/WF-021 - Detalhes da Atração_Gestão de Cupons.png' },
-    { code: 'WF-022', name: 'Gestão de Cupons - Gerar QR Code', route: '/atracoes/1/cupons', img: '/wireframes/WF-022 - Detalhes da Atração_Gestão de Cupons_Gerar QR Code.png' },
-    { code: 'WF-023', name: 'Gestão de Cupons - Adicionar Cupom', route: '/atracoes/1/cupons', img: '/wireframes/WF-023 - Detalhes da Atração_Gestão de Cupons_Adicionar Cupom.png' },
-    { code: 'WF-024', name: 'Gestão de Cupons - Adicionar Cupom Agência', route: '/atracoes/1/cupons', img: '/wireframes/WF-024 - Detalhes da Atração_Gestão de Cupons_Adicionar Cupom Agencia.png' },
-    { code: 'WF-025', name: 'Gráficos Analytics', route: '/analytics', img: '/wireframes/WF-025 - Detalhes da Atração_Graficos Analytics.png' },
-    { code: 'WF-026', name: 'Detalhes da Atração - Usuários', route: '/atracoes/1/relatorios', img: '/wireframes/WF-026 - Detalhes da Atração_Usuários.png' },
-    { code: 'WF-027', name: 'Adicionar Usuário da Atração', route: '/atracoes/1/relatorios', img: '/wireframes/WF-027 - Detalhes da Atração_Gestão de usuários_Adicionar usuário.png' },
-    { code: 'WF-028', name: 'Negociação Comercial - Condições', route: '/atracoes/1/relatorios', img: '/wireframes/WF-028 - Detalhes da Atração_Gestão financeira_Negociação Financeira_Condições Comerciais.png' },
-    { code: 'WF-029', name: 'Negociação Financeira - Regras', route: '/atracoes/1/relatorios', img: '/wireframes/WF-029 - Detalhes da Atração_Gestão financeira_Negociação Financeira_Informações Financeiras.png' },
-    { code: 'WF-030', name: 'Resumo das Despesas', route: '/atracoes/1/relatorios', img: '/wireframes/WF-030 - Detalhes da Atração_Gestão financeira_Negociação Financeira_Resumo das Despesas.png' },
-    { code: 'WF-031', name: 'Validar Ingressos', route: '/atracoes/1/relatorios', img: '/wireframes/WF-031 - Detalhes da Atração_Gestão financeira_Negociação Financeira_Validar Ingressos.png' },
-    { code: 'WF-032', name: 'Relatório - Vendas da Atração', route: '/atracoes/1/relatorios', img: '/wireframes/WF-032 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Vendas.png' },
-    { code: 'WF-033', name: 'PDF - Vendas da Atração', route: '/atracoes/1/relatorios', img: '/wireframes/WF-033 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Vendas .png' },
-    { code: 'WF-034', name: 'Relatório - Abandono de Carrinho', route: '/atracoes/1/relatorios', img: '/wireframes/WF-034 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Abandono de Carrinho.png' },
-    { code: 'WF-035', name: 'PDF - Abandono de Carrinho', route: '/atracoes/1/relatorios', img: '/wireframes/WF-035 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Abandono de Carrinho.png' },
-    { code: 'WF-036', name: 'Relatório - Ingresso Detalhado', route: '/atracoes/1/relatorios', img: '/wireframes/WF-036 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Ingresso Detalhado.png' },
-    { code: 'WF-037', name: 'PDF - Ingresso Detalhado', route: '/atracoes/1/relatorios', img: '/wireframes/WF-037 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Ingresso Detalhado.png' },
-    { code: 'WF-038', name: 'Relatório - Categorias', route: '/atracoes/1/relatorios', img: '/wireframes/WF-038 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Categorias.png' },
-    { code: 'WF-039', name: 'PDF - Categorias', route: '/atracoes/1/relatorios', img: '/wireframes/WF-039 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Categorias.png' },
-    { code: 'WF-040', name: 'Relatório - Cortesias Emitidas', route: '/atracoes/1/relatorios', img: '/wireframes/WF-040 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Cortesias Emitidas.png' },
-    { code: 'WF-041', name: 'PDF - Cortesias Emitidas', route: '/atracoes/1/relatorios', img: '/wireframes/WF-041 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Cortesias Emitidas.png' },
-    { code: 'WF-042', name: 'Relatório - Validações', route: '/atracoes/1/relatorios', img: '/wireframes/WF-042 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Validações.png' },
-    { code: 'WF-043', name: 'PDF - Validações', route: '/atracoes/1/relatorios', img: '/wireframes/WF-043 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Validações.png' },
-    { code: 'WF-044', name: 'Relatório - Comissões', route: '/atracoes/1/relatorios', img: '/wireframes/WF-044 - Detalhes da Atração_Gestão financeira_Relatórios da atração_Comissões.png' },
-    { code: 'WF-045', name: 'PDF - Comissões', route: '/atracoes/1/relatorios', img: '/wireframes/WF-045 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Comissões.png' },
-    { code: 'WF-046', name: 'Relatório - Borderô Resumido', route: '/atracoes/1/relatorios', img: '/wireframes/WF-046 -Detalhes da Atração_Gestão financeira_Relatórios da atração_Borderô Resumido.png' },
-    { code: 'WF-047', name: 'PDF - Borderô Resumido', route: '/atracoes/1/relatorios', img: '/wireframes/WF-047 - PDF Detalhes da Atração_Gestão financeira_Relatórios da atração_Borderô Resumido.png' },
-    { code: 'WF-048', name: 'Gestão de Agências', route: '/agencias', img: '/wireframes/WF-048 - Gestão de Agências.png' },
-    { code: 'WF-049', name: 'Cadastro de Agência', route: '/agencias/novo', img: '/wireframes/WF-049 - Cadastro de Agência — Etapa 1 (Dados da Empresa).png' },
-    { code: 'WF-050', name: 'Gestão de Agentes', route: '/comercial/agentes', img: '/wireframes/WF-050 - Gestão de Agentes.png' },
-    { code: 'WF-051', name: 'Operação Comercial (Vendas)', route: '/comercial/vendas', img: '/wireframes/WF-051 - Operação Comercial.png' },
-    { code: 'WF-052', name: 'Comissionamento (Agência)', route: '/financeiro/comissionamento', img: '/wireframes/WF-052 - Comissionamento (Agência).png' },
-    { code: 'WF-053', name: 'Fila de Reembolsos', route: '/financeiro/reembolsos', img: '/wireframes/WF-053 - Fila de Reembolsos.png' },
-    { code: 'WF-054', name: 'CMS Institucional', route: '/cms/institucional', img: '/wireframes/WF-054 - CMS Institucional.png' },
-    { code: 'WF-055', name: 'CMS Home e Curadoria (Banners)', route: '/cms/home', img: '/wireframes/WF-055 - CMS Home e Curadoria (Banners).png' },
-    { code: 'WF-056', name: 'Central de Notificações', route: '/notificacoes', img: '/wireframes/WF-056 - Central de Notificações.png' },
-    { code: 'WF-057', name: 'Tela Inicial por Perfil', route: '/dashboard', img: '/wireframes/WF-057 - Tela Inicial por Perfil.png' },
-    { code: 'WF-058', name: 'Gestão de Parceiros Comerciais', route: '/parceiros', img: '/wireframes/WF-058 - Gestão de Parceiros Comerciais.png' },
-    { code: 'WF-059', name: 'Cadastro de Parceiro Comercial', route: '/parceiros/novo', img: '/wireframes/WF-059 - Cadastro de Parceiro Comercial.png' },
-    { code: 'WF-060', name: 'Painel Anti-Cambista', route: '/comercial/anti-cambista', img: '/wireframes/WF-060 - Painel Anti-Cambista.png' },
-    { code: 'WF-061', name: 'Gestão de Pacotes de Ingressos', route: '/pacotes', img: '/wireframes/WF-061 - Gestão de Pacotes de Ingressos.png' },
-    { code: 'WF-062', name: 'Gestão de Pacotes - Adicionar', route: '/pacotes', img: '/wireframes/WF-062 - Gestão de Pacotes — Adicionar Pacote.png' },
-    { code: 'WF-063', name: 'Relatórios Financeiros Globais', route: '/financeiro/relatorios', img: '/wireframes/WF-063 - Relatórios Financeiros Globais.png' },
-    { code: 'WF-064', name: 'Cadastro de Agente', route: '/comercial/agentes/novo', img: '/wireframes/WF-064 - Cadastro de Agente.png' }
-  ];
+  const ROUTE_BY_WF_ID = {
+    'WF-001': '/login',
+    'WF-002': '/dashboard',
+    'WF-003': '/atracoes/1/totais',
+    'WF-004': '/perfil-admin',
+    'WF-005': '/usuarios',
+    'WF-006': '/usuarios/novo',
+    'WF-007': '/comercial/contratos',
+    'WF-008': '/comercial/contratos/novo',
+    'WF-009': '/comercial/configuracoes',
+    'WF-010': '/comercial/configuracoes',
+    'WF-011': '/comercial/configuracoes',
+    'WF-012': '/atracoes',
+    'WF-013': '/atracoes/nova',
+    'WF-014': '/atracoes/nova',
+    'WF-015': '/atracoes/nova',
+    'WF-016': '/atracoes/1/ingressos',
+    'WF-017': '/atendimento/pesquisar',
+    'WF-018': '/atendimento/pesquisar',
+    'WF-019': '/atracoes/1/ingressos',
+    'WF-020': '/atracoes/1/ingressos',
+    'WF-021': '/atracoes/1/cupons',
+    'WF-022': '/atracoes/1/cupons',
+    'WF-023': '/atracoes/1/cupons',
+    'WF-024': '/atracoes/1/cupons',
+    'WF-025': '/analytics',
+    'WF-048': '/agencias',
+    'WF-049': '/agencias/novo',
+    'WF-050': '/comercial/agentes',
+    'WF-051': '/comercial/vendas',
+    'WF-052': '/financeiro/comissionamento',
+    'WF-053': '/financeiro/reembolsos',
+    'WF-054': '/cms/institucional',
+    'WF-055': '/cms/home',
+    'WF-056': '/notificacoes-backoffice',
+    'WF-057': '/dashboard',
+    'WF-058': '/parceiros',
+    'WF-059': '/parceiros/novo',
+    'WF-060': '/comercial/anti-cambista',
+    'WF-061': '/pacotes',
+    'WF-062': '/pacotes',
+    'WF-063': '/financeiro/relatorios',
+    'WF-064': '/comercial/agentes/novo'
+  };
+
+  // 1. Backoffice Wireframes (71 referências oficiais com caminhos de imagem 100% válidos)
+  const backofficeWireframes = screens.map((s) => ({
+    code: s.id,
+    name: s.title,
+    slug: s.slug,
+    route: ROUTE_BY_WF_ID[s.id] || '/atracoes/1/relatorios',
+    img: s.image
+  }));
 
   // 2. Public Portal - Desktop Wireframes
   const portalDesktopWireframes = [
@@ -201,7 +188,7 @@ export default function VisualizadorWireframes() {
             fontWeight: 'bold', fontSize: '0.875rem', transition: 'all 0.2s'
           }}
         >
-          💼 Backoffice (Admin - 64 Telas)
+          💼 Backoffice (Admin - 71 Telas)
         </button>
         <button
           onClick={() => { setAbaVisualizador('portal-desktop'); setBusca(''); }}
@@ -250,8 +237,15 @@ export default function VisualizadorWireframes() {
                 onClick={() => setModalImagem(wf)}
                 style={{ padding: '0.25rem 0.5rem', border: '1px solid #d1d5db', borderRadius: '4px', background: 'white', cursor: 'pointer', fontSize: '0.75rem' }}
               >
-                👁️ Ver Wireframe
+                👁️ Ampliar
               </button>
+            </div>
+
+            <div
+              onClick={() => setModalImagem(wf)}
+              style={{ height: '150px', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#f1f5f9', border: '1px solid #e2e8f0', cursor: 'pointer' }}
+            >
+              <img src={wf.img} alt={wf.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
             </div>
 
             <div style={{ flex: 1, textAlign: 'left' }}>

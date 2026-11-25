@@ -1,9 +1,10 @@
-import { Search } from 'lucide-react'
+import { Search, ArrowLeft, ExternalLink } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { screens } from '../data/screens'
 
 export default function Gallery() {
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
@@ -18,6 +19,24 @@ export default function Gallery() {
     <main className="gallery-page p-6 bg-slate-950 min-h-screen text-slate-100">
       <header className="gallery-header max-w-7xl mx-auto mb-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
         <div>
+          <div className="flex items-center gap-3 mb-2">
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 cursor-pointer"
+            >
+              <ArrowLeft size={14} />
+              <span>Voltar ao Backoffice</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/site')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white border-none cursor-pointer"
+            >
+              <ExternalLink size={14} />
+              <span>Portal Público (/site)</span>
+            </button>
+          </div>
           <p className="text-blue-400 font-semibold text-sm uppercase tracking-wider">Curitiba 360 Enterprise</p>
           <h1 className="text-3xl md:text-4xl font-bold text-white mt-1">Telas do Backoffice</h1>
           <span className="text-slate-400 text-sm">{screens.length} referências visuais oficiais do projeto</span>
