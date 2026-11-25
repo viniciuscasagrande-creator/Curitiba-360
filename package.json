@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "Curitiba 360 - Ecossistema Completo (Site Público, Frontend Backoffice e Backend API)",
-  "workspaces": [
-    "site",
-    "frontend",
-    "backend",
-    "backend/functions"
-  ],
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
