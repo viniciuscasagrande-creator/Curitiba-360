@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from './Logo';
-import { Instagram, Facebook, Youtube, ShieldCheck } from 'lucide-react';
+import { Globe, Share2, Tv, ShieldCheck } from 'lucide-react';
 
 export default function Footer({ onOpenAboutBrand }) {
   return (
@@ -50,9 +50,9 @@ export default function Footer({ onOpenAboutBrand }) {
               REDES SOCIAIS
             </h4>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <a href="#" style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Instagram size={18} /></a>
-              <a href="#" style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Facebook size={18} /></a>
-              <a href="#" style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Youtube size={18} /></a>
+              <a href="#" style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Globe size={18} /></a>
+              <a href="#" style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Share2 size={18} /></a>
+              <a href="#" style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff' }}><Tv size={18} /></a>
             </div>
             <div style={{ fontSize: '13px', color: '#94a3b8' }}>
               CNPJ: 07.258.737/0001-58
