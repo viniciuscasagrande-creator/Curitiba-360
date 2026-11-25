@@ -54,12 +54,13 @@ export default function VisualizadorWireframes() {
     'WF-064': '/comercial/agentes/novo'
   };
 
-  // 1. Backoffice Wireframes (71 referências oficiais com caminhos de imagem 100% válidos)
+  // 1. Backoffice Wireframes (71 referências oficiais com caminhos de imagem 100% válidos e tela clonada viva em /tela/:slug)
   const backofficeWireframes = screens.map((s) => ({
     code: s.id,
     name: s.title,
     slug: s.slug,
-    route: ROUTE_BY_WF_ID[s.id] || '/atracoes/1/relatorios',
+    route: `/tela/${s.slug}`,
+    legacyRoute: ROUTE_BY_WF_ID[s.id] || '/atracoes/1/relatorios',
     img: s.image
   }));
 

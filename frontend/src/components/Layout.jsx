@@ -244,15 +244,17 @@ export default function Layout() {
         flexShrink: 0 
       }}>
         
-        {/* Perfil Header + Seletor RBAC Multi-Perfil */}
+        {/* Perfil Header + Logo Oficial Curitiba 360° + Seletor RBAC Multi-Perfil */}
         <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #f0f2f5', flexShrink: 0 }}>
           <div 
-            onClick={() => navigate('/perfil-admin')}
+            onClick={() => navigate('/tela/wf-004-perfil')}
             style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', cursor: 'pointer', marginBottom: '0.75rem' }}
           >
-            <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: '#718096', fontSize: '1.15rem' }}>👤</span>
-            </div>
+            <img
+              src="/logos/official_emblem_logo.png"
+              alt="Curitiba 360°"
+              style={{ width: '44px', height: '44px', borderRadius: '50%', border: '1.5px solid #475569', padding: '3px', backgroundColor: '#fff', objectFit: 'contain' }}
+            />
             <div style={{ textAlign: 'left' }}>
               <h2 style={{ fontSize: '0.85rem', fontWeight: '700', margin: 0, color: '#1e293b' }}>
                 {user ? (user.displayName || user.name) : 'João da Silva'}
@@ -262,6 +264,29 @@ export default function Layout() {
               </p>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => navigate('/tela/wf-002-dashboard')}
+            style={{
+              width: '100%',
+              marginBottom: '0.6rem',
+              padding: '0.5rem 0.75rem',
+              borderRadius: '8px',
+              border: 'none',
+              backgroundColor: '#3b4758',
+              color: '#ffffff',
+              fontSize: '0.75rem',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.4rem'
+            }}
+          >
+            <span>🖥️</span> Abrir Backoffice Oficial (71 Telas)
+          </button>
 
           <div style={{ backgroundColor: '#f8fafc', padding: '0.45rem 0.6rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', marginBottom: '3px' }}>
