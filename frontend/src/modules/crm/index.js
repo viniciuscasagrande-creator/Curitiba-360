@@ -1,0 +1,16 @@
+export { default as CRMDashboardPage } from "./pages/CRMDashboardPage";
+export { default as CustomersPage } from "./pages/CustomersPage";
+export { default as CustomerDetailPage } from "./pages/CustomerDetailPage";
+export { default as TicketsPage } from "./pages/TicketsPage";
+export { default as TicketDetailPage } from "./pages/TicketDetailPage";
+export { default as TasksPage } from "./pages/TasksPage";
+export { default as PipelinePage } from "./pages/PipelinePage";
+export { default as SegmentsPage } from "./pages/SegmentsPage";
+export { default as KnowledgeBasePage } from "./pages/KnowledgeBasePage";
+export { default as ReviewsPage } from "./pages/ReviewsPage";
+export { default as TimelinePage } from "./pages/TimelinePage";
+export { default as SupportPage } from "./pages/SupportPage";
+export { default as TagsPage } from "./pages/TagsPage";
+export { default as CrmCampaignsPage } from "./pages/CrmCampaignsPage";
+export { default as CrmSettingsPage } from "./pages/CrmSettingsPage";
+export { useCustomers } from "./hooks/useCustomers";

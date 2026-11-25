@@ -1,0 +1,11 @@
+export { default as LegalDashboardPage } from "./pages/LegalDashboardPage";
+export { default as ContractsPage } from "./pages/ContractsPage";
+export { default as ContractDetailsPage } from "./pages/ContractDetailsPage";
+export { default as LegalTemplatesPage } from "./pages/LegalTemplatesPage";
+export { default as CompliancePoliciesPage } from "./pages/CompliancePoliciesPage";
+export { default as LgpdRegistryPage } from "./pages/LgpdRegistryPage";
+export { default as JudicialProcessesPage } from "./pages/JudicialProcessesPage";
+export { default as LegalRisksPage } from "./pages/LegalRisksPage";
+export { useLegalDashboard } from "./hooks/useLegalDashboard";
+export { legalService } from "./services/legalService";
+export { legalMock } from "./mocks/legalMock";

@@ -1,0 +1,23 @@
+{
+  "name": "curitiba360-functions",
+  "version": "1.0.0",
+  "description": "Curitiba 360 Backend Cloud Functions & API Server",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "serve": "firebase serve --only functions",
+    "shell": "firebase functions:shell",
+    "start": "node src/index.js",
+    "deploy": "firebase deploy --only functions"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}

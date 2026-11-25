@@ -1,0 +1,26 @@
+{
+  "folders": [
+    {
+      "name": "🌐 Site Público (CWB 360)",
+      "path": "site"
+    },
+    {
+      "name": "🖥️ Frontend (Backoffice & Enterprise)",
+      "path": "frontend"
+    },
+    {
+      "name": "⚙️ Backend (API, Functions & Database)",
+      "path": "backend"
+    },
+    {
+      "name": "📚 Docs & Backups",
+      "path": "docs-e-backups"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.vercel": true
+    }
+  }
+}

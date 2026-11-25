@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+
+# Deploy & Cloud caches
+.vercel/
+**/.vercel/
+.firebase/
+**/.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+
+# Heavy archives & legacy backups
+*.zip
+docs-e-backups/zips-e-backups/
+docs-e-backups/prototipos-legados/
+docs-e-backups/especificacoes-srs/*.txt
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
