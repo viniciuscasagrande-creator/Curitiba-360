@@ -15,12 +15,35 @@ import { downloadExcelCsv } from '../../utils/exportAndAudioUtils';
 export function Wf048Agencies({ store, updateStore, initialTab = 'Ativas', isPartnerView = false, showSuspendModal = false, wizardStep = null }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState(initialTab);
+  const [search, setSearch] = useState('');
+  const [selectedIds, setSelectedIds] = useState(['011', '010', '009']);
   const [cep, setCep] = useState('80010-010');
   const [logradouro, setLogradouro] = useState('Rua XV de Novembro');
 
   const handleCep = async () => {
     const res = await freeApisService.lookupCep(cep);
     if (res?.street) setLogradouro(res.street);
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  const handleBulkStatus = (newStatus) => {
+    if (!updateStore) return;
+    updateStore((prev) => ({
+      ...prev,
+      agencies: prev.agencies.map((ag) => (selectedIds.includes(ag.id) ? { ...ag, status: newStatus } : ag))
+    }));
+  };
+
+  const handleDeleteSelected = () => {
+    if (!updateStore) return;
+    updateStore((prev) => ({
+      ...prev,
+      agencies: prev.agencies.filter((ag) => !selectedIds.includes(ag.id))
+    }));
+    setSelectedIds([]);
   };
 
   return (
@@ -51,20 +74,20 @@ export function Wf048Agencies({ store, updateStore, initialTab = 'Ativas', isPar
         </div>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '10px', backgroundColor: '#ffffff', marginBottom: '18px', overflow: 'hidden' }}>
-          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados 3</span>
+          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados {selectedIds.length}</span>
           {tab === 'Pendente de Aprovação' ? (
             <>
-              <button onClick={() => alert('Agências aprovadas com sucesso!')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☑ Aprovar selecionadas</button>
-              <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Rejeitar selecionadas</button>
+              <button onClick={() => { handleBulkStatus('Ativa'); setTab('Ativas'); }} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☑ Aprovar selecionadas</button>
+              <button onClick={() => { handleBulkStatus('Inativa'); setTab('Inativas'); }} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Rejeitar selecionadas</button>
             </>
           ) : isPartnerView ? (
-            <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', color: '#94a3b8' }}>🔗 Editar</button>
+            <button onClick={() => navigate('/tela/wf-049-cadastro-de-agencia-etapa-1-dados-da-empresa')} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🔗 Editar</button>
           ) : (
             <>
               <button onClick={() => navigate('/tela/wf-049-cadastro-de-agencia-etapa-1-dados-da-empresa')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>🔗 Editar</button>
               <button onClick={() => navigate('/tela/wf-048-gestao-de-agencias-estado-9-modal-suspender-selecionadas-motivo-opcional')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☍ Suspender selecionadas</button>
-              <button style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☑ Inativar selecionadas</button>
-              <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Excluir</button>
+              <button onClick={() => handleBulkStatus('Inativa')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☑ Inativar selecionadas</button>
+              <button onClick={handleDeleteSelected} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Excluir</button>
             </>
           )}
         </div>
@@ -72,7 +95,7 @@ export function Wf048Agencies({ store, updateStore, initialTab = 'Ativas', isPar
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
           <thead>
             <tr style={{ backgroundColor: '#eef1f5', color: '#3b4758', textAlign: 'left' }}>
-              <th style={{ padding: '12px' }}><input type="checkbox" defaultChecked /></th>
+              <th style={{ padding: '12px' }}><input type="checkbox" checked={selectedIds.length > 0} onChange={() => setSelectedIds(selectedIds.length ? [] : store.agencies.map((a) => a.id))} /></th>
               <th style={{ padding: '12px' }}>ID ↕</th>
               <th style={{ padding: '12px' }}>Nome Fantasia ↕</th>
               <th style={{ padding: '12px' }}>CNPJ ↕</th>
@@ -86,12 +109,12 @@ export function Wf048Agencies({ store, updateStore, initialTab = 'Ativas', isPar
           <tbody>
             {store.agencies.map((ag, idx) => (
               <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
-                <td style={{ padding: '14px 12px' }}><input type="checkbox" defaultChecked={idx < 3} /></td>
+                <td style={{ padding: '14px 12px' }}><input type="checkbox" checked={selectedIds.includes(ag.id)} onChange={() => toggleSelect(ag.id)} /></td>
                 <td style={{ padding: '14px 12px' }}>{ag.id}</td>
                 <td style={{ padding: '14px 12px', fontWeight: 700 }}>{ag.nomeFantasia}</td>
                 <td style={{ padding: '14px 12px' }}>{ag.cnpj}</td>
                 <td style={{ padding: '14px 12px' }}>{ag.email}</td>
-                <td style={{ padding: '14px 12px' }}><WfStatusPill status={tab === 'Pendente de Aprovação' ? 'Pendente' : 'Ativa'} /></td>
+                <td style={{ padding: '14px 12px' }}><WfStatusPill status={tab === 'Pendente de Aprovação' ? 'Pendente' : ag.status} /></td>
                 <td style={{ padding: '14px 12px' }}>{ag.qtdAgentes}</td>
                 <td style={{ padding: '14px 12px' }}>{ag.dataCadastro}</td>
                 <td style={{ padding: '14px 12px' }}>{ag.cidadeUf}</td>
@@ -512,12 +535,36 @@ export function Wf052Commission({ store }) {
 // ============================================================================
 export function Wf053RefundQueue({ store, updateStore }) {
   const [tab, setTab] = useState('Pendentes');
+  const [selectedRefunds, setSelectedRefunds] = useState(['#R-2041', '#R-2039', '#R-2036']);
+
+  const toggleSelectRefund = (id) => {
+    setSelectedRefunds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  const handleBulkRefundStatus = (newStatus) => {
+    if (!updateStore) return;
+    updateStore((prev) => ({
+      ...prev,
+      refunds: prev.refunds.map((r) => (selectedRefunds.includes(r.id) ? { ...r, status: newStatus } : r))
+    }));
+  };
+
+  const filteredRefunds = store.refunds.filter((r) => {
+    if (tab === 'Todos') return true;
+    if (tab === 'Pendentes') return r.status === 'Pendente';
+    if (tab === 'Em Análise') return r.status === 'Em Análise';
+    if (tab === 'Aprovados') return r.status === 'Aprovado';
+    if (tab === 'Rejeitados') return r.status === 'Rejeitado';
+    return true;
+  });
 
   return (
     <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="admin" activeMenu="reembolsos" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Fila de Reembolsos · 18 pendentes</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>
+          Fila de Reembolsos · {store.refunds.filter((r) => r.status === 'Pendente').length} pendentes
+        </h1>
         <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 20px 0' }}>Triagem e processamento manual de solicitações de reembolso (&gt; 7 dias)</p>
 
         <div style={{ display: 'flex', borderBottom: '1px solid #cbd5e1', marginBottom: '18px' }}>
@@ -527,16 +574,16 @@ export function Wf053RefundQueue({ store, updateStore }) {
         </div>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '10px', backgroundColor: '#ffffff', marginBottom: '18px', overflow: 'hidden' }}>
-          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados 3</span>
-          <button onClick={() => alert('Reembolsos selecionados aprovados!')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>✓ Aprovar selecionados</button>
-          <button style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☍ Rejeitar selecionados</button>
-          <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>☑ Marcar como Em Análise</button>
+          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados {selectedRefunds.length}</span>
+          <button onClick={() => { handleBulkRefundStatus('Aprovado'); setTab('Aprovados'); }} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>✓ Aprovar selecionados</button>
+          <button onClick={() => { handleBulkRefundStatus('Rejeitado'); setTab('Rejeitados'); }} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>☍ Rejeitar selecionados</button>
+          <button onClick={() => { handleBulkRefundStatus('Em Análise'); setTab('Em Análise'); }} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>☑ Marcar como Em Análise</button>
         </div>
 
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
           <thead>
             <tr style={{ backgroundColor: '#eef1f5', color: '#3b4758', textAlign: 'left' }}>
-              <th style={{ padding: 12 }}><input type="checkbox" defaultChecked /></th>
+              <th style={{ padding: 12 }}><input type="checkbox" checked={selectedRefunds.length > 0} onChange={() => setSelectedRefunds(selectedRefunds.length ? [] : filteredRefunds.map((r) => r.id))} /></th>
               <th style={{ padding: 12 }}>ID Reemb.</th>
               <th style={{ padding: 12 }}>ID Pedido</th>
               <th style={{ padding: 12 }}>Turista ↕</th>
@@ -551,9 +598,9 @@ export function Wf053RefundQueue({ store, updateStore }) {
             </tr>
           </thead>
           <tbody>
-            {store.refunds.map((r, idx) => (
+            {filteredRefunds.map((r, idx) => (
               <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
-                <td style={{ padding: '14px 12px' }}><input type="checkbox" defaultChecked={idx < 3} /></td>
+                <td style={{ padding: '14px 12px' }}><input type="checkbox" checked={selectedRefunds.includes(r.id)} onChange={() => toggleSelectRefund(r.id)} /></td>
                 <td style={{ padding: '14px 12px' }}>{r.id}</td>
                 <td style={{ padding: '14px 12px' }}>{r.pedidoId}</td>
                 <td style={{ padding: '14px 12px' }}>{r.turista}</td>
@@ -578,8 +625,28 @@ export function Wf053RefundQueue({ store, updateStore }) {
 // ============================================================================
 // WF-054 & WF-055: CMS INSTITUCIONAL & CMS HOME E CURADORIA (BANNERS)
 // ============================================================================
-export function Wf054Cms({ store, mode = 'institucional' }) {
+export function Wf054Cms({ store, updateStore, mode = 'institucional' }) {
   const [tab, setTab] = useState(mode === 'institucional' ? 'Política de Privacidade' : 'Banners');
+  const [cmsSavedMsg, setCmsSavedMsg] = useState('');
+
+  const handleAddBanner = () => {
+    const titulo = window.prompt('Título do novo banner:', 'Especial Curitiba 360°');
+    if (!titulo || !updateStore) return;
+    updateStore((prev) => ({
+      ...prev,
+      banners: [
+        ...prev.banners,
+        {
+          ordem: prev.banners.length + 1,
+          arquivo: `${titulo.toLowerCase().replace(/\s+/g, '-')}.jpg`,
+          titulo,
+          cta: 'Explorar agora',
+          periodo: '01/11 – 31/12',
+          status: 'Ativo'
+        }
+      ]
+    }));
+  };
 
   if (mode === 'institucional') {
     return (
@@ -650,7 +717,7 @@ export function Wf054Cms({ store, mode = 'institucional' }) {
           <div style={{ display: 'flex', gap: '10px' }}>
             <input placeholder="Enter search terms" style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
             <button style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
-            <button onClick={() => alert('Novo banner adicionado à vitrine do Portal!')} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Novo Banner ⊕</button>
+            <button onClick={handleAddBanner} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Novo Banner ⊕</button>
           </div>
         </div>
 
@@ -693,8 +760,31 @@ export function Wf054Cms({ store, mode = 'institucional' }) {
 // ============================================================================
 // WF-056: CENTRAL DE NOTIFICAÇÕES
 // ============================================================================
-export function Wf056Notifications({ store }) {
+export function Wf056Notifications({ store, updateStore }) {
   const [tab, setTab] = useState('Templates');
+
+  const handleDuplicateTemplate = (tpl) => {
+    if (!updateStore) return;
+    updateStore((prev) => ({
+      ...prev,
+      notifications: [
+        { ...tpl, nome: `${tpl.nome} (Cópia)`, ultimaEdicao: new Date().toLocaleString('pt-BR') },
+        ...prev.notifications
+      ]
+    }));
+  };
+
+  const handleNewTemplate = () => {
+    const nome = window.prompt('Nome do novo template de notificação:', 'Alerta VIP Curitiba 360°');
+    if (!nome || !updateStore) return;
+    updateStore((prev) => ({
+      ...prev,
+      notifications: [
+        { nome, tipo: 'Ambos', evento: 'Disparo Manual / Campanha', status: 'Ativo', ultimaEdicao: new Date().toLocaleString('pt-BR') },
+        ...prev.notifications
+      ]
+    }));
+  };
 
   return (
     <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
@@ -708,7 +798,7 @@ export function Wf056Notifications({ store }) {
           <div style={{ display: 'flex', gap: '10px' }}>
             <input placeholder="Enter search terms" style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
             <button style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
-            <button style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Novo Template ⊕</button>
+            <button onClick={handleNewTemplate} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Novo Template ⊕</button>
           </div>
         </div>
 
@@ -751,7 +841,9 @@ export function Wf056Notifications({ store }) {
                 <td style={{ padding: '14px 12px' }}>{n.evento}</td>
                 <td style={{ padding: '14px 12px' }}><WfStatusPill status={n.status} /></td>
                 <td style={{ padding: '14px 12px' }}>{n.ultimaEdicao}</td>
-                <td style={{ padding: '14px 12px' }}>Editar · Duplicar</td>
+                <td style={{ padding: '14px 12px' }}>
+                  <button onClick={() => handleDuplicateTemplate(n)} style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 700, cursor: 'pointer' }}>Editar · Duplicar</button>
+                </td>
               </tr>
             ))}
           </tbody>

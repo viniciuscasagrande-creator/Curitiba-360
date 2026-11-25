@@ -68,9 +68,9 @@ export default function WfCompleteSystem({ slug, hideTopBar = false }) {
       case 'wf-001-tela-de-login':
         return <Wf001Login />;
       case 'wf-002-dashboard':
-        return <Wf002Dashboard store={storeState} />;
+        return <Wf002Dashboard store={storeState} updateStore={updateStore} />;
       case 'wf-003-detalhes-da-atracao-totais-da-atracao':
-        return <Wf003TotaisAtracao />;
+        return <Wf003TotaisAtracao store={storeState} />;
       case 'wf-004-perfil':
         return <Wf005Users store={storeState} updateStore={updateStore} modalMode="perfil" />;
       case 'wf-005-gestao-de-usuarios':
@@ -78,15 +78,15 @@ export default function WfCompleteSystem({ slug, hideTopBar = false }) {
       case 'wf-006-adicionar-usuarios':
         return <Wf005Users store={storeState} updateStore={updateStore} modalMode="novo-usuario" />;
       case 'wf-007-gestao-de-contratos':
-        return <Wf007Contracts store={storeState} />;
+        return <Wf007Contracts store={storeState} updateStore={updateStore} />;
       case 'wf-008-gestao-de-contratos-adicionar-contrato':
-        return <Wf007Contracts store={storeState} isAddMode />;
+        return <Wf007Contracts store={storeState} updateStore={updateStore} isAddMode />;
       case 'wf-009-configuracoes-comerciais':
-        return <Wf009CommercialConfig store={storeState} />;
+        return <Wf009CommercialConfig store={storeState} updateStore={updateStore} />;
       case 'wf-010-configuracoes-comerciais-condicao-comercial':
-        return <Wf009CommercialConfig store={storeState} modalMode="condicao" />;
+        return <Wf009CommercialConfig store={storeState} updateStore={updateStore} modalMode="condicao" />;
       case 'wf-011-configuracoes-comerciais-informacao-financeira':
-        return <Wf009CommercialConfig store={storeState} modalMode="financeira" />;
+        return <Wf009CommercialConfig store={storeState} updateStore={updateStore} modalMode="financeira" />;
       case 'wf-012-gestao-de-atracoes':
         return <Wf012Attractions store={storeState} updateStore={updateStore} />;
       case 'wf-013-gestao-de-atracoes-adicionar-atracao-1':
@@ -186,11 +186,11 @@ export default function WfCompleteSystem({ slug, hideTopBar = false }) {
       case 'wf-053-fila-de-reembolsos':
         return <Wf053RefundQueue store={storeState} updateStore={updateStore} />;
       case 'wf-054-cms-institucional':
-        return <Wf054Cms store={storeState} mode="institucional" />;
+        return <Wf054Cms store={storeState} updateStore={updateStore} mode="institucional" />;
       case 'wf-055-cms-home-e-curadoria-banners':
-        return <Wf054Cms store={storeState} mode="home" />;
+        return <Wf054Cms store={storeState} updateStore={updateStore} mode="home" />;
       case 'wf-056-central-de-notificacoes':
-        return <Wf056Notifications store={storeState} />;
+        return <Wf056Notifications store={storeState} updateStore={updateStore} />;
       case 'wf-057-tela-inicial-por-perfil':
         return <Wf051CommercialOperation userName="Curitiba Sightseeing" />;
       case 'wf-058-gestao-de-parceiros-comerciais':

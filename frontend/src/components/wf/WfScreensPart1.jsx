@@ -168,31 +168,52 @@ export function Wf001Login() {
 // ============================================================================
 // WF-002: DASHBOARD
 // ============================================================================
-export function Wf002Dashboard({ store }) {
+export function Wf002Dashboard({ store, updateStore }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Ativos');
   const [search, setSearch] = useState('');
 
   const items = store.attractions.filter((a) => {
     const matchTab = tab === 'Todos' || (tab === 'Ativos' ? a.status === 'Ativo' : a.status !== 'Ativo');
-    const matchSearch = !search || a.nome.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = !search || a.nome.toLowerCase().includes(search.toLowerCase()) || a.local.toLowerCase().includes(search.toLowerCase());
     return matchTab && matchSearch;
   });
+
+  const handleOpenAttraction = (atr, targetSlug = 'wf-003-detalhes-da-atracao-totais-da-atracao') => {
+    if (updateStore) {
+      updateStore((prev) => ({ ...prev, selectedAttractionId: atr.id }));
+    }
+    navigate(`/tela/${targetSlug}`);
+  };
 
   return (
     <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="admin" activeMenu="dashboard" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Dashboard</h1>
-          <div style={{ position: 'relative', width: '340px' }}>
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Enter search terms"
-              style={{ width: '100%', padding: '10px 36px 10px 14px', borderRadius: '8px', border: '1.5px solid #475467', fontSize: '13.5px', boxSizing: 'border-box' }}
-            />
-            <Search size={17} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#475467' }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Dashboard</h1>
+            <p style={{ fontSize: '12.5px', color: '#64748b', margin: '4px 0 0 0' }}>
+              Clique em qualquer atração para abrir seus Totais, Ingressos, Cupons, Relatórios e Validador QR
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button
+              type="button"
+              onClick={() => navigate('/tela/wf-013-gestao-de-atracoes-adicionar-atracao-1')}
+              style={{ padding: '10px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}
+            >
+              + Nova Atração (WF-013)
+            </button>
+            <div style={{ position: 'relative', width: '280px' }}>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Enter search terms"
+                style={{ width: '100%', padding: '10px 36px 10px 14px', borderRadius: '8px', border: '1.5px solid #475467', fontSize: '13.5px', boxSizing: 'border-box' }}
+              />
+              <Search size={17} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#475467' }} />
+            </div>
           </div>
         </div>
 
@@ -214,7 +235,7 @@ export function Wf002Dashboard({ store }) {
                 cursor: 'pointer'
               }}
             >
-              {t}
+              {t} ({store.attractions.filter((a) => t === 'Todos' || (t === 'Ativos' ? a.status === 'Ativo' : a.status !== 'Ativo')).length})
             </button>
           ))}
         </div>
@@ -224,11 +245,11 @@ export function Wf002Dashboard({ store }) {
           {items.map((atr, i) => (
             <div
               key={i}
-              onClick={() => navigate('/tela/wf-003-detalhes-da-atracao-totais-da-atracao')}
-              style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column' }}
+              onClick={() => handleOpenAttraction(atr, 'wf-003-detalhes-da-atracao-totais-da-atracao')}
+              style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '14px', transition: 'box-shadow 0.2s' }}
             >
               <div style={{
-                height: '185px',
+                height: '175px',
                 backgroundColor: '#e9edf2',
                 borderRadius: '10px',
                 display: 'flex',
@@ -243,8 +264,11 @@ export function Wf002Dashboard({ store }) {
                 <img
                   src={OFFICIAL_LOGO}
                   alt={atr.nome}
-                  style={{ width: '95px', height: '95px', objectFit: 'contain' }}
+                  style={{ width: '92px', height: '92px', objectFit: 'contain' }}
                 />
+                <span style={{ position: 'absolute', top: 8, right: 8, fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: 99, backgroundColor: atr.status === 'Ativo' ? '#4e5a6b' : '#cbd5e1', color: atr.status === 'Ativo' ? '#fff' : '#334155' }}>
+                  {atr.status}
+                </span>
               </div>
               <div style={{ textAlign: 'center', marginBottom: '12px' }}>
                 <div style={{ fontWeight: 700, fontSize: '15px', color: '#3b4758' }}>{atr.nome}</div>
@@ -260,7 +284,7 @@ export function Wf002Dashboard({ store }) {
               </div>
 
               {/* Bar chart replica */}
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '120px', padding: '10px 8px 0 28px', borderBottom: '1px solid #e2e8f0', position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '110px', padding: '10px 8px 0 28px', borderBottom: '1px solid #e2e8f0', position: 'relative', marginBottom: '12px' }}>
                 <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', fontSize: '9px', color: '#94a3b8' }}>
                   <span>$4k</span><span>$3k</span><span>$2k</span><span>$1k</span><span>$0</span>
                 </div>
@@ -273,6 +297,13 @@ export function Wf002Dashboard({ store }) {
                   </span>
                 </div>
               </div>
+
+              {/* Quick Submenu Buttons inside Card */}
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }} onClick={(e) => e.stopPropagation()}>
+                <button type="button" onClick={() => handleOpenAttraction(atr, 'wf-003-detalhes-da-atracao-totais-da-atracao')} style={{ flex: 1, padding: '6px', borderRadius: 6, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}>Totais</button>
+                <button type="button" onClick={() => handleOpenAttraction(atr, 'wf-019-detalhes-da-atracao-gestao-de-ingresso')} style={{ flex: 1, padding: '6px', borderRadius: 6, border: '1px solid #cbd5e1', backgroundColor: '#fff', color: '#3b4758', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}>Ingressos</button>
+                <button type="button" onClick={() => handleOpenAttraction(atr, 'wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas')} style={{ flex: 1, padding: '6px', borderRadius: 6, border: '1px solid #cbd5e1', backgroundColor: '#fff', color: '#3b4758', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}>Relatórios</button>
+              </div>
             </div>
           ))}
         </div>
@@ -284,20 +315,24 @@ export function Wf002Dashboard({ store }) {
 // ============================================================================
 // WF-003: DETALHES DA ATRAÇÃO — TOTAIS DA ATRAÇÃO
 // ============================================================================
-export function Wf003TotaisAtracao() {
+export function Wf003TotaisAtracao({ store }) {
   const [period, setPeriod] = useState('Tudo');
+  const selectedAttraction = store?.attractions?.find((a) => a.id === store?.selectedAttractionId) || store?.attractions?.[0] || { nome: 'Parque Jaime Lerner' };
+  const mult = period === 'Hoje' ? 0.15 : period === '7 Dias' ? 0.45 : period === '30 Dias' ? 0.8 : 1;
+  const baseQty = Math.max(1, Math.round(224 * mult));
+  const baseVal = (3900 * mult).toFixed(2).replace('.', ',');
 
   const cards = [
-    { title: 'Ingessos Vendidos', sub: 'Ingessos Vendidos no período', icon: '$', qty: 224, unitLabel: 'Unidades Vendidas', b1Label: 'Valor das Vendas', b1Val: 'R$ 3.900,00', b2Label: 'Ticket Médio', b2Val: 'R$ 17,41', star: 'Acima da meta', bar: true },
-    { title: 'Ingressos Emitidos', sub: 'Ingressos Emitidos no período', icon: '🎟', qty: 224, unitLabel: 'Unidades Emitidas', b1Label: 'Cortesias', b1Val: '2', b2Label: 'Total', b2Val: '226' },
-    { title: 'Ingressos Reservados', sub: 'Ingressos Reservados no período', icon: '💾', qty: 0, unitLabel: 'Unidades Reservados', b1Label: 'Quantidade', b1Val: 'R$ 3.900,00', b2Label: 'Total', b2Val: 'R$ 17,41' },
-    { title: 'Ingressos Validação', sub: 'Ingessos Validados no período', icon: '✓', qty: 224, unitLabel: 'Unidades Validados', b1Label: 'Validados', b1Val: '2', b2Label: 'Pendentes', b2Val: '226', bar: true },
-    { title: 'Vendas no Dinheiro', sub: 'Vendas em dinheiro no período', icon: '💵', qty: 0, unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: '125', b2Label: 'Total', b2Val: 'R$ 2.125,00' },
-    { title: 'Vendas no C. Débito', sub: 'Vendas no cartão débito no período', icon: '💳', qty: 0, unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: '125', b2Label: 'Total', b2Val: 'R$ 2.125,00' },
-    { title: 'Vendas no C. Crédito', sub: 'Vendas no cartão crédito no período', icon: '💳', qty: 0, unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: '125', b2Label: 'Total', b2Val: 'R$ 2.125,00' },
-    { title: 'Vendas no C. Crédito Parcelado', sub: 'Vendas no cartão crédito no período', icon: '💳', qty: 0, unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: '125', b2Label: 'Total', b2Val: 'R$ 2.125,00' },
-    { title: 'Vendas no PIX', sub: 'Vendas no Pix no período', icon: '❖', qty: 0, unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: '125', b2Label: 'Total', b2Val: 'R$ 2.125,00' },
-    { title: 'Vendas por depósito, TED, etc...', sub: 'Vendas por depósito no período', icon: '🏛', qty: 0, unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: '125', b2Label: 'Total', b2Val: 'R$ 2.125,00' }
+    { title: 'Ingessos Vendidos', sub: 'Ingessos Vendidos no período', icon: '$', qty: baseQty, unitLabel: 'Unidades Vendidas', b1Label: 'Valor das Vendas', b1Val: `R$ ${baseVal}`, b2Label: 'Ticket Médio', b2Val: 'R$ 17,41', star: 'Acima da meta', bar: true },
+    { title: 'Ingressos Emitidos', sub: 'Ingressos Emitidos no período', icon: '🎟', qty: baseQty, unitLabel: 'Unidades Emitidas', b1Label: 'Cortesias', b1Val: '2', b2Label: 'Total', b2Val: String(baseQty + 2) },
+    { title: 'Ingressos Reservados', sub: 'Ingressos Reservados no período', icon: '💾', qty: Math.round(12 * mult), unitLabel: 'Unidades Reservados', b1Label: 'Quantidade', b1Val: `R$ ${baseVal}`, b2Label: 'Total', b2Val: 'R$ 17,41' },
+    { title: 'Ingressos Validação', sub: 'Ingessos Validados no período', icon: '✓', qty: baseQty, unitLabel: 'Unidades Validados', b1Label: 'Validados', b1Val: String(Math.round(baseQty * 0.85)), b2Label: 'Pendentes', b2Val: String(Math.round(baseQty * 0.15)), bar: true },
+    { title: 'Vendas no Dinheiro', sub: 'Vendas em dinheiro no período', icon: '💵', qty: Math.round(25 * mult), unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: String(Math.round(125 * mult)), b2Label: 'Total', b2Val: `R$ ${(2125 * mult).toFixed(2).replace('.', ',')}` },
+    { title: 'Vendas no C. Débito', sub: 'Vendas no cartão débito no período', icon: '💳', qty: Math.round(40 * mult), unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: String(Math.round(125 * mult)), b2Label: 'Total', b2Val: `R$ ${(2125 * mult).toFixed(2).replace('.', ',')}` },
+    { title: 'Vendas no C. Crédito', sub: 'Vendas no cartão crédito no período', icon: '💳', qty: Math.round(65 * mult), unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: String(Math.round(125 * mult)), b2Label: 'Total', b2Val: `R$ ${(2125 * mult).toFixed(2).replace('.', ',')}` },
+    { title: 'Vendas no C. Crédito Parcelado', sub: 'Vendas no cartão crédito no período', icon: '💳', qty: Math.round(34 * mult), unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: String(Math.round(125 * mult)), b2Label: 'Total', b2Val: `R$ ${(2125 * mult).toFixed(2).replace('.', ',')}` },
+    { title: 'Vendas no PIX', sub: 'Vendas no Pix no período', icon: '❖', qty: Math.round(60 * mult), unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: String(Math.round(125 * mult)), b2Label: 'Total', b2Val: `R$ ${(2125 * mult).toFixed(2).replace('.', ',')}` },
+    { title: 'Vendas por depósito, TED, etc...', sub: 'Vendas por depósito no período', icon: '🏛', qty: Math.round(10 * mult), unitLabel: 'Unidades Vendidas', b1Label: 'Quantidade', b1Val: String(Math.round(125 * mult)), b2Label: 'Total', b2Val: `R$ ${(2125 * mult).toFixed(2).replace('.', ',')}` }
   ];
 
   return (
@@ -305,7 +340,7 @@ export function Wf003TotaisAtracao() {
       <WfSidebar mode="attraction" activeMenu="totais" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: '0 0 18px 0' }}>
-          Atração Parque Jaime Lerner
+          Atração {selectedAttraction.nome}
         </h1>
 
         <div style={{ display: 'flex', gap: '8px', marginBottom: '22px' }}>
@@ -506,11 +541,20 @@ export function Wf005Users({ store, updateStore, modalMode = null, isAttractionC
             >
               <Trash2 size={14} /> Excluir
             </button>
-            <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+            <button
+              onClick={() => {
+                updateStore((prev) => ({
+                  ...prev,
+                  users: prev.users.map((u) => (selected.includes(u.id) ? { ...u, status: u.status === 'Ativo' ? 'Inativo' : 'Ativo' } : u))
+                }));
+                setSelected([]);
+              }}
+              style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+            >
               <span style={{ width: 28, height: 15, backgroundColor: '#4e5a6b', borderRadius: 99, position: 'relative', display: 'inline-block' }}>
                 <span style={{ width: 11, height: 11, backgroundColor: '#fff', borderRadius: '50%', position: 'absolute', right: 2, top: 2 }} />
               </span>
-              Inativar selecionados
+              {tab === 'Inativos' ? 'Ativar selecionados' : 'Inativar selecionados'}
             </button>
           </div>
         )}
@@ -529,7 +573,11 @@ export function Wf005Users({ store, updateStore, modalMode = null, isAttractionC
           </thead>
           <tbody>
             {store.users
-              .filter((u) => !search || u.nome.toLowerCase().includes(search.toLowerCase()))
+              .filter((u) => {
+                const matchTab = tab === 'Todos' || (tab === 'Ativos' ? u.status === 'Ativo' : u.status !== 'Ativo');
+                const matchSearch = !search || u.nome.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase());
+                return matchTab && matchSearch;
+              })
               .map((u, idx) => (
                 <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
                   <td style={{ padding: '14px' }}>
@@ -746,10 +794,37 @@ export function Wf005Users({ store, updateStore, modalMode = null, isAttractionC
 // ============================================================================
 // WF-007 & WF-008: GESTÃO DE CONTRATOS & ADICIONAR CONTRATO
 // ============================================================================
-export function Wf007Contracts({ store, isAddMode = false }) {
+export function Wf007Contracts({ store, updateStore, isAddMode = false }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Ativos');
   const [rightTab, setRightTab] = useState('info');
+  const [expandedPartners, setExpandedPartners] = useState([0, 1, 2]);
+  const [newContractPartner, setNewContractPartner] = useState('Parque Jaime Lerner');
+  const [newContractAttraction, setNewContractAttraction] = useState('Ópera de Arame');
+
+  const toggleExpandPartner = (idx) => {
+    setExpandedPartners((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
+  };
+
+  const handleSaveNewContract = () => {
+    if (updateStore) {
+      updateStore((prev) => ({
+        ...prev,
+        contracts: prev.contracts.map((g, i) =>
+          i === 0
+            ? {
+                ...g,
+                items: [
+                  { id: Math.floor(2820 + Math.random() * 500), atracao: newContractAttraction, status: 'Ativo', expiracao: '31/12/2027 16:44:22' },
+                  ...g.items
+                ]
+              }
+            : g
+        )
+      }));
+    }
+    navigate('/tela/wf-007-gestao-de-contratos');
+  };
 
   if (isAddMode) {
     return (
@@ -763,7 +838,7 @@ export function Wf007Contracts({ store, isAddMode = false }) {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => window.print()} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', color: '#3b4758', fontWeight: 700, cursor: 'pointer' }}>Preview 👁</button>
-              <button onClick={() => navigate('/tela/wf-007-gestao-de-contratos')} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Salvar ✓</button>
+              <button onClick={handleSaveNewContract} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Salvar ✓</button>
             </div>
           </div>
 
@@ -900,8 +975,8 @@ export function Wf007Contracts({ store, isAddMode = false }) {
           <tbody>
             {store.contracts.map((group, idx) => (
               <React.Fragment key={idx}>
-                <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
-                  <td style={{ padding: '14px' }}>⌄</td>
+                <tr onClick={() => toggleExpandPartner(idx)} style={{ borderBottom: '1px solid #cbd5e1', cursor: 'pointer', backgroundColor: expandedPartners.includes(idx) ? '#f8fafc' : '#fff' }}>
+                  <td style={{ padding: '14px', fontWeight: 800 }}>{expandedPartners.includes(idx) ? '⌄' : '›'}</td>
                   <td style={{ padding: '14px' }}>{group.partnerId}</td>
                   <td style={{ padding: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -911,7 +986,7 @@ export function Wf007Contracts({ store, isAddMode = false }) {
                   </td>
                   <td style={{ padding: '14px' }}><WfStatusPill status={group.type} /></td>
                 </tr>
-                {idx === 0 && (
+                {expandedPartners.includes(idx) && (
                   <tr>
                     <td colSpan={4} style={{ padding: '0 0 14px 48px' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
@@ -952,9 +1027,35 @@ export function Wf007Contracts({ store, isAddMode = false }) {
 // ============================================================================
 // WF-009, WF-010, WF-011: CONFIGURAÇÕES COMERCIAIS + MODAIS
 // ============================================================================
-export function Wf009CommercialConfig({ store, modalMode = null }) {
+export function Wf009CommercialConfig({ store, updateStore, modalMode = null }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Condições comerciais');
+  const [condForm, setCondForm] = useState({ apelido: 'Parceiro Ouro 11%', tipo: 'Porcentagem', valor: '11%', prazoPagamento: 15, txCreditoVista: '1,5%', txCreditoParcelado: '1,35%', txPix: '0,95%' });
+
+  const handleSaveCondition = () => {
+    if (updateStore && modalMode === 'condicao') {
+      updateStore((prev) => ({
+        ...prev,
+        commercialConditions: [
+          {
+            id: Math.floor(2810 + Math.random() * 500),
+            apelido: condForm.apelido,
+            status: 'Ativo',
+            tipo: condForm.tipo,
+            valor: condForm.valor,
+            txCreditoVista: condForm.txCreditoVista,
+            txCreditoParcelado: condForm.txCreditoParcelado,
+            txPix: condForm.txPix,
+            txAntecipacao: '0,25%',
+            prazoPagamento: Number(condForm.prazoPagamento) || 15,
+            txInternacional: '0,25%'
+          },
+          ...prev.commercialConditions
+        ]
+      }));
+    }
+    navigate('/tela/wf-009-configuracoes-comerciais');
+  };
 
   return (
     <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
@@ -1033,7 +1134,7 @@ export function Wf009CommercialConfig({ store, modalMode = null }) {
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button onClick={() => navigate('/tela/wf-009-configuracoes-comerciais')} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}>Descartar 🗑</button>
-                <button onClick={() => navigate('/tela/wf-009-configuracoes-comerciais')} style={{ padding: '8px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Salvar ✓</button>
+                <button onClick={handleSaveCondition} style={{ padding: '8px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Salvar ✓</button>
               </div>
             </div>
 
@@ -1045,19 +1146,19 @@ export function Wf009CommercialConfig({ store, modalMode = null }) {
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
                   <label style={{ fontSize: 12, fontWeight: 700 }}>Apelido</label>
-                  <input defaultValue="Padrão 10%" style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
+                  <input value={condForm.apelido} onChange={(e) => setCondForm({ ...condForm, apelido: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
                 </div>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700 }}>Porcentagem/Valor</label>
-                  <select style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4 }}><option>Porcentagem</option><option>Valor</option></select>
+                  <select value={condForm.tipo} onChange={(e) => setCondForm({ ...condForm, tipo: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4 }}><option>Porcentagem</option><option>Valor</option></select>
                 </div>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700 }}>Valor</label>
-                  <input defaultValue="10%" style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
+                  <input value={condForm.valor} onChange={(e) => setCondForm({ ...condForm, valor: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
                 </div>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700 }}>Prazo pagamento (dias)</label>
-                  <input defaultValue="15" style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
+                  <input value={condForm.prazoPagamento} onChange={(e) => setCondForm({ ...condForm, prazoPagamento: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
                 </div>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700 }}>Tx. C.Crédito a Vista</label>
