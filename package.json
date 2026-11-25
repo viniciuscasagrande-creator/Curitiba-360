@@ -10,6 +10,8 @@
     "backend/functions"
   ],
   "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
     "dev:site": "npm --prefix site run dev",
     "dev:site:full": "npm --prefix site run dev:full",
     "dev:frontend": "npm --prefix frontend run dev",
