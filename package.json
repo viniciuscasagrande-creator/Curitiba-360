@@ -11,6 +11,7 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend run start",
     "build:site": "npm --prefix site run build",
-    "build:frontend": "npm --prefix frontend run build"
+    "build:frontend": "npm --prefix frontend run build",
+    "deploy:official": "cd frontend && npx vercel --prod --yes && npx vercel alias set curitiba360-unificado.vercel.app && npx vercel alias set curitiba360-app.vercel.app"
   }
 }
