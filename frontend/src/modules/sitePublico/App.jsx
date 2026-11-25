@@ -19,9 +19,11 @@ import LoginModal from './components/LoginModal';
 import BrandAboutModal from './components/BrandAboutModal';
 import AIAssistantWidget from './components/AIAssistantWidget';
 import Footer from './components/Footer';
+import CuritibaLivePulseBanner from './components/CuritibaLivePulseBanner';
 import { ATTRACTIONS, UNIFIED_NAV_ITEMS } from './data/attractions';
 import { LanguageProvider } from './context/LanguageContext';
 import { platformSyncService, B2B_PARTNERS_CATALOG } from '../../services/platformSyncService';
+import { freeApisService } from '../../services/freeApisService';
 
 function SitePublicoContent() {
   const navigate = useNavigate();
@@ -35,11 +37,19 @@ function SitePublicoContent() {
   const [isAgencyQuoteOpen, setIsAgencyQuoteOpen] = useState(false);
   const [agencyQuoteDefaultType, setAgencyQuoteDefaultType] = useState('passeio');
 
-  // Real-time synced state with Backoffice & B2B QR Referral
+  // Real-time synced state with Backoffice & B2B QR Referral & Free Public APIs
   const [customAttractions, setCustomAttractions] = useState(() => platformSyncService.getCustomAttractions());
   const [activeRef, setActiveRef] = useState(() => platformSyncService.captureReferralFromUrl());
+  const [liveData, setLiveData] = useState(null);
+  const [selectedCurrency, setSelectedCurrency] = useState('BRL');
+
+  const refreshLiveApis = async (force = false) => {
+    const data = await freeApisService.fetchCuritibaLivePulse(force);
+    setLiveData(data);
+  };
 
   useEffect(() => {
+    refreshLiveApis(false);
     setActiveRef(platformSyncService.captureReferralFromUrl());
     return platformSyncService.subscribe(() => {
       setCustomAttractions(platformSyncService.getCustomAttractions());
@@ -214,6 +224,15 @@ function SitePublicoContent() {
         totalResults={filteredAttractions.length}
       />
 
+      {/* Painel Ao Vivo Conectado a APIs Gratuitas (Open-Meteo, Qualidade do Ar, AwesomeAPI Câmbio, BrasilAPI e Wikipedia) */}
+      <CuritibaLivePulseBanner
+        liveData={liveData}
+        onRefresh={() => refreshLiveApis(true)}
+        onFilterClimate={(topic) => handleSelectTopicTab(topic)}
+        selectedCurrency={selectedCurrency}
+        onSelectCurrency={setSelectedCurrency}
+      />
+
       <main style={{ flex: 1 }}>
         {(activeTopicTab === 'parques' || activeTopicTab === 'cultura' || activeTopicTab === 'shows' || activeTopicTab === 'teatros' || activeTopicTab === 'eventos' || activeTopicTab === 'bares' || activeTopicTab === 'tours' || activeTopicTab === 'gastronomia') && !searchQuery && (
           <TopicBanner topicId={activeTopicTab} />
@@ -271,6 +290,8 @@ function SitePublicoContent() {
               }
               attractions={filteredAttractions}
               onClickDetail={setActiveAttraction}
+              liveCurrencies={liveData?.currencies}
+              selectedCurrency={selectedCurrency}
             />
 
             {activeTopicTab === 'all' && !searchQuery && (
@@ -308,6 +329,7 @@ function SitePublicoContent() {
       <AIAssistantWidget
         onSelectAttraction={setActiveAttraction}
         onAddItineraryToCart={handleAddItineraryToCart}
+        liveData={liveData}
       />
 
       <Footer onOpenAboutBrand={() => setIsAboutBrandOpen(true)} />
@@ -318,6 +340,7 @@ function SitePublicoContent() {
           allAttractions={allAttractions}
           onClose={() => setActiveAttraction(null)}
           onAddToCart={handleAddToCart}
+          liveData={liveData}
         />
       )}
 

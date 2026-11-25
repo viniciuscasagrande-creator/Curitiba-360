@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { platformSyncService } from '../services/platformSyncService';
+import { freeApisService } from '../services/freeApisService';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -11,8 +12,10 @@ export default function Dashboard() {
   const [vouchers, setVouchers] = useState(() => platformSyncService.getVouchers());
   const [checkins, setCheckins] = useState(() => platformSyncService.getCheckins());
   const [customAttractions, setCustomAttractions] = useState(() => platformSyncService.getCustomAttractions());
+  const [livePulse, setLivePulse] = useState(null);
 
   useEffect(() => {
+    freeApisService.fetchCuritibaLivePulse().then(setLivePulse);
     return platformSyncService.subscribe(() => {
       setOrders(platformSyncService.getOrders());
       setVouchers(platformSyncService.getVouchers());
@@ -175,6 +178,45 @@ export default function Dashboard() {
           <span style={{ fontSize: '0.7rem', color: '#059669', fontWeight: '700' }}>+ Publicar nova no Site →</span>
         </div>
       </div>
+
+      {/* Painel de Telemetria Ao Vivo de Curitiba (APIs Públicas Gratuitas) */}
+      {livePulse && (
+        <div style={{
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+          color: 'white',
+          padding: '1rem 1.25rem',
+          borderRadius: '12px',
+          marginBottom: '1.75rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.75rem' }}>{livePulse.weather?.icon}</span>
+            <div>
+              <div style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: '800', textTransform: 'uppercase' }}>
+                Open-Meteo & Air Quality API (Curitiba Ao Vivo)
+              </div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 'bold' }}>
+                {livePulse.weather?.temperature}°C • {livePulse.weather?.condition} | Ar: {livePulse.airQuality?.level} (AQI {livePulse.airQuality?.aqi})
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap', fontSize: '0.8rem' }}>
+            <div>
+              <span style={{ color: '#94a3b8', display: 'block', fontSize: '0.7rem' }}>AwesomeAPI Câmbio</span>
+              <strong>USD R$ {livePulse.currencies?.USD} | EUR R$ {livePulse.currencies?.EUR}</strong>
+            </div>
+            <div>
+              <span style={{ color: '#94a3b8', display: 'block', fontSize: '0.7rem' }}>BrasilAPI Próx. Feriado</span>
+              <strong>{livePulse.holidays?.[0]?.name || 'Natal Curitiba'}</strong>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Abas */}
       <div style={{ display: 'flex', borderBottom: '1px solid #d1d5db', marginBottom: '2rem' }}>

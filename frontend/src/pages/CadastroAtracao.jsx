@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { platformSyncService } from '../services/platformSyncService';
+import { freeApisService } from '../services/freeApisService';
 
 export default function CadastroAtracao() {
   const navigate = useNavigate();
@@ -13,7 +14,26 @@ export default function CadastroAtracao() {
   const [parceiroId, setParceiroId] = useState('');
   const [nomeAtracao, setNomeAtracao] = useState('');
   const [cep, setCep] = useState('');
-  const [endereco, setEndereco] = useState({ logradouro: '', numero: '', cidade: '', uf: '' });
+  const [buscandoCep, setBuscandoCep] = useState(false);
+  const [endereco, setEndereco] = useState({ logradouro: '', numero: '', cidade: 'Curitiba', uf: 'PR' });
+
+  const handleCepChange = async (novoCep) => {
+    setCep(novoCep);
+    const digits = novoCep.replace(/\D/g, '');
+    if (digits.length === 8) {
+      setBuscandoCep(true);
+      const info = await freeApisService.fetchCepInfo(digits);
+      setBuscandoCep(false);
+      if (info) {
+        setEndereco(prev => ({
+          ...prev,
+          logradouro: info.logradouro ? `${info.logradouro}${info.bairro ? ` (${info.bairro})` : ''}` : prev.logradouro,
+          cidade: info.cidade || 'Curitiba',
+          uf: info.uf || 'PR'
+        }));
+      }
+    }
+  };
   const [classificacao, setClassificacao] = useState('Livre');
   const [capacidade, setCapacidade] = useState('');
   
@@ -148,7 +168,12 @@ export default function CadastroAtracao() {
             <div style={{ gridColumn: '1 / -1', borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem', marginTop: '1rem' }}>
               <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Localização</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>CEP *</label><input type="text" required value={cep} onChange={e => setCep(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} /></div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                    CEP * {buscandoCep && <span style={{ color: '#2563eb', fontSize: '0.75rem' }}>(Consultando BrasilAPI...)</span>}
+                  </label>
+                  <input type="text" required placeholder="Ex: 80210-390" value={cep} onChange={e => handleCepChange(e.target.value)} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} />
+                </div>
                 <div><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Cidade *</label><input type="text" required value={endereco.cidade} onChange={e => setEndereco({...endereco, cidade: e.target.value})} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} /></div>
                 <div style={{ gridColumn: '1 / -1' }}><label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Logradouro *</label><input type="text" required value={endereco.logradouro} onChange={e => setEndereco({...endereco, logradouro: e.target.value})} style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }} /></div>
               </div>

@@ -4,17 +4,18 @@ import { ATTRACTIONS } from '../data/attractions';
 import { useLanguage } from '../context/LanguageContext';
 
 const QUICK_SUGGESTIONS = [
+  "🌦️ Como está o clima e qualidade do ar agora em Curitiba?",
+  "💱 Qual a cotação do Dólar/Euro e próximos feriados?",
   "🗓️ Monte um roteiro completo de 3 dias em Curitiba",
   "🛍️ Quais os melhores Shoppings de Curitiba?",
   "🌲 Quais os parques imperdíveis?",
   "🍺 Bares para tomar Chopp Submarino e Carne de Onça?",
   "🍝 Onde comer o tradicional rodízio em Santa Felicidade?",
   "🏨 Recomende hotéis 5 estrelas no Batel",
-  "🚂 Como funciona o passeio de trem para Morretes?",
-  "🎭 Programação de shows, festivais e teatros"
+  "🚂 Como funciona o passeio de trem para Morretes?"
 ];
 
-export default function AIAssistantWidget({ onSelectAttraction, onAddItineraryToCart }) {
+export default function AIAssistantWidget({ onSelectAttraction, onAddItineraryToCart, liveData }) {
   const { t, currentLang } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [inputQuery, setInputQuery] = useState('');
@@ -51,8 +52,24 @@ export default function AIAssistantWidget({ onSelectAttraction, onAddItineraryTo
     let replyText = "";
     let recommendations = [];
 
+    // CLIMA AO VIVO & QUALIDADE DO AR (OPEN-METEO API)
+    if (textLower.includes('clima') || textLower.includes('tempo') || textLower.includes('chuva') || textLower.includes('temperatura') || textLower.includes('ar') || textLower.includes('weather')) {
+      const w = liveData?.weather;
+      const aqi = liveData?.airQuality;
+      replyText = `📡 **Boletim Ao Vivo Open-Meteo API Curitiba**:\n\n• **Temperatura Agora**: ${w ? `${w.icon} ${w.temperature}°C (Sensação ${w.apparentTemperature}°C)` : '21°C'} — ${w?.condition || 'Agradável'}\n• **Umidade / Vento**: ${w?.humidity || 68}% | ${w?.windSpeed || 12} km/h\n• **Qualidade do Ar (Air Quality API)**: ${aqi?.level || 'Excelente'} (AQI ${aqi?.aqi || 22} • Índice UV ${aqi?.uvIndex || 5})\n\n💡 **Recomendação Inteligente**: ${w?.advice || 'Excelente momento para visitar os parques e pontos turísticos!'}`;
+      recommendations = w?.isRainy
+        ? ATTRACTIONS.filter(a => a.category === 'cultura' || a.category === 'gastronomia').slice(0, 3)
+        : ATTRACTIONS.filter(a => a.category === 'parques' || a.category === 'tours').slice(0, 3);
+    }
+    // CÂMBIO AO VIVO & FERIADOS (AWESOMEAPI + BRASILAPI)
+    else if (textLower.includes('cambio') || textLower.includes('câmbio') || textLower.includes('dolar') || textLower.includes('dólar') || textLower.includes('euro') || textLower.includes('moeda') || textLower.includes('feriado')) {
+      const c = liveData?.currencies || { USD: 5.78, EUR: 6.12, GBP: 7.32 };
+      const h = (liveData?.holidays || []).map(item => `• **${item.date.split('-').reverse().join('/')}**: ${item.name}`).join('\n');
+      replyText = `💱 **Cotação Comercial Ao Vivo (AwesomeAPI)** para turistas internacionais:\n\n• **1 Dólar (USD)** = R$ ${c.USD}\n• **1 Euro (EUR)** = R$ ${c.EUR}\n• **1 Libra (GBP)** = R$ ${c.GBP}\n*(Você pode alternar toda a vitrine do portal para USD ou EUR no topo da página!)*\n\n📅 **Próximos Feriados Nacionais (BrasilAPI)**:\n${h || '• Alta temporada confirmada em Curitiba!'}`;
+      recommendations = ATTRACTIONS.filter(a => !a.isFree && a.price > 0).slice(0, 3);
+    }
     // ROTEIRO DE 3 DIAS COM COMPRA EM 1 CLIQUE
-    if (textLower.includes('roteiro') || textLower.includes('3 dias') || textLower.includes('fim de semana') || textLower.includes('itinerary')) {
+    else if (textLower.includes('roteiro') || textLower.includes('3 dias') || textLower.includes('fim de semana') || textLower.includes('itinerary')) {
       replyText = "Monte seu **Roteiro Oficial Curitiba 360° de 3 Dias**! 🌲✨\n\n• **Dia 1 (Ícones & Cultura)**: Jardim Botânico + Museu Oscar Niemeyer (MON) + Linha Turismo Panorâmica.\n• **Dia 2 (Música & Gastronomia)**: Ópera de Arame & Vale da Música + Jantar Italiano no Madalosso em Santa Felicidade.\n• **Dia 3 (Serra do Mar)**: Passeio de Trem Serra Verde Express até Morretes com Barreado.\n\n👇 Você pode clicar em **Adicionar Roteiro Completo ao Carrinho (1 Clique)** abaixo para reservar todos os ingressos pagos de uma só vez!";
       recommendations = ATTRACTIONS.filter(a => !a.isFree && a.price > 0).slice(0, 4);
     }

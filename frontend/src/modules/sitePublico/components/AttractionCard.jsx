@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Star, Clock, Heart, MapPin } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { freeApisService } from '../../../services/freeApisService';
 
-export default function AttractionCard({ attraction, onClickDetail }) {
+export default function AttractionCard({ attraction, onClickDetail, liveCurrencies, selectedCurrency = 'BRL' }) {
   const { t } = useLanguage();
   const [isFavorite, setIsFavorite] = useState(false);
+  const converted = freeApisService.formatConvertedPrices(attraction.price, liveCurrencies);
 
   const toggleFavorite = (e) => {
     e.stopPropagation();
@@ -144,10 +146,21 @@ export default function AttractionCard({ attraction, onClickDetail }) {
               </div>
             ) : (
               <div>
-                <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>R$</span>
-                <span style={{ fontSize: '20px', fontWeight: '800', color: '#2563eb', lineHeight: '1' }}>
-                  {attraction.price.toFixed(2).replace('.', ',')}
+                <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>
+                  {selectedCurrency === 'USD' ? 'Cotação USD Ao Vivo' : selectedCurrency === 'EUR' ? 'Cotação EUR Ao Vivo' : 'R$'}
                 </span>
+                <span style={{ fontSize: '20px', fontWeight: '800', color: '#2563eb', lineHeight: '1' }}>
+                  {selectedCurrency === 'USD'
+                    ? converted.usd
+                    : selectedCurrency === 'EUR'
+                    ? converted.eur
+                    : attraction.price.toFixed(2).replace('.', ',')}
+                </span>
+                {selectedCurrency === 'BRL' && (
+                  <span style={{ fontSize: '10px', color: '#00a896', fontWeight: '700', display: 'block', marginTop: '2px' }}>
+                    ≈ {converted.usd} | {converted.eur}
+                  </span>
+                )}
               </div>
             )}
           </div>

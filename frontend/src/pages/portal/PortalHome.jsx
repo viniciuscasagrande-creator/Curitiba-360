@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import { freeApisService } from '../../services/freeApisService';
+import { platformSyncService } from '../../services/platformSyncService';
 
 // Subcomponents
 import PortalMap from './PortalMap';
@@ -20,11 +22,20 @@ export default function PortalHome() {
   // Registration Type (for Partner tab)
   const [registrationType, setRegistrationType] = useState('partner'); // partner, agency
 
-  // Global State (persisted in localStorage)
+  // Global State (persisted in localStorage) + Live Public APIs
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [livePulse, setLivePulse] = useState(null);
+  const [customAttractions, setCustomAttractions] = useState(() => platformSyncService.getCustomAttractions());
+
+  useEffect(() => {
+    freeApisService.fetchCuritibaLivePulse().then(setLivePulse);
+    return platformSyncService.subscribe(() => {
+      setCustomAttractions(platformSyncService.getCustomAttractions());
+    });
+  }, []);
   
   // UI States
   const [cookiesAceitos, setCookiesAceitos] = useState(false);
@@ -357,6 +368,45 @@ export default function PortalHome() {
 
         </div>
       </header>
+
+      {/* 1.5. BARRA DE TELEMETRIA AO VIVO (APIs Públicas Gratuitas) */}
+      {livePulse && (
+        <div style={{
+          backgroundColor: '#022c22',
+          borderBottom: '1px solid #065f46',
+          padding: '0.65rem 2rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          fontSize: '0.8rem',
+          color: '#ecfdf5'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <span style={{ backgroundColor: '#10b981', color: '#022c22', fontWeight: '900', padding: '2px 8px', borderRadius: '999px', fontSize: '0.7rem' }}>
+              APIs AO VIVO
+            </span>
+            <span>
+              <strong>Open-Meteo Curitiba:</strong> {livePulse.weather?.icon} {livePulse.weather?.temperature}°C ({livePulse.weather?.condition})
+            </span>
+            <span>•</span>
+            <span>
+              <strong>Qualidade do Ar:</strong> AQI {livePulse.airQuality?.aqi} ({livePulse.airQuality?.level})
+            </span>
+            <span>•</span>
+            <span>
+              <strong>AwesomeAPI Câmbio:</strong> USD R$ {livePulse.currencies?.USD} | EUR R$ {livePulse.currencies?.EUR}
+            </span>
+          </div>
+          <button
+            onClick={() => navigate('/site')}
+            style={{ backgroundColor: '#00a896', color: 'white', border: 'none', borderRadius: '6px', padding: '4px 12px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            🌐 Abrir Portal CWB 360 Completo (/site) →
+          </button>
+        </div>
+      )}
 
       {/* 2. TABS RENDERING CONTAINER */}
       <div style={{ padding: '2rem' }}>

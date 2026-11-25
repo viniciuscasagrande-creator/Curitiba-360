@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Star, Clock, MapPin, Check, ShoppingCart, Share2, Heart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Star, Clock, MapPin, Check, ShoppingCart, Share2, Heart, BookOpen, ExternalLink, CloudSun, Globe } from 'lucide-react';
 import AttractionCard from './AttractionCard';
+import { freeApisService } from '../../../services/freeApisService';
 
-export default function AttractionDetailModal({ attraction, allAttractions, onClose, onAddToCart }) {
+export default function AttractionDetailModal({ attraction, allAttractions, onClose, onAddToCart, liveData }) {
   if (!attraction) return null;
 
   const [ticketType, setTicketType] = useState('adulto');
   const [quantity, setQuantity] = useState(1);
   const [activePhoto, setActivePhoto] = useState(0);
   const [addedSuccess, setAddedSuccess] = useState(false);
+  const [wikiInfo, setWikiInfo] = useState(null);
+  const [loadingWiki, setLoadingWiki] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoadingWiki(true);
+    freeApisService.fetchWikipediaSummary(attraction.id || attraction.title).then((data) => {
+      if (mounted) {
+        setWikiInfo(data);
+        setLoadingWiki(false);
+      }
+    });
+    return () => { mounted = false; };
+  }, [attraction.id, attraction.title]);
 
   const ticketPrices = {
     adulto: attraction.price,
@@ -200,6 +215,69 @@ export default function AttractionDetailModal({ attraction, allAttractions, onCl
                   ))}
                 </div>
               )}
+
+              {/* Wikipedia REST API Official Cultural Context Box */}
+              {(wikiInfo || loadingWiki) && (
+                <div style={{
+                  marginTop: '24px',
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '16px',
+                  padding: '18px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#0284c7', textTransform: 'uppercase' }}>
+                      <BookOpen size={14} /> Wikipedia REST API • Dados Históricos & Culturais Oficiais
+                    </span>
+                    {wikiInfo?.pageUrl && (
+                      <a href={wikiInfo.pageUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '700', color: '#2563eb', textDecoration: 'none' }}>
+                        <span>Artigo Completo</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    )}
+                  </div>
+                  {loadingWiki ? (
+                    <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>Carregando informações históricas da Wikipedia API...</p>
+                  ) : (
+                    <>
+                      <strong style={{ display: 'block', fontSize: '15px', color: '#0f172a', marginBottom: '4px' }}>
+                        {wikiInfo.title} — <span style={{ fontWeight: '600', color: '#64748b', fontSize: '13px' }}>{wikiInfo.description}</span>
+                      </strong>
+                      <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.6', margin: 0 }}>
+                        {wikiInfo.extract}
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Live Weather & Air Quality Condition for this Attraction */}
+              {liveData?.weather && (
+                <div style={{
+                  marginTop: '16px',
+                  backgroundColor: '#f0fdf4',
+                  border: '1px solid #bbf7d0',
+                  borderRadius: '14px',
+                  padding: '14px 18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '10px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <CloudSun size={22} color="#16a34a" />
+                    <div>
+                      <div style={{ fontSize: '12px', fontWeight: '800', color: '#065f46' }}>
+                        Condição Agora no Local (Open-Meteo API): {liveData.weather.icon} {liveData.weather.temperature}°C • {liveData.weather.condition}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#047857' }}>
+                        Qualidade do Ar: {liveData.airQuality?.level} (AQI {liveData.airQuality?.aqi}) • {liveData.weather.advice}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Recommended / You might also like */}
@@ -293,6 +371,14 @@ export default function AttractionDetailModal({ attraction, allAttractions, onCl
                   </span>
                   <span style={{ fontSize: '13px', color: '#64748b' }}>({quantity}x ingressos)</span>
                 </div>
+                {totalAmount > 0 && (
+                  <div style={{ fontSize: '11px', color: '#0284c7', fontWeight: '700', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Globe size={12} />
+                    <span>
+                      Câmbio AwesomeAPI: {freeApisService.formatConvertedPrices(totalAmount, liveData?.currencies).usd} | {freeApisService.formatConvertedPrices(totalAmount, liveData?.currencies).eur}
+                    </span>
+                  </div>
+                )}
                 <span style={{ fontSize: '12px', color: '#16a34a', fontWeight: '600', display: 'block', marginTop: '4px' }}>
                   {attraction.paymentTerms || '12x Sem Juros'}
                 </span>

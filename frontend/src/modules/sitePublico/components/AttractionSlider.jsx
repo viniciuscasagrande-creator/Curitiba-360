@@ -3,7 +3,7 @@ import { LayoutGrid, List } from 'lucide-react';
 import AttractionCard from './AttractionCard';
 import AttractionListItem from './AttractionListItem';
 
-export default function AttractionSlider({ title, subtitle, attractions, onClickDetail }) {
+export default function AttractionSlider({ title, subtitle, attractions, onClickDetail, liveCurrencies, selectedCurrency = 'BRL' }) {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
   if (!attractions || attractions.length === 0) return null;
@@ -121,7 +121,9 @@ export default function AttractionSlider({ title, subtitle, attractions, onClick
             <AttractionCard 
               key={attraction.id} 
               attraction={attraction} 
-              onClickDetail={onClickDetail} 
+              onClickDetail={onClickDetail}
+              liveCurrencies={liveCurrencies}
+              selectedCurrency={selectedCurrency}
             />
           ))}
         </div>
