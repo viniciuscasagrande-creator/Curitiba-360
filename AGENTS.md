@@ -8,20 +8,20 @@ Toda atualização realizada no sistema **Curitiba 360°** (`E:\Projetos Vs Code
 
 ### Procedimento Obrigatório de Deploy e Sincronização
 Sempre que finalizar qualquer alteração ou evolução no projeto:
-1. **Commit e Push nos Repositórios GitHub:**
+1. **Sincronizar `site/` com `frontend/src/modules/sitePublico/`** (quando houver alterações no Portal Público).
+2. **Commit e Push nos 3 Repositórios Oficiais do GitHub:**
    ```powershell
    git add -A
    git commit -m "<mensagem>"
    git push origin main
    git push curitiba360-main main:main --force
-   git push projetos-cwb main:main --force
+   git push sitecwb360 main:main --force
    ```
-2. **Deploy na Vercel e Alias Oficial para os Dois Links:**
+3. **Deploy na Vercel:**
    Executar dentro de `E:\Projetos Vs Code\360\frontend`:
    ```powershell
    npx vercel --prod --yes
    npx vercel alias set <url-do-deployment-gerado> curitiba360-unificado.vercel.app
-   npx vercel alias set <url-do-deployment-gerado> curitiba360-app.vercel.app
    ```
 
 ## 2. Identidade Visual e Assinatura Oficial
