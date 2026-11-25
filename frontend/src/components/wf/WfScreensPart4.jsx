@@ -7,6 +7,7 @@ import {
   OFFICIAL_LOGO
 } from './WfShell';
 import { freeApisService } from '../../services/freeApisService';
+import { downloadExcelCsv } from '../../utils/exportAndAudioUtils';
 
 // ============================================================================
 // WF-048 (4 VARIAÇÕES) & WF-049 (ETAPAS 1, 2 e 3): GESTÃO E CADASTRO DE AGÊNCIAS
@@ -373,7 +374,16 @@ export function Wf051CommercialOperation({ userName = 'João da Silva' }) {
           <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Operação Comercial</h1>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={() => window.print()} style={{ padding: '9px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 700, cursor: 'pointer' }}>Imprimir 🖨</button>
-            <button onClick={() => alert('CSV exportado!')} style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}>Exportar CSV 📊</button>
+            <button
+              onClick={() => downloadExcelCsv(
+                'operacao-comercial-curitiba360.csv',
+                ['ID Pedido', 'Data/Hora', 'Turista', 'Atracao', 'Qtd Ingressos', 'Valor Total', 'Cupom', 'Comissao', 'Status'],
+                rows.map((r) => [r.id, r.data, r.turista, r.atracao, r.qtd, r.total, r.cupom, r.comissao, r.status])
+              )}
+              style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Exportar CSV 📊
+            </button>
             <button onClick={() => window.print()} style={{ padding: '9px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Exportar PDF 📄</button>
           </div>
         </div>
@@ -1066,7 +1076,21 @@ export function Wf063GlobalFinancialReports() {
           <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Relatórios Financeiros Globais</h1>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={() => window.print()} style={{ padding: '9px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 700, cursor: 'pointer' }}>Imprimir 🖨</button>
-            <button onClick={() => alert('Relatório Global XLSX exportado!')} style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}>Download XLSX 📊</button>
+            <button
+              onClick={() => downloadExcelCsv(
+                'relatorio-financeiro-global-curitiba360.csv',
+                ['Categoria', 'Quantidade', 'Valor Unitario', 'Valor Total'],
+                [
+                  ['Adulto', '2798', 'R$ 17,50', 'R$ 48.965,00'],
+                  ['Morador Curitiba Adulto', '2798', 'R$ 17,50', 'R$ 48.965,00'],
+                  ['Estudante', '2798', 'R$ 17,50', 'R$ 48.965,00'],
+                  ['Doador', '2798', 'R$ 17,50', 'R$ 48.965,00']
+                ]
+              )}
+              style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Download XLSX 📊
+            </button>
             <button onClick={() => navigate('/tela/wf-033-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas')} style={{ padding: '9px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Download PDF 📄</button>
           </div>
         </div>

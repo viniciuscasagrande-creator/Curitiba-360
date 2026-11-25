@@ -1,8 +1,9 @@
 // src/pages/ValidacaoIngressos.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { platformSyncService } from '../services/platformSyncService';
+import { playTurnstileBeep } from '../utils/exportAndAudioUtils';
 
 export default function ValidacaoIngressos() {
   const [searchParams] = useSearchParams();
@@ -13,6 +14,24 @@ export default function ValidacaoIngressos() {
   const [detalhesIngresso, setDetalhesIngresso] = useState(null);
   const [vouchersList, setVouchersList] = useState(() => platformSyncService.getVouchers());
   const [historicoValidacao, setHistoricoValidacao] = useState(() => platformSyncService.getCheckins());
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    let stream = null;
+    if (cameraOpen && navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: 'environment' } })
+        .then((s) => {
+          stream = s;
+          if (videoRef.current) videoRef.current.srcObject = s;
+        })
+        .catch(() => setCameraOpen(false));
+    }
+    return () => {
+      if (stream) stream.getTracks().forEach((t) => t.stop());
+    };
+  }, [cameraOpen]);
 
   useEffect(() => {
     const syncData = () => {
@@ -85,15 +104,30 @@ export default function ValidacaoIngressos() {
             Conectado em tempo real aos pedidos emitidos no Portal Público (/site) e Backoffice
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <button onClick={() => setCameraOpen(!cameraOpen)} style={{ padding: '0.5rem 1rem', backgroundColor: cameraOpen ? '#dc2626' : '#2563eb', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.825rem' }}>
+            📷 {cameraOpen ? 'Desligar Câmera QR' : 'Ativar Câmera QR (WebRTC)'}
+          </button>
           <button onClick={() => navigate('/site')} style={{ padding: '0.5rem 1rem', backgroundColor: '#00a896', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.825rem' }}>
             🌐 Comprar Novo Ingresso no Site
           </button>
-          <button onClick={() => navigate('/dashboard')} style={{ padding: '0.5rem 1rem', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.825rem' }}>
-            📊 Voltar ao Backoffice
+          <button onClick={() => navigate('/tela/wf-031-detalhes-da-atracao-gestao-financeira-negociacao-financeira-validar-ingressos')} style={{ padding: '0.5rem 1rem', backgroundColor: '#1e293b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.825rem' }}>
+            📊 Tela WF-031 Backoffice
           </button>
         </div>
       </div>
+
+      {cameraOpen && (
+        <div style={{ backgroundColor: '#0f172a', color: '#fff', padding: '1rem 1.25rem', borderRadius: '12px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', border: '2px solid #00a896' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <video ref={videoRef} autoPlay playsInline muted style={{ width: '180px', height: '120px', borderRadius: '8px', backgroundColor: '#000', objectFit: 'cover' }} />
+            <div>
+              <div style={{ fontWeight: '800', color: '#5eead4' }}>● Scanner Óptico WebRTC & Modo Offline PWA Ativo</div>
+              <p style={{ fontSize: '0.8rem', color: '#cbd5e1', margin: '4px 0 0 0' }}>Aponte o QR Code para a câmera ou clique em qualquer ingresso na lista abaixo para validar instantaneamente.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         

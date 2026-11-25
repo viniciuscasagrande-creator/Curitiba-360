@@ -1,12 +1,13 @@
 // frontend/src/components/wf/WfScreensPart3.jsx
 // Implementação fiel e funcional das telas WF-028 a WF-047 (Gestão Financeira da Atração, Validações e Relatórios PDF/Tela)
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   WfSidebar, WfPagination, WfStatusPill,
   OFFICIAL_LOGO, OFFICIAL_HORIZONTAL_LOGO
 } from './WfShell';
 import { platformSyncService } from '../../services/platformSyncService';
+import { downloadExcelCsv, playTurnstileBeep } from '../../utils/exportAndAudioUtils';
 
 // ============================================================================
 // WF-028 & WF-029: NEGOCIAÇÃO FINANCEIRA (CONDIÇÕES COMERCIAIS E INFORMAÇÕES FINANCEIRAS)
@@ -216,12 +217,33 @@ export function Wf031ValidateTickets({ store }) {
   const [tab, setTab] = useState('Todos');
   const [code, setCode] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const [cameraActive, setCameraActive] = useState(false);
+  const videoRef = useRef(null);
   const vouchers = store.liveVouchers || [];
 
-  const handleValidate = () => {
-    const target = code.trim() || window.prompt('Digite ou escaneie o código do ingresso QR (ex: ING8001):', 'ING8001');
-    if (!target) return;
+  useEffect(() => {
+    let stream = null;
+    if (cameraActive && navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: 'environment' } })
+        .then((s) => {
+          stream = s;
+          if (videoRef.current) videoRef.current.srcObject = s;
+        })
+        .catch(() => {
+          setFeedback({ ok: false, message: 'Câmera indisponível neste dispositivo — use o leitor USB ou clique em Simular Leitura QR.' });
+          setCameraActive(false);
+        });
+    }
+    return () => {
+      if (stream) stream.getTracks().forEach((t) => t.stop());
+    };
+  }, [cameraActive]);
+
+  const handleValidate = (overrideCode) => {
+    const target = (typeof overrideCode === 'string' ? overrideCode : code).trim() || 'ING8001';
     const res = platformSyncService.validateTicketCode(target, 'João da Silva');
+    playTurnstileBeep(res.ok ? 'success' : 'error');
     setFeedback(res);
     setCode('');
   };
@@ -235,12 +257,30 @@ export function Wf031ValidateTickets({ store }) {
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Validar Ingressos</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Histórico de ingressos validados</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter search terms / Código QR" style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
-            <button style={{ padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
-            <button onClick={handleValidate} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Iniciar Validação 📷</button>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Código QR (ex: ING8001)" style={{ width: '220px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
+            <button onClick={() => handleValidate()} style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 700, cursor: 'pointer' }}>Validar Código ✓</button>
+            <button onClick={() => setCameraActive(!cameraActive)} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: cameraActive ? '#dc2626' : '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>
+              {cameraActive ? 'Fechar Câmera ✕' : 'Iniciar Validação 📷'}
+            </button>
           </div>
         </div>
+
+        {cameraActive && (
+          <div style={{ marginBottom: 18, padding: 16, borderRadius: 12, backgroundColor: '#0f172a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <video ref={videoRef} autoPlay playsInline muted style={{ width: 200, height: 130, borderRadius: 10, backgroundColor: '#000', objectFit: 'cover', border: '2px solid #00a896' }} />
+              <div>
+                <div style={{ fontWeight: 800, fontSize: 14, color: '#5eead4' }}>● Scanner WebRTC Ativo (Modo Catraca PWA)</div>
+                <p style={{ fontSize: 12, color: '#94a3b8', margin: '4px 0 10px 0' }}>Aponte o QR Code do voucher para a câmera ou clique ao lado para simular um bip de catraca:</p>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => handleValidate('ING8001')} style={{ padding: '6px 12px', borderRadius: 6, border: 'none', backgroundColor: '#059669', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Simular QR Válido (ING8001)</button>
+                  <button onClick={() => handleValidate('ING8002')} style={{ padding: '6px 12px', borderRadius: 6, border: 'none', backgroundColor: '#d97706', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Simular QR Já Usado (ING8002)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {feedback && (
           <div style={{ padding: '12px 16px', borderRadius: 10, marginBottom: 16, backgroundColor: feedback.ok ? '#dcfce7' : '#fee2e2', color: feedback.ok ? '#166534' : '#991b1b', fontWeight: 700 }}>
@@ -409,7 +449,16 @@ export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', ac
           <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>{reportTitle}</h1>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={() => window.print()} style={{ padding: '9px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 700, cursor: 'pointer' }}>Imprimir 🖨</button>
-            <button onClick={() => alert('Arquivo XLSX exportado!')} style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', color: '#3b4758', fontWeight: 700, cursor: 'pointer' }}>Download XLSX 📊</button>
+            <button
+              onClick={() => downloadExcelCsv(
+                `${reportTitle.toLowerCase().replace(/\s+/g, '-')}-curitiba360.csv`,
+                ['Categoria', 'Quantidade', 'Valor Unitario', 'Valor Total'],
+                rows.map((r) => [r.cat, r.qtd, r.unit, r.total])
+              )}
+              style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', color: '#3b4758', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Download XLSX 📊
+            </button>
             <button onClick={() => pdfSlug && navigate(`/tela/${pdfSlug}`)} style={{ padding: '9px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Download PDF 📄</button>
           </div>
         </div>

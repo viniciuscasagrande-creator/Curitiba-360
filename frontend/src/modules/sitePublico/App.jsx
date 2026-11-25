@@ -20,6 +20,8 @@ import BrandAboutModal from './components/BrandAboutModal';
 import AIAssistantWidget from './components/AIAssistantWidget';
 import Footer from './components/Footer';
 import CuritibaLivePulseBanner from './components/CuritibaLivePulseBanner';
+import TouristPortal360Modal from './components/TouristPortal360Modal';
+import CuritibaInteractiveMap360 from '../../components/map/CuritibaInteractiveMap360';
 import { ATTRACTIONS, UNIFIED_NAV_ITEMS } from './data/attractions';
 import { LanguageProvider } from './context/LanguageContext';
 import { platformSyncService, B2B_PARTNERS_CATALOG } from '../../services/platformSyncService';
@@ -36,6 +38,13 @@ function SitePublicoContent() {
   const [isAboutBrandOpen, setIsAboutBrandOpen] = useState(false);
   const [isAgencyQuoteOpen, setIsAgencyQuoteOpen] = useState(false);
   const [agencyQuoteDefaultType, setAgencyQuoteDefaultType] = useState('passeio');
+  const [isTouristPortalOpen, setIsTouristPortalOpen] = useState(false);
+  const [touristPortalTab, setTouristPortalTab] = useState('ingressos');
+
+  const openTouristPortal = (tab = 'ingressos') => {
+    setTouristPortalTab(tab);
+    setIsTouristPortalOpen(true);
+  };
 
   // Real-time synced state with Backoffice & B2B QR Referral & Free Public APIs
   const [customAttractions, setCustomAttractions] = useState(() => platformSyncService.getCustomAttractions());
@@ -194,18 +203,36 @@ function SitePublicoContent() {
             )}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => openTouristPortal('ingressos')}
+              style={{ backgroundColor: '#10b981', color: '#022c22', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }}
+            >
+              🎟️ Meus Ingressos & Transferir CPF (WF-014/022)
+            </button>
+            <button
+              onClick={() => openTouristPortal('autocadastro')}
+              style={{ backgroundColor: '#f59e0b', color: '#0f172a', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }}
+            >
+              🤝 Auto-Cadastro Parceiro / Agência (WF-004A/B)
+            </button>
+            <button
+              onClick={() => navigate('/tela/wf-002-dashboard')}
+              style={{ backgroundColor: '#3b82f6', color: '#ffffff', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }}
+            >
+              🖼️ 71 Telas Backoffice Ao Vivo
+            </button>
             <button
               onClick={() => navigate('/dashboard')}
               style={{ backgroundColor: '#ffffff', color: '#0f172a', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }}
             >
-              🖥️ Voltar ao Backoffice (/dashboard)
+              🖥️ Menu Geral (/dashboard)
             </button>
             <button
               onClick={() => navigate('/validacao')}
               style={{ backgroundColor: '#00a896', color: '#ffffff', border: 'none', borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: '800', cursor: 'pointer' }}
             >
-              📷 Validador QR (/validacao)
+              📷 Catraca QR (/validacao)
             </button>
           </div>
         </div>
@@ -317,6 +344,14 @@ function SitePublicoContent() {
             )}
 
             <div id="nearby-section">
+              <div style={{ maxWidth: '1280px', margin: '0 auto 32px auto', padding: '0 20px' }}>
+                <CuritibaInteractiveMap360
+                  onBuyTicket={(item) => {
+                    handleAddToCart(item);
+                    setIsCartOpen(true);
+                  }}
+                />
+              </div>
               <NearbySection
                 attractions={allAttractions}
                 onClickDetail={setActiveAttraction}
@@ -366,6 +401,12 @@ function SitePublicoContent() {
         isOpen={isAgencyQuoteOpen}
         onClose={() => setIsAgencyQuoteOpen(false)}
         defaultType={agencyQuoteDefaultType}
+      />
+
+      <TouristPortal360Modal
+        isOpen={isTouristPortalOpen}
+        onClose={() => setIsTouristPortalOpen(false)}
+        initialTab={touristPortalTab}
       />
     </div>
   );

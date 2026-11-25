@@ -2,12 +2,40 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { screens } from '../data/screens';
+import TouristPortal360Modal from '../modules/sitePublico/components/TouristPortal360Modal';
 
 export default function VisualizadorWireframes() {
   const navigate = useNavigate();
   const [busca, setBusca] = useState('');
   const [modalImagem, setModalImagem] = useState(null);
   const [abaVisualizador, setAbaVisualizador] = useState('backoffice'); // backoffice, portal-desktop, portal-mobile
+  const [touristModalOpen, setTouristModalOpen] = useState(false);
+  const [touristModalTab, setTouristModalTab] = useState('ingressos');
+
+  const handleOpenLivePortalWf = (wf) => {
+    const code = (wf.code || '').toUpperCase();
+    if (code.includes('004')) {
+      setTouristModalTab('autocadastro');
+      setTouristModalOpen(true);
+    } else if (code.includes('014')) {
+      setTouristModalTab('ingressos');
+      setTouristModalOpen(true);
+    } else if (code.includes('015')) {
+      setTouristModalTab('conta');
+      setTouristModalOpen(true);
+    } else if (code.includes('016')) {
+      setTouristModalTab('reembolso');
+      setTouristModalOpen(true);
+    } else if (code.includes('021')) {
+      setTouristModalTab('favoritos');
+      setTouristModalOpen(true);
+    } else if (code.includes('022')) {
+      setTouristModalTab('transferir');
+      setTouristModalOpen(true);
+    } else {
+      navigate('/site');
+    }
+  };
 
   const ROUTE_BY_WF_ID = {
     'WF-001': '/login',
@@ -255,10 +283,10 @@ export default function VisualizadorWireframes() {
             </div>
 
             <button 
-              onClick={() => navigate(wf.route)}
+              onClick={() => abaVisualizador === 'backoffice' ? navigate(wf.route) : handleOpenLivePortalWf(wf)}
               style={{ width: '100%', padding: '0.5rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8125rem' }}
             >
-              🔗 Acessar Rota Live
+              🔗 {abaVisualizador === 'backoffice' ? 'Abrir Tela Viva Clonada' : 'Abrir Tela Viva do Portal'}
             </button>
           </div>
         ))}
@@ -295,6 +323,12 @@ export default function VisualizadorWireframes() {
           </div>
         </div>
       )}
+
+      <TouristPortal360Modal
+        isOpen={touristModalOpen}
+        onClose={() => setTouristModalOpen(false)}
+        initialTab={touristModalTab}
+      />
     </div>
   );
 }
