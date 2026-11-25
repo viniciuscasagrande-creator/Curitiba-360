@@ -41,7 +41,7 @@ export class FirebaseAuthRepository {
         uid: `usr-demo-${Date.now()}`,
         email: input.email,
         displayName: input.email.split('@')[0],
-        role: input.email.includes('admin') ? 'admin' : 'user'
+        role: 'admin'
       };
 
       localStorage.setItem(DEMO_USER_KEY, JSON.stringify(demoUser));

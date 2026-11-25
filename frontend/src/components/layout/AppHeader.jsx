@@ -108,6 +108,24 @@ export function AppHeader() {
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <button
             type="button"
+            onClick={() => navigate('/dashboard')}
+            className="hidden h-10 items-center gap-1.5 rounded-2xl bg-slate-900 px-3 text-xs font-bold text-white transition hover:bg-emerald-600 sm:flex"
+            title="Ir para o Backoffice"
+          >
+            <span>Backoffice</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate('/telas')}
+            className="hidden h-10 items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 px-3 text-xs font-bold text-slate-700 transition hover:bg-slate-100 md:flex"
+            title="Galeria de Telas & Wireframes"
+          >
+            <span>Wireframes (71)</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => navigate(ROUTES.public.explore)}
             className="flex h-10 w-10 items-center justify-center rounded-2xl text-slate-600 transition hover:bg-slate-100 hover:text-emerald-700 md:hidden"
             aria-label="Pesquisar"

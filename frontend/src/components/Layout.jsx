@@ -8,8 +8,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
 
-  // State to track expanded menu section in sidebar
-  const [openGroup, setOpenGroup] = useState('portal'); // Default open 'portal' group
+  const [openGroup, setOpenGroup] = useState('comercial');
 
   const handleLogout = () => {
     logout();
@@ -23,9 +22,30 @@ export default function Layout() {
   const menuGroups = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
+      label: 'Dashboard Principal',
       path: '/dashboard',
       icon: '📊'
+    },
+    {
+      id: 'enterprise-admin',
+      label: 'Painel Enterprise (Admin 360)',
+      path: '/admin',
+      icon: '🚀'
+    },
+    {
+      id: 'superapp-turista',
+      label: 'SuperApp Cidadão & Turista',
+      path: '/home',
+      icon: '🌆'
+    },
+    {
+      id: 'wireframes-gallery',
+      label: 'Galeria de Telas & Wireframes',
+      icon: '🖼️',
+      items: [
+        { label: 'Galeria 71 Telas Oficiais', path: '/telas' },
+        { label: 'Visualizador de Wireframes', path: '/wireframes' }
+      ]
     },
     {
       id: 'usuarios',
@@ -38,6 +58,7 @@ export default function Layout() {
       label: 'Comercial & Contratos',
       icon: '📝',
       items: [
+        { label: 'Executivo Comercial 360', path: '/comercial' },
         { label: 'Gestão de Contratos', path: '/comercial/contratos' },
         { label: 'Novo Contrato', path: '/comercial/contratos/novo' },
         { label: 'Condições Comerciais', path: '/comercial/configuracoes' }
@@ -59,27 +80,86 @@ export default function Layout() {
     },
     {
       id: 'parceiros',
-      label: 'Parceiros & Agências',
+      label: 'Parceiros, Agências & Agentes',
       icon: '🤝',
       items: [
         { label: 'Gestão de Agências', path: '/agencias' },
         { label: 'Nova Agência', path: '/agencias/novo' },
-        { label: 'Gestão de Agentes', path: '/comercial/agentes' },
-        { label: 'Novo Agente', path: '/comercial/agentes/novo' },
+        { label: 'Dashboard de Agentes (MOD-06)', path: '/agentes' },
+        { label: 'CRM de Agentes', path: '/agentes/crm' },
+        { label: 'Funil & Oportunidades', path: '/agentes/funil' },
+        { label: 'Metas & Ranking', path: '/agentes/ranking' },
+        { label: 'Copiloto IA Comercial', path: '/agentes/copiloto' },
+        { label: 'Omnichannel & Chat', path: '/agentes/omnichannel' },
+        { label: 'Performance 360 Agente', path: '/agentes/performance-360' },
         { label: 'Gestão de Parceiros', path: '/parceiros' },
         { label: 'Novo Parceiro', path: '/parceiros/novo' }
       ]
     },
     {
+      id: 'eventos-mod07',
+      label: 'Gestão de Eventos 360 (MOD-07)',
+      icon: '🎟️',
+      items: [
+        { label: 'Lista de Eventos 360', path: '/eventos-360' },
+        { label: 'Novo Evento', path: '/eventos/novo' },
+        { label: 'Performance & BI de Eventos', path: '/eventos/performance' }
+      ]
+    },
+    {
+      id: 'mobile-mod08',
+      label: 'Ecossistema Mobile (MOD-08)',
+      icon: '📱',
+      items: [
+        { label: 'Hub Mobile Consolidado', path: '/mobile/app' },
+        { label: 'App do Produtor', path: '/mobile/produtor' },
+        { label: 'App da Equipe / Staff', path: '/mobile/staff' },
+        { label: 'Check-in Offline & Scanner', path: '/checkin' },
+        { label: 'Comunicação & Push', path: '/communication' },
+        { label: 'Monitoramento Real-Time', path: '/monitoring' },
+        { label: 'Segurança & Biometria', path: '/security' },
+        { label: 'Relatórios Mobile', path: '/reports' }
+      ]
+    },
+    {
       id: 'vendas',
-      label: 'Vendas & Atendimento',
+      label: 'Vendas, Financeiro & Atendimento',
       icon: '🛒',
       items: [
+        { label: 'Centro Financeiro 360', path: '/financeiro/centro-financeiro-360' },
         { label: 'Operação Comercial', path: '/comercial/vendas' },
         { label: 'Comissionamento', path: '/financeiro/comissionamento' },
         { label: 'Fila de Reembolsos', path: '/financeiro/reembolsos' },
+        { label: 'Fila Financeira (MOD-05)', path: '/financeiro/fila-financeira' },
         { label: 'Pesquisar Ingresso', path: '/atendimento/pesquisar' },
-        { label: 'Validação / Catraca', path: '/validacao' }
+        { label: 'Validação / Catraca', path: '/validacao' },
+        { label: 'Scanner Mobile', path: '/access' }
+      ]
+    },
+    {
+      id: 'plataformas-mod09-26',
+      label: 'Plataformas Avançadas (MOD 09-26)',
+      icon: '⚡',
+      items: [
+        { label: 'API Docs & Webhooks (MOD-09)', path: '/api-docs' },
+        { label: 'Developer Portal & Sandbox', path: '/developer/portal' },
+        { label: 'Hub de Integrações CRM/ERP', path: '/integracoes' },
+        { label: 'Arquitetura Enterprise (MOD-10)', path: '/enterprise' },
+        { label: 'Central de IA & Fraude (MOD-11)', path: '/ai/hub' },
+        { label: 'Multi-Tenant & SaaS (MOD-12)', path: '/tenant' },
+        { label: 'Omnichannel & Loyalty (MOD-13)', path: '/omnichannel/participant' },
+        { label: 'Smart Venue NOC & IoT (MOD-14)', path: '/smartvenue/noc' },
+        { label: 'BI & Decision Center (MOD-15)', path: '/bi' },
+        { label: 'Governança & Compliance (MOD-16)', path: '/governance' },
+        { label: 'CRM 360 Sales Hub (MOD-18)', path: '/crm360' },
+        { label: 'Marketing Growth Hub (MOD-19)', path: '/marketing' },
+        { label: 'Patrocínios & Cotas (MOD-20)', path: '/sponsorship' },
+        { label: 'Marketplace B2B (MOD-21)', path: '/b2b' },
+        { label: 'Smart Destination Tourism (MOD-22)', path: '/tourism' },
+        { label: 'Smart City & Licenciamento (MOD-23)', path: '/smartcity' },
+        { label: 'ESG & Carbono (MOD-24)', path: '/esg' },
+        { label: 'Agentes Autônomos IA (MOD-25)', path: '/aiagents' },
+        { label: 'Global & Fiscal (MOD-26)', path: '/global' }
       ]
     },
     {
@@ -88,7 +168,9 @@ export default function Layout() {
       icon: '🛡️',
       items: [
         { label: 'Painel Anti-Cambista', path: '/comercial/anti-cambista' },
-        { label: 'Central de Notificações', path: '/notificacoes' }
+        { label: 'Controle de Transferências', path: '/controle-transferencias' },
+        { label: 'Fluxo de Entrada', path: '/fluxo-entrada' },
+        { label: 'Central de Notificações', path: '/notificacoes-backoffice' }
       ]
     },
     {
@@ -102,7 +184,7 @@ export default function Layout() {
     },
     {
       id: 'financeiro',
-      label: 'Relatórios Financeiros',
+      label: 'Relatórios & Analytics',
       icon: '📈',
       items: [
         { label: 'Relatórios Globais', path: '/financeiro/relatorios' },
@@ -115,6 +197,9 @@ export default function Layout() {
       icon: '✨',
       items: [
         { label: 'Vitrine Principal', path: '/portal' },
+        { label: 'Pass Curitiba 360', path: '/pass' },
+        { label: 'Carteira Digital', path: '/wallet' },
+        { label: 'Assistente IA Concierge', path: '/ai' },
         { label: 'Login do Turista', path: '/portal/login' },
         { label: 'Criar Conta Turista', path: '/portal/criar-conta' },
         { label: 'Esqueci a Senha', path: '/portal/recuperar-senha' },
@@ -129,7 +214,7 @@ export default function Layout() {
       
       {/* SIDEBAR */}
       <aside style={{ 
-        width: '270px', 
+        width: '285px', 
         backgroundColor: 'white', 
         borderRight: '1px solid #e5e7eb', 
         display: 'flex', 
@@ -142,7 +227,7 @@ export default function Layout() {
         
         {/* Perfil Header */}
         <div 
-          onClick={() => navigate('/perfil')}
+          onClick={() => navigate('/perfil-admin')}
           style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #f0f2f5', flexShrink: 0, cursor: 'pointer' }}
         >
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -150,10 +235,10 @@ export default function Layout() {
           </div>
           <div style={{ textAlign: 'left' }}>
             <h2 style={{ fontSize: '0.875rem', fontWeight: '600', margin: 0, color: '#374151' }}>
-              {user ? user.name : 'João da Silva'}
+              {user ? (user.displayName || user.name) : 'João da Silva'}
             </h2>
             <p style={{ fontSize: '0.75rem', color: '#718096', margin: 0 }}>
-              {user ? user.role : 'Administrador'}
+              {user?.role || 'Administrador 360'}
             </p>
           </div>
         </div>
@@ -162,7 +247,6 @@ export default function Layout() {
         <nav style={{ flex: 1, padding: '1rem 0.75rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {menuGroups.map(group => {
             if (group.path) {
-              // Direct single link
               const isActive = location.pathname === group.path;
               return (
                 <Link
@@ -171,10 +255,10 @@ export default function Layout() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: '0.75rem',
                     padding: '0.65rem 1rem', borderRadius: '8px',
-                    backgroundColor: isActive ? '#f0f2f6' : 'transparent',
-                    color: isActive ? '#1f2937' : '#4b5563',
-                    fontWeight: isActive ? '600' : '400',
-                    fontSize: '0.875rem', textDecoration: 'none',
+                    backgroundColor: isActive ? '#eff6ff' : 'transparent',
+                    color: isActive ? '#1d4ed8' : '#4b5563',
+                    fontWeight: isActive ? '700' : '500',
+                    fontSize: '0.85rem', textDecoration: 'none',
                     transition: 'background-color 0.15s'
                   }}
                 >
@@ -184,7 +268,6 @@ export default function Layout() {
               );
             }
 
-            // Expandable menu group
             const isOpen = openGroup === group.id;
             const hasActiveChild = group.items?.some(sub => location.pathname.startsWith(sub.path));
 
@@ -197,7 +280,7 @@ export default function Layout() {
                     width: '100%', padding: '0.65rem 1rem', borderRadius: '8px', border: 'none',
                     backgroundColor: hasActiveChild || isOpen ? '#eff6ff' : 'transparent',
                     color: hasActiveChild || isOpen ? '#1d4ed8' : '#4b5563',
-                    fontSize: '0.875rem', fontWeight: '600', textAlign: 'left',
+                    fontSize: '0.85rem', fontWeight: '600', textAlign: 'left',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     cursor: 'pointer', boxSizing: 'border-box', transition: 'background-color 0.15s'
                   }}
@@ -210,7 +293,7 @@ export default function Layout() {
                 </button>
 
                 {isOpen && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '2.5rem', marginTop: '0.25rem', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '2.25rem', marginTop: '0.25rem', marginBottom: '0.5rem' }}>
                     {group.items.map((subItem, idx) => {
                       const isSubActive = location.pathname === subItem.path;
                       return (
@@ -249,7 +332,7 @@ export default function Layout() {
       </aside>
 
       {/* ÁREA PRINCIPAL */}
-      <main style={{ flex: 1, padding: '2rem 3rem', overflowY: 'auto', height: '100vh', backgroundColor: '#ffffff', boxSizing: 'border-box' }}>
+      <main style={{ flex: 1, padding: '2rem 2.5rem', overflowY: 'auto', height: '100vh', backgroundColor: '#ffffff', boxSizing: 'border-box' }}>
         <Outlet />
       </main>
 

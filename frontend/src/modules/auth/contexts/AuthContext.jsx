@@ -38,7 +38,11 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  const login = useCallback(async (credentials) => {
+  const login = useCallback(async (input, maybePassword) => {
+    const credentials =
+      typeof input === "string"
+        ? { email: input, password: maybePassword }
+        : input;
     const authenticatedUser =
       await loginWithEmail(credentials);
 
@@ -95,6 +99,8 @@ export function AuthProvider({ children }) {
       initializing,
       loading: initializing, // Add support for old loading state
       isAuthenticated: Boolean(user),
+      authenticated: Boolean(user),
+      signed: Boolean(user),
       login,
       loginGoogle,
       register,

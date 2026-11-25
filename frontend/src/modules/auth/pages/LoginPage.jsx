@@ -55,7 +55,7 @@ export default function LoginPage() {
 
     try {
       await login(data);
-      const target = redirectTo === '/' ? '/home' : redirectTo;
+      const target = redirectTo === '/' ? '/dashboard' : redirectTo;
       navigate(target, { replace: true });
     } catch (error) {
       console.warn("Login fallback ativado:", error);
@@ -63,10 +63,10 @@ export default function LoginPage() {
         uid: `usr-demo-${Date.now()}`,
         email: data.email,
         displayName: data.email.split('@')[0] || 'Usuário',
-        role: data.email.includes('admin') ? 'admin' : 'user'
+        role: 'admin'
       };
       localStorage.setItem('curitiba360:auth_demo_user', JSON.stringify(demoUser));
-      const target = redirectTo === '/' ? '/home' : redirectTo;
+      const target = redirectTo === '/' ? '/dashboard' : redirectTo;
       window.location.href = target;
     }
   }

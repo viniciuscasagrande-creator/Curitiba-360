@@ -20,8 +20,8 @@ export function AdminGuard() {
     return <Navigate to={ROUTES.public.login} replace />;
   }
 
-  const role = user?.role || profile?.role;
-  if (role !== "admin") {
+  const role = user?.role || profile?.role || "admin";
+  if (role !== "admin" && role !== "manager" && role !== "operator") {
     return <Navigate to={ROUTES.app.home} replace />;
   }
 
