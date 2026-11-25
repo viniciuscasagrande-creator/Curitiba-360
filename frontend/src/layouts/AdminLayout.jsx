@@ -22,6 +22,13 @@ export function AdminLayout() {
         <main className="p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
+
+        <footer className="border-t border-slate-200 bg-white px-6 py-4 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-2">
+          <span>© 2026 Curitiba 360° Enterprise OS. Todos os direitos reservados.</span>
+          <span>
+            Desenvolvedor: <strong className="text-slate-900">VINICIUS CASAGRANDE</strong> — Programador • <strong className="text-emerald-600">CEO MBA System of America</strong>
+          </span>
+        </footer>
       </div>
     </div>
   );

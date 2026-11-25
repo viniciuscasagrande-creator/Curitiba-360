@@ -62,9 +62,12 @@ export default function Footer({ onOpenAboutBrand }) {
         </div>
 
         {/* Bottom Rights Bar */}
-        <div style={{ borderTop: '1px solid #1e293b', paddingTop: '24px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px', color: '#64748b' }}>
+        <div style={{ borderTop: '1px solid #1e293b', paddingTop: '24px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px', fontSize: '13px', color: '#64748b' }}>
           <div>
-            © 2026 Curitiba360. Todos os direitos reservados.
+            <div>© 2026 Curitiba360. Todos os direitos reservados.</div>
+            <div style={{ marginTop: '4px', fontSize: '12px', color: '#cbd5e1', fontWeight: '700' }}>
+              Desenvolvedor: <strong style={{ color: '#00a896' }}>VINICIUS CASAGRANDE</strong> — Programador • CEO MBA System of America
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#00a896', fontWeight: '600' }}>
             <ShieldCheck size={16} />

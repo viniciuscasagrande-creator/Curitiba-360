@@ -914,6 +914,25 @@ export default function PortalHome() {
           </div>
         </div>
       )}
+      {/* 5. RODAPÉ OFICIAL DO PORTAL */}
+      <footer style={{
+        marginTop: '3rem',
+        padding: '1.5rem 2rem',
+        borderTop: '1px solid #1e293b',
+        backgroundColor: '#090d16',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        fontSize: '0.825rem',
+        color: '#94a3b8'
+      }}>
+        <span>© 2026 Curitiba 360°. Todos os direitos reservados.</span>
+        <span>
+          Desenvolvedor: <strong style={{ color: '#ffffff' }}>VINICIUS CASAGRANDE</strong> — Programador • <strong style={{ color: '#10b981' }}>CEO MBA System of America</strong>
+        </span>
+      </footer>
     </div>
   );
 }

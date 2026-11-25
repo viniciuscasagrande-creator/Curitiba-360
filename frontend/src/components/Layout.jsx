@@ -370,8 +370,16 @@ export default function Layout() {
       </aside>
 
       {/* ÁREA PRINCIPAL */}
-      <main style={{ flex: 1, padding: '2rem 2.5rem', overflowY: 'auto', height: '100vh', backgroundColor: '#ffffff', boxSizing: 'border-box' }}>
-        <Outlet />
+      <main style={{ flex: 1, padding: '2rem 2.5rem', overflowY: 'auto', height: '100vh', backgroundColor: '#ffffff', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div>
+          <Outlet />
+        </div>
+        <footer style={{ marginTop: '3rem', paddingTop: '1rem', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.775rem', color: '#64748b' }}>
+          <span>© 2026 Curitiba 360° • Todos os direitos reservados.</span>
+          <span>
+            Desenvolvedor: <strong style={{ color: '#0f172a' }}>VINICIUS CASAGRANDE</strong> — Programador • <strong style={{ color: '#00a896' }}>CEO MBA System of America</strong>
+          </span>
+        </footer>
       </main>
 
     </div>

@@ -33,8 +33,11 @@ export function PublicLayout() {
 
       {/* Public Footer */}
       <footer className="border-t border-gray-900 bg-[#07080a] py-8 text-center text-sm text-gray-500">
-        <div className="mx-auto max-w-7xl px-4">
-          <p>© {new Date().getFullYear()} Curitiba 360. Todos os direitos reservados. Governo Municipal de Curitiba.</p>
+        <div className="mx-auto max-w-7xl px-4 space-y-1">
+          <p>© {new Date().getFullYear()} Curitiba 360. Todos os direitos reservados.</p>
+          <p className="text-xs text-gray-400">
+            Desenvolvedor: <strong className="text-white">VINICIUS CASAGRANDE</strong> — Programador • <strong className="text-emerald-400">CEO MBA System of America</strong>
+          </p>
         </div>
       </footer>
     </div>
