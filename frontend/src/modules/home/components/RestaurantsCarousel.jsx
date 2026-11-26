@@ -5,29 +5,29 @@ import { UtensilsCrossed, Star, MapPin, ArrowRight } from 'lucide-react';
 const mockRestaurants = [
   {
     id: 'rest-1',
-    name: 'Restaurante Madalosso',
-    category: 'Italiana',
-    rating: 4.8,
+    name: 'Restaurante Família Madalosso',
+    category: 'Italiana • Santa Felicidade',
+    rating: 4.9,
     neighborhood: 'Santa Felicidade',
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop',
+    image: '/images/santa-felicidade.jpg',
     price: '$$$'
   },
   {
     id: 'rest-2',
-    name: 'Bar do Victor',
-    category: 'Frutos do Mar',
+    name: 'Bar do Alemão — Largo da Ordem',
+    category: 'Chopp Submarino & Carne de Onça',
     rating: 4.9,
-    neighborhood: 'São Lourenço',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop',
-    price: '$$$'
+    neighborhood: 'Centro Histórico',
+    image: '/images/bar-do-alemao.jpg',
+    price: '$$'
   },
   {
     id: 'rest-3',
-    name: 'Mercado Municipal - Praça Gastronômica',
+    name: 'Mercado Municipal — Praça Gastronômica',
     category: 'Variada & Orgânicos',
     rating: 4.9,
     neighborhood: 'Centro',
-    image: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&auto=format&fit=crop',
+    image: '/images/mercado-municipal.jpg',
     price: '$$'
   }
 ];

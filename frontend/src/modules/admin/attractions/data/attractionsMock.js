@@ -107,10 +107,10 @@ export const attractionsMock = [
     },
 
     media: {
-      mainImageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=800&auto=format&fit=crop',
-      homeImageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=800&auto=format&fit=crop',
-      horizontalImageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop',
-      backgroundImageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1920&auto=format&fit=crop',
+      mainImageUrl: '/images/opera-de-arame.jpg',
+      homeImageUrl: '/images/opera-de-arame.jpg',
+      horizontalImageUrl: '/images/rua-da-musica.jpg',
+      backgroundImageUrl: '/images/pedreira-paulo-leminski.jpg',
       promotionalVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
     },
 
@@ -164,10 +164,10 @@ export const attractionsMock = [
     },
 
     media: {
-      mainImageUrl: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=800&auto=format&fit=crop',
-      homeImageUrl: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=800&auto=format&fit=crop',
-      horizontalImageUrl: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=1200&auto=format&fit=crop',
-      backgroundImageUrl: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=1920&auto=format&fit=crop',
+      mainImageUrl: '/images/jardim-botanico.jpg',
+      homeImageUrl: '/images/jardim-botanico.jpg',
+      horizontalImageUrl: '/images/jardim-botanico.jpg',
+      backgroundImageUrl: '/images/jardim-botanico.jpg',
       promotionalVideoUrl: ''
     },
 
@@ -221,10 +221,10 @@ export const attractionsMock = [
     },
 
     media: {
-      mainImageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop',
-      homeImageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop',
-      horizontalImageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop',
-      backgroundImageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1920&auto=format&fit=crop',
+      mainImageUrl: '/images/pedreira-paulo-leminski.jpg',
+      homeImageUrl: '/images/pedreira-paulo-leminski.jpg',
+      horizontalImageUrl: '/images/pedreira-paulo-leminski.jpg',
+      backgroundImageUrl: '/images/pedreira-paulo-leminski.jpg',
       promotionalVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
     },
 

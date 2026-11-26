@@ -155,21 +155,26 @@ export default function PortalHome() {
   // Carousel State
   const [carouselIndex, setCarouselIndex] = useState(0);
   const carouselItems = [
-    { title: 'Jardim Botânico', img: '/jardim_botanico.jpg', desc: 'O cartão-postal mais famoso de Curitiba com sua icônica estufa de metal e vidro.' },
-    { title: 'Ópera de Arame', img: '/opera_de_arame.jpg', desc: 'Teatro espetacular construído com tubos de aço e placas transparentes.' },
-    { title: 'Museu Oscar Niemeyer', img: '/museu_niemeyer.jpg', desc: 'O famoso "Olho", um dos maiores museus de arte da América Latina.' }
+    { title: 'Jardim Botânico de Curitiba', img: '/images/jardim-botanico.jpg', desc: 'O cartão-postal mais famoso de Curitiba com sua icônica estufa de metal e vidro.' },
+    { title: 'Ópera de Arame & Vale da Música', img: '/images/opera-de-arame.jpg', desc: 'Teatro espetacular construído com tubos de aço e placas transparentes sobre o lago.' },
+    { title: 'Museu Oscar Niemeyer (MON)', img: '/images/mon-olho.jpg', desc: 'O famoso "Museu do Olho", um dos maiores museus de arte da América Latina.' },
+    { title: 'Parque Tanguá & Mirante do Pôr do Sol', img: '/images/parque-tangua.jpg', desc: 'Mirante semicircular, espelho d’água e cascata de 65 metros sobre a antiga pedreira.' }
   ];
 
-  // Mock Cards Data
+  // Mock Cards Data com Fotos Reais de Curitiba
   const cards = [
-    { id: 1, name: 'Pacote Curitiba Histórica', category: 'Pacotes', img: '/centro_historico.jpg', price: 99.90, desc: 'Conheça o Largo da Ordem, Ruínas de São Francisco e muito mais.', reviews: [{ user: 'Carlos', rating: 5, comment: 'Excelente passeio cultural!' }, { user: 'Ana', rating: 4, comment: 'Muito explicativo, vale a pena.' }] },
-    { id: 2, name: 'Linha Turismo Especial', category: 'Pacotes', img: '/opera_de_arame.jpg', price: 50.00, desc: 'Ingresso de 24 horas para embarque ilimitado nos principais pontos.', reviews: [{ user: 'Julia', rating: 5, comment: 'Super prático para conhecer tudo!' }] },
-    { id: 3, name: 'Parque Jaime Lerner', category: 'Parques', img: '/parque_jaime_lerner.jpg', price: 0.00, desc: 'O mais novo parque de Curitiba, com paisagismo exuberante e lagos.', reviews: [] },
-    { id: 4, name: 'Parque Barigui', category: 'Parques', img: '/parque_barigui.jpg', price: 0.00, desc: 'O ponto de encontro dos curitibanos para esportes e contato com as capivaras.', reviews: [{ user: 'Pedro', rating: 5, comment: 'Lugar lindo e cheio de capivaras!' }] },
-    { id: 5, name: 'Jardim Botânico Entrada', category: 'Conhecendo Curitiba', img: '/jardim_botanico.jpg', price: 0.00, desc: 'Acesso à estufa icônica, jardins e Jardim das Sensações.', reviews: [{ user: 'Mariana', rating: 5, comment: 'O lugar mais lindo da cidade!' }] },
-    { id: 6, name: 'Madalosso Restaurante', category: 'Restaurantes', img: '/centro_historico.jpg', price: 85.00, desc: 'Rodízio completo com a tradicional massa e frango italianos.', reviews: [{ user: 'Renato', rating: 4, comment: 'Comida maravilhosa e farta.' }] },
-    { id: 7, name: 'Show Ópera nas Pedreiras', category: 'Shows e Espetáculos', img: '/opera_de_arame.jpg', price: 120.00, desc: 'Apresentação musical exclusiva no palco flutuante da Ópera de Arame.', reviews: [] },
-    { id: 8, name: 'Cupom de 20% em Hotéis', category: 'Cupons de desconto', price: 10.00, img: '/curitiba_login_banner.png', desc: 'Adquira o cupom de desconto para hospedagens parceiras Curitiba 360.', reviews: [] }
+    { id: 1, name: 'Pacote Curitiba Histórica & Largo da Ordem', category: 'Pacotes', img: '/images/largo-da-ordem.jpg', price: 99.90, desc: 'Conheça o Largo da Ordem, Relógio das Flores, Ruínas de São Francisco e Bar do Alemão.', reviews: [{ user: 'Carlos', rating: 5, comment: 'Excelente passeio cultural!' }, { user: 'Ana', rating: 4, comment: 'Muito explicativo, vale a pena.' }] },
+    { id: 2, name: 'Linha Turismo Double-Decker 360°', category: 'Pacotes', img: '/images/linha-turismo.jpg', price: 50.00, desc: 'Ingresso oficial para embarque no ônibus panorâmico de 2 andares por 26 atrações.', reviews: [{ user: 'Julia', rating: 5, comment: 'Super prático para conhecer tudo!' }] },
+    { id: 3, name: 'Parque Jaime Lerner & Rua da Música', category: 'Parques', img: '/images/rua-da-musica.jpg', price: 15.00, desc: 'Complexo cultural e gastronômico integrado à Ópera de Arame e Pedreira Paulo Leminski.', reviews: [] },
+    { id: 4, name: 'Parque Barigui & Recanto das Capivaras', category: 'Parques', img: '/images/parque-barigui.jpg', price: 0.00, desc: 'O ponto de encontro dos curitibanos para esportes, lago e contato com as capivaras.', reviews: [{ user: 'Pedro', rating: 5, comment: 'Lugar lindo e cheio de capivaras!' }] },
+    { id: 5, name: 'Jardim Botânico & Jardim das Sensações', category: 'Conhecendo Curitiba', img: '/images/jardim-botanico.jpg', price: 0.00, desc: 'Acesso à estufa icônica em estilo Palácio de Cristal, jardins franceses e trilha sensorial.', reviews: [{ user: 'Mariana', rating: 5, comment: 'O lugar mais lindo da cidade!' }] },
+    { id: 6, name: 'Família Madalosso & Santa Felicidade', category: 'Restaurantes', img: '/images/santa-felicidade.jpg', price: 89.90, desc: 'Rodízio completo com a tradicional massa, polenta e frango no maior restaurante das Américas.', reviews: [{ user: 'Renato', rating: 5, comment: 'Comida maravilhosa e farta.' }] },
+    { id: 7, name: 'Show na Pedreira Paulo Leminski & Ópera', category: 'Shows e Espetáculos', img: '/images/pedreira-paulo-leminski.jpg', price: 120.00, desc: 'Apresentação musical exclusiva na maior arena a céu aberto da América Latina.', reviews: [] },
+    { id: 8, name: 'Cupom 20% OFF Passeio Trem Serra Verde', category: 'Cupons de desconto', price: 10.00, img: '/images/trem-serra-verde.jpg', desc: 'Garanta desconto na travessia ferroviária histórica de Curitiba a Morretes pela Serra do Mar.', reviews: [] },
+    { id: 9, name: 'Parque Tanguá & Mirante do Castelo', category: 'Parques', img: '/images/parque-tangua.jpg', price: 0.00, desc: 'O pôr do sol mais famoso de Curitiba com cascata de 65 metros e túnel na rocha.', reviews: [] },
+    { id: 10, name: 'Bosque Alemão & Trilha de João e Maria', category: 'Parques', img: '/images/bosque-alemao.jpg', price: 0.00, desc: 'Oratório de Bach, Torre dos Filósofos e Casa da Bruxa em meio às araucárias.', reviews: [] },
+    { id: 11, name: 'Mercado Municipal de Curitiba', category: 'Restaurantes', img: '/images/mercado-municipal.jpg', price: 35.00, desc: 'Setor de orgânicos, especiarias, pinhão e o famoso Pastel de Bacalhau desde 1958.', reviews: [] },
+    { id: 12, name: 'Teatro Guaíra & Praça Santos Andrade', category: 'Shows e Espetáculos', img: '/images/teatro-guaira.jpg', price: 30.00, desc: 'Espetáculos da Orquestra Sinfônica do Paraná e Balé Teatro Guaíra no Guairão.', reviews: [] }
   ];
 
   const categorias = [

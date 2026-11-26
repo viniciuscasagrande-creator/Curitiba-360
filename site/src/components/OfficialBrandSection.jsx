@@ -120,42 +120,52 @@ export default function OfficialBrandSection({ onOpenMap, onOpenAboutBrand, onFi
                 style={{
                   backgroundColor: '#ffffff',
                   borderRadius: '16px',
-                  padding: '20px 12px',
+                  padding: '0 0 14px 0',
+                  overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'space-between',
                   textAlign: 'center',
                   border: '1px solid #e2e8f0',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.transform = 'translateY(-4px)';
                   e.currentTarget.style.borderColor = '#00a896';
-                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,168,150,0.12)';
+                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,168,150,0.14)';
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.borderColor = '#e2e8f0';
-                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.02)';
+                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.04)';
                 }}
                 title={landmark.desc}
               >
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  backgroundColor: '#e6fffa',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '10px'
-                }}>
-                  <IconComp size={24} color="#00a896" />
+                <div style={{ width: '100%', height: '86px', overflow: 'hidden', position: 'relative', marginBottom: '10px', backgroundColor: '#0f172a' }}>
+                  <img
+                    src={landmark.image || '/images/jardim-botanico.jpg'}
+                    alt={landmark.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '6px',
+                    right: '6px',
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.92)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <IconComp size={15} color="#00a896" />
+                  </div>
                 </div>
-                <span style={{ fontSize: '13px', fontWeight: '700', color: '#1e293b', lineHeight: '1.2' }}>
+                <span style={{ fontSize: '13px', fontWeight: '800', color: '#1e293b', lineHeight: '1.2', padding: '0 8px' }}>
                   {landmark.name}
                 </span>
               </button>

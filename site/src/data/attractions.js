@@ -12,7 +12,7 @@ export const UNIFIED_NAV_ITEMS = [
   { id: 'hoteis', label: 'Hotéis & Hospedagem', icon: 'Hotel', desc: 'Radisson Batel, Nomaa Boutique, Bourbon, Rayon, Pousadas Ilha do Mel e RMC' },
   { id: 'ofertas', label: 'Ofertas & Cupons', icon: 'Percent', desc: 'Passeios com descontos exclusivos e benefícios de ingressos' },
   { id: 'roteiros', label: 'Roteiros Prontos', icon: 'MapPin', desc: 'Cronogramas dia-a-dia para 1, 3 ou 5 dias, Família e Romântico' },
-  { id: 'guia', label: 'Guia Prático & Dicas', icon: 'HelpCircle', desc: 'Transporte nos Tubos BRT, Clima das 4 estações e Mascote Capivara' },
+  { id: 'guia', label: 'Guia Prático & Dicas', icon: 'HelpCircle', desc: 'Transporte nos Tubos BRT, Clima das 4 estações e Mascote Capivara' }
 ];
 
 export const CATEGORIES = UNIFIED_NAV_ITEMS;
@@ -21,59 +21,79 @@ export const TOPIC_TABS = UNIFIED_NAV_ITEMS;
 export const HERO_SLIDES = [
   {
     id: 'jardim-botanico',
-    title: 'Estufa de Vidro do Jardim Botânico',
-    tagline: 'O Símbolo Inconfundível de Curitiba',
+    title: 'Estufa de Vidro do Jardim Botânico de Curitiba',
+    tagline: 'O Símbolo Inconfundível da Capital Ecológica',
     badge: '★ Mais Visitado do Paraná',
-    image: 'https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=1600&q=80',
+    image: '/images/jardim-botanico.jpg',
     description: 'Encante-se com a magnífica estufa inspirada no Palácio de Cristal de Londres e caminhe pelos jardins em estilo francês e o sensorial Jardim das Sensações.',
     price: 'Entrada Gratuita',
     ctaText: 'Ver Detalhes do Passeio'
   },
   {
-    id: 'radisson-hotel-curitiba',
-    title: 'Radisson Hotel Curitiba • Luxo 5 Estrelas na Praça da Espanha',
-    tagline: 'Onde o Conforto Encontra o Estilo de Vida de Curitiba',
-    badge: '🏨 Hotelaria Premium no Batel',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80',
-    description: 'Hospede-se com elegância em frente à icônica Praça da Espanha no Batel, com SPA completo, piscina aquecida e café da manhã internacional.',
-    price: 'A partir de R$ 420,00',
-    ctaText: 'Reservar Hospedagem'
+    id: 'museu-oscar-niemeyer',
+    title: 'Museu Oscar Niemeyer (MON — O Famoso Museu do Olho)',
+    tagline: 'Ícone da Arquitetura Mundial no Centro Cívico de Curitiba',
+    badge: '👁️ Maior Museu de Arte da América Latina',
+    image: '/images/mon-olho.jpg',
+    description: 'Explore mais de 35 mil m² de arte contemporânea, design, fotografia e arquitetura na obra-prima futurista de Oscar Niemeyer em Curitiba.',
+    price: 'A partir de R$ 15,00 (Meia)',
+    ctaText: 'Garantir Ingresso MON'
+  },
+  {
+    id: 'opera-de-arame',
+    title: 'Ópera de Arame & Vale da Música no Parque das Pedreiras',
+    tagline: 'Teatro Tubular Transparente Sobre o Lago com Música ao Vivo',
+    badge: '🎻 Palco Flutuante & Arquitetura Única',
+    image: '/images/opera-de-arame.jpg',
+    description: 'Construída em tubos de aço em meio à Mata Atlântica e paredões de rocha, a Ópera de Arame recebe festivais e shows diários no palco flutuante do lago.',
+    price: 'A partir de R$ 15,00',
+    ctaText: 'Visitar Ópera de Arame'
   },
   {
     id: 'trem-serra-verde',
-    title: 'Passeio de Trem Serra Verde Express',
-    tagline: 'Mata Atlântica & Barreado Típico em Morretes',
-    badge: '🔥 Experiência 5 Estrelas',
-    image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1600&q=80',
-    description: 'Percorra a histórica ferrovia centenária encravada nas montanhas da Serra do Mar Paranaense entre viadutos suspensos e cachoeiras exuberantes.',
+    title: 'Passeio de Trem Serra Verde Express (Curitiba - Morretes)',
+    tagline: 'Mata Atlântica, Viadutos Centenários & Barreado Típico',
+    badge: '🚂 Eleito Top 10 Passeios Ferroviários do Mundo',
+    image: '/images/trem-serra-verde.jpg',
+    description: 'Percorra a histórica ferrovia centenária de 1885 encravada nas montanhas da Serra do Mar Paranaense entre viadutos suspensos e cachoeiras exuberantes.',
     price: 'A partir de R$ 169,00',
     ctaText: 'Garantir Ingresso de Trem'
   },
   {
+    id: 'parque-tangua',
+    title: 'Parque Tanguá & Mirante do Pôr do Sol em Curitiba',
+    tagline: 'Jardins Franceses, Cascata de 65m e Túnel na Rocha',
+    badge: '🌅 O Pôr do Sol Mais Bonito de Curitiba',
+    image: '/images/parque-tangua.jpg',
+    description: 'Contemple o pôr do sol mais famoso da capital paranaense no mirante semicircular sobre a antiga pedreira e os espelhos d’água do Parque Tanguá.',
+    price: 'Entrada Gratuita',
+    ctaText: 'Explorar Parque Tanguá'
+  },
+  {
     id: 'bar-do-alemao',
     title: 'Bar do Alemão • Chopp Submarino & Carne de Onça',
-    tagline: 'O Bar Mais Icônico do Largo da Ordem',
-    badge: '🍺 Choperia Germânica desde 1979',
-    image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1600&q=80',
-    description: 'Saboreie o autêntico Chopp Submarino acompanhado do caneco souvenir de Steinhäger e a famosa Carne de Onça no coração do Centro Histórico.',
+    tagline: 'O Bar Mais Icônico do Largo da Ordem no Centro Histórico',
+    badge: '🍺 Tradição Curitibana desde 1979',
+    image: '/images/bar-do-alemao.jpg',
+    description: 'Saboreie o autêntico Chopp Submarino acompanhado do caneco souvenir de Steinhäger e a famosa Carne de Onça no coração do Centro Histórico de Curitiba.',
     price: 'A partir de R$ 45,00',
     ctaText: 'Conhecer Bar do Alemão'
   }
 ];
 
 export const BRAND_LANDMARKS = [
-  { id: 'jardim-botanico', name: 'Jardim Botânico', icon: 'Trees', desc: 'Estufa icônica em ferro e vidro estilo Palácio de Cristal de Londres' },
-  { id: 'mon', name: 'Museu Oscar Niemeyer', icon: 'Eye', desc: 'O famoso Museu do Olho com arquitetura futurista de Niemeyer' },
-  { id: 'radisson-hotel-curitiba', name: 'Radisson Batel', icon: 'Hotel', desc: 'Hotelaria de luxo 5 estrelas em frente à Praça da Espanha' },
-  { id: 'bar-do-alemao', name: 'Bar do Alemão', icon: 'Beer', desc: 'Chopp Submarino com canequinho e carne de onça no Largo da Ordem' },
-  { id: 'teatro-guaira', name: 'Teatro Guaíra', icon: 'Drama', desc: 'Complexo das artes cênicas, orquestra sinfônica e balé' },
-  { id: 'pedreira-shows', name: 'Pedreira Leminski', icon: 'Music', desc: 'Maior palco de shows a céu aberto cercado por rochas' },
-  { id: 'torre', name: 'Torre Panorâmica', icon: 'TowerControl', desc: 'Mirante 360° com visão contemplativa para toda a região metropolitana' },
-  { id: 'opera', name: 'Ópera de Arame', icon: 'Landmark', desc: 'Teatro tubular transparente integrado à natureza e ao lago da pedreira' },
+  { id: 'jardim-botanico', name: 'Jardim Botânico', icon: 'Trees', image: '/images/jardim-botanico.jpg', desc: 'Estufa icônica em ferro e vidro estilo Palácio de Cristal de Londres' },
+  { id: 'mon', name: 'Museu Oscar Niemeyer', icon: 'Eye', image: '/images/mon-olho.jpg', desc: 'O famoso Museu do Olho com arquitetura futurista de Niemeyer' },
+  { id: 'opera', name: 'Ópera de Arame', icon: 'Landmark', image: '/images/opera-de-arame.jpg', desc: 'Teatro tubular transparente integrado à natureza e ao lago da pedreira' },
+  { id: 'tangua', name: 'Parque Tanguá', icon: 'Trees', image: '/images/parque-tangua.jpg', desc: 'Mirante em formato de castelo com cascata de 65m sobre a pedreira' },
+  { id: 'bar-do-alemao', name: 'Largo da Ordem', icon: 'Beer', image: '/images/largo-da-ordem.jpg', desc: 'Centro Histórico, Feira de Domingo e Chopp Submarino no Bar do Alemão' },
+  { id: 'teatro-guaira', name: 'Teatro Guaíra', icon: 'Drama', image: '/images/teatro-guaira.jpg', desc: 'Complexo das artes cênicas, orquestra sinfônica e balé na Santos Andrade' },
+  { id: 'pedreira-shows', name: 'Pedreira Leminski', icon: 'Music', image: '/images/pedreira-paulo-leminski.jpg', desc: 'Maior palco de shows a céu aberto da América Latina cercado por rochas' },
+  { id: 'torre', name: 'Torre Panorâmica', icon: 'TowerControl', image: '/images/torre-panoramica.jpg', desc: 'Mirante 360° a 109m de altura com visão para toda Curitiba' }
 ];
 
 export const ATTRACTIONS = [
-  // --- HOTÉIS & HOSPEDAGEM ---
+  // --- HOTÉIS & HOSPEDAGEM (COM FOTOS REAIS DOS BAIRROS DE CURITIBA) ---
   {
     id: 'radisson-hotel-curitiba',
     title: 'Radisson Hotel Curitiba • 5 Estrelas no Batel',
@@ -92,18 +112,19 @@ export const ATTRACTIONS = [
     paymentTerms: 'Em até 4x sem juros no Cartão',
     lat: -25.4380,
     lng: -49.2890,
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/praca-do-japao.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80'
+      '/images/praca-do-japao.jpg',
+      '/images/torre-panoramica.jpg',
+      '/images/jardim-botanico.jpg'
     ],
-    description: 'Um dos hotéis de luxo mais sofisticados de Curitiba! Localizado estrategicamente em frente à arborizada Praça da Espanha no bairro nobre do Batel. Oferece suítes amplas climatizadas, SPA exclusivo com massagens, piscina aquecida coberta, sauna e o internacional Restaurante Catanzaro.',
-    features: ['Localização nobre em frente à Praça da Espanha', 'Piscina aquecida coberta e SPA relaxante', 'Restaurante Catanzaro com cozinha internacional', 'Café da manhã buffet completo estilo continental', 'Estac. valet com manobrista 24h']
+    description: 'Um dos hotéis de luxo mais sofisticados de Curitiba! Localizado estrategicamente no eixo nobre do Batel / Praça do Japão e Praça da Espanha. Oferece suítes amplas climatizadas, SPA exclusivo com massagens, piscina aquecida coberta, sauna e o internacional Restaurante Catanzaro.',
+    features: ['Localização nobre no eixo Batel / Praça da Espanha', 'Piscina aquecida coberta e SPA relaxante', 'Restaurante Catanzaro com cozinha internacional', 'Café da manhã buffet completo estilo continental', 'Estac. valet com manobrista 24h']
   },
   {
     id: 'nomaa-hotel-boutique',
     title: 'Nomaa Hotel • Hotel Boutique Contemporâneo 5★',
-    subtitle: 'Batel • Design & Gastronomia',
+    subtitle: 'Batel • Design & Gastronomia em Curitiba',
     location: 'Batel • Curitiba',
     category: 'hoteis',
     categories: ['hoteis', 'gastronomia'],
@@ -118,17 +139,19 @@ export const ATTRACTIONS = [
     paymentTerms: 'Serviço Personalizado de Concierge',
     lat: -25.4410,
     lng: -49.2860,
-    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/bosque-papa.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80'
+      '/images/bosque-papa.jpg',
+      '/images/mon-olho.jpg',
+      '/images/praca-do-japao.jpg'
     ],
-    description: 'O primeiro hotel boutique autoral de Curitiba! Premiado internacionalmente pelo design moderno e atendimento ultra personalizado. Abriga o aclamado Restaurante Nomade com brunch aos finais de semana e quartos equipados com lençóis de algodão egípcio e cafeteira Nespresso.',
-    features: ['Design de interiores assinado por arquitetos renomados', 'Restaurante Nomade com alta gastronomia e brunch', 'Lençóis de algodão egípcio 600 fios e amenidades de luxo', 'Academia de última geração TechnoGym', 'Bicicletas cortesia para passeios pelo Batel']
+    description: 'O primeiro hotel boutique autoral de Curitiba! Premiado internacionalmente pelo design moderno e atendimento ultra personalizado no Batel. Abriga o aclamado Restaurante Nomade com brunch aos finais de semana e quartos equipados com lençóis de algodão egípcio e cafeteira Nespresso.',
+    features: ['Design de interiores assinado por arquitetos curitibanos', 'Restaurante Nomade com alta gastronomia e brunch', 'Lençóis de algodão egípcio 600 fios e amenidades de luxo', 'Academia de última geração TechnoGym', 'Bicicletas cortesia para passeios pelos parques de Curitiba']
   },
   {
     id: 'bourbon-curitiba-hotel',
     title: 'Bourbon Curitiba Hotel & Suites • Centro Histórico',
-    subtitle: 'Centro • Praça Tiradentes / Paço',
+    subtitle: 'Centro • Praça Tiradentes / Paço da Liberdade',
     location: 'Centro Histórico • Curitiba',
     category: 'hoteis',
     categories: ['hoteis', 'cultura', 'promocionais'],
@@ -143,9 +166,11 @@ export const ATTRACTIONS = [
     paymentTerms: 'Próximo à Parada Linha Turismo',
     lat: -25.4290,
     lng: -49.2700,
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/largo-da-ordem.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80'
+      '/images/largo-da-ordem.jpg',
+      '/images/praca-santos-andrade.jpg',
+      '/images/passeio-publico.jpg'
     ],
     description: 'Tradição e excelência no coração financeiro e cultural de Curitiba! A poucos passos da Praça Tiradentes, Paço da Liberdade e da Feira do Largo da Ordem. Possui área de lazer completa com piscina coberta climatizada, sauna e o famoso Restaurante 99.',
     features: ['Localização central perfeita a 100m da Linha Turismo', 'Piscina coberta climatizada e fitness center', 'Famoso buffet de Feijoada aos sábados no Restaurante 99', 'Suítes espaçosas com isolamento acústico', 'Centro de convenções executivo completo']
@@ -153,12 +178,12 @@ export const ATTRACTIONS = [
   {
     id: 'rayon-hotel-curitiba',
     title: 'Grand Hotel Rayon & SPA Hai Yo 5★',
-    subtitle: 'Centro / Batel • Gastronomia Asiática',
+    subtitle: 'Centro / Batel • Gastronomia Premiada',
     location: 'Centro / Batel • Curitiba',
     category: 'hoteis',
     categories: ['hoteis', 'gastronomia', 'cupons'],
     topic: 'hoteis',
-    discount: 'PAC PACOTE ROMÂNTICO',
+    discount: 'PACOTE ROMÂNTICO CWB',
     rating: 4.9,
     reviewsCount: 3200,
     duration: 'Diária com SPA',
@@ -168,18 +193,20 @@ export const ATTRACTIONS = [
     paymentTerms: 'Serviço de Quarto 24h',
     lat: -25.4350,
     lng: -49.2780,
-    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/praca-santos-andrade.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80'
+      '/images/praca-santos-andrade.jpg',
+      '/images/teatro-guaira.jpg',
+      '/images/torre-panoramica.jpg'
     ],
-    description: 'Símbolo de imponência e refinamento corporativo e de lazer! O Grand Hotel Rayon se destaca pela gastronomia asiática de padrão internacional do Restaurante Hai Yo e o exclusivo SPA com terapias de bem-estar corporais e faciais.',
-    features: ['Restaurante oriental renomado Hai Yo no lobby', 'SPA Hai Yo com massagens relaxantes e banheiras', 'Acomodações de luxo com vista para o skyline', 'Próximo aos shoppings Curitiba e Pátio Batel', 'Atendimento de concierge VIP']
+    description: 'Símbolo de imponência e refinamento corporativo e de lazer em Curitiba! O Grand Hotel Rayon se destaca pela gastronomia asiática de padrão internacional do Restaurante Hai Yo e o exclusivo SPA com terapias de bem-estar corporais e faciais.',
+    features: ['Restaurante oriental renomado Hai Yo no lobby', 'SPA Hai Yo com massagens relaxantes e banheiras', 'Acomodações de luxo com vista para o skyline de Curitiba', 'Próximo à Rua 24 Horas e Batel', 'Atendimento de concierge VIP']
   },
   {
     id: 'pousada-ilha-do-mel',
-    title: 'Pousada de Charme Ilha do Mel (Encantadas / Farol)',
-    subtitle: 'Ilha do Mel • Pousada Pé na Areia',
-    location: 'Ilha do Mel • Litoral RMC',
+    title: 'Pousada de Charme Ilha do Mel & Travessia Litoral PR',
+    subtitle: 'Litoral do Paraná • Extensão Serra do Mar',
+    location: 'Ilha do Mel • Litoral PR',
     category: 'hoteis',
     categories: ['hoteis', 'agencias', 'tours'],
     topic: 'hoteis',
@@ -193,12 +220,13 @@ export const ATTRACTIONS = [
     paymentTerms: 'Transfer de Barco Incluído',
     lat: -25.5600,
     lng: -48.3300,
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/trem-serra-verde.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
+      '/images/trem-serra-verde.jpg',
+      '/images/vila-velha.jpg'
     ],
-    description: 'Refúgio paradisíaco pé na areia na Ilha do Mel! Bangalôs de madeira rústica e confortável integrados à restinga nativa a poucos passos do mar. Oferece café da manhã caiçara reforçado com frutas tropicais, tapiocas feitas na hora e deck de redes.',
-    features: ['Pousada pé na areia a 50 metros da praia', 'Café da manhã caiçara completo com frutas nativas', 'Deck de descanso com redes sob as árvores', 'Quartos climatizados com frigobar e varanda', 'Trilhas diretas para a Gruta de Encantadas']
+    description: 'Refúgio paradisíaco no litoral paranaense conectado aos roteiros da Serra do Mar! Bangalôs de madeira rústica e confortável integrados à natureza. Oferece café da manhã caiçara reforçado com frutas tropicais, tapiocas feitas na hora e deck de redes.',
+    features: ['Pousada pé na areia a 50 metros da praia', 'Café da manhã caiçara completo com frutas nativas', 'Conexão direta com o passeio de Trem Serra Verde Express', 'Quartos climatizados com frigobar e varanda', 'Trilhas diretas para a Gruta de Encantadas e Farol']
   },
   {
     id: 'pousada-caminho-do-vinho',
@@ -218,9 +246,10 @@ export const ATTRACTIONS = [
     paymentTerms: 'Estac. no Local Gratuito',
     lat: -25.5680,
     lng: -49.1920,
-    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/caminho-do-vinho.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80'
+      '/images/caminho-do-vinho.jpg',
+      '/images/santa-felicidade.jpg'
     ],
     description: 'Hospede-se no sossego do campo na Região Metropolitana de Curitiba! Chalés aconchegantes cercados por vinhedos e araucárias no Caminho do Vinho. Inclui farto café colonial com pães caseiros da roça, queijos coloniais e geleias de amora.',
     features: ['Chalés rústicos em meio à natureza e vinhedos', 'Café colonial farto com receitas tradicionais italianas', 'Próximo a mais de 10 adegas e cantinas coloniais', 'Passeios a cavalo e caminhadas ecológicas', 'Clima de serra relaxante a 20min de Curitiba']
@@ -229,7 +258,7 @@ export const ATTRACTIONS = [
   // --- RUA DA MÚSICA & PALCO FLUTUANTE ---
   {
     id: 'rua-da-musica',
-    title: 'Rua da Música • Vale da Música & Palco Flutuante',
+    title: 'Rua da Música • Parque Jaime Lerner & Vale da Música',
     subtitle: 'Parque das Pedreiras • Ópera de Arame',
     location: 'Pilarzinho / Abranches • Curitiba',
     category: 'shows',
@@ -245,20 +274,21 @@ export const ATTRACTIONS = [
     paymentTerms: 'Palco Flutuante no Lago da Ópera',
     lat: -25.3848,
     lng: -49.2764,
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/rua-da-musica.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80'
+      '/images/rua-da-musica.jpg',
+      '/images/opera-de-arame.jpg',
+      '/images/pedreira-paulo-leminski.jpg'
     ],
-    description: 'A Rua da Música e o Vale da Música formam o inovador polo de música ao vivo a céu aberto de Curitiba no Parque das Pedreiras! Um palco flutuante no meio do lago da Ópera de Arame com apresentações contínuas de Jazz, MPB, música instrumental e Bossa Nova rodeado pela mata nativa e paredões de rocha.',
-    features: ['Palco flutuante no lago da Ópera de Arame com shows contínuos', 'Apresentações de música instrumental diárias (Jazz, MPB, Bossa Nova)', 'Caminhada cultural pela Rua da Música com obras de arte e passadeiras de aço', 'Caminho das Pedras e restaurante panorâmico com vista para a cascata', 'Integrado ao complexo do Parque das Pedreiras / Pedreira Paulo Leminski']
+    description: 'A Rua da Música e o Vale da Música formam o inovador polo de música ao vivo a céu aberto de Curitiba no Parque Jaime Lerner (Parque das Pedreiras)! Um palco flutuante no meio do lago da Ópera de Arame com apresentações contínuas de Jazz, MPB, música instrumental e Bossa Nova rodeado pela mata nativa e paredões de rocha.',
+    features: ['Palco flutuante no lago da Ópera de Arame com shows contínuos', 'Apresentações de música instrumental diárias (Jazz, MPB, Bossa Nova)', 'Caminhada cultural pela Rua da Música com gastronomia e lojas', 'Caminho das Pedras e restaurante panorâmico com vista para a cascata', 'Integrado ao complexo do Parque Jaime Lerner / Pedreira Paulo Leminski']
   },
 
   // --- BARES & PUBS ---
   {
     id: 'bar-do-alemao',
     title: 'Bar do Alemão • Choperia Germânica & Chopp Submarino',
-    subtitle: 'Largo da Ordem • Centro Histórico',
+    subtitle: 'Largo da Ordem • Centro Histórico de Curitiba',
     location: 'Centro Histórico • Curitiba',
     category: 'bares',
     categories: ['bares', 'gastronomia', 'restaurantes', 'cupons'],
@@ -273,22 +303,23 @@ export const ATTRACTIONS = [
     paymentTerms: 'Chopp Submarino + Porção Típica',
     lat: -25.4285,
     lng: -49.2725,
-    image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/bar-do-alemao.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80'
+      '/images/bar-do-alemao.jpg',
+      '/images/largo-da-ordem.jpg'
     ],
-    description: 'Tradicionalíssimo botequim germânico fundado em 1979 no coração do Largo da Ordem! Famoso mundialmente pelo autêntico Chopp Submarino (caneco com canecozinho de Steinhäger que o cliente leva de lembrança) e a tradicional Carne de Onça paranaense, Eisbein (joelho de porco) e Kassler com chucrute.',
-    features: ['Canecozinho de Steinhäger como souvenir oficial', 'Carne de Onça tombada como patrimônio imaterial', 'Pratos germânicos artesanais (Eisbein, Wurst)', 'Atendimento rápido em salão para 800 pessoas', 'Localizado no paralelepípedo do Largo da Ordem']
+    description: 'Tradicionalíssimo botequim germânico fundado em 1979 no coração do Largo da Ordem em Curitiba! Famoso mundialmente pelo autêntico Chopp Submarino (caneco com canecozinho de Steinhäger que o cliente leva de lembrança) e a tradicional Carne de Onça paranaense, Eisbein (joelho de porco) e Kassler com chucrute.',
+    features: ['Canecozinho de Steinhäger como souvenir oficial de Curitiba', 'Carne de Onça tombada como patrimônio imaterial curitibano', 'Pratos germânicos artesanais (Eisbein, Wurst)', 'Atendimento rápido em salão histórico para 800 pessoas', 'Localizado nos paralelepípedos do Largo da Ordem']
   },
   {
     id: 'porks-porco-chope',
-    title: 'Porks • Porco & Chope (Várias Unidades CWB & RMC)',
-    subtitle: 'Batel, Vicente Machado, Itupava & RMC',
-    location: 'Batel / Vicente Machado • Curitiba',
+    title: 'Porks • Porco & Chope Artesanal Curitibano',
+    subtitle: 'Batel, Vicente Machado, Museu do Olho & Itupava',
+    location: 'Batel / MON • Curitiba',
     category: 'bares',
     categories: ['bares', 'gastronomia', 'cupons', 'promocionais'],
     topic: 'bares',
-    discount: 'CHOPP ARTESANAL R$ 12',
+    discount: 'CHOPP ARTESANAL CWB R$ 12',
     rating: 4.8,
     reviewsCount: 4200,
     duration: '2 horas',
@@ -298,12 +329,14 @@ export const ATTRACTIONS = [
     paymentTerms: 'Sem Cobrança de 10% ou Couvert',
     lat: -25.4380,
     lng: -49.2820,
-    image: 'https://images.unsplash.com/photo-1538488881022-4728e396e965?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/largo-da-ordem.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1538488881022-4728e396e965?auto=format&fit=crop&w=1200&q=80'
+      '/images/largo-da-ordem.jpg',
+      '/images/bar-do-alemao.jpg',
+      '/images/mon-olho.jpg'
     ],
-    description: 'Rede de bares curitibana de maior sucesso no Brasil! Especializada em petiscos artesanais de carne suína (Torresmo de Rolo, Pernil com Queijo, Costelinha ao Barbecue) acompanhados de mais de 10 torneiras de chopps artesanais locais com preços ultra acessíveis.',
-    features: ['Torresmo de rolo crocante feito na hora', 'Sanduíches de pernil suculento na baguete', 'Chopp artesanal paranaense a partir de R$ 12', 'Ambiente pet friendly e descontraído nas calçadas', 'Sem taxa de serviço ou couvert artístico']
+    description: 'Rede de bares nascida em Curitiba de maior sucesso no Brasil! Especializada em petiscos artesanais de carne suína (Torresmo de Rolo, Pernil com Queijo, Costelinha ao Barbecue) acompanhados de mais de 10 torneiras de chopps artesanais curitibanos com música ao vivo.',
+    features: ['Torresmo de rolo crocante feito na hora', 'Unidade icônica em frente ao Museu do Olho (MON) e na Vicente Machado', 'Chopp artesanal paranaense a partir de R$ 12', 'Ambiente pet friendly e descontraído nas calçadas de Curitiba', 'Sem taxa de serviço ou couvert artístico']
   },
 
   // --- SHOWS ---
@@ -325,19 +358,21 @@ export const ATTRACTIONS = [
     paymentTerms: 'Ingresso Oficial com Meia-Entrada',
     lat: -25.3840,
     lng: -49.2750,
-    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/pedreira-paulo-leminski.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80'
+      '/images/pedreira-paulo-leminski.jpg',
+      '/images/opera-de-arame.jpg',
+      '/images/rua-da-musica.jpg'
     ],
-    description: 'O maior palco a céu aberto da América Latina! Localizado em uma antiga pedreira cercada por imponentes paredões de rocha de 30 metros. Já recebeu lendas mundiais do rock e da música nacional como Paul McCartney, Iron Maiden, Pearl Jam e grandes festivais.',
-    features: ['Capacidade para 25 mil pessoas', 'Paredões naturais de rocha de 30m', 'Arena de grandes festivais de música', 'Estrutura completa de bares e alimentação', 'Acesso fácil via ônibus e aplicativo']
+    description: 'O maior palco a céu aberto da América Latina! Localizado em Curitiba em uma antiga pedreira cercada por imponentes paredões de rocha de 30 metros. Já recebeu lendas mundiais do rock e da música nacional como Paul McCartney, Iron Maiden, AC/DC, Pearl Jam e grandes festivais.',
+    features: ['Capacidade para 25 mil pessoas ao ar livre', 'Paredões naturais de rocha de 30m com acústica única', 'Arena dos maiores festivais de música do Sul do Brasil', 'Integrado ao Parque Jaime Lerner e Rua da Música', 'Acesso fácil via Linha Turismo e linhas especiais']
   },
 
   // --- TEATROS ---
   {
     id: 'teatro-guaira',
     title: 'Teatro Guaíra (Auditório Bento Munhoz da Rocha Neto)',
-    subtitle: 'Centro • Praça Santos Andrade',
+    subtitle: 'Centro • Praça Santos Andrade • Curitiba',
     location: 'Centro • Curitiba',
     category: 'teatros',
     categories: ['teatros', 'cultura', 'promocionais'],
@@ -352,24 +387,25 @@ export const ATTRACTIONS = [
     paymentTerms: 'Bilheteria Oficial e Venda Online',
     lat: -25.4280,
     lng: -49.2660,
-    image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/teatro-guaira.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1200&q=80'
+      '/images/teatro-guaira.jpg',
+      '/images/praca-santos-andrade.jpg'
     ],
-    description: 'O maior e mais imponente complexo teatral do Paraná! Abriga o Auditório Bento Munhoz da Rocha Neto (Guairão com 2.173 lugares), Guairinha, Miniauditório e a sede do renomado Balé Teatro Guaíra e Orquestra Sinfônica do Paraná.',
-    features: ['Guairão com 2.173 lugares e acústica perfeita', 'Sede da Orquestra Sinfônica do Paraná', 'Sede do prestigiado Balé Teatro Guaíra', 'Painel de Poty Lazzarotto na fachada', 'Localizado na histórica Praça Santos Andrade']
+    description: 'O maior e mais imponente complexo teatral do Paraná, em frente ao Prédio Histórico da UFPR na Praça Santos Andrade! Abriga o Auditório Bento Munhoz da Rocha Neto (Guairão com 2.173 lugares), Guairinha, Miniauditório e a sede do renomado Balé Teatro Guaíra e Orquestra Sinfônica do Paraná.',
+    features: ['Guairão com 2.173 lugares e acústica perfeita', 'Sede da Orquestra Sinfônica do Paraná', 'Sede do prestigiado Balé Teatro Guaíra', 'Gigantesco painel de Poty Lazzarotto na fachada externa', 'Localizado na histórica Praça Santos Andrade']
   },
 
   // --- EVENTOS ---
   {
     id: 'festival-teatro-cwb',
     title: 'Festival de Teatro de Curitiba (Mostra Oficial & Fringe)',
-    subtitle: 'Vários Teatros de Curitiba • Março/Abril',
+    subtitle: 'Praça Santos Andrade & Teatros de Curitiba',
     location: 'Circuito Teatral • Curitiba',
     category: 'eventos',
     categories: ['eventos', 'teatros', 'cultura', 'promocionais'],
     topic: 'eventos',
-    discount: 'FESTIVAL ANUAL',
+    discount: 'FESTIVAL OFICIAL DE CURITIBA',
     rating: 5.0,
     reviewsCount: 6800,
     duration: 'Eventos Durante 2 Semanas',
@@ -379,15 +415,17 @@ export const ATTRACTIONS = [
     paymentTerms: 'Ingresso por Espetáculo',
     lat: -25.4284,
     lng: -49.2733,
-    image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/praca-santos-andrade.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80'
+      '/images/praca-santos-andrade.jpg',
+      '/images/teatro-guaira.jpg',
+      '/images/opera-de-arame.jpg'
     ],
-    description: 'O maior festival de artes cênicas da América Latina! Todos os anos, entre março e abril, Curitiba recebe mais de 400 espetáculos teatrais, estréias nacionais, musicais e performances de rua na Mostra Fringe e Guritiba.',
-    features: ['Mais de 400 espetáculos em 2 semanas', 'Mostra Oficial com grandes nomes do teatro brasileiro', 'Fringe com peças gratuitas e de rua nas praças', 'Gastronomia do Gastronix no pátio', 'Ponto de encontro de artistas do Brasil todo']
+    description: 'O maior festival de artes cênicas da América Latina! Todos os anos Curitiba se transforma em um grande palco a céu aberto com mais de 400 espetáculos teatrais, estreias nacionais no Guairão e Ópera de Arame, além de performances gratuitas na Praça Santos Andrade e Largo da Ordem.',
+    features: ['Mais de 400 espetáculos em 2 semanas por toda Curitiba', 'Mostra Oficial com grandes nomes do teatro brasileiro', 'Fringe com peças gratuitas na Praça Santos Andrade e Ruínas', 'Gastronomia do Gastronomix no Museu Oscar Niemeyer', 'Risorama (maior festival de stand-up comedy do país)']
   },
 
-  // --- ATRAÇÕES CLÁSSICAS ---
+  // --- ATRAÇÕES CLÁSSICAS DE CURITIBA ---
   {
     id: 'jardim-botanico',
     title: 'Jardim Botânico de Curitiba & Jardim das Sensações',
@@ -406,12 +444,13 @@ export const ATTRACTIONS = [
     paymentTerms: 'Entrada Gratuita',
     lat: -25.4431,
     lng: -49.2397,
-    image: 'https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/jardim-botanico.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=1200&q=80'
+      '/images/jardim-botanico.jpg',
+      '/jardim_botanico.jpg'
     ],
-    description: 'Cartão-postal número um de Curitiba! Criado em 1991 em estilo francês, possui a icônica estufa em estrutura metálica e vidro abrigando exemplares da flora da Floresta Atlântica. Conta com o Jardim das Sensações, orquidário, lago com carpas e alamedas floridas ideais para caminhadas contemplativas.',
-    features: ['Estufa Art Nouveau em vidro', 'Jardim das Sensações sensorial', 'Orquidário e Museu Botânico', 'Wi-Fi público e acessibilidade completa', 'Estac. público no local']
+    description: 'Cartão-postal número um de Curitiba! Inaugurado em 1991 em estilo francês, possui a icônica estufa de três abóbadas em estrutura metálica e vidro abrigando exemplares da flora da Floresta Atlântica. Conta com o Jardim das Sensações, Galeria das Quatro Estações, Museu Botânico e lago com capivaras.',
+    features: ['Estufa Art Nouveau em ferro e vidro com 458 m²', 'Jardim das Sensações com caminhada sensorial de olhos vendados', 'Galeria das Quatro Estações e Café Senac', 'Museu Botânico Municipal com passarela de madeira', 'Parada principal da Linha Turismo']
   },
   {
     id: 'opera-de-arame',
@@ -431,12 +470,14 @@ export const ATTRACTIONS = [
     paymentTerms: 'Pague no Pix ou Cartão',
     lat: -25.3846,
     lng: -49.2764,
-    image: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/opera-de-arame.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80'
+      '/images/opera-de-arame.jpg',
+      '/opera_de_arame.jpg',
+      '/images/rua-da-musica.jpg'
     ],
-    description: 'Uma obra-prima da arquitetura brasileira! Construída com tubos de aço e teto transparente de policarbonato no fundo de uma antiga pedreira desativada, sobre um lago habitado por carpas e cisnes. Abriga o Vale da Música com apresentações ao vivo sobre o lago flutuante.',
-    features: ['Vale da Música flutuante', 'Palco de Grandes Shows e Festivais', 'Cachoeira artificial espetacular', 'Restaurante e Café da Ópera', 'Passarela de vidro suspensa']
+    description: 'Uma obra-prima da arquitetura de Curitiba! Construída em apenas 75 dias com tubos de aço e teto transparente de policarbonato no fundo de uma antiga pedreira desativada, sobre um lago habitado por carpas e cisnes. Abriga o Vale da Música com apresentações ao vivo sobre o lago flutuante.',
+    features: ['Vale da Música com palco flutuante no lago', 'Arquitetura tubular icônica assinada por Domingos Bongestabs', 'Cachoeira natural de 10 metros no paredão de rocha', 'Restaurante Ópera Arte no subsolo', 'Passarela metálica suspensa sobre as águas']
   },
   {
     id: 'museu-oscar-niemeyer',
@@ -456,12 +497,115 @@ export const ATTRACTIONS = [
     paymentTerms: 'Ingresso com Acesso Total',
     lat: -25.4103,
     lng: -49.2670,
-    image: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/mon-olho.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1200&q=80'
+      '/images/mon-olho.jpg',
+      '/museu_niemeyer.jpg',
+      '/images/bosque-papa.jpg'
     ],
-    description: 'Um dos maiores complexos de arte da América Latina! Projetado pelo célebre arquiteto Oscar Niemeyer, a torre audaciosa em formato de Olho Humano abriga exposições de artes visuais, design, arquitetura e fotografia nacionais e internacionais.',
-    features: ['Torre Olho de 30m de altura', 'Mais de 35 mil m² de área', 'Café MON e Loja de Design', 'Parcão para caminhadas ao ar livre', 'Quarta-feira entrada gratuita']
+    description: 'Um dos maiores complexos de arte da América Latina! Projetado pelo célebre arquiteto Oscar Niemeyer no Centro Cívico de Curitiba, a torre audaciosa em formato de Olho Humano sobre um espelho d’água amarelo abriga exposições de artes visuais, design, arquitetura e fotografia.',
+    features: ['Torre Olho de 30m de altura sobre espelho d’água', 'Mais de 35 mil m² de área construída e 12 salas expositivas', 'Café MON, Loja de Design e túnel subterrâneo', 'Gramado do Parcão anexo ao Bosque do Papa', 'Quarta-feira com entrada gratuita']
+  },
+  {
+    id: 'bosque-alemao',
+    title: 'Bosque Alemão, Oratório de Bach & Trilha de João e Maria',
+    subtitle: 'Vista Alegre • Curitiba',
+    location: 'Vista Alegre • Curitiba',
+    category: 'parques',
+    categories: ['parques', 'cultura', 'conhecendo'],
+    topic: 'parques',
+    discount: 'ENTRADA LIVRE',
+    rating: 4.9,
+    reviewsCount: 3900,
+    duration: '2 horas',
+    price: 0.00,
+    originalPrice: 0.00,
+    isFree: true,
+    paymentTerms: 'Entrada Gratuita',
+    lat: -25.4050,
+    lng: -49.2860,
+    image: '/images/bosque-alemao.jpg',
+    gallery: [
+      '/images/bosque-alemao.jpg'
+    ],
+    description: 'Inaugurado em 1996 em homenagem à imigração alemã em Curitiba! Conta com o mirante da Torre dos Filósofos com vista panorâmica para a cidade, a trilha de mata nativa com painéis de azulejo contando a história de João e Maria, a Casa da Bruxa (biblioteca infantil) e o belíssimo Oratório de Bach.',
+    features: ['Mirante da Torre dos Filósofos em madeira', 'Trilha ecológica de João e Maria com Casa da Bruxa', 'Oratório de Bach em estilo neogótico germânico', 'Réplica da fachada da Casa Mila (Portal Alemão)', 'Confeitaria com strudel de maçã e café colonial']
+  },
+  {
+    id: 'bosque-papa',
+    title: 'Bosque Papa João Paulo II & Memorial da Imigração Polonesa',
+    subtitle: 'Centro Cívico • Curitiba',
+    location: 'Centro Cívico • Curitiba',
+    category: 'parques',
+    categories: ['parques', 'cultura', 'conhecendo'],
+    topic: 'cultura',
+    discount: 'ENTRADA LIVRE',
+    rating: 4.9,
+    reviewsCount: 3150,
+    duration: '1 a 2 horas',
+    price: 0.00,
+    originalPrice: 0.00,
+    isFree: true,
+    paymentTerms: 'Entrada Gratuita',
+    lat: -25.4085,
+    lng: -49.2665,
+    image: '/images/bosque-papa.jpg',
+    gallery: [
+      '/images/bosque-papa.jpg',
+      '/images/mon-olho.jpg'
+    ],
+    description: 'Localizado logo atrás do Museu Oscar Niemeyer, o Bosque do Papa preserva 7 autênticas casas de troncos de pinheiro (encaixadas sem pregos) construídas pelos imigrantes poloneses no final do século XIX, em meio a um bosque centenário de araucárias.',
+    features: ['7 casas históricas de troncos de araucária do século XIX', 'Capela da Virgem Negra de Czestochowa', 'Casa de chá polonesa com pierogi e krakowska', 'Passarela direta para o Museu Oscar Niemeyer (MON)', 'Bosque de araucárias nativas no coração do Centro Cívico']
+  },
+  {
+    id: 'praca-do-japao',
+    title: 'Praça do Japão & Memorial da Imigração Japonesa',
+    subtitle: 'Batel / Água Verde • Curitiba',
+    location: 'Batel • Curitiba',
+    category: 'parques',
+    categories: ['parques', 'cultura', 'conhecendo'],
+    topic: 'parques',
+    discount: 'ENTRADA LIVRE',
+    rating: 4.9,
+    reviewsCount: 3600,
+    duration: '1 a 2 horas',
+    price: 0.00,
+    originalPrice: 0.00,
+    isFree: true,
+    paymentTerms: 'Entrada Gratuita',
+    lat: -25.4465,
+    lng: -49.2869,
+    image: '/images/praca-do-japao.jpg',
+    gallery: [
+      '/images/praca-do-japao.jpg'
+    ],
+    description: 'Um pedaço de Kyoto no coração do Batel em Curitiba! A Praça do Japão possui 300 cerejeiras (Sakuras) doadas pelo Império Japonês, 6 lagos artificiais nos moldes japoneses com carpas coloridas, Portal Torii, Casa de Chá e o Memorial da Imigração Japonesa.',
+    features: ['300 cerejeiras japonesas que florescem no inverno curitibano', 'Lagos com pontes vermelhas e centenas de carpas', 'Memorial da Imigração Japonesa e Biblioteca de Mangás', 'Casa de Chá tradicional e Lanterna da Paz de Hiroshima', 'Feira gastronômica japonesa às quintas-feiras']
+  },
+  {
+    id: 'passeio-publico',
+    title: 'Passeio Público de Curitiba (1886) & Ilha dos Poetas',
+    subtitle: 'Centro • Primeiro Parque de Curitiba',
+    location: 'Centro • Curitiba',
+    category: 'parques',
+    categories: ['parques', 'cultura', 'conhecendo'],
+    topic: 'parques',
+    discount: 'ENTRADA LIVRE',
+    rating: 4.8,
+    reviewsCount: 3300,
+    duration: '2 horas',
+    price: 0.00,
+    originalPrice: 0.00,
+    isFree: true,
+    paymentTerms: 'Entrada Gratuita',
+    lat: -25.4248,
+    lng: -49.2676,
+    image: '/images/passeio-publico.jpg',
+    gallery: [
+      '/images/passeio-publico.jpg'
+    ],
+    description: 'Inaugurado em 1886, é o parque urbano mais antigo e histórico de Curitiba! Seu portal monumental é réplica do Cemitério de Cães de Paris. Possui lagos navegáveis com pontes pênseis, pedalinhos, Coreto Digital, Terrário e a tradicional Feira Orgânica aos sábados.',
+    features: ['Portal histórico monumental de 1886', 'Lagos com pedalinhos e pontes suspensas', 'Terrário e viveiros de aves brasileiras', 'Ciclovia e pista de patinação sombreada', 'A 200 metros do Teatro Guaíra e Paço da Liberdade']
   },
   {
     id: 'caminho-do-vinho',
@@ -481,16 +625,17 @@ export const ATTRACTIONS = [
     paymentTerms: 'Transporte Executivo + Degustação',
     lat: -25.5680,
     lng: -49.1920,
-    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/caminho-do-vinho.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80'
+      '/images/caminho-do-vinho.jpg',
+      '/images/santa-felicidade.jpg'
     ],
-    description: 'Passeio oficial de agência de turismo pelo famoso Caminho do Vinho em São José dos Pinhais! Visita guiada a mais de 5 adegas artesanais com degustação ilimitada de vinhos, queijos coloniais, salames, salchicharia italiana/polonesa e opção de almoço colonial farto.',
-    features: ['Vans executivas com guia credenciado Cadastur', 'Degustação em 5 adegas tradicionais (Mergulho, Ceccon, etc)', 'Almoço ou café colonial completo na roça', 'Compras diretas dos produtores artesanais', 'Saídas diárias com busca nos hotéis de Curitiba']
+    description: 'Passeio oficial de agência de turismo pelo famoso Caminho do Vinho na Colônia Mergulhão em São José dos Pinhais! Visita guiada a mais de 5 adegas artesanais com degustação de vinhos coloniais, queijos, salames e opção de almoço ou café colonial farto.',
+    features: ['Vans executivas com guia credenciado Cadastur', 'Degustação em 5 adegas tradicionais italianas', 'Almoço ou café colonial completo na roça', 'Compras diretas dos produtores artesanais da RMC', 'Saídas diárias com busca nos hotéis de Curitiba']
   },
   {
     id: 'excursao-ilha-do-mel',
-    title: 'Excursão Bate & Volta Ilha do Mel (Pontal do Sul)',
+    title: 'Excursão Bate & Volta Ilha do Mel + Serra do Mar',
     subtitle: 'Litoral Paranaense • Natureza & Praias',
     location: 'Pontal do Sul / Ilha do Mel',
     category: 'agencias',
@@ -506,18 +651,19 @@ export const ATTRACTIONS = [
     paymentTerms: 'Vans + Barco de Travessia Incluído',
     lat: -25.5600,
     lng: -48.3300,
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=90&v=vilavelha_rocks_real',
+    image: '/images/trem-serra-verde.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=90&v=vilavelha_rocks_real'
+      '/images/trem-serra-verde.jpg',
+      '/images/vila-velha.jpg'
     ],
-    description: 'Serviço de agência receptiva com transporte executivo de Curitiba até o embarcadouro de Pontal do Sul + bilhetes de barco rápido para a Ilha do Mel (Praia de Encantadas e Farol das Conchas). Acompanhamento de guia especializado em ecoturismo.',
+    description: 'Serviço de agência receptiva com transporte executivo saindo dos hotéis de Curitiba pela Estrada da Graciosa até Pontal do Sul + bilhetes de barco rápido para a Ilha do Mel (Praia de Encantadas e Farol das Conchas).',
     features: ['Embarque na porta do hotel em Curitiba', 'Bilhete de barco de travessia ida e volta incluído', 'Trilha guiada até o Farol das Conchas & Gruta de Encantadas', 'Tempo livre para banho de mar e gastronomia caiçara', 'Equipamento de segurança e seguro viagem']
   },
   {
     id: 'tour-vila-velha',
-    title: 'Tour Parque Estadual de Vila Velha & Taças de Pedra',
-    subtitle: 'Ponta Grossa • Geologia & Ecoturismo RMC',
-    location: 'Ponta Grossa • Região Metropolitana',
+    title: 'Tour Parque Estadual de Vila Velha & Taça de Pedra',
+    subtitle: 'Campos Gerais • Geologia & Ecoturismo PR',
+    location: 'Ponta Grossa • Campos Gerais',
     category: 'agencias',
     categories: ['agencias', 'tours', 'pacotes', 'promocionais'],
     topic: 'agencias',
@@ -531,18 +677,18 @@ export const ATTRACTIONS = [
     paymentTerms: 'Transporte + Ingresso do Parque',
     lat: -25.2400,
     lng: -50.0100,
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/vila-velha.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80'
+      '/images/vila-velha.jpg'
     ],
-    description: 'Passeio guiado por agência às milenares esculturas de arenito de Vila Velha (Taça, Camelo, Esfinge), as impressionantes Furnas com lagoas de 100m de profundidade e a Lagoa Dourada. Conta com transporte em van de luxo e ingressos já garantidos.',
-    features: ['Vans de turismo com ar-condicionado', 'Ingressos do Parque Estadual de Vila Velha incluídos', 'Caminhada guiada entre os arenitos e furnas', 'Opção de tirolesa e arvorismo no parque', 'Almoço típico tropeiro opcional']
+    description: 'Passeio guiado saindo de Curitiba às milenares esculturas de arenito do Parque Estadual de Vila Velha (Taça, Camelo, Esfinge), as impressionantes Furnas com lagoas de 100m de profundidade e a Lagoa Dourada.',
+    features: ['Vans de turismo saindo de Curitiba com ar-condicionado', 'Ingressos do Parque Estadual de Vila Velha incluídos', 'Caminhada guiada entre os arenitos de 300 milhões de anos', 'Opção de tirolesa, arvorismo e cicloturismo no parque', 'Parada gastronômica na Colônia Witmarsum']
   },
   {
     id: 'tour-lapa-historica',
-    title: 'Tour Cidade Histórica da Lapa & Cerco da Lapa',
-    subtitle: 'Lapa • Patrimônio Histórico RMC',
-    location: 'Lapa • Região Metropolitana',
+    title: 'Tour Centro Histórico & Cidade Histórica da Lapa',
+    subtitle: 'Setor Histórico Curitiba & Lapa • Patrimônio PR',
+    location: 'Centro Histórico / Lapa • RMC',
     category: 'agencias',
     categories: ['agencias', 'cultura', 'tours', 'teatros'],
     topic: 'agencias',
@@ -556,17 +702,18 @@ export const ATTRACTIONS = [
     paymentTerms: 'Transporte + Guia Histórico',
     lat: -25.7680,
     lng: -49.7150,
-    image: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/largo-da-ordem.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1200&q=80'
+      '/images/largo-da-ordem.jpg',
+      '/centro_historico.jpg'
     ],
-    description: 'Volte no tempo com este tour de agência até a centenária cidade da Lapa! Visita aos casarões tombados do século XIX, Teatro São João de 1873, Panteão dos Heroes do Cerco da Lapa e degustação da famosa Coxinha de Farofa lapiana e café tropeiro.',
-    features: ['Guia historiador credenciado pelo Cadastur', 'Visita ao Teatro São João e Casa Lacerda', 'Almoço com comida típica tropeira de panela de ferro', 'Degustação da tradicional Coxinha de Farofa', 'Busca nos hotéis centrais de Curitiba']
+    description: 'Volte no tempo com este tour histórico partindo do Largo da Ordem em Curitiba até a centenária cidade da Lapa! Visita aos casarões tombados do século XIX, Teatro São João de 1873, Panteão dos Heróis e degustação da famosa Coxinha de Farofa e culinária tropeira.',
+    features: ['Guia historiador credenciado pelo Cadastur', 'Saída do Centro Histórico de Curitiba (Largo da Ordem)', 'Almoço com comida típica tropeira de panela de ferro', 'Degustação da tradicional Coxinha de Farofa', 'Busca nos hotéis centrais de Curitiba']
   },
   {
     id: 'transfer-aeroporto-afonso-pena',
-    title: 'Traslado Executivo Privativo Aeroporto Afonso Pena (CWB)',
-    subtitle: 'São José dos Pinhais / Hotéis Curitiba',
+    title: 'Traslado Executivo Aeroporto Afonso Pena (CWB) ↔ Curitiba',
+    subtitle: 'Aeroporto Internacional CWB / Hotéis de Curitiba',
     location: 'Aeroporto CWB / Hotéis Curitiba',
     category: 'agencias',
     categories: ['agencias', 'pacotes', 'hoteis'],
@@ -581,17 +728,18 @@ export const ATTRACTIONS = [
     paymentTerms: 'Carro Executivo ou Van Privativa',
     lat: -25.5310,
     lng: -49.1760,
-    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/linha-turismo.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80'
+      '/images/linha-turismo.jpg',
+      '/images/torre-panoramica.jpg'
     ],
-    description: 'Serviço de traslado executivo privativo oferecido por agências receptivas parceiras 24 horas por dia. Recepção no desembarque do Aeroporto Internacional Afonso Pena (CWB em São José dos Pinhais) com placa identificada e transporte direto ao seu hotel.',
-    features: ['Recepção individual com placa no desembarque', 'Motorista profissional com ar-condicionado e água', 'Sem espera ou filas no aeroporto', 'Atendimento para passageiros individuais, famílias ou grupos', 'Suporte WhatsApp 24 horas ativado']
+    description: 'Serviço de traslado executivo privativo oferecido por agências receptivas parceiras 24 horas por dia. Recepção no desembarque do Aeroporto Internacional Afonso Pena (CWB) com placa identificada e transporte direto ao seu hotel em Curitiba.',
+    features: ['Recepção individual com placa no desembarque CWB', 'Motorista profissional com ar-condicionado e Wi-Fi', 'Sem espera ou filas no aeroporto', 'Atendimento para passageiros individuais, famílias ou grupos', 'Suporte WhatsApp 24 horas ativado']
   },
   {
     id: 'trem-serra-verde',
     title: 'Passeio de Trem Serra Verde Express (Curitiba - Morretes)',
-    subtitle: 'Serra do Mar Paranaense • Rota Ecológica',
+    subtitle: 'Serra do Mar Paranaense • Rota Ferroviária de 1885',
     location: 'Estação Rodoferroviária • Curitiba',
     category: 'tours',
     categories: ['tours', 'pacotes', 'agencias', 'promocionais', 'cupons'],
@@ -606,17 +754,17 @@ export const ATTRACTIONS = [
     paymentTerms: 'Em até 6x sem juros no Cartão',
     lat: -25.4380,
     lng: -49.2562,
-    image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/trem-serra-verde.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1200&q=80'
+      '/images/trem-serra-verde.jpg'
     ],
-    description: 'Eleito um dos passeios de trem mais bonitos do mundo pela The Guardian e Wall Street Journal! Atravesse a exuberante Mata Atlântica da Serra do Mar Paranaense sobre viadutos centenários, abismos e cachoeiras até a histórica cidade de Morretes, com almoço com Barreado típico incluído.',
-    features: ['Viaduto do Carvalho suspenso', 'Almoço de Barreado tradicional em Morretes', 'Guia turístico bilíngue a bordo', 'Serviço de bordo com lanches e bebidas', 'Vagões temáticos e pet friendly']
+    description: 'Eleito um dos passeios de trem mais bonitos do mundo pelo The Guardian e Wall Street Journal! Partindo da Rodoferroviária de Curitiba, atravesse a exuberante Mata Atlântica da Serra do Mar Paranaense sobre a Ponte São João e o Viaduto do Carvalho até a histórica cidade de Morretes, com almoço de Barreado típico.',
+    features: ['Viaduto do Carvalho e Ponte São João suspensos na serra', 'Almoço de Barreado tradicional na beira do Rio Nhundiaquara', 'Guia turístico bilíngue a bordo em todos os vagões', 'Retorno panorâmico pela histórica Estrada da Graciosa', 'Vagões Turísticos, Boutique, Camarote e Litorina de Luxo']
   },
   {
     id: 'restaurante-madalosso',
-    title: 'Restaurante Família Madalosso (Santa Felicidade)',
-    subtitle: 'Santa Felicidade • Polo Gastronômico',
+    title: 'Restaurante Família Madalosso & Portal de Santa Felicidade',
+    subtitle: 'Santa Felicidade • Polo Gastronômico Italiano de Curitiba',
     location: 'Santa Felicidade • Curitiba',
     category: 'gastronomia',
     categories: ['gastronomia', 'restaurantes', 'pacotes', 'cupons'],
@@ -631,12 +779,13 @@ export const ATTRACTIONS = [
     paymentTerms: 'Rodízio Italiano Completo',
     lat: -25.4055,
     lng: -49.3330,
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/santa-felicidade.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80'
+      '/images/santa-felicidade.jpg',
+      '/images/caminho-do-vinho.jpg'
     ],
-    description: 'Certificado pelo Guinness World Records como o maior restaurante das Américas! Fundado em 1963 no coração do bairro italiano de Santa Felicidade, serve o mais autêntico rodízio italiano com frango a passarinho, polenta frita crocante, radici com bacon, lasanha e mais de 10 tipos de massas artesanais.',
-    features: ['Maior restaurante das Américas (4.600 lugares)', 'Rodízio ilimitado de massas e frango', 'Estacionamento gratuito para 900 carros', 'Espaço kids com monitores', 'Adega de vinhos artesanais paranaenses']
+    description: 'Certificado pelo Guinness World Records como o maior restaurante das Américas! Fundado em 1963 no coração do bairro italiano de Santa Felicidade em Curitiba, serve o mais autêntico rodízio italiano com frango a passarinho, polenta frita crocante, radici com bacon, fígado, lasanha e nhoque artesanal.',
+    features: ['Maior restaurante das Américas (4.645 lugares em Santa Felicidade)', 'Rodízio ilimitado de massas artesanais, polenta e frango', 'Estacionamento gratuito para 900 carros', 'Ao lado das vinícolas Durigan e Vinhos Santa Felicidade', 'Parada oficial da Linha Turismo Curitiba']
   },
   {
     id: 'parque-tangua',
@@ -660,8 +809,8 @@ export const ATTRACTIONS = [
     gallery: [
       '/images/parque-tangua.jpg'
     ],
-    description: 'O pôr do sol mais espetacular de Curitiba! Construído no local de duas antigas pedreiras unidas por um túnel escavado na rocha de 45 metros. Possui mirante em formato de castelo com jardins franceses, cascata artificial de 65m caindo sobre o lago e ancoradouro.',
-    features: ['O pôr do sol mais famoso da cidade', 'Túnel na rocha com passarela suspensa', 'Cascata artificial de 65 metros', 'Bistrô do Tanguá com café colonial', 'Ciclovia e pistas de caminhada']
+    description: 'O pôr do sol mais espetacular de Curitiba! Construído no local de duas antigas pedreiras unidas por um túnel escavado na rocha de 45 metros. Possui o Jardim Poty Lazzarotto em estilo francês, mirante semicircular em formato de castelo e cascata artificial de 65m caindo sobre o lago da pedreira.',
+    features: ['O pôr do sol mais fotografado de Curitiba', 'Túnel escavado na rocha com passarela sobre a água', 'Cascata de 65 metros no paredão de granito', 'Jardim Poty Lazzarotto com espelhos d’água e chafarizes', 'Ciclovia, bistrô e parada da Linha Turismo']
   },
   {
     id: 'parque-barigui',
@@ -681,17 +830,18 @@ export const ATTRACTIONS = [
     paymentTerms: 'Entrada Gratuita',
     lat: -25.4260,
     lng: -49.3080,
-    image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/parque-barigui.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=80'
+      '/images/parque-barigui.jpg',
+      '/parque_barigui.jpg'
     ],
-    description: 'O parque mais frequentado e amado pelos curitibanos! Com 1,4 milhão de m², possui um imenso lago central habitação oficial do bando de capivaras mascotes da cidade. Conta com o Expo Unimed, Museu do Automóvel, pistas de caminhada, academias e quiosques.',
-    features: ['Lar oficial do grupo de Capivaras', 'Pistas iluminadas para caminhada e corrida', 'Museu do Automóvel de Curitiba', 'Aluguel de patins e bicicletas', 'Restaurantes e churrasqueiras livres']
+    description: 'O parque mais frequentado e amado pelos curitibanos! Com 1,4 milhão de m², possui um imenso lago central que é o habitat oficial das famosas capivaras de Curitiba e das garças brancas, com o skyline de edifícios do Bigorrilho ao fundo.',
+    features: ['Lar oficial das Capivaras símbolo de Curitiba', 'Vista cartão-postal do lago com o skyline do Bigorrilho', 'Museu do Automóvel de Curitiba e Pavilhão de Exposições', '3,5 km de pistas iluminadas para corrida, ciclismo e patins', 'Restaurante Maggiore à beira do lago']
   },
   {
     id: 'torre-panoramica',
-    title: 'Torre Panorâmica de Curitiba (Telepar)',
-    subtitle: 'Mercês • Vista Contemplativa 360°',
+    title: 'Torre Panorâmica de Curitiba (Mirante 109m)',
+    subtitle: 'Mercês • Vista Contemplativa 360° de Curitiba',
     location: 'Mercês • Curitiba',
     category: 'tours',
     categories: ['tours', 'conhecendo', 'pacotes', 'cupons'],
@@ -706,17 +856,17 @@ export const ATTRACTIONS = [
     paymentTerms: 'Ingresso Individual',
     lat: -25.4242,
     lng: -49.2945,
-    image: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/torre-panoramica.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80'
+      '/images/torre-panoramica.jpg'
     ],
-    description: 'A única torre de telefonia do Brasil com mirante aberto à visitação pública! Com 109 metros de altura (equivalente a 40 andares), oferece uma visão panorâmica circular de 360 graus sobre toda a mancha urbana de Curitiba e a serra no horizonte, acompanhada do painel de Poty Lazzarotto.',
-    features: ['Mirante em 360° a 109m de altura', 'Painel em relevo do artista Poty Lazzarotto', 'Museu do Telefone no térreo', 'Lunetas de observação astronômica', 'Posto de Informações Turísticas']
+    description: 'A única torre de telecomunicações do Brasil com mirante aberto à visitação pública! Com 109,5 metros de altura nas Mercês, oferece uma visão circular de 360 graus sobre toda Curitiba, os eixos estruturais do BRT e a Serra do Mar no horizonte.',
+    features: ['Mirante fechado em vidro em 360° a 109,5m de altura', 'Mural escultural "Torre da Memória" de Poty Lazzarotto', 'Museu do Telefone no piso térreo', 'Mapas indicativos de todos os bairros de Curitiba', 'Parada oficial do ônibus Linha Turismo']
   },
   {
     id: 'restaurante-terrazza40',
-    title: 'Terrazza 40 • Restaurante Panorâmico 360°',
-    subtitle: 'Bigorrilho • Gastronomia de Altitude',
+    title: 'Terrazza 40 • Restaurante Panorâmico 360° Curitiba',
+    subtitle: 'Bigorrilho / Champagnat • Gastronomia nas Alturas',
     location: 'Bigorrilho • Curitiba',
     category: 'gastronomia',
     categories: ['gastronomia', 'restaurantes', 'cupons', 'shows', 'bares'],
@@ -731,17 +881,18 @@ export const ATTRACTIONS = [
     paymentTerms: 'Reserva de Mesa + Jantar Gourmet',
     lat: -25.4330,
     lng: -49.2920,
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/torre-panoramica.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80'
+      '/images/torre-panoramica.jpg',
+      '/images/parque-barigui.jpg'
     ],
-    description: 'O primeiro restaurante panorâmico de Curitiba! Localizado na cobertura de um edifício no Bigorrilho, oferece alta gastronomia franco-italiana com paredes inteiramente em vidro que proporcionam uma vista deslumbrante em 360 graus da cidade iluminada à noite.',
-    features: ['Vista skyline 360° da cidade', 'Menu de alta gastronomia internacional', 'Carta de vinhos selecionados com +400 rótulos', 'Ambiente romântico e exclusivo', 'Confeitaria panorâmica 360']
+    description: 'O observatório gastronômico mais famoso de Curitiba! Localizado nos 37º e 38º andares do Edifício Champagnat Towers no Bigorrilho, a 130 metros de altura, com vista panorâmica para o Parque Barigui e a Torre Panorâmica.',
+    features: ['Vista skyline 360° a 130 metros de altura no Bigorrilho', 'Culinária ítalo-uruguaia e confeitaria 360°', 'Carta de vinhos premiada com mais de 300 rótulos', 'Pôr do sol com vista direta para o Parque Barigui', 'Bar 38º andar com drinks autorais']
   },
   {
     id: 'mercado-municipal',
     title: 'Mercado Municipal de Curitiba & Setor de Orgânicos',
-    subtitle: 'Centro / Jardim Botânico • Polo Gastronômico',
+    subtitle: 'Centro / Jardim Botânico • Polo Gastronômico desde 1958',
     location: 'Centro • Curitiba',
     category: 'gastronomia',
     categories: ['gastronomia', 'restaurantes', 'conhecendo', 'promocionais'],
@@ -756,17 +907,17 @@ export const ATTRACTIONS = [
     paymentTerms: 'Entrada Gratuita',
     lat: -25.4365,
     lng: -49.2580,
-    image: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/mercado-municipal.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1200&q=80'
+      '/images/mercado-municipal.jpg'
     ],
-    description: 'O principal centro de compras de especiarias e gastronomia de Curitiba desde 1958! Abriga o primeiro Setor de Orgânicos do Brasil. Famoso pelas barracas de queijo, vinhos, castanhas e a concorrida praça de alimentação com o famoso Pastel de Bacalhau e restaurantes asiáticos e contemporâneos.',
-    features: ['Primeiro mercado de alimentos orgânicos do país', 'Famoso Pastel de Bacalhau gigante', 'Feira de produtos orientais e mediterrâneos', 'Restaurantes variados na praça superior', 'Estacionamento coberto no local']
+    description: 'O templo da gastronomia e das especiarias de Curitiba desde 1958! Abriga o primeiro Mercado de Orgânicos do Brasil. Famoso pelas bancas de pinhão, queijos coloniais, vinhos, carnes exóticas, cafés especiais e o tradicional Pastel de Bacalhau.',
+    features: ['Primeiro Setor de Orgânicos certificado do Brasil', 'Famoso Pastel de Bacalhau e culinária japonesa tradicional', 'Bancas de pinhão, erva-mate, queijos e embutidos paranaenses', 'Restaurantes premiados e adegas no mezanino', 'Ao lado da Rodoferroviária de Curitiba']
   },
   {
     id: 'feira-largo-ordem',
-    title: 'Feira de Artesanato do Largo da Ordem',
-    subtitle: 'Centro Histórico • Domingo das 9h às 14h',
+    title: 'Centro Histórico & Feira de Artesanato do Largo da Ordem',
+    subtitle: 'Setor Histórico • Curitiba (Domingos das 9h às 14h)',
     location: 'Centro Histórico • Curitiba',
     category: 'cultura',
     categories: ['cultura', 'eventos', 'restaurantes', 'promocionais'],
@@ -781,17 +932,19 @@ export const ATTRACTIONS = [
     paymentTerms: 'Entrada Gratuita',
     lat: -25.4280,
     lng: -49.2718,
-    image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/largo-da-ordem.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1200&q=80'
+      '/images/largo-da-ordem.jpg',
+      '/centro_historico.jpg',
+      '/images/bar-do-alemao.jpg'
     ],
-    description: 'A maior feira a céu aberto do Sul do Brasil! Todos os domingos, mais de 1.000 feirantes e artesãos ocupam os paralelepípedos do Centro Histórico oferecendo antiguidades, artesanato em madeira, pinturas, roupas e barracas gastronômicas com pastel com caldo de cana, pierogi polonês e empanadas.',
-    features: ['Mais de 1.000 barracas de arte e artesanato', 'Pierogi polonês e pastel tradicional', 'Apresentações musicais e artistas de rua', 'Carros antigos e antiguidades no pátio', 'Próximo à Igreja da Ordem Terceira']
+    description: 'O berço histórico de Curitiba e a maior feira de arte e artesanato ao ar livre do Sul do Brasil! Mais de 1.300 barracas percorrem o calçadão de paralelepípedos entre a Igreja da Ordem (1737), Casa Romário Martins, Fonte da Memória (Cavalo Babão), Memorial de Curitiba e Ruínas de São Francisco.',
+    features: ['Mais de 1.300 barracas de arte, antiguidades e artesanato', 'Igreja da Ordem (1737), Casa Romário Martins e Relógio das Flores', 'Barracas étnicas com pierogi polonês, acarajé e quentão', 'Exposição de carros antigos e rodas de choro na praça', 'Coração boêmio de Curitiba com bares e cafés históricos']
   },
   {
     id: 'linha-turismo',
     title: 'Linha Turismo Curitiba (Ônibus Double-Decker 360°)',
-    subtitle: 'Circuito Completo com 26 Atrações',
+    subtitle: 'Circuito Oficial de 45 km por 26 Pontos Turísticos',
     location: 'Praça Tiradentes • Curitiba',
     category: 'tours',
     categories: ['tours', 'pacotes', 'conhecendo', 'promocionais'],
@@ -799,18 +952,20 @@ export const ATTRACTIONS = [
     discount: '10% OFF',
     rating: 4.9,
     reviewsCount: 3800,
-    duration: 'Dia Todo (Reembarques Ilimitados)',
+    duration: 'Dia Todo (Reembarques Livres)',
     price: 50.00,
     originalPrice: 55.00,
     isFree: false,
-    paymentTerms: 'Cartão de Embarque 5 Reembarques',
+    paymentTerms: 'Cartão Turismo com Reembarques',
     lat: -25.4290,
     lng: -49.2710,
-    image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/linha-turismo.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1200&q=80'
+      '/images/linha-turismo.jpg',
+      '/images/jardim-botanico.jpg',
+      '/images/opera-de-arame.jpg'
     ],
-    description: 'A melhor forma de conhecer os principais pontos turísticos de Curitiba! O famoso ônibus panorâmico de dois andares (Double-Decker) passa por 26 atrações com áudio informativo multilíngue. O bilhete permite 5 reembarques em qualquer parada ao longo do dia.',
-    features: ['Ônibus panorâmico de 2 andares', 'Percorre 26 pontos turísticos de Curitiba', '5 reembarques livres incluídos', 'Áudio-guia em Português, Inglês e Espanhol', 'Saídas a cada 30 minutos']
+    description: 'A melhor forma de conhecer Curitiba! Os icônicos ônibus panorâmicos de dois andares (Double-Decker) da Linha Turismo percorrem 45 km passando pelos 26 principais parques, museus e monumentos da cidade com sistema de áudio multilíngue.',
+    features: ['Ônibus panorâmico Double-Decker aberto no piso superior', 'Conecta os 26 principais pontos turísticos de Curitiba', 'Embarque inicial na Praça Tiradentes ou em qualquer parada', 'Áudio-guia em Português, Inglês e Espanhol', 'Frequência a cada 30 minutos de terça a domingo']
   }
 ];

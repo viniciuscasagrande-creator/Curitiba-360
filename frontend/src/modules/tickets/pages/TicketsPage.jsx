@@ -13,7 +13,7 @@ const mockTickets = [
     type: "VIP / Setor A",
     price: 120.0,
     status: "active",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80"
+    image: "/images/teatro-guaira.jpg"
   },
   {
     id: "TKT-2026-002",
@@ -25,7 +25,7 @@ const mockTickets = [
     type: "Ingresso Geral",
     price: 0.0,
     status: "active",
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80"
+    image: "/images/jardim-botanico.jpg"
   }
 ];
 

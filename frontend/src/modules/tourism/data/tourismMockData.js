@@ -18,10 +18,10 @@ export const INITIAL_ATTRACTIONS = [
     description: 'O Jardim Botânico de Curitiba é um dos pontos turísticos mais visitados do Brasil. Conta com uma imponente estufa de ferro e vidro, jardins no estilo francês, o Jardim das Sensações e ampla área verde preservada.',
     categoryId: 'cat-1',
     categoryName: 'Parques',
-    coverImage: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&auto=format&fit=crop',
+    coverImage: '/images/jardim-botanico.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&auto=format&fit=crop'
+      '/images/jardim-botanico.jpg',
+      '/jardim_botanico.jpg'
     ],
     address: {
       street: 'Rua Engenheiro Ostoja Roguski',
@@ -54,9 +54,10 @@ export const INITIAL_ATTRACTIONS = [
     description: 'Projetado pelo arquiteto Oscar Niemeyer, o MON é um dos maiores complexos culturais da América Latina, abrigando mais de 9 mil obras de arte visual, arquitetura e design.',
     categoryId: 'cat-2',
     categoryName: 'Museus',
-    coverImage: 'https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800&auto=format&fit=crop',
+    coverImage: '/images/mon-olho.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800&auto=format&fit=crop'
+      '/images/mon-olho.jpg',
+      '/museu_niemeyer.jpg'
     ],
     address: {
       street: 'Rua Marechal Hermes',
@@ -89,9 +90,10 @@ export const INITIAL_ATTRACTIONS = [
     description: 'Estrutura tubular transparente construída sobre o lago de uma antiga pedreira desativada. Sede de grandes espetáculos, shows e festivais culturais da cidade.',
     categoryId: 'cat-7',
     categoryName: 'Cultura',
-    coverImage: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop',
+    coverImage: '/images/opera-de-arame.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop'
+      '/images/opera-de-arame.jpg',
+      '/images/rua-da-musica.jpg'
     ],
     address: {
       street: 'Rua João Gava',
@@ -124,8 +126,8 @@ export const INITIAL_ATTRACTIONS = [
     description: 'O Parque Tanguá possui 235 mil m² e conta com dois lagos, cascata artificial, mirante elevado, restaurante e uma das vistas de pôr do sol mais incríveis de Curitiba.',
     categoryId: 'cat-1',
     categoryName: 'Parques',
-    coverImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop',
-    gallery: [],
+    coverImage: '/images/parque-tangua.jpg',
+    gallery: ['/images/parque-tangua.jpg'],
     address: {
       street: 'Rua Oswaldo Maciel',
       number: 's/n',
@@ -157,8 +159,8 @@ export const INITIAL_ATTRACTIONS = [
     description: 'Todas os domingos, o Setor Histórico de Curitiba ganha vida com centenas de artesãos, gastronomia típica paranaense, apresentações culturais e antiguidades.',
     categoryId: 'cat-6',
     categoryName: 'Feiras',
-    coverImage: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop',
-    gallery: [],
+    coverImage: '/images/largo-da-ordem.jpg',
+    gallery: ['/images/largo-da-ordem.jpg'],
     address: {
       street: 'Largo da Ordem',
       number: 's/n',

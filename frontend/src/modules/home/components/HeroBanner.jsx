@@ -33,7 +33,7 @@ export function HeroBanner() {
   return (
     <section className="relative isolate min-h-[440px] overflow-hidden rounded-[2rem] bg-slate-900 shadow-xl sm:min-h-[500px]">
       <img
-        src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1600&auto=format&fit=crop"
+        src="/images/jardim-botanico.jpg"
         alt="Jardim Botânico de Curitiba"
         className="absolute inset-0 h-full w-full object-cover"
       />

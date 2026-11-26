@@ -20,6 +20,7 @@ import BrandAboutModal from './components/BrandAboutModal';
 import AIAssistantWidget from './components/AIAssistantWidget';
 import Footer from './components/Footer';
 import CuritibaLivePulseBanner from './components/CuritibaLivePulseBanner';
+import CuritibaFreeImageBankSection from './components/CuritibaFreeImageBankSection';
 import TouristPortal360Modal from './components/TouristPortal360Modal';
 import CuritibaInteractiveMap360 from '../../components/map/CuritibaInteractiveMap360';
 import { ATTRACTIONS, UNIFIED_NAV_ITEMS } from './data/attractions';
@@ -323,6 +324,10 @@ function SitePublicoContent() {
 
             {activeTopicTab === 'all' && !searchQuery && (
               <Top20LandmarksGrid onClickDetail={setActiveAttraction} />
+            )}
+
+            {activeTopicTab === 'all' && !searchQuery && (
+              <CuritibaFreeImageBankSection />
             )}
 
             {activeTopicTab === 'all' && !searchQuery && (

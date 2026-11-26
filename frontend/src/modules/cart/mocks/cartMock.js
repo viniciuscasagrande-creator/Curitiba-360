@@ -11,8 +11,8 @@ export const cartMock = {
       type: "event",
 
       title: "Festival Gastronômico de Curitiba",
-      image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
-      location: "Centro de Eventos Positivo",
+      image: "/images/santa-felicidade.jpg",
+      location: "Centro de Eventos Positivo (Parque Barigui)",
 
       date: "2026-08-18",
       time: "18:00",

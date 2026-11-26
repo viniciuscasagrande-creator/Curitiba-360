@@ -262,9 +262,14 @@ export function Wf002Dashboard({ store, updateStore }) {
                 border: '1px solid #d0d7e2'
               }}>
                 <img
-                  src={OFFICIAL_LOGO}
+                  src={atr.imagem || '/images/jardim-botanico.jpg'}
                   alt={atr.nome}
-                  style={{ width: '92px', height: '92px', objectFit: 'contain' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                <img
+                  src={OFFICIAL_LOGO}
+                  alt="Logo Curitiba 360°"
+                  style={{ position: 'absolute', bottom: 8, left: 8, width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#ffffff', padding: '2px', border: '1.5px solid #475467', objectFit: 'contain' }}
                 />
                 <span style={{ position: 'absolute', top: 8, right: 8, fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: 99, backgroundColor: atr.status === 'Ativo' ? '#4e5a6b' : '#cbd5e1', color: atr.status === 'Ativo' ? '#fff' : '#334155' }}>
                   {atr.status}

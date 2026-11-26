@@ -5,7 +5,8 @@ const TOPIC_DETAILS = {
   parques: {
     title: "Parques, Bosques & Recanto das Capivaras",
     subtitle: "Curitiba é a Capital Ecológica do Brasil com mais de 50 m² de área verde por habitante!",
-    bgGradient: "linear-gradient(135deg, #064e3b 0%, #047857 100%)",
+    bgGradient: "linear-gradient(135deg, rgba(6,78,59,0.88) 0%, rgba(4,120,87,0.82) 100%)",
+    bgImage: "/images/jardim-botanico.jpg",
     icon: Trees,
     stats: [
       { label: "Área Verde Total", val: "+30 Parques & Bosques" },
@@ -16,7 +17,8 @@ const TOPIC_DETAILS = {
   cultura: {
     title: "Cultura, Museus & Patrimônio Histórico",
     subtitle: "Arquitetura arrojada de Oscar Niemeyer, Ópera de Arame e memórias dos imigrantes étnicos.",
-    bgGradient: "linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%)",
+    bgGradient: "linear-gradient(135deg, rgba(30,27,75,0.88) 0%, rgba(67,56,202,0.82) 100%)",
+    bgImage: "/images/mon-olho.jpg",
     icon: Compass,
     stats: [
       { label: "Museus & Teatros", val: "+20 Espaços Culturais" },
@@ -26,19 +28,21 @@ const TOPIC_DETAILS = {
   },
   shows: {
     title: "Shows & Concertos ao Vivo",
-    subtitle: "Do palco da Pedreira Paulo Leminski ao Vale da Música e Hard Rock Cafe.",
-    bgGradient: "linear-gradient(135deg, #831843 0%, #be185d 100%)",
+    subtitle: "Do palco da Pedreira Paulo Leminski ao Vale da Música e Rua da Música.",
+    bgGradient: "linear-gradient(135deg, rgba(131,24,67,0.88) 0%, rgba(190,24,93,0.82) 100%)",
+    bgImage: "/images/pedreira-paulo-leminski.jpg",
     icon: Music,
     stats: [
       { label: "Maior Palco a Céu Aberto", val: "Pedreira Paulo Leminski" },
       { label: "Palco Flutuante", val: "Vale da Música na Ópera" },
-      { label: "Shows Diários", val: "Hard Rock Cafe Batel" }
+      { label: "Complexo Cultural", val: "Rua da Música" }
     ]
   },
   teatros: {
     title: "Teatros & Espetáculos das Artes Cênicas",
     subtitle: "Guaíra, Paiol, Ópera de Arame e salas históricas da capital paranaense.",
-    bgGradient: "linear-gradient(135deg, #312e81 0%, #4338ca 100%)",
+    bgGradient: "linear-gradient(135deg, rgba(49,46,129,0.88) 0%, rgba(67,56,202,0.82) 100%)",
+    bgImage: "/images/teatro-guaira.jpg",
     icon: Drama,
     stats: [
       { label: "Maior Auditório", val: "Guairão (2.173 lugares)" },
@@ -49,7 +53,8 @@ const TOPIC_DETAILS = {
   eventos: {
     title: "Eventos, Festivais & Grandes Espetáculos",
     subtitle: "Festival de Teatro de Curitiba, Natal no Palácio Avenida e feiras sazonais.",
-    bgGradient: "linear-gradient(135deg, #065f46 0%, #059669 100%)",
+    bgGradient: "linear-gradient(135deg, rgba(6,95,70,0.88) 0%, rgba(5,150,105,0.82) 100%)",
+    bgImage: "/images/praca-santos-andrade.jpg",
     icon: Calendar,
     stats: [
       { label: "Maior Festival", val: "Festival de Teatro de CWB" },
@@ -59,41 +64,45 @@ const TOPIC_DETAILS = {
   },
   bares: {
     title: "Bares, Choperias & Pubs de Curitiba e RMC",
-    subtitle: "Do lendário Chopp Submarino do Bar do Alemão ao torresmo de rolo do Porks e os pubs do Água Verde.",
-    bgGradient: "linear-gradient(135deg, #78350f 0%, #d97706 100%)",
+    subtitle: "Do lendário Chopp Submarino do Bar do Alemão ao torresmo de rolo do Porks e os pubs do Batel.",
+    bgGradient: "linear-gradient(135deg, rgba(120,53,15,0.88) 0%, rgba(217,119,6,0.82) 100%)",
+    bgImage: "/images/bar-do-alemao.jpg",
     icon: Beer,
     stats: [
       { label: "Botequim Histórico", val: "Bar do Alemão de 1979" },
       { label: "Patrimônio Gastronômico", val: "Carne de Onça na Mesa" },
-      { label: "Torneiras de Chopp", val: "+30 no We Are Bastards" }
+      { label: "Centro Boêmio", val: "Largo da Ordem & Batel" }
     ]
   },
   hoteis: {
     title: "Hotéis, Pousadas & Hospedagens em Curitiba e RMC",
-    subtitle: "Hospede-se nos hotéis 5 estrelas do Batel, pousadas pé na areia na Ilha do Mel ou refúgios no Caminho do Vinho.",
-    bgGradient: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
+    subtitle: "Hospede-se nos hotéis 5 estrelas do Batel, Centro Histórico ou refúgios no Caminho do Vinho.",
+    bgGradient: "linear-gradient(135deg, rgba(30,58,138,0.88) 0%, rgba(37,99,235,0.82) 100%)",
+    bgImage: "/images/praca-do-japao.jpg",
     icon: Hotel,
     stats: [
       { label: "Localização Nobre", val: "Praça da Espanha & Batel" },
-      { label: "Praia & Natureza", val: "Pousadas Ilha do Mel" },
+      { label: "Centro Histórico", val: "Praça Tiradentes & Paço" },
       { label: "Polo Enoturístico", val: "Chalés no Caminho do Vinho" }
     ]
   },
   tours: {
     title: "Tours, Serra Verde Express & Linha Turismo",
     subtitle: "As melhores maneiras de explorar a capital e a espetacular travessia da Serra do Mar Paranaense.",
-    bgGradient: "linear-gradient(135deg, #0f172a 0%, #0284c7 100%)",
+    bgGradient: "linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(2,132,199,0.82) 100%)",
+    bgImage: "/images/trem-serra-verde.jpg",
     icon: Ticket,
     stats: [
-      { label: "Pontes & Viadutos", val: "Ferrovia Centenária" },
+      { label: "Pontes & Viadutos", val: "Ferrovia Centenária 1885" },
       { label: "Circuito Urbano", val: "26 Paradas Linha Turismo" },
-      { label: "Reembarques Libres", val: "5 Embarques no Bilhete" }
+      { label: "Reembarques Livres", val: "Ônibus Double-Decker" }
     ]
   },
   gastronomia: {
-    title: "Polo Italiano, Sabores Típicos & Cerveja Artesanal",
-    subtitle: "Do rodízio no maior restaurante das Américas ao tradicional Barreado na panela de barro.",
-    bgGradient: "linear-gradient(135deg, #7c2d12 0%, #c2410c 100%)",
+    title: "Polo Italiano, Sabores Típicos & Mercado Municipal",
+    subtitle: "Do rodízio no maior restaurante das Américas ao tradicional Barreado e Carne de Onça.",
+    bgGradient: "linear-gradient(135deg, rgba(124,45,18,0.88) 0%, rgba(194,65,12,0.82) 100%)",
+    bgImage: "/images/santa-felicidade.jpg",
     icon: Utensils,
     stats: [
       { label: "Polo Gastronômico", val: "Santa Felicidade" },
@@ -111,11 +120,13 @@ export default function TopicBanner({ topicId }) {
 
   return (
     <div style={{
-      background: details.bgGradient,
+      backgroundImage: `${details.bgGradient}, url("${details.bgImage}")`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
       color: '#ffffff',
-      padding: '36px 20px',
+      padding: '44px 20px',
       borderBottom: '1px solid rgba(255,255,255,0.1)',
-      boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.1)'
+      boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.15)'
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '24px' }}>
         

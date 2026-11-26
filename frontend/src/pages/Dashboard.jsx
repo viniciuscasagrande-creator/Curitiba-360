@@ -28,12 +28,12 @@ export default function Dashboard() {
   const totalGmv = validOrders.reduce((acc, o) => acc + Number(o.valorTotal || 0), 0);
   const totalComissoesB2b = validOrders.reduce((acc, o) => acc + Number(o.comissaoRs || 0), 0);
 
-  // Dados reais dos parques e atrações de Curitiba (WF-002)
+  // Dados reais dos parques e atrações de Curitiba (WF-002) com fotos HD de Curitiba
   const atracoes = [
     {
       nome: 'Jardim Botânico de Curitiba',
       local: 'Jardim Botânico, Curitiba',
-      imagem: '/jardim_botanico.jpg',
+      imagem: '/images/jardim-botanico.jpg',
       vendidos: 120,
       cortesias: 15,
       total: 135,
@@ -42,9 +42,9 @@ export default function Dashboard() {
       status: 'Ativos'
     },
     {
-      nome: 'Ópera de Arame',
+      nome: 'Ópera de Arame & Vale da Música',
       local: 'Abranches, Curitiba',
-      imagem: '/opera_de_arame.jpg',
+      imagem: '/images/opera-de-arame.jpg',
       vendidos: 85,
       cortesias: 10,
       total: 95,
@@ -55,7 +55,7 @@ export default function Dashboard() {
     {
       nome: 'Museu Oscar Niemeyer (MON)',
       local: 'Centro Cívico, Curitiba',
-      imagem: '/museu_niemeyer.jpg',
+      imagem: '/images/mon-olho.jpg',
       vendidos: 140,
       cortesias: 25,
       total: 165,
@@ -64,9 +64,9 @@ export default function Dashboard() {
       status: 'Ativos'
     },
     {
-      nome: 'Centro Histórico & Largo',
+      nome: 'Centro Histórico & Largo da Ordem',
       local: 'São Francisco, Curitiba',
-      imagem: '/centro_historico.jpg',
+      imagem: '/images/largo-da-ordem.jpg',
       vendidos: 180,
       cortesias: 30,
       total: 210,
@@ -75,9 +75,9 @@ export default function Dashboard() {
       status: 'Ativos'
     },
     {
-      nome: 'Parque Barigui',
+      nome: 'Parque Barigui & Capivaras',
       local: 'Bigorrilho, Curitiba',
-      imagem: '/parque_barigui.jpg',
+      imagem: '/images/parque-barigui.jpg',
       vendidos: 200,
       cortesias: 0,
       total: 200,
@@ -86,14 +86,47 @@ export default function Dashboard() {
       status: 'Ativos'
     },
     {
-      nome: 'Parque Jaime Lerner',
+      nome: 'Parque Jaime Lerner (Rua da Música)',
       local: 'Pilarzinho, Curitiba',
-      imagem: '/parque_jaime_lerner.jpg',
+      imagem: '/images/rua-da-musica.jpg',
       vendidos: 45,
       cortesias: 20,
       total: 65,
       receita: 'R$ 325,00',
       graficoValor: '$1.488',
+      status: 'Ativos'
+    },
+    {
+      nome: 'Parque Tanguá & Mirante do Pôr do Sol',
+      local: 'Taboão / Pilarzinho, Curitiba',
+      imagem: '/images/parque-tangua.jpg',
+      vendidos: 160,
+      cortesias: 18,
+      total: 178,
+      receita: 'R$ 0,00 (Gratuito)',
+      graficoValor: '$2.950',
+      status: 'Ativos'
+    },
+    {
+      nome: 'Trem Serra Verde Express (Morretes)',
+      local: 'Rodoferroviária, Curitiba',
+      imagem: '/images/trem-serra-verde.jpg',
+      vendidos: 310,
+      cortesias: 12,
+      total: 322,
+      receita: 'R$ 52.390,00',
+      graficoValor: '$5.400',
+      status: 'Ativos'
+    },
+    {
+      nome: 'Torre Panorâmica de Curitiba (109m)',
+      local: 'Mercês, Curitiba',
+      imagem: '/images/torre-panoramica.jpg',
+      vendidos: 145,
+      cortesias: 15,
+      total: 160,
+      receita: 'R$ 1.450,00',
+      graficoValor: '$1.900',
       status: 'Inativos'
     }
   ];

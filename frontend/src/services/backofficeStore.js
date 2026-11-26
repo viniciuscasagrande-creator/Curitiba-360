@@ -62,12 +62,12 @@ const DEFAULT_DATA = {
     { id: 1234, apelido: 'Padrão 10%', liberadoSaque: 'Sim', percentualSaque: '10%', valorLiberado: '10.000,00', tempoMinimoDias: 15, descontarPix: 'Sim', descontoPix: '0,15', descontarTed: 'Sim', descontoTed: '0,15', status: 'Ativo' }
   ],
   attractions: [
-    { id: 1, code: 2798, nome: 'Parque Jaime Lerner', local: 'Pilarzinho - Curitiba', parceiro: 'Parque Jaime Lerner', status: 'Ativo', dataCriacao: '02/07/2026 16:44:22', vendidos: 11, cortesias: 9, total: 20, receita: 'R$ 200,00', imagem: '/parque_jaime_lerner.jpg' },
-    { id: 2, code: 2799, nome: 'Ópera de Arame', local: 'Abranches - Curitiba', parceiro: 'Parque Jaime Lerner', status: 'Ativo', dataCriacao: '02/07/2026 16:44:22', vendidos: 85, cortesias: 10, total: 95, receita: 'R$ 950,00', imagem: '/opera_de_arame.jpg' },
-    { id: 3, code: 2800, nome: 'Jardim Botânico', local: 'Jardim Botânico - Curitiba', parceiro: 'Serra Verde Express', status: 'Ativo', dataCriacao: '05/07/2026 16:44:22', vendidos: 120, cortesias: 15, total: 135, receita: 'R$ 1.200,00', imagem: '/jardim_botanico.jpg' },
-    { id: 4, code: 2801, nome: 'Museu Oscar Niemeyer', local: 'Centro Cívico - Curitiba', parceiro: 'Instituto Jaime Lerner', status: 'Ativo', dataCriacao: '10/07/2026 16:44:22', vendidos: 140, cortesias: 25, total: 165, receita: 'R$ 2.475,00', imagem: '/museu_niemeyer.jpg' },
-    { id: 5, code: 2802, nome: 'Parque Barigui', local: 'Bigorrilho - Curitiba', parceiro: 'Parque Barigui S.A.', status: 'Ativo', dataCriacao: '12/07/2026 16:44:22', vendidos: 110, cortesias: 12, total: 122, receita: 'R$ 1.100,00', imagem: '/parque_barigui.jpg' },
-    { id: 6, code: 2803, nome: 'Centro Histórico & Largo', local: 'São Francisco - Curitiba', parceiro: 'Curitiba Sightseeing', status: 'Inativo', dataCriacao: '15/07/2026 16:44:22', vendidos: 45, cortesias: 9, total: 54, receita: 'R$ 450,00', imagem: '/centro_historico.jpg' }
+    { id: 1, code: 2798, nome: 'Parque Jaime Lerner (Rua da Música)', local: 'Pilarzinho - Curitiba', parceiro: 'Parque Jaime Lerner', status: 'Ativo', dataCriacao: '02/07/2026 16:44:22', vendidos: 11, cortesias: 9, total: 20, receita: 'R$ 200,00', imagem: '/images/rua-da-musica.jpg' },
+    { id: 2, code: 2799, nome: 'Ópera de Arame', local: 'Abranches - Curitiba', parceiro: 'Parque Jaime Lerner', status: 'Ativo', dataCriacao: '02/07/2026 16:44:22', vendidos: 85, cortesias: 10, total: 95, receita: 'R$ 950,00', imagem: '/images/opera-de-arame.jpg' },
+    { id: 3, code: 2800, nome: 'Jardim Botânico', local: 'Jardim Botânico - Curitiba', parceiro: 'Serra Verde Express', status: 'Ativo', dataCriacao: '05/07/2026 16:44:22', vendidos: 120, cortesias: 15, total: 135, receita: 'R$ 1.200,00', imagem: '/images/jardim-botanico.jpg' },
+    { id: 4, code: 2801, nome: 'Museu Oscar Niemeyer', local: 'Centro Cívico - Curitiba', parceiro: 'Instituto Jaime Lerner', status: 'Ativo', dataCriacao: '10/07/2026 16:44:22', vendidos: 140, cortesias: 25, total: 165, receita: 'R$ 2.475,00', imagem: '/images/mon-olho.jpg' },
+    { id: 5, code: 2802, nome: 'Parque Barigui', local: 'Bigorrilho - Curitiba', parceiro: 'Parque Barigui S.A.', status: 'Ativo', dataCriacao: '12/07/2026 16:44:22', vendidos: 110, cortesias: 12, total: 122, receita: 'R$ 1.100,00', imagem: '/images/parque-barigui.jpg' },
+    { id: 6, code: 2803, nome: 'Centro Histórico & Largo', local: 'São Francisco - Curitiba', parceiro: 'Curitiba Sightseeing', status: 'Inativo', dataCriacao: '15/07/2026 16:44:22', vendidos: 45, cortesias: 9, total: 54, receita: 'R$ 450,00', imagem: '/images/largo-da-ordem.jpg' }
   ],
   categories: [
     { id: 2798, nome: 'Morador Curitiba Adulto', status: 'Inativo' },

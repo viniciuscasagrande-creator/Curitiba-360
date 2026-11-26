@@ -22,7 +22,7 @@ const mockAttractionsList = [
     capacity: '8.000 pessoas / dia',
     ticketPrice: 'Gratuito / Exposições R$ 15',
     status: 'active',
-    image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&auto=format&fit=crop',
+    image: '/images/jardim-botanico.jpg',
     ticketsSold: 14250,
     courtesies: 340,
     revenue: 427500
@@ -34,7 +34,7 @@ const mockAttractionsList = [
     capacity: '2.400 lugares',
     ticketPrice: 'R$ 40,00',
     status: 'active',
-    image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop',
+    image: '/images/opera-de-arame.jpg',
     ticketsSold: 9800,
     courtesies: 120,
     revenue: 392000
@@ -46,7 +46,7 @@ const mockAttractionsList = [
     capacity: '4.500 pessoas / dia',
     ticketPrice: 'R$ 30,00',
     status: 'active',
-    image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=600&auto=format&fit=crop',
+    image: '/images/mon-olho.jpg',
     ticketsSold: 11400,
     courtesies: 280,
     revenue: 228000
@@ -58,7 +58,7 @@ const mockAttractionsList = [
     capacity: '10.000 pessoas / dia',
     ticketPrice: 'Entrada Franca',
     status: 'active',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop',
+    image: '/images/parque-tangua.jpg',
     ticketsSold: 18900,
     courtesies: 500,
     revenue: 189000

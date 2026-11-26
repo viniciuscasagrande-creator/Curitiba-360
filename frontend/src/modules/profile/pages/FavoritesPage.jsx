@@ -8,14 +8,14 @@ const mockFavorites = [
     title: "Jardim Botânico de Curitiba",
     type: "atrativo",
     address: "Rua Engenheiro Ostoja Roguski, s/n - Jardim Botânico",
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80"
+    image: "/images/jardim-botanico.jpg"
   },
   {
     id: "evt-1",
     title: "Festival de Teatro de Curitiba",
     type: "evento",
     date: "2026-08-15 às 20:00",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80"
+    image: "/images/teatro-guaira.jpg"
   }
 ];
 
