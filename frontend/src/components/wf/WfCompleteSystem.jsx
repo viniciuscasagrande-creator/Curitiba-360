@@ -114,7 +114,7 @@ export default function WfCompleteSystem({ slug, hideTopBar = false }) {
       case 'wf-024-detalhes-da-atracao-gestao-de-cupons-adicionar-cupom-agencia':
         return <Wf021Coupons store={storeState} updateStore={updateStore} modalMode="cupom-agencia" />;
       case 'wf-025-detalhes-da-atracao-graficos-analytics':
-        return <Wf025Analytics />;
+        return <Wf025Analytics store={storeState} updateStore={updateStore} />;
       case 'wf-026-detalhes-da-atracao-usuarios':
         return <Wf005Users store={storeState} updateStore={updateStore} isAttractionContext />;
       case 'wf-027-detalhes-da-atracao-gestao-de-usuarios-adicionar-usuario':

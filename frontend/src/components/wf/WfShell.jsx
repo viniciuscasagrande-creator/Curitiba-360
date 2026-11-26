@@ -1,7 +1,7 @@
 // frontend/src/components/wf/WfShell.jsx
-// Shell oficial clonado dos 71 wireframes (WF-001 a WF-064) com logos oficiais do Curitiba 360° e todos os menus e submenus 100% interativos
+// Shell oficial clonado dos 71 wireframes (WF-001 a WF-064) com <Link> nativos (à prova de Google Translate) e logos oficiais do Curitiba 360°
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   LayoutGrid, Users, FileText, ClipboardList, Box, BarChart3,
   Settings, LogOut, MapPin, Tag, Search, Ticket, PieChart,
@@ -21,20 +21,24 @@ export function WfTopReferenceBar({ currentScreen, showOverlay, setShowOverlay }
   const next = screens[idx + 1];
 
   return (
-    <div style={{
-      backgroundColor: '#1e293b',
-      color: '#f8fafc',
-      padding: '8px 18px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '12px',
-      fontSize: '12px',
-      borderBottom: '1px solid #334155',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100
-    }}>
+    <div
+      className="notranslate"
+      translate="no"
+      style={{
+        backgroundColor: '#1e293b',
+        color: '#f8fafc',
+        padding: '8px 18px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '12px',
+        fontSize: '12px',
+        borderBottom: '1px solid #334155',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
         <img src={OFFICIAL_LOGO} alt="Curitiba 360°" style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: '#fff', padding: 2 }} />
         <span style={{ backgroundColor: '#3b82f6', color: '#fff', fontWeight: 700, padding: '2px 8px', borderRadius: 4 }}>
@@ -66,22 +70,28 @@ export function WfTopReferenceBar({ currentScreen, showOverlay, setShowOverlay }
           ))}
         </select>
 
-        <button
-          type="button"
-          onClick={() => prev && navigate(`/tela/${prev.slug}`)}
-          disabled={!prev}
-          style={{ backgroundColor: '#334155', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: prev ? 'pointer' : 'not-allowed', opacity: prev ? 1 : 0.4 }}
-        >
-          ← Anterior
-        </button>
-        <button
-          type="button"
-          onClick={() => next && navigate(`/tela/${next.slug}`)}
-          disabled={!next}
-          style={{ backgroundColor: '#334155', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: next ? 'pointer' : 'not-allowed', opacity: next ? 1 : 0.4 }}
-        >
-          Próxima →
-        </button>
+        {prev ? (
+          <Link
+            to={`/tela/${prev.slug}`}
+            style={{ backgroundColor: '#334155', color: '#fff', textDecoration: 'none', borderRadius: 6, padding: '4px 10px', fontWeight: 600 }}
+          >
+            ← Anterior
+          </Link>
+        ) : (
+          <span style={{ backgroundColor: '#334155', color: '#fff', borderRadius: 6, padding: '4px 10px', opacity: 0.4 }}>← Anterior</span>
+        )}
+
+        {next ? (
+          <Link
+            to={`/tela/${next.slug}`}
+            style={{ backgroundColor: '#334155', color: '#fff', textDecoration: 'none', borderRadius: 6, padding: '4px 10px', fontWeight: 600 }}
+          >
+            Próxima →
+          </Link>
+        ) : (
+          <span style={{ backgroundColor: '#334155', color: '#fff', borderRadius: 6, padding: '4px 10px', opacity: 0.4 }}>Próxima →</span>
+        )}
+
         <button
           type="button"
           onClick={() => setShowOverlay(!showOverlay)}
@@ -99,22 +109,21 @@ export function WfTopReferenceBar({ currentScreen, showOverlay, setShowOverlay }
           }}
         >
           <Eye size={13} />
-          {showOverlay ? 'Voltar para Tela Viva' : 'Comparar PNG Original'}
+          <span>{showOverlay ? 'Voltar para Tela Viva' : 'Comparar PNG Original'}</span>
         </button>
-        <button
-          type="button"
-          onClick={() => navigate('/site')}
-          style={{ backgroundColor: '#00a896', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontWeight: 700 }}
+
+        <Link
+          to="/site"
+          style={{ backgroundColor: '#00a896', color: '#fff', textDecoration: 'none', borderRadius: 6, padding: '4px 10px', fontWeight: 700 }}
         >
           🌐 Portal Público (/site)
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate('/telas')}
-          style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontWeight: 600 }}
+        </Link>
+        <Link
+          to="/telas"
+          style={{ backgroundColor: '#2563eb', color: '#fff', textDecoration: 'none', borderRadius: 6, padding: '4px 10px', fontWeight: 600 }}
         >
           Galeria (71)
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -127,15 +136,8 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
   const [relOpen, setRelOpen] = useState(true);
   const [negOpen, setNegOpen] = useState(true);
   const [cmsOpen, setCmsOpen] = useState(true);
-  const [atrSubOpen, setAtrSubOpen] = useState(
-    activeMenu === 'atracoes' || activeMenu === 'totais' || activeMenu === 'categorias' ||
-    activeMenu === 'pesquisar' || activeMenu === 'ingressos' || activeMenu === 'cupons' ||
-    activeMenu === 'analytics' || activeMenu.startsWith('fin-') || activeMenu === 'validar'
-  );
-  const [comSubOpen, setComSubOpen] = useState(
-    activeMenu === 'agencias' || activeMenu === 'agentes' || activeMenu === 'parceiros' ||
-    activeMenu === 'operacao' || activeMenu === 'comissionamento'
-  );
+  const [atrSubOpen, setAtrSubOpen] = useState(true);
+  const [comSubOpen, setComSubOpen] = useState(true);
 
   useEffect(() => {
     return backofficeStore.subscribe((next) => setStore(next));
@@ -147,23 +149,20 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
     local: 'Pilarzinho - Curitiba'
   };
 
-  const displayAttractionName = attractionName || selectedAttraction.nome;
   const displayAttractionLoc = attractionLocation || selectedAttraction.local;
-
-  const goSlug = (slug) => navigate(`/tela/${slug}`);
 
   const handleSelectAttraction = (newId) => {
     backofficeStore.setState((prev) => ({ ...prev, selectedAttractionId: Number(newId) }));
   };
 
   const handleSwitchMode = (targetMode) => {
-    if (targetMode === 'admin') goSlug('wf-002-dashboard');
-    else if (targetMode === 'attraction') goSlug('wf-003-detalhes-da-atracao-totais-da-atracao');
-    else if (targetMode === 'partner') goSlug('wf-048-gestao-de-agencias-visao-parceiro-comercial');
-    else if (targetMode === 'agency') goSlug('wf-051-operacao-comercial');
+    if (targetMode === 'admin') navigate('/tela/wf-002-dashboard');
+    else if (targetMode === 'attraction') navigate('/tela/wf-003-detalhes-da-atracao-totais-da-atracao');
+    else if (targetMode === 'partner') navigate('/tela/wf-048-gestao-de-agencias-visao-parceiro-comercial');
+    else if (targetMode === 'agency') navigate('/tela/wf-051-operacao-comercial');
   };
 
-  const itemStyle = (isActive) => ({
+  const linkStyle = (isActive) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -178,34 +177,40 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
     border: 'none',
     width: '100%',
     textAlign: 'left',
+    textDecoration: 'none',
+    boxSizing: 'border-box',
     transition: 'background 0.15s'
   });
 
-  const subItemStyle = (isActive) => ({
-    ...itemStyle(isActive),
+  const subLinkStyle = (isActive) => ({
+    ...linkStyle(isActive),
     padding: '6.5px 10px',
     fontSize: '12px'
   });
 
   return (
-    <aside style={{
-      width: '260px',
-      backgroundColor: '#ffffff',
-      borderRight: '1px solid #e2e8f0',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      minHeight: 'calc(100vh - 45px)',
-      padding: '20px 12px',
-      flexShrink: 0,
-      boxSizing: 'border-box'
-    }}>
+    <aside
+      className="notranslate"
+      translate="no"
+      style={{
+        width: '260px',
+        backgroundColor: '#ffffff',
+        borderRight: '1px solid #e2e8f0',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        minHeight: 'calc(100vh - 45px)',
+        padding: '20px 12px',
+        flexShrink: 0,
+        boxSizing: 'border-box'
+      }}
+    >
       <div>
         {/* TOP LOGO / ATTRACTION BOX */}
         {mode === 'attraction' ? (
           <div style={{ textAlign: 'center', marginBottom: '16px', padding: '0 4px' }}>
-            <div
-              onClick={() => goSlug('wf-003-detalhes-da-atracao-totais-da-atracao')}
+            <Link
+              to="/tela/wf-003-detalhes-da-atracao-totais-da-atracao"
               style={{
                 width: '100%',
                 height: '124px',
@@ -218,7 +223,7 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
                 justifyContent: 'center',
                 overflow: 'hidden',
                 marginBottom: '8px',
-                cursor: 'pointer'
+                textDecoration: 'none'
               }}
             >
               <img
@@ -226,7 +231,7 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
                 alt="Curitiba 360°"
                 style={{ width: '88px', height: '88px', objectFit: 'contain' }}
               />
-            </div>
+            </Link>
             <select
               value={selectedAttraction.id}
               onChange={(e) => handleSelectAttraction(e.target.value)}
@@ -254,8 +259,8 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
           </div>
         ) : (
           <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-            <div
-              onClick={() => goSlug('wf-004-perfil')}
+            <Link
+              to="/tela/wf-004-perfil"
               style={{
                 width: '80px',
                 height: '80px',
@@ -267,9 +272,9 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
                 alignItems: 'center',
                 justifyContent: 'center',
                 overflow: 'hidden',
-                cursor: 'pointer',
                 padding: '5px',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                textDecoration: 'none'
               }}
             >
               <img
@@ -277,7 +282,7 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
                 alt="Logo Curitiba 360°"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
-            </div>
+            </Link>
             <div style={{ fontWeight: 700, fontSize: '14px', color: '#334155' }}>{userName}</div>
             <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px' }}>{userRole}</div>
           </div>
@@ -300,98 +305,98 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
           </select>
         </div>
 
-        {/* MENU DE NAVEGAÇÃO COMPLETO COM TODOS OS SUBMENUS ATIVOS */}
+        {/* MENU DE NAVEGAÇÃO COMPLETO COM <Link> NATIVO */}
         {mode === 'agency' ? (
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <button style={itemStyle(activeMenu === 'operacao')} onClick={() => goSlug('wf-051-operacao-comercial')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> Operação Comercial (WF-051)</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'comissionamento')} onClick={() => goSlug('wf-052-comissionamento-agencia')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><DollarSign size={16} /> Comissionamento e Repasse</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'agentes')} onClick={() => goSlug('wf-050-gestao-de-agentes')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> Meus Agentes (WF-050)</span>
-            </button>
-            <button style={itemStyle(false)} onClick={() => goSlug('wf-064-cadastro-de-agente')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Edit3 size={16} /> + Cadastrar Novo Agente</span>
-            </button>
-            <button style={itemStyle(false)} onClick={() => goSlug('wf-057-tela-inicial-por-perfil')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Briefcase size={16} /> Tela Inicial Agência (WF-057)</span>
-            </button>
-            <button style={itemStyle(false)} onClick={() => goSlug('wf-002-dashboard')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> ← Voltar ao Dashboard Admin</span>
-            </button>
+            <Link to="/tela/wf-051-operacao-comercial" style={linkStyle(activeMenu === 'operacao')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> <span>Operação Comercial</span></span>
+            </Link>
+            <Link to="/tela/wf-052-comissionamento-agencia" style={linkStyle(activeMenu === 'comissionamento')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><DollarSign size={16} /> <span>Comissionamento e Repasse</span></span>
+            </Link>
+            <Link to="/tela/wf-050-gestao-de-agentes" style={linkStyle(activeMenu === 'agentes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> <span>Meus Agentes</span></span>
+            </Link>
+            <Link to="/tela/wf-064-cadastro-de-agente" style={linkStyle(false)}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Edit3 size={16} /> <span>+ Cadastrar Novo Agente</span></span>
+            </Link>
+            <Link to="/tela/wf-057-tela-inicial-por-perfil" style={linkStyle(false)}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Briefcase size={16} /> <span>Tela Inicial Agência</span></span>
+            </Link>
+            <Link to="/tela/wf-002-dashboard" style={linkStyle(false)}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> <span>← Voltar ao Dashboard Admin</span></span>
+            </Link>
           </nav>
         ) : mode === 'partner' ? (
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <button style={itemStyle(activeMenu === 'agencias')} onClick={() => goSlug('wf-048-gestao-de-agencias-visao-parceiro-comercial')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Building2 size={16} /> Gestão de Agências</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'agentes')} onClick={() => goSlug('wf-050-gestao-de-agentes-visao-parceiro-comercial')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> Gestão de Agentes</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'atracoes')} onClick={() => goSlug('wf-012-gestao-de-atracoes')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Box size={16} /> Gestão de Atrações</span>
-            </button>
-            <button style={itemStyle(false)} onClick={() => goSlug('wf-003-detalhes-da-atracao-totais-da-atracao')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><PieChart size={16} /> Detalhes & Relatórios da Atração</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'relatorios')} onClick={() => goSlug('wf-063-relatorios-financeiros-globais')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><BarChart3 size={16} /> Relatórios Financeiros</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'anticambista')} onClick={() => goSlug('wf-060-painel-anti-cambista')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><RefreshCw size={16} /> Controle de Transferências</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'notificacoes')} onClick={() => goSlug('wf-056-central-de-notificacoes')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Bell size={16} /> Notificações</span>
-            </button>
-            <button style={itemStyle(false)} onClick={() => goSlug('wf-002-dashboard')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> ← Voltar ao Dashboard Admin</span>
-            </button>
+            <Link to="/tela/wf-048-gestao-de-agencias-visao-parceiro-comercial" style={linkStyle(activeMenu === 'agencias')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Building2 size={16} /> <span>Gestão de Agências</span></span>
+            </Link>
+            <Link to="/tela/wf-050-gestao-de-agentes-visao-parceiro-comercial" style={linkStyle(activeMenu === 'agentes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> <span>Gestão de Agentes</span></span>
+            </Link>
+            <Link to="/tela/wf-012-gestao-de-atracoes" style={linkStyle(activeMenu === 'atracoes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Box size={16} /> <span>Gestão de Atrações</span></span>
+            </Link>
+            <Link to="/tela/wf-003-detalhes-da-atracao-totais-da-atracao" style={linkStyle(false)}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><PieChart size={16} /> <span>Detalhes & Relatórios da Atração</span></span>
+            </Link>
+            <Link to="/tela/wf-063-relatorios-financeiros-globais" style={linkStyle(activeMenu === 'relatorios')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><BarChart3 size={16} /> <span>Relatórios Financeiros</span></span>
+            </Link>
+            <Link to="/tela/wf-060-painel-anti-cambista" style={linkStyle(activeMenu === 'anticambista')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><RefreshCw size={16} /> <span>Controle de Transferências</span></span>
+            </Link>
+            <Link to="/tela/wf-056-central-de-notificacoes" style={linkStyle(activeMenu === 'notificacoes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Bell size={16} /> <span>Notificações</span></span>
+            </Link>
+            <Link to="/tela/wf-002-dashboard" style={linkStyle(false)}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> <span>← Voltar ao Dashboard Admin</span></span>
+            </Link>
           </nav>
         ) : mode === 'attraction' ? (
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <button style={itemStyle(activeMenu === 'dashboard')} onClick={() => goSlug('wf-002-dashboard')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> Dashboard</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'totais')} onClick={() => goSlug('wf-003-detalhes-da-atracao-totais-da-atracao')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><BarChart3 size={16} /> Totais da Atração</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'categorias')} onClick={() => goSlug('wf-016-detalhes-da-atracao-categorias')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> Categorias</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'pesquisar')} onClick={() => goSlug('wf-017-detalhes-da-atracoes-pesquisar-ingresso-administrador')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Search size={16} /> Pesquisar Ingresso</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'ingressos')} onClick={() => goSlug('wf-019-detalhes-da-atracao-gestao-de-ingresso')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Ticket size={16} /> Gestão de Ingresso</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'cupons')} onClick={() => goSlug('wf-021-detalhes-da-atracao-gestao-de-cupons')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Tag size={16} /> Gestão de Cupons</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'analytics')} onClick={() => goSlug('wf-025-detalhes-da-atracao-graficos-analytics')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><PieChart size={16} /> Gráficos Analytics</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'editar')} onClick={() => goSlug('wf-013-gestao-de-atracoes-adicionar-atracao-1')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Edit3 size={16} /> Editar da Atração</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'agencias')} onClick={() => goSlug('wf-048-gestao-de-agencias')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Building2 size={16} /> Agencias e Agentes</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'usuarios-atracao')} onClick={() => goSlug('wf-026-detalhes-da-atracao-usuarios')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> Usuários</span>
-            </button>
+            <Link to="/tela/wf-002-dashboard" style={linkStyle(activeMenu === 'dashboard')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> <span>Dashboard</span></span>
+            </Link>
+            <Link to="/tela/wf-003-detalhes-da-atracao-totais-da-atracao" style={linkStyle(activeMenu === 'totais')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><BarChart3 size={16} /> <span>Totais da Atração</span></span>
+            </Link>
+            <Link to="/tela/wf-016-detalhes-da-atracao-categorias" style={linkStyle(activeMenu === 'categorias')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> <span>Categorias</span></span>
+            </Link>
+            <Link to="/tela/wf-017-detalhes-da-atracoes-pesquisar-ingresso-administrador" style={linkStyle(activeMenu === 'pesquisar')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Search size={16} /> <span>Pesquisar Ingresso</span></span>
+            </Link>
+            <Link to="/tela/wf-019-detalhes-da-atracao-gestao-de-ingresso" style={linkStyle(activeMenu === 'ingressos')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Ticket size={16} /> <span>Gestão de Ingresso</span></span>
+            </Link>
+            <Link to="/tela/wf-021-detalhes-da-atracao-gestao-de-cupons" style={linkStyle(activeMenu === 'cupons')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Tag size={16} /> <span>Gestão de Cupons</span></span>
+            </Link>
+            <Link to="/tela/wf-025-detalhes-da-atracao-graficos-analytics" style={linkStyle(activeMenu === 'analytics')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><PieChart size={16} /> <span>Gráficos Analytics</span></span>
+            </Link>
+            <Link to="/tela/wf-013-gestao-de-atracoes-adicionar-atracao-1" style={linkStyle(activeMenu === 'editar')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Edit3 size={16} /> <span>Editar da Atração</span></span>
+            </Link>
+            <Link to="/tela/wf-048-gestao-de-agencias" style={linkStyle(activeMenu === 'agencias')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Building2 size={16} /> <span>Agências e Agentes</span></span>
+            </Link>
+            <Link to="/tela/wf-026-detalhes-da-atracao-usuarios" style={linkStyle(activeMenu === 'usuarios-atracao')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> <span>Usuários</span></span>
+            </Link>
 
             {/* Submenu Gestão Financeira da Atração */}
             <div>
-              <button style={itemStyle(activeMenu.startsWith('fin-'))} onClick={() => setFinOpen(!finOpen)}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><DollarSign size={16} /> Gestão Financeira</span>
+              <button type="button" style={linkStyle(activeMenu.startsWith('fin-'))} onClick={() => setFinOpen(!finOpen)}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><DollarSign size={16} /> <span>Gestão Financeira</span></span>
                 {finOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </button>
               {finOpen && (
                 <div style={{ paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '2px' }}>
-                  <button style={subItemStyle(false)} onClick={() => setRelOpen(!relOpen)}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><PieChart size={14} /> Relatórios da Atração</span>
+                  <button type="button" style={subLinkStyle(false)} onClick={() => setRelOpen(!relOpen)}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><PieChart size={14} /> <span>Relatórios da Atração</span></span>
                     {relOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
                   </button>
                   {relOpen && (
@@ -404,202 +409,199 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
                         { key: 'fin-cortesias', label: 'Cortesias Emitidas', slug: 'wf-040-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-cortesias-emitidas' },
                         { key: 'fin-validacoes', label: 'Validação', slug: 'wf-042-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-validacoes' },
                         { key: 'fin-comissoes', label: 'Comissões', slug: 'wf-044-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-comissoes' },
-                        { key: 'fin-pagamentos', label: 'Vendas por Pagamentos', slug: 'wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas' },
                         { key: 'fin-bordero', label: 'Borderô Resumido', slug: 'wf-046-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-bordero-resumido' }
                       ].map((sub) => (
-                        <button
+                        <Link
                           key={sub.key}
-                          onClick={() => goSlug(sub.slug)}
-                          style={subItemStyle(activeMenu === sub.key)}
+                          to={`/tela/${sub.slug}`}
+                          style={subLinkStyle(activeMenu === sub.key)}
                         >
                           <span>▣ {sub.label}</span>
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   )}
 
-                  <button style={subItemStyle(false)} onClick={() => setNegOpen(!negOpen)}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><DollarSign size={14} /> Negociação Financeira</span>
+                  <button type="button" style={subLinkStyle(false)} onClick={() => setNegOpen(!negOpen)}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><DollarSign size={14} /> <span>Negociação Financeira</span></span>
                     {negOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
                   </button>
                   {negOpen && (
                     <div style={{ paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                      <button style={subItemStyle(activeMenu === 'fin-condicoes')} onClick={() => goSlug('wf-028-detalhes-da-atracao-gestao-financeira-negociacao-financeira-condicoes-comerciais')}>
+                      <Link to="/tela/wf-028-detalhes-da-atracao-gestao-financeira-negociacao-financeira-condicoes-comerciais" style={subLinkStyle(activeMenu === 'fin-condicoes')}>
                         <span>▣ Condições Comerciais</span>
-                      </button>
-                      <button style={subItemStyle(activeMenu === 'fin-info')} onClick={() => goSlug('wf-029-detalhes-da-atracao-gestao-financeira-negociacao-financeira-informacoes-financeiras')}>
+                      </Link>
+                      <Link to="/tela/wf-029-detalhes-da-atracao-gestao-financeira-negociacao-financeira-informacoes-financeiras" style={subLinkStyle(activeMenu === 'fin-info')}>
                         <span>▣ Informações Financeiras</span>
-                      </button>
+                      </Link>
                     </div>
                   )}
 
-                  <button style={subItemStyle(activeMenu === 'fin-despesas')} onClick={() => goSlug('wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas')}>
+                  <Link to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas" style={subLinkStyle(activeMenu === 'fin-despesas')}>
                     <span>▣ Resumo das Despesas</span>
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <button style={itemStyle(activeMenu === 'validar')} onClick={() => goSlug('wf-031-detalhes-da-atracao-gestao-financeira-negociacao-financeira-validar-ingressos')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><QrCode size={16} /> Validar Ingressos</span>
-            </button>
+            <Link to="/tela/wf-031-detalhes-da-atracao-gestao-financeira-negociacao-financeira-validar-ingressos" style={linkStyle(activeMenu === 'validar')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><QrCode size={16} /> <span>Validar Ingressos</span></span>
+            </Link>
           </nav>
         ) : (
-          /* MENU ADMINISTRADOR PADRÃO COMPLETO COM SUBMENUS EXPANSÍVEIS PARA TODAS AS 71 TELAS */
+          /* MENU ADMINISTRADOR PADRÃO COMPLETO COM <Link> NATIVO */
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <button style={itemStyle(activeMenu === 'dashboard')} onClick={() => goSlug('wf-002-dashboard')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> Dashboard</span>
-            </button>
+            <Link to="/tela/wf-002-dashboard" style={linkStyle(activeMenu === 'dashboard')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LayoutGrid size={16} /> <span>Dashboard</span></span>
+            </Link>
 
-            <button style={itemStyle(activeMenu === 'usuarios')} onClick={() => goSlug('wf-005-gestao-de-usuarios')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> Gestão de Usuários</span>
+            <Link to="/tela/wf-005-gestao-de-usuarios" style={linkStyle(activeMenu === 'usuarios')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> <span>Gestão de Usuários</span></span>
               <ChevronRight size={13} />
-            </button>
+            </Link>
 
             {/* Grupo Parceiros, Agências, Agentes e Operação B2B */}
             <div>
-              <button style={itemStyle(comSubOpen)} onClick={() => setComSubOpen(!comSubOpen)}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Building2 size={16} /> Parceiros, Agências & B2B</span>
+              <button type="button" style={linkStyle(comSubOpen)} onClick={() => setComSubOpen(!comSubOpen)}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Building2 size={16} /> <span>Parceiros, Agências & B2B</span></span>
                 {comSubOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </button>
               {comSubOpen && (
                 <div style={{ paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '2px' }}>
-                  <button style={subItemStyle(activeMenu === 'parceiros')} onClick={() => goSlug('wf-058-gestao-de-parceiros-comerciais')}>
+                  <Link to="/tela/wf-058-gestao-de-parceiros-comerciais" style={subLinkStyle(activeMenu === 'parceiros')}>
                     <span>▣ Parceiros Comerciais (WF-058)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-059-cadastro-de-parceiro-comercial')}>
+                  </Link>
+                  <Link to="/tela/wf-059-cadastro-de-parceiro-comercial" style={subLinkStyle(false)}>
                     <span>▣ + Novo Parceiro (WF-059)</span>
-                  </button>
-                  <button style={subItemStyle(activeMenu === 'agencias')} onClick={() => goSlug('wf-048-gestao-de-agencias')}>
+                  </Link>
+                  <Link to="/tela/wf-048-gestao-de-agencias" style={subLinkStyle(activeMenu === 'agencias')}>
                     <span>▣ Gestão de Agências (WF-048)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-048-gestao-de-agencias-estado-2-pendente-de-aprovacao')}>
+                  </Link>
+                  <Link to="/tela/wf-048-gestao-de-agencias-estado-2-pendente-de-aprovacao" style={subLinkStyle(false)}>
                     <span>▣ Agências Pendentes (WF-048)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-049-cadastro-de-agencia-etapa-1-dados-da-empresa')}>
+                  </Link>
+                  <Link to="/tela/wf-049-cadastro-de-agencia-etapa-1-dados-da-empresa" style={subLinkStyle(false)}>
                     <span>▣ + Nova Agência 1/3..3/3 (WF-049)</span>
-                  </button>
-                  <button style={subItemStyle(activeMenu === 'agentes')} onClick={() => goSlug('wf-050-gestao-de-agentes')}>
+                  </Link>
+                  <Link to="/tela/wf-050-gestao-de-agentes" style={subLinkStyle(activeMenu === 'agentes')}>
                     <span>▣ Gestão de Agentes (WF-050)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-064-cadastro-de-agente')}>
+                  </Link>
+                  <Link to="/tela/wf-064-cadastro-de-agente" style={subLinkStyle(false)}>
                     <span>▣ + Novo Agente (WF-064)</span>
-                  </button>
-                  <button style={subItemStyle(activeMenu === 'operacao')} onClick={() => goSlug('wf-051-operacao-comercial')}>
+                  </Link>
+                  <Link to="/tela/wf-051-operacao-comercial" style={subLinkStyle(activeMenu === 'operacao')}>
                     <span>▣ Operação Comercial (WF-051)</span>
-                  </button>
-                  <button style={subItemStyle(activeMenu === 'comissionamento')} onClick={() => goSlug('wf-052-comissionamento-agencia')}>
+                  </Link>
+                  <Link to="/tela/wf-052-comissionamento-agencia" style={subLinkStyle(activeMenu === 'comissionamento')}>
                     <span>▣ Comissionamento (WF-052)</span>
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <button style={itemStyle(activeMenu === 'contratos')} onClick={() => goSlug('wf-007-gestao-de-contratos')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> Gestão de Contratos</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'condicoes')} onClick={() => goSlug('wf-009-configuracoes-comerciais')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><ClipboardList size={16} /> Configurações Comerciais</span>
-            </button>
+            <Link to="/tela/wf-007-gestao-de-contratos" style={linkStyle(activeMenu === 'contratos')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> <span>Gestão de Contratos</span></span>
+            </Link>
+            <Link to="/tela/wf-009-configuracoes-comerciais" style={linkStyle(activeMenu === 'condicoes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><ClipboardList size={16} /> <span>Configurações Comerciais</span></span>
+            </Link>
 
             {/* Grupo Gestão de Atrações + Submenus Internos da Atração */}
             <div>
               <button
-                style={itemStyle(activeMenu === 'atracoes' || atrSubOpen)}
-                onClick={() => {
-                  setAtrSubOpen(!atrSubOpen);
-                  if (!atrSubOpen) goSlug('wf-012-gestao-de-atracoes');
-                }}
+                type="button"
+                style={linkStyle(activeMenu === 'atracoes' || atrSubOpen)}
+                onClick={() => setAtrSubOpen(!atrSubOpen)}
               >
-                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Box size={16} /> Gestão de Atrações</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Box size={16} /> <span>Gestão de Atrações</span></span>
                 {atrSubOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </button>
               {atrSubOpen && (
                 <div style={{ paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '2px' }}>
-                  <button style={subItemStyle(activeMenu === 'atracoes')} onClick={() => goSlug('wf-012-gestao-de-atracoes')}>
+                  <Link to="/tela/wf-012-gestao-de-atracoes" style={subLinkStyle(activeMenu === 'atracoes')}>
                     <span>▣ Lista de Atrações (WF-012)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-013-gestao-de-atracoes-adicionar-atracao-1')}>
+                  </Link>
+                  <Link to="/tela/wf-013-gestao-de-atracoes-adicionar-atracao-1" style={subLinkStyle(false)}>
                     <span>▣ + Nova Atração 1/3..3/3 (WF-013)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-003-detalhes-da-atracao-totais-da-atracao')}>
+                  </Link>
+                  <Link to="/tela/wf-003-detalhes-da-atracao-totais-da-atracao" style={subLinkStyle(false)}>
                     <span>▣ Totais da Atração (WF-003)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-016-detalhes-da-atracao-categorias')}>
+                  </Link>
+                  <Link to="/tela/wf-016-detalhes-da-atracao-categorias" style={subLinkStyle(false)}>
                     <span>▣ Categorias da Atração (WF-016)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-017-detalhes-da-atracoes-pesquisar-ingresso-administrador')}>
+                  </Link>
+                  <Link to="/tela/wf-017-detalhes-da-atracoes-pesquisar-ingresso-administrador" style={subLinkStyle(false)}>
                     <span>▣ Pesquisar Ingresso (WF-017/018)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-019-detalhes-da-atracao-gestao-de-ingresso')}>
+                  </Link>
+                  <Link to="/tela/wf-019-detalhes-da-atracao-gestao-de-ingresso" style={subLinkStyle(false)}>
                     <span>▣ Lotes de Ingresso (WF-019/020)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-021-detalhes-da-atracao-gestao-de-cupons')}>
+                  </Link>
+                  <Link to="/tela/wf-021-detalhes-da-atracao-gestao-de-cupons" style={subLinkStyle(false)}>
                     <span>▣ Gestão de Cupons & QR (WF-021..024)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-025-detalhes-da-atracao-graficos-analytics')}>
+                  </Link>
+                  <Link to="/tela/wf-025-detalhes-da-atracao-graficos-analytics" style={subLinkStyle(false)}>
                     <span>▣ Gráficos Analytics (WF-025)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas')}>
+                  </Link>
+                  <Link to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas" style={subLinkStyle(false)}>
                     <span>▣ Despesas & Repasse (WF-030)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas')}>
+                  </Link>
+                  <Link to="/tela/wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas" style={subLinkStyle(false)}>
                     <span>▣ Relatórios & PDFs (WF-032..047)</span>
-                  </button>
-                  <button style={subItemStyle(false)} onClick={() => goSlug('wf-031-detalhes-da-atracao-gestao-financeira-negociacao-financeira-validar-ingressos')}>
+                  </Link>
+                  <Link to="/tela/wf-031-detalhes-da-atracao-gestao-financeira-negociacao-financeira-validar-ingressos" style={subLinkStyle(false)}>
                     <span>▣ Validar Ingressos QR (WF-031)</span>
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <button style={itemStyle(activeMenu === 'pacotes')} onClick={() => goSlug('wf-061-gestao-de-pacotes-de-ingressos')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Layers size={16} /> Gestão de Pacotes</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'reembolsos')} onClick={() => goSlug('wf-053-fila-de-reembolsos')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> Fila de Reembolsos</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'relatorios')} onClick={() => goSlug('wf-063-relatorios-financeiros-globais')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><BarChart3 size={16} /> Relatórios Financeiros</span>
-            </button>
-            <button style={itemStyle(activeMenu === 'anticambista')} onClick={() => goSlug('wf-060-painel-anti-cambista')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><ShieldAlert size={16} /> Controle de Transferências</span>
-            </button>
+            <Link to="/tela/wf-061-gestao-de-pacotes-de-ingressos" style={linkStyle(activeMenu === 'pacotes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Layers size={16} /> <span>Gestão de Pacotes</span></span>
+            </Link>
+            <Link to="/tela/wf-053-fila-de-reembolsos" style={linkStyle(activeMenu === 'reembolsos')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> <span>Fila de Reembolsos</span></span>
+            </Link>
+            <Link to="/tela/wf-063-relatorios-financeiros-globais" style={linkStyle(activeMenu === 'relatorios')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><BarChart3 size={16} /> <span>Relatórios Financeiros</span></span>
+            </Link>
+            <Link to="/tela/wf-060-painel-anti-cambista" style={linkStyle(activeMenu === 'anticambista')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><ShieldAlert size={16} /> <span>Controle de Transferências</span></span>
+            </Link>
 
             <div>
-              <button style={itemStyle(activeMenu.startsWith('cms-'))} onClick={() => setCmsOpen(!cmsOpen)}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Globe size={16} /> Conteúdo (CMS)</span>
+              <button type="button" style={linkStyle(activeMenu.startsWith('cms-'))} onClick={() => setCmsOpen(!cmsOpen)}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Globe size={16} /> <span>Conteúdo (CMS)</span></span>
                 {cmsOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </button>
               {cmsOpen && (
                 <div style={{ paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <button style={subItemStyle(activeMenu === 'cms-institucional')} onClick={() => goSlug('wf-054-cms-institucional')}>
+                  <Link to="/tela/wf-054-cms-institucional" style={subLinkStyle(activeMenu === 'cms-institucional')}>
                     <span>▣ Institucional (WF-054)</span>
-                  </button>
-                  <button style={subItemStyle(activeMenu === 'cms-home')} onClick={() => goSlug('wf-055-cms-home-e-curadoria-banners')}>
+                  </Link>
+                  <Link to="/tela/wf-055-cms-home-e-curadoria-banners" style={subLinkStyle(activeMenu === 'cms-home')}>
                     <span>▣ Home e Curadoria (WF-055)</span>
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <button style={itemStyle(activeMenu === 'notificacoes')} onClick={() => goSlug('wf-056-central-de-notificacoes')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Bell size={16} /> Notificações</span>
-            </button>
+            <Link to="/tela/wf-056-central-de-notificacoes" style={linkStyle(activeMenu === 'notificacoes')}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Bell size={16} /> <span>Notificações</span></span>
+            </Link>
           </nav>
         )}
       </div>
 
       {/* RODAPÉ DA SIDEBAR (Perfil / Configurações / Sign Out) */}
       <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '10px', marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-        <button style={itemStyle(activeMenu === 'perfil')} onClick={() => goSlug('wf-004-perfil')}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Settings size={16} /> Perfil / Configurações</span>
+        <Link to="/tela/wf-004-perfil" style={linkStyle(activeMenu === 'perfil')}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Settings size={16} /> <span>Perfil / Configurações</span></span>
           <ChevronRight size={14} />
-        </button>
-        <button style={itemStyle(false)} onClick={() => goSlug('wf-001-tela-de-login')}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LogOut size={16} /> Sign Out</span>
+        </Link>
+        <Link to="/tela/wf-001-tela-de-login" style={linkStyle(false)}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><LogOut size={16} /> <span>Sign Out</span></span>
           <ChevronRight size={14} />
-        </button>
+        </Link>
       </div>
     </aside>
   );
@@ -654,7 +656,7 @@ export function WfStatusPill({ status }) {
       color: isDark ? '#ffffff' : '#4a5568',
       border: status === 'Cancelado' || status === 'Erro de leitura' || status === 'Despesas' || status === 'Rejeitado' ? '1px solid #718096' : 'none'
     }}>
-      {status}
+      <span>{status}</span>
     </span>
   );
 }

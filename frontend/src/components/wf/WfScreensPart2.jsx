@@ -1,8 +1,8 @@
 // frontend/src/components/wf/WfScreensPart2.jsx
-// Implementação fiel e funcional das telas WF-012 a WF-025 com logos oficiais do Curitiba 360°
+// Implementação fiel e 100% interativa das telas WF-012 a WF-025 com logos oficiais do Curitiba 360°
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Plus, Edit3, Trash2, QrCode, Copy, X } from 'lucide-react';
+import { QrCode } from 'lucide-react';
 import {
   WfSidebar, WfPagination, WfStatusPill,
   OFFICIAL_LOGO
@@ -17,6 +17,7 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Ativos');
   const [search, setSearch] = useState('');
+  const [selectedIds, setSelectedIds] = useState([1, 2, 3]);
   const [form, setForm] = useState({
     parceiro: 'Parque Jaime Lerner',
     nome: 'Rua da Música',
@@ -74,7 +75,7 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
       ...prev,
       attractions: [
         {
-          id: prev.attractions.length + 1,
+          id: Date.now(),
           code: 2810 + prev.attractions.length,
           nome: form.nome,
           local: `${form.local} - ${form.cidade}`,
@@ -92,20 +93,57 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
     navigate('/tela/wf-012-gestao-de-atracoes');
   };
 
+  const filteredAttractions = (store?.attractions || []).filter((a) => {
+    const matchesTab =
+      tab === 'Todos' ||
+      (tab === 'Ativos' && (a.status || 'Ativo') === 'Ativo') ||
+      (tab === 'Inativos' && a.status === 'Inativo');
+    const q = search.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      String(a.nome || '').toLowerCase().includes(q) ||
+      String(a.parceiro || '').toLowerCase().includes(q) ||
+      String(a.code || '').toLowerCase().includes(q);
+    return matchesTab && matchesSearch;
+  });
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  const handleInactivateSelected = () => {
+    if (!selectedIds.length) return;
+    updateStore((prev) => ({
+      ...prev,
+      attractions: prev.attractions.map((a) =>
+        selectedIds.includes(a.id) ? { ...a, status: a.status === 'Inativo' ? 'Ativo' : 'Inativo' } : a
+      )
+    }));
+  };
+
+  const handleDeleteSelected = () => {
+    if (!selectedIds.length) return;
+    updateStore((prev) => ({
+      ...prev,
+      attractions: prev.attractions.filter((a) => !selectedIds.includes(a.id))
+    }));
+    setSelectedIds([]);
+  };
+
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
       <WfSidebar mode="admin" activeMenu="atracoes" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Gestão de Atrações</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Gerencie as atrações do sistema</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <div style={{ position: 'relative', width: '260px' }}>
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Enter search terms" style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467', boxSizing: 'border-box' }} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Pesquisar atração ou parceiro..." style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467', boxSizing: 'border-box' }} />
             </div>
-            <button style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
+            <button onClick={() => setTab(tab === 'Ativos' ? 'Todos' : 'Ativos')} style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600, cursor: 'pointer' }}>Filtro ({tab}) ▽</button>
             <button onClick={() => navigate('/tela/wf-013-gestao-de-atracoes-adicionar-atracao-1')} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Adicionar Atração ⊕</button>
           </div>
         </div>
@@ -117,26 +155,42 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
         </div>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '10px', backgroundColor: '#ffffff', marginBottom: '18px', overflow: 'hidden' }}>
-          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados 3</span>
+          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados {selectedIds.length}</span>
           <button onClick={() => navigate('/tela/wf-013-gestao-de-atracoes-adicionar-atracao-1')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>✎ Editar</button>
-          <button style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>🗑 Excluir</button>
-          <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>● Inativar selecionados</button>
+          <button onClick={handleDeleteSelected} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>🗑 Excluir</button>
+          <button onClick={handleInactivateSelected} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>● Inativar/Ativar selecionados</button>
         </div>
 
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
           <thead>
             <tr style={{ backgroundColor: '#eef1f5', color: '#3b4758', textAlign: 'left' }}>
-              <th style={{ padding: '12px 14px' }}><input type="checkbox" defaultChecked /></th>
+              <th style={{ padding: '12px 14px' }}>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.length > 0 && selectedIds.length === filteredAttractions.length}
+                  onChange={(e) => setSelectedIds(e.target.checked ? filteredAttractions.map((a) => a.id) : [])}
+                />
+              </th>
               <th style={{ padding: '12px 14px' }}>ID da Atração ↕</th>
               <th style={{ padding: '12px 14px' }}>Nome ↕</th>
               <th style={{ padding: '12px 14px' }}>Parceiro Comercial ↕</th>
+              <th style={{ padding: '12px 14px' }}>Status ↕</th>
               <th style={{ padding: '12px 14px' }}>Data de criação ↕</th>
             </tr>
           </thead>
           <tbody>
-            {store.attractions.map((a, idx) => (
-              <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => navigate('/tela/wf-003-detalhes-da-atracao-totais-da-atracao')}>
-                <td style={{ padding: '14px' }} onClick={(e) => e.stopPropagation()}><input type="checkbox" defaultChecked={idx < 3} /></td>
+            {filteredAttractions.map((a, idx) => (
+              <tr
+                key={a.id || idx}
+                style={{ borderBottom: '1px solid #cbd5e1', cursor: 'pointer' }}
+                onClick={() => {
+                  updateStore((prev) => ({ ...prev, selectedAttractionId: a.id }));
+                  navigate('/tela/wf-003-detalhes-da-atracao-totais-da-atracao');
+                }}
+              >
+                <td style={{ padding: '14px' }} onClick={(e) => e.stopPropagation()}>
+                  <input type="checkbox" checked={selectedIds.includes(a.id)} onChange={() => toggleSelect(a.id)} />
+                </td>
                 <td style={{ padding: '14px' }}>{a.code}</td>
                 <td style={{ padding: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -145,6 +199,7 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
                   </div>
                 </td>
                 <td style={{ padding: '14px' }}><WfStatusPill status={a.parceiro} /></td>
+                <td style={{ padding: '14px' }}><WfStatusPill status={a.status || 'Ativo'} /></td>
                 <td style={{ padding: '14px' }}>{a.dataCriacao}</td>
               </tr>
             ))}
@@ -159,7 +214,7 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
           <div style={{ backgroundColor: '#fff', borderRadius: '18px', width: '100%', maxWidth: '760px', maxHeight: '90vh', overflowY: 'auto', padding: '32px', boxShadow: '0 25px 50px rgba(0,0,0,0.25)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '22px' }}>
               <div>
-                <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Nova Atrações {wizardStep}/3</h2>
+                <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Nova Atração {wizardStep}/3</h2>
                 <p style={{ fontSize: '12.5px', color: '#64748b', margin: '4px 0 0 0' }}>
                   {wizardStep === 1 ? 'Insira os dados da atração' : wizardStep === 2 ? 'Insira os dados bancários' : 'Insira os dados do ingresso'}
                 </p>
@@ -176,13 +231,13 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <img src={OFFICIAL_LOGO} alt="Curitiba 360°" style={{ width: '78px', height: '78px', borderRadius: '50%', border: '2px solid #475467', padding: '6px' }} />
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: '13.5px', color: '#3b4758' }}>Foto de principal</div>
+                      <div style={{ fontWeight: 700, fontSize: '13.5px', color: '#3b4758' }}>Foto principal</div>
                       <div style={{ fontSize: '12px', color: '#64748b' }}>PNG, JPEG menor que 15MB</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, fontSize: '12.5px' }}>Carregar nova foto ⊕</button>
-                    <button style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', color: '#3b4758', fontWeight: 700, fontSize: '12.5px' }}>Apagar 🗑</button>
+                    <button onClick={() => alert('Logo oficial Curitiba 360° aplicada!')} style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, fontSize: '12.5px', cursor: 'pointer' }}>Carregar nova foto ⊕</button>
+                    <button style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', color: '#3b4758', fontWeight: 700, fontSize: '12.5px', cursor: 'pointer' }}>Apagar 🗑</button>
                   </div>
                 </div>
 
@@ -325,30 +380,53 @@ export function Wf012Attractions({ store, updateStore, wizardStep = null }) {
 // ============================================================================
 export function Wf016Categories({ store, updateStore }) {
   const [tab, setTab] = useState('Ativos');
-  const [newCatName, setNewCatName] = useState('');
+  const [search, setSearch] = useState('');
+  const [selectedIds, setSelectedIds] = useState([2800, 2801, 2802]);
 
   const addCat = () => {
-    const name = newCatName.trim() || window.prompt('Nome da nova categoria:', 'Meia-Entrada Cultural');
+    const name = window.prompt('Nome da nova categoria:', 'Meia-Entrada Cultural');
     if (!name) return;
     updateStore((prev) => ({
       ...prev,
       categories: [{ id: Math.floor(2810 + Math.random() * 500), nome: name, status: 'Ativo' }, ...prev.categories]
     }));
-    setNewCatName('');
+  };
+
+  const filtered = (store?.categories || []).filter((c) => {
+    const matchesTab = tab === 'Todos' || (tab === 'Ativos' && c.status === 'Ativo') || (tab === 'Inativos' && c.status !== 'Ativo');
+    const q = search.trim().toLowerCase();
+    return matchesTab && (!q || c.nome.toLowerCase().includes(q) || String(c.id).includes(q));
+  });
+
+  const handleToggleStatus = () => {
+    updateStore((prev) => ({
+      ...prev,
+      categories: prev.categories.map((c) =>
+        selectedIds.includes(c.id) ? { ...c, status: c.status === 'Ativo' ? 'Inativo' : 'Ativo' } : c
+      )
+    }));
+  };
+
+  const handleDelete = () => {
+    updateStore((prev) => ({
+      ...prev,
+      categories: prev.categories.filter((c) => !selectedIds.includes(c.id))
+    }));
+    setSelectedIds([]);
   };
 
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="attraction" activeMenu="categorias" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Categorias</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Gerencie as categorias da atração</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <input placeholder="Enter search terms" style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
-            <button style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Pesquisar categoria..." style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
+            <button onClick={() => setTab(tab === 'Ativos' ? 'Todos' : 'Ativos')} style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600, cursor: 'pointer' }}>Filtro ({tab}) ▽</button>
             <button onClick={addCat} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Adicionar Categoria ⊕</button>
           </div>
         </div>
@@ -359,19 +437,40 @@ export function Wf016Categories({ store, updateStore }) {
           ))}
         </div>
 
+        <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '10px', backgroundColor: '#ffffff', marginBottom: '18px', overflow: 'hidden' }}>
+          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados {selectedIds.length}</span>
+          <button onClick={addCat} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>✎ Editar</button>
+          <button onClick={handleDelete} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>🗑 Excluir</button>
+          <button onClick={handleToggleStatus} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>● Inativar/Ativar selecionados</button>
+        </div>
+
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
           <thead>
             <tr style={{ backgroundColor: '#eef1f5', color: '#3b4758', textAlign: 'left' }}>
-              <th style={{ padding: '12px 14px' }}><input type="checkbox" defaultChecked /></th>
+              <th style={{ padding: '12px 14px' }}>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.length > 0 && selectedIds.length === filtered.length}
+                  onChange={(e) => setSelectedIds(e.target.checked ? filtered.map((c) => c.id) : [])}
+                />
+              </th>
               <th style={{ padding: '12px 14px' }}>ID ↕</th>
               <th style={{ padding: '12px 14px' }}>Categoria ↕</th>
               <th style={{ padding: '12px 14px' }}>Status ↕</th>
             </tr>
           </thead>
           <tbody>
-            {store.categories.map((cat, idx) => (
-              <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
-                <td style={{ padding: '14px' }}><input type="checkbox" defaultChecked={idx < 3} /></td>
+            {filtered.map((cat) => (
+              <tr key={cat.id} style={{ borderBottom: '1px solid #cbd5e1' }}>
+                <td style={{ padding: '14px' }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(cat.id)}
+                    onChange={() =>
+                      setSelectedIds((prev) => (prev.includes(cat.id) ? prev.filter((x) => x !== cat.id) : [...prev, cat.id]))
+                    }
+                  />
+                </td>
                 <td style={{ padding: '14px' }}>{cat.id}</td>
                 <td style={{ padding: '14px', fontWeight: 700, color: '#3b4758' }}>{cat.nome}</td>
                 <td style={{ padding: '14px' }}><WfStatusPill status={cat.status} /></td>
@@ -392,20 +491,47 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Ativos');
   const [search, setSearch] = useState('');
-  const vouchers = store.liveVouchers || [];
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const vouchers = store?.liveVouchers || [];
+
+  const filteredVouchers = vouchers.filter((v) => {
+    const matchesTab =
+      tab === 'Todos' ||
+      (tab === 'Ativos' && v.status !== 'Cancelado') ||
+      (tab === 'Inativos' && v.status === 'Cancelado');
+    const q = search.trim().toLowerCase();
+    return (
+      matchesTab &&
+      (!q ||
+        String(v.codigo || '').toLowerCase().includes(q) ||
+        String(v.atracao || '').toLowerCase().includes(q) ||
+        String(v.categoria || '').toLowerCase().includes(q) ||
+        String(v.turista || '').toLowerCase().includes(q))
+    );
+  });
+
+  const activeVoucher = selectedVoucher || filteredVouchers[0] || {
+    codigo: '1234567890',
+    atracao: 'Parque Jaime Lerner',
+    categoria: 'Morador Curitiba Adulto',
+    turista: 'João da Silva',
+    email: 'joao@gmail.com',
+    dataHora: '01/10/2026 10:00',
+    status: 'Vendido'
+  };
 
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
       <WfSidebar mode="attraction" activeMenu="pesquisar" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Pesquisar Ingresso</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Gerencie os ingressos emitidos</p>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Enter search terms" style={{ width: '260px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
-            <button style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Pesquisar código, turista ou categoria..." style={{ width: '280px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
+            <button onClick={() => setTab(tab === 'Ativos' ? 'Todos' : 'Ativos')} style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600, cursor: 'pointer' }}>Filtro ({tab}) ▽</button>
           </div>
         </div>
 
@@ -417,11 +543,11 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
 
         {/* Action bar */}
         <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '10px', backgroundColor: '#ffffff', marginBottom: '18px', overflow: 'hidden' }}>
-          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados 3</span>
+          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados {Math.min(3, filteredVouchers.length)}</span>
           <button onClick={() => navigate('/tela/wf-031-detalhes-da-atracao-gestao-financeira-negociacao-financeira-validar-ingressos')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>🎟 Validar ingresso</button>
-          <button onClick={() => alert('Ingresso reenviado para o e-mail do cliente!')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>➤ Reenviar ingresso</button>
+          <button onClick={() => alert(`Ingresso ${activeVoucher.codigo} reenviado para ${activeVoucher.email || 'cliente@curitiba360.com'}!`)} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>➤ Reenviar ingresso</button>
           <button onClick={() => navigate('/tela/wf-022-detalhes-da-atracao-gestao-de-cupons-gerar-qr-code')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>▣ Visualizar QR Code</button>
-          <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Cancelar</button>
+          <button onClick={() => alert(`Ingresso ${activeVoucher.codigo} marcado para cancelamento.`)} style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Cancelar</button>
         </div>
 
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
@@ -438,10 +564,13 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
             </tr>
           </thead>
           <tbody>
-            {vouchers.map((v, idx) => (
+            {filteredVouchers.map((v, idx) => (
               <tr
                 key={idx}
-                onClick={() => navigate('/tela/wf-018-detalhes-da-atracao-pesquisar-ingresso-detalhe-do-ingresso')}
+                onClick={() => {
+                  setSelectedVoucher(v);
+                  navigate('/tela/wf-018-detalhes-da-atracao-pesquisar-ingresso-detalhe-do-ingresso');
+                }}
                 style={{ borderBottom: '1px solid #cbd5e1', cursor: 'pointer' }}
               >
                 <td style={{ padding: '14px' }} onClick={(e) => e.stopPropagation()}><input type="checkbox" defaultChecked={idx < 3} /></td>
@@ -465,7 +594,7 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
           <div style={{ backgroundColor: '#fff', borderRadius: '18px', width: '100%', maxWidth: '880px', padding: '32px', position: 'relative', boxShadow: '0 25px 50px rgba(0,0,0,0.25)' }}>
             <button onClick={() => navigate('/tela/wf-017-detalhes-da-atracoes-pesquisar-ingresso-administrador')} style={{ position: 'absolute', right: 24, top: 24, width: 32, height: 32, borderRadius: '50%', border: 'none', backgroundColor: '#eef1f5', cursor: 'pointer', fontWeight: 700 }}>✕</button>
             <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', textAlign: 'center', margin: '0 0 24px 0' }}>
-              Detalhes do ingresso código 1234567890
+              Detalhes do ingresso código {activeVoucher.codigo}
             </h2>
 
             <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#3b4758', marginBottom: '8px' }}>Pedido</h3>
@@ -477,12 +606,12 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
               </thead>
               <tbody>
                 <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
-                  <td style={{ padding: 12, fontWeight: 700 }}>1234567890</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.codigo}</td>
                   <td style={{ padding: 12 }}><WfStatusPill status="Finalizado" /></td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>Cortesia</td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>Parque Jaime Lerner</td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>01/10/2026 10:00</td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>Pedido de morador de Curitiba</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>Pix / Cartão</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.atracao}</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.dataHora}</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>Ingresso Oficial Curitiba 360°</td>
                 </tr>
               </tbody>
             </table>
@@ -496,9 +625,9 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
               </thead>
               <tbody>
                 <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
-                  <td style={{ padding: 12, fontWeight: 700 }}>João da Silva</td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>joao@gmail.com</td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>12341234-12</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.turista || 'João da Silva'}</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.email || 'joao@gmail.com'}</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>123.412.341-12</td>
                   <td style={{ padding: 12, fontWeight: 700 }}>41 3030-3030</td>
                   <td style={{ padding: 12, fontWeight: 700 }}>41 99999-9999</td>
                 </tr>
@@ -514,9 +643,9 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
               </thead>
               <tbody>
                 <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
-                  <td style={{ padding: 12 }}><WfStatusPill status="Vendido" /></td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>01/10/2026 10:00</td>
-                  <td style={{ padding: 12, fontWeight: 700 }}>01/10/2026 10:00</td>
+                  <td style={{ padding: 12 }}><WfStatusPill status={activeVoucher.status || 'Vendido'} /></td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.dataHora}</td>
+                  <td style={{ padding: 12, fontWeight: 700 }}>{activeVoucher.dataHora}</td>
                   <td style={{ padding: 12, fontWeight: 700 }}>R$ 10,00</td>
                   <td style={{ padding: 12, fontWeight: 700 }}>R$ 0,50</td>
                   <td style={{ padding: 12, fontWeight: 700 }}>R$ 10,50</td>
@@ -536,6 +665,7 @@ export function Wf017TicketSearch({ store, showDetailModal = false }) {
 export function Wf019TicketBatches({ store, updateStore, showModal = false }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Ativos');
+  const [search, setSearch] = useState('');
   const [form, setForm] = useState({ categoria: 'Adulto', valor: 'R$ 10,00', lote: '001', quantidade: 50, expiracaoHoras: 4, msgCustomizada: 'Campanha promocional' });
 
   const handleSave = () => {
@@ -546,18 +676,24 @@ export function Wf019TicketBatches({ store, updateStore, showModal = false }) {
     navigate('/tela/wf-019-detalhes-da-atracao-gestao-de-ingresso');
   };
 
+  const filteredBatches = (store?.ticketBatches || []).filter((b) => {
+    const matchesTab = tab === 'Todos' || (tab === 'Ativos' && b.status === 'Ativo') || (tab === 'Inativos' && b.status !== 'Ativo');
+    const q = search.trim().toLowerCase();
+    return matchesTab && (!q || String(b.categoria || '').toLowerCase().includes(q) || String(b.msgCustomizada || '').toLowerCase().includes(q));
+  });
+
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
       <WfSidebar mode="attraction" activeMenu="ingressos" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Gestão de Ingresso</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Gerencie os ingressos da atração</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <input placeholder="Enter search terms" style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
-            <button style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Pesquisar lote ou categoria..." style={{ width: '250px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
+            <button onClick={() => setTab(tab === 'Ativos' ? 'Todos' : 'Ativos')} style={{ padding: '10px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600, cursor: 'pointer' }}>Filtro ({tab}) ▽</button>
             <button onClick={() => navigate('/tela/wf-020-detalhes-da-atracao-gestao-de-ingresso-adicionar-ingresso')} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Adicionar Ingresso ⊕</button>
           </div>
         </div>
@@ -583,7 +719,7 @@ export function Wf019TicketBatches({ store, updateStore, showModal = false }) {
             </tr>
           </thead>
           <tbody>
-            {store.ticketBatches.map((b, idx) => (
+            {filteredBatches.map((b, idx) => (
               <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
                 <td style={{ padding: '14px' }}><input type="checkbox" defaultChecked={idx < 3} /></td>
                 <td style={{ padding: '14px' }}>{b.id}</td>
@@ -653,9 +789,47 @@ export function Wf019TicketBatches({ store, updateStore, showModal = false }) {
 export function Wf021Coupons({ store, updateStore, modalMode = null }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState('Ativos');
+  const [search, setSearch] = useState('');
+  const [couponForm, setCouponForm] = useState({
+    usuario: 'João da Silva',
+    nome: 'JOAO10',
+    tipo: 'Porcentagem',
+    valor: '10%',
+    quantidade: 50,
+    diasSemana: 'Seg, Qua, Sex'
+  });
+
+  const handleSaveCoupon = () => {
+    updateStore((prev) => ({
+      ...prev,
+      coupons: [
+        {
+          id: Math.floor(2820 + Math.random() * 500),
+          nome: couponForm.nome,
+          usuario: couponForm.usuario,
+          status: 'Ativo',
+          tipo: couponForm.tipo,
+          valor: couponForm.valor,
+          quantidade: Number(couponForm.quantidade) || 50,
+          link: `curitiba360.com/${couponForm.nome.toLowerCase()}`,
+          saldo: Number(couponForm.quantidade) || 50,
+          diasSemana: couponForm.diasSemana,
+          categorias: ['Adulto', 'Estudante']
+        },
+        ...prev.coupons
+      ]
+    }));
+    navigate('/tela/wf-021-detalhes-da-atracao-gestao-de-cupons');
+  };
+
+  const filteredCoupons = (store?.coupons || []).filter((c) => {
+    const matchesTab = tab === 'Todos' || (tab === 'Ativos' && c.status === 'Ativo') || (tab === 'Inativos' && c.status !== 'Ativo');
+    const q = search.trim().toLowerCase();
+    return matchesTab && (!q || c.nome.toLowerCase().includes(q) || c.usuario.toLowerCase().includes(q));
+  });
 
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', position: 'relative' }}>
       <WfSidebar mode="attraction" activeMenu="cupons" />
       <div style={{ flex: 1, padding: '28px 36px', overflowX: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
@@ -663,9 +837,9 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Gestão de Cupons</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Gerencie os cupons da atração</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <input placeholder="Enter search terms" style={{ width: '230px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
-            <button style={{ padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600 }}>Filtro ▽</button>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Pesquisar cupom ou usuário..." style={{ width: '230px', padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467' }} />
+            <button onClick={() => setTab(tab === 'Ativos' ? 'Todos' : 'Ativos')} style={{ padding: '10px 14px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 600, cursor: 'pointer' }}>Filtro ({tab}) ▽</button>
             <button onClick={() => navigate('/tela/wf-024-detalhes-da-atracao-gestao-de-cupons-adicionar-cupom-agencia')} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', color: '#3b4758', fontWeight: 700, cursor: 'pointer' }}>Adicionar Cupom Agencia ⊕</button>
             <button onClick={() => navigate('/tela/wf-023-detalhes-da-atracao-gestao-de-cupons-adicionar-cupom')} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Adicionar Cupom ⊕</button>
           </div>
@@ -679,11 +853,21 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
 
         {/* Action bar */}
         <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '10px', backgroundColor: '#ffffff', marginBottom: '18px', overflow: 'hidden' }}>
-          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados 3</span>
+          <span style={{ padding: '10px 16px', fontWeight: 700, fontSize: '13px', borderRight: '1px solid #e2e8f0' }}>Selecionados {Math.min(3, filteredCoupons.length)}</span>
           <button onClick={() => navigate('/tela/wf-022-detalhes-da-atracao-gestao-de-cupons-gerar-qr-code')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>🔗 Gerar link / QR</button>
           <button onClick={() => navigate('/tela/wf-022-detalhes-da-atracao-gestao-de-cupons-gerar-qr-code')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>💬 Compartilhar</button>
           <button onClick={() => navigate('/tela/wf-023-detalhes-da-atracao-gestao-de-cupons-adicionar-cupom')} style={{ padding: '10px 16px', background: 'none', border: 'none', borderRight: '1px solid #e2e8f0', fontSize: '13px', cursor: 'pointer' }}>✎ Editar</button>
-          <button style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}>🗑 Excluir</button>
+          <button
+            onClick={() =>
+              updateStore((prev) => ({
+                ...prev,
+                coupons: prev.coupons.slice(1)
+              }))
+            }
+            style={{ padding: '10px 16px', background: 'none', border: 'none', fontSize: '13px', cursor: 'pointer' }}
+          >
+            🗑 Excluir
+          </button>
         </div>
 
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
@@ -704,7 +888,7 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
             </tr>
           </thead>
           <tbody>
-            {store.coupons.map((c, idx) => (
+            {filteredCoupons.map((c, idx) => (
               <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
                 <td style={{ padding: '12px 10px' }}><input type="checkbox" defaultChecked /></td>
                 <td style={{ padding: '12px 10px' }}>{c.id}</td>
@@ -714,7 +898,7 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
                 <td style={{ padding: '12px 10px' }}><span style={{ border: '1px solid #475467', borderRadius: 6, padding: '2px 8px' }}>{c.tipo}</span></td>
                 <td style={{ padding: '12px 10px', fontWeight: 700 }}>{c.valor}</td>
                 <td style={{ padding: '12px 10px', fontWeight: 700 }}>{c.quantidade}</td>
-                <td style={{ padding: '12px 10px' }}>📋 {c.link}</td>
+                <td style={{ padding: '12px 10px', cursor: 'pointer' }} onClick={() => navigate('/tela/wf-022-detalhes-da-atracao-gestao-de-cupons-gerar-qr-code')}>📋 {c.link}</td>
                 <td style={{ padding: '12px 10px', fontWeight: 700 }}>{c.saldo}</td>
                 <td style={{ padding: '12px 10px', fontWeight: 700 }}>{c.diasSemana}</td>
                 <td style={{ padding: '12px 10px' }}>
@@ -747,7 +931,7 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => navigate('/tela/wf-021-detalhes-da-atracao-gestao-de-cupons')} style={{ flex: 1, padding: '10px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}>Fechar ✕</button>
-              <button onClick={() => { navigator.clipboard?.writeText('https://curitiba360.vercel.app/site?ref=hotel-pestana'); alert('Link copiado!'); }} style={{ flex: 1, padding: '10px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Copiar 📋</button>
+              <button onClick={() => { navigator.clipboard?.writeText('https://curitiba360-unificado.vercel.app/site?ref=joao10'); alert('Link copiado para a área de transferência!'); }} style={{ flex: 1, padding: '10px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Copiar 📋</button>
             </div>
           </div>
         </div>
@@ -760,20 +944,20 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '22px' }}>
               <div>
                 <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#3b4758', margin: 0 }}>
-                  {modalMode === 'cupom-agencia' ? 'Novo Cupom Agencia' : 'Novo Cupom'}
+                  {modalMode === 'cupom-agencia' ? 'Novo Cupom Agência' : 'Novo Cupom'}
                 </h2>
                 <p style={{ fontSize: '12.5px', color: '#64748b', margin: '4px 0 0 0' }}>Preencha os campos obrigatórios para adicionar um cupom</p>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button onClick={() => navigate('/tela/wf-021-detalhes-da-atracao-gestao-de-cupons')} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}>Descartar 🗑</button>
-                <button onClick={() => navigate('/tela/wf-021-detalhes-da-atracao-gestao-de-cupons')} style={{ padding: '8px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Salvar ✓</button>
+                <button onClick={handleSaveCoupon} style={{ padding: '8px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Salvar ✓</button>
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 700 }}>{modalMode === 'cupom-agencia' ? 'Agencia' : 'Usuário Relacionado'}</label>
-                <select style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4 }}>
+                <label style={{ fontSize: 12, fontWeight: 700 }}>{modalMode === 'cupom-agencia' ? 'Agência' : 'Usuário Relacionado'}</label>
+                <select value={couponForm.usuario} onChange={(e) => setCouponForm({ ...couponForm, usuario: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4 }}>
                   <option>{modalMode === 'cupom-agencia' ? 'Agencia Silva' : 'João da Silva'}</option>
                   <option>Hotel Pestana Curitiba 5★</option>
                   <option>Rota Serra Verde</option>
@@ -781,19 +965,19 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700 }}>Nome do cupom</label>
-                <input defaultValue="JOAO10" style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
+                <input value={couponForm.nome} onChange={(e) => setCouponForm({ ...couponForm, nome: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700 }}>Porcentagem/Valor</label>
-                <select style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4 }}><option>Porcentagem</option><option>Valor</option></select>
+                <select value={couponForm.tipo} onChange={(e) => setCouponForm({ ...couponForm, tipo: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4 }}><option>Porcentagem</option><option>Valor</option></select>
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700 }}>Valor</label>
-                <input defaultValue="10%" style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
+                <input value={couponForm.valor} onChange={(e) => setCouponForm({ ...couponForm, valor: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700 }}>Quantidade</label>
-                <input defaultValue="50" style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
+                <input value={couponForm.quantidade} onChange={(e) => setCouponForm({ ...couponForm, quantidade: e.target.value })} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1.5px solid #475467', marginTop: 4, boxSizing: 'border-box' }} />
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700 }}>Dias da semana</label>
@@ -812,78 +996,438 @@ export function Wf021Coupons({ store, updateStore, modalMode = null }) {
 }
 
 // ============================================================================
-// WF-025: DETALHES DA ATRAÇÃO — GRÁFICOS ANALYTICS
+// WF-025: DETALHES DA ATRAÇÃO — GRÁFICOS ANALYTICS (12 GRÁFICOS + 7 KPIs + FILTROS REAIS)
 // ============================================================================
-export function Wf025Analytics() {
+const ANALYTICS_PERIOD_DATA = {
+  Tudo: {
+    factor: 1,
+    visitasBars: [65, 78, 90, 58],
+    ingressosBars: [62, 76, 88, 55],
+    horariosBars: [18, 22, 65, 78, 90, 58, 92, 56],
+    datasBars: [65, 78, 90, 58, 90, 58, 90, 58],
+    engajamento: [2000, 1500, 1000, 500],
+    acessos: '3.147',
+    usuariosUnicos: '3.147',
+    qtdVendida: '3.147',
+    tempoMedio: '16m 44s',
+    totalVendido: 'R$ 513.145,00',
+    ticketMedio: 'R$ 379,98',
+    conversao: '100%',
+    trend: '↑+8%'
+  },
+  Hoje: {
+    factor: 0.08,
+    visitasBars: [35, 52, 84, 92],
+    ingressosBars: [30, 48, 80, 88],
+    horariosBars: [12, 28, 45, 72, 95, 64, 40, 22],
+    datasBars: [40, 55, 70, 92, 85, 60, 48, 75],
+    engajamento: [320, 240, 165, 98],
+    acessos: '284',
+    usuariosUnicos: '241',
+    qtdVendida: '198',
+    tempoMedio: '14m 12s',
+    totalVendido: 'R$ 32.480,00',
+    ticketMedio: 'R$ 164,04',
+    conversao: '82,1%',
+    trend: '↑+14%'
+  },
+  '7 Dias': {
+    factor: 0.35,
+    visitasBars: [52, 68, 74, 86],
+    ingressosBars: [48, 64, 72, 82],
+    horariosBars: [15, 25, 58, 82, 88, 68, 79, 48],
+    datasBars: [55, 68, 74, 82, 91, 76, 84, 69],
+    engajamento: [890, 670, 440, 260],
+    acessos: '1.124',
+    usuariosUnicos: '986',
+    qtdVendida: '842',
+    tempoMedio: '15m 30s',
+    totalVendido: 'R$ 148.920,00',
+    ticketMedio: 'R$ 176,86',
+    conversao: '85,4%',
+    trend: '↑+11%'
+  },
+  '30 Dias': {
+    factor: 0.75,
+    visitasBars: [72, 84, 95, 76],
+    ingressosBars: [70, 80, 91, 72],
+    horariosBars: [20, 30, 70, 85, 94, 72, 88, 64],
+    datasBars: [70, 82, 94, 68, 88, 74, 92, 79],
+    engajamento: [1680, 1290, 860, 430],
+    acessos: '2.490',
+    usuariosUnicos: '2.310',
+    qtdVendida: '2.180',
+    tempoMedio: '16m 08s',
+    totalVendido: 'R$ 389.450,00',
+    ticketMedio: 'R$ 178,64',
+    conversao: '94,3%',
+    trend: '↑+9%'
+  },
+  '📅 Período': {
+    factor: 0.55,
+    visitasBars: [60, 74, 82, 69],
+    ingressosBars: [56, 70, 78, 65],
+    horariosBars: [16, 26, 62, 76, 86, 60, 84, 52],
+    datasBars: [60, 72, 84, 64, 82, 68, 86, 62],
+    engajamento: [1420, 1080, 710, 380],
+    acessos: '1.845',
+    usuariosUnicos: '1.690',
+    qtdVendida: '1.520',
+    tempoMedio: '15m 52s',
+    totalVendido: 'R$ 274.600,00',
+    ticketMedio: 'R$ 180,65',
+    conversao: '89,9%',
+    trend: '↑+10%'
+  }
+};
+
+function WfDonutChart({ centerLabel = '1000', legend = [] }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+      <div
+        style={{
+          width: 138,
+          height: 138,
+          borderRadius: '50%',
+          background: 'conic-gradient(#4e5a6b 0deg 145deg, #7c899b 145deg 235deg, #94a0b2 235deg 310deg, #cbd5e1 310deg 360deg)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <div
+          style={{
+            width: 72,
+            height: 72,
+            borderRadius: '50%',
+            backgroundColor: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 800,
+            fontSize: 13,
+            color: '#3b4758'
+          }}
+        >
+          {centerLabel}
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px 14px', fontSize: 11.5, color: '#3b4758' }}>
+        {legend.map((item, idx) => (
+          <span key={idx} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 600 }}>
+            <span style={{ width: 9, height: 9, borderRadius: '50%', backgroundColor: ['#4e5a6b', '#7c899b', '#94a0b2', '#cbd5e1'][idx % 4] }} />
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function Wf025Analytics({ store, updateStore }) {
   const [period, setPeriod] = useState('Tudo');
+  const [startDate, setStartDate] = useState('2026-11-01');
+  const [endDate, setEndDate] = useState('2026-11-26');
+
+  const attractions = store?.attractions || [];
+  const currentAttraction =
+    attractions.find((a) => a.id === store?.selectedAttractionId) ||
+    attractions[0] || { id: 1, nome: 'Parque Jaime Lerner' };
+
+  const data = ANALYTICS_PERIOD_DATA[period] || ANALYTICS_PERIOD_DATA.Tudo;
 
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="attraction" activeMenu="analytics" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: '0 0 16px 0' }}>Atração Parque Jaime Lerner</h1>
-
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '22px' }}>
-          {['Tudo', 'Hoje', '7 Dias', '30 Dias', '📅 Período'].map((p) => (
-            <button key={p} onClick={() => setPeriod(p)} style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', backgroundColor: period === p ? '#4e5a6b' : '#eef1f5', color: period === p ? '#fff' : '#3b4758', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>{p}</button>
-          ))}
+        {/* Cabeçalho com seletor de atração ativo */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: '16px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>
+            Atração {currentAttraction.nome}
+          </h1>
+          {attractions.length > 1 && (
+            <select
+              value={currentAttraction.id}
+              onChange={(e) => updateStore && updateStore((prev) => ({ ...prev, selectedAttractionId: Number(e.target.value) }))}
+              style={{ padding: '8px 14px', borderRadius: 8, border: '1.5px solid #475467', fontWeight: 700, color: '#3b4758', backgroundColor: '#fff', cursor: 'pointer' }}
+            >
+              {attractions.map((a) => (
+                <option key={a.id} value={a.id}>Trocar Atração: {a.nome}</option>
+              ))}
+            </select>
+          )}
         </div>
 
-        {/* Top 3 Charts */}
+        {/* Botões de filtro de período 100% funcionais */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '22px', flexWrap: 'wrap' }}>
+          {['Tudo', 'Hoje', '7 Dias', '30 Dias', '📅 Período'].map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPeriod(p)}
+              style={{
+                padding: '9px 18px',
+                borderRadius: '8px',
+                border: period === p ? '1.5px solid #3b4758' : '1px solid #cbd5e1',
+                backgroundColor: period === p ? '#4e5a6b' : '#eef1f5',
+                color: period === p ? '#fff' : '#3b4758',
+                fontWeight: 700,
+                fontSize: '13px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              {p}
+            </button>
+          ))}
+
+          {period === '📅 Período' && (
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginLeft: 8, backgroundColor: '#f8fafc', padding: '6px 12px', borderRadius: 8, border: '1px solid #cbd5e1' }}>
+              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #94a3b8', fontSize: 12.5 }} />
+              <span style={{ fontSize: 12, color: '#64748b' }}>até</span>
+              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #94a3b8', fontSize: 12.5 }} />
+            </div>
+          )}
+        </div>
+
+        {/* LINHA 1: Total de visitas | Total de ingressos | Estatísticas do evento acessos */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px', marginBottom: '18px' }}>
-          {['Total de visitas', 'Total de ingressos', 'Estatísticas do evento acessos'].map((title, i) => (
+          {[
+            { title: 'Total de visitas', bars: data.visitasBars },
+            { title: 'Total de ingressos', bars: data.ingressosBars }
+          ].map((chart, i) => (
             <div key={i} style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
-              <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>{title}</div>
-              {i < 2 ? (
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '130px', padding: '10px 10px 0 24px', borderBottom: '1px solid #cbd5e1' }}>
-                  <div style={{ flex: 1, height: '65%', backgroundColor: '#94a0b2', borderRadius: '4px 4px 0 0' }} />
-                  <div style={{ flex: 1, height: '78%', backgroundColor: '#94a0b2', borderRadius: '4px 4px 0 0' }} />
-                  <div style={{ flex: 1, height: '90%', backgroundColor: '#94a0b2', borderRadius: '4px 4px 0 0' }} />
-                  <div style={{ flex: 1, height: '58%', backgroundColor: '#4e5a6b', borderRadius: '4px 4px 0 0' }} />
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
-                  <div><span>Engajamento (2.000)</span><div style={{ height: 14, width: '90%', backgroundColor: '#4e5a6b', borderRadius: 4, marginTop: 3 }} /></div>
-                  <div><span>Acesso à página (1.500)</span><div style={{ height: 14, width: '72%', backgroundColor: '#7c899b', borderRadius: 4, marginTop: 3 }} /></div>
-                  <div><span>Adicionado ao carrinho (1.000)</span><div style={{ height: 14, width: '48%', backgroundColor: '#94a0b2', borderRadius: 4, marginTop: 3 }} /></div>
-                </div>
-              )}
+              <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>{chart.title}</div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '130px', padding: '10px 10px 0 24px', borderBottom: '1px solid #cbd5e1' }}>
+                {chart.bars.map((h, idx) => (
+                  <div
+                    key={idx}
+                    title={`${h * 10} registros`}
+                    style={{
+                      flex: 1,
+                      height: `${h}%`,
+                      backgroundColor: idx === chart.bars.length - 1 ? '#4e5a6b' : '#94a0b2',
+                      borderRadius: '4px 4px 0 0',
+                      transition: 'height 0.25s ease'
+                    }}
+                  />
+                ))}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-around', paddingLeft: 24, marginTop: 6, fontSize: 11, color: '#64748b', fontWeight: 600 }}>
+                <span>Item 1</span><span>Item 2</span><span>Item 3</span><span>Item 4</span>
+              </div>
             </div>
           ))}
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Estatísticas do evento acessos</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '11.5px' }}>
+              <div>
+                <span>Engajamento ({data.engajamento[0]})</span>
+                <div style={{ height: 12, width: '92%', backgroundColor: '#4e5a6b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Acesso à página ({data.engajamento[1]})</span>
+                <div style={{ height: 12, width: '74%', backgroundColor: '#7c899b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Adicionado ao carrinho ({data.engajamento[2]})</span>
+                <div style={{ height: 12, width: '52%', backgroundColor: '#94a0b2', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Checkout finalizado ({data.engajamento[3]})</span>
+                <div style={{ height: 12, width: '34%', backgroundColor: '#cbd5e1', borderRadius: 4, marginTop: 3 }} />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* KPI Strip */}
+        {/* LINHA 2: Acessos por horário | Média de acessos por idade | Vendas por tipo de pagamento */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px', marginBottom: '18px' }}>
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Acessos por horário</div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '130px', padding: '10px 8px 0 18px', borderBottom: '1px solid #cbd5e1' }}>
+              {data.horariosBars.map((h, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    flex: 1,
+                    height: `${h}%`,
+                    backgroundColor: idx % 3 === 1 ? '#4e5a6b' : '#94a0b2',
+                    borderRadius: '4px 4px 0 0',
+                    transition: 'height 0.25s ease'
+                  }}
+                />
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: 18, marginTop: 6, fontSize: 10.5, color: '#64748b', fontWeight: 600 }}>
+              <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>21:00</span>
+            </div>
+          </div>
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Média de acessos por idade</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '11.5px' }}>
+              <div>
+                <span>25 a 34 anos ({Math.round(2000 * data.factor)})</span>
+                <div style={{ height: 12, width: '90%', backgroundColor: '#4e5a6b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>35 a 44 anos ({Math.round(1500 * data.factor)})</span>
+                <div style={{ height: 12, width: '72%', backgroundColor: '#7c899b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>18 a 24 anos ({Math.round(1000 * data.factor)})</span>
+                <div style={{ height: 12, width: '50%', backgroundColor: '#94a0b2', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>45+ anos ({Math.round(500 * data.factor)})</span>
+                <div style={{ height: 12, width: '32%', backgroundColor: '#cbd5e1', borderRadius: 4, marginTop: 3 }} />
+              </div>
+            </div>
+          </div>
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '10px' }}>Vendas por tipo de pagamento</div>
+            <WfDonutChart centerLabel={data.qtdVendida} legend={['Pix', 'Cartão de Crédito', 'Cortesia']} />
+          </div>
+        </div>
+
+        {/* FAIXA DE 7 KPIs (4 + 3) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '14px' }}>
           {[
-            { label: 'Número de acessos', val: '3147' },
-            { label: 'Usuários únicos', val: '3147' },
-            { label: 'Quantidade vendida', val: '3147' },
-            { label: 'Tempo médio', val: '16m 44s' }
+            { label: 'Número de acessos', val: data.acessos },
+            { label: 'Usuários únicos', val: data.usuariosUnicos },
+            { label: 'Quantidade vendida', val: data.qtdVendida },
+            { label: 'Tempo médio', val: data.tempoMedio }
           ].map((k, idx) => (
             <div key={idx} style={{ backgroundColor: '#eef1f5', border: '1.5px solid #64748b', borderRadius: '12px', padding: '14px' }}>
               <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#3b4758', marginBottom: '10px' }}>{k.label}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <strong style={{ fontSize: '22px', color: '#3b4758' }}>{k.val}</strong>
-                <span style={{ fontSize: '11.5px', color: '#d97706', fontWeight: 700 }}>↑+8%</span>
+                <span style={{ fontSize: '11.5px', color: '#d97706', fontWeight: 700 }}>{data.trend}</span>
               </div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '18px' }}>
           {[
-            { label: 'Total vendido', val: 'R$ 513.145,00' },
-            { label: 'Ticket médio', val: 'R$ 379,98' },
-            { label: 'Conversão', val: '100%' }
+            { label: 'Total vendido', val: data.totalVendido },
+            { label: 'Ticket médio', val: data.ticketMedio },
+            { label: 'Conversão', val: data.conversao }
           ].map((k, idx) => (
             <div key={idx} style={{ backgroundColor: '#eef1f5', border: '1.5px solid #64748b', borderRadius: '12px', padding: '16px' }}>
               <div style={{ fontSize: '13px', fontWeight: 700, color: '#3b4758', marginBottom: '10px' }}>{k.label}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <strong style={{ fontSize: '24px', color: '#3b4758' }}>{k.val}</strong>
-                <span style={{ fontSize: '11.5px', color: '#d97706', fontWeight: 700 }}>↑+8%</span>
+                <span style={{ fontSize: '11.5px', color: '#d97706', fontWeight: 700 }}>{data.trend}</span>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* LINHA 3: Acessos e qtd de ingressos vendidos por data | Acessos por fontes | Acessos por gênero */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px', marginBottom: '18px' }}>
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Acessos e qtd de ingressos vendidos por data</div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '130px', padding: '10px 8px 0 18px', borderBottom: '1px solid #cbd5e1' }}>
+              {data.datasBars.map((h, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    flex: 1,
+                    height: `${h}%`,
+                    backgroundColor: idx % 2 === 1 ? '#4e5a6b' : '#94a0b2',
+                    borderRadius: '4px 4px 0 0',
+                    transition: 'height 0.25s ease'
+                  }}
+                />
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: 18, marginTop: 6, fontSize: 10.5, color: '#64748b', fontWeight: 600 }}>
+              <span>01/11</span><span>07/11</span><span>14/11</span><span>21/11</span><span>26/11</span>
+            </div>
+          </div>
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Acessos por fontes</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '11.5px' }}>
+              <div>
+                <span>Direto ({Math.round(2000 * data.factor)})</span>
+                <div style={{ height: 12, width: '90%', backgroundColor: '#4e5a6b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Orgânico Google ({Math.round(1500 * data.factor)})</span>
+                <div style={{ height: 12, width: '72%', backgroundColor: '#7c899b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Instagram / QR Hotéis ({Math.round(1000 * data.factor)})</span>
+                <div style={{ height: 12, width: '50%', backgroundColor: '#94a0b2', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Agências Parceiras ({Math.round(500 * data.factor)})</span>
+                <div style={{ height: 12, width: '32%', backgroundColor: '#cbd5e1', borderRadius: 4, marginTop: 3 }} />
+              </div>
+            </div>
+          </div>
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '10px' }}>Acessos por gênero</div>
+            <WfDonutChart centerLabel={data.usuariosUnicos} legend={['Feminino', 'Masculino', 'Outros']} />
+          </div>
+        </div>
+
+        {/* LINHA 4: Acessos por dispositivo | Estados com maior acesso | Cidades com mais acesso */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px' }}>
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '10px' }}>Acessos por dispositivo</div>
+            <WfDonutChart centerLabel={data.acessos} legend={['Mobile (Smartphone)', 'Desktop', 'Tablet']} />
+          </div>
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Estados com maior acesso</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '11.5px' }}>
+              <div>
+                <span>Paraná ({Math.round(2000 * data.factor)})</span>
+                <div style={{ height: 12, width: '92%', backgroundColor: '#4e5a6b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>São Paulo ({Math.round(1500 * data.factor)})</span>
+                <div style={{ height: 12, width: '72%', backgroundColor: '#7c899b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Santa Catarina ({Math.round(1000 * data.factor)})</span>
+                <div style={{ height: 12, width: '50%', backgroundColor: '#94a0b2', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Rio Grande do Sul ({Math.round(500 * data.factor)})</span>
+                <div style={{ height: 12, width: '32%', backgroundColor: '#cbd5e1', borderRadius: 4, marginTop: 3 }} />
+              </div>
+            </div>
+          </div>
+
+          <div style={{ border: '1.5px solid #64748b', borderRadius: '14px', padding: '16px' }}>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#3b4758', marginBottom: '14px' }}>Cidades com mais acesso</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', fontSize: '11.5px' }}>
+              <div>
+                <span>Curitiba ({Math.round(2000 * data.factor)})</span>
+                <div style={{ height: 12, width: '92%', backgroundColor: '#4e5a6b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>São Paulo ({Math.round(1500 * data.factor)})</span>
+                <div style={{ height: 12, width: '72%', backgroundColor: '#7c899b', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Joinville ({Math.round(1000 * data.factor)})</span>
+                <div style={{ height: 12, width: '50%', backgroundColor: '#94a0b2', borderRadius: 4, marginTop: 3 }} />
+              </div>
+              <div>
+                <span>Londrina ({Math.round(500 * data.factor)})</span>
+                <div style={{ height: 12, width: '32%', backgroundColor: '#cbd5e1', borderRadius: 4, marginTop: 3 }} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

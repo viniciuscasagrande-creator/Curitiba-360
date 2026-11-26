@@ -1,5 +1,5 @@
 // frontend/src/components/wf/WfScreensPart3.jsx
-// Implementação fiel e funcional das telas WF-028 a WF-047 (Gestão Financeira da Atração, Validações e Relatórios PDF/Tela)
+// Implementação fiel e 100% interativa das telas WF-028 a WF-047 (Gestão Financeira da Atração, Validações e Relatórios PDF/Tela)
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -13,16 +13,36 @@ import { downloadExcelCsv, playTurnstileBeep } from '../../utils/exportAndAudioU
 // WF-028 & WF-029: NEGOCIAÇÃO FINANCEIRA (CONDIÇÕES COMERCIAIS E INFORMAÇÕES FINANCEIRAS)
 // ============================================================================
 export function Wf028AttractionFinancialConfig({ mode = 'condicoes' }) {
+  const [savedBanner, setSavedBanner] = useState(false);
+
+  const handleSave = () => {
+    setSavedBanner(true);
+    setTimeout(() => setSavedBanner(false), 3000);
+  };
+
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="attraction" activeMenu={mode === 'condicoes' ? 'fin-condicoes' : 'fin-info'} />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>
-          {mode === 'condicoes' ? 'Condições Comercial' : 'Informações Financeiras'}
-        </h1>
-        <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 18px 0' }}>
-          Condições comerciais do contrato
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '780px' }}>
+          <div>
+            <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>
+              {mode === 'condicoes' ? 'Condições Comercial' : 'Informações Financeiras'}
+            </h1>
+            <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 18px 0' }}>
+              Condições comerciais do contrato
+            </p>
+          </div>
+          <button onClick={handleSave} style={{ padding: '10px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>
+            Salvar Alterações ✓
+          </button>
+        </div>
+
+        {savedBanner && (
+          <div style={{ maxWidth: '780px', marginBottom: 16, padding: '10px 14px', borderRadius: 8, backgroundColor: '#dcfce7', color: '#166534', fontWeight: 700, fontSize: 13 }}>
+            ✓ Configurações salvas e sincronizadas com o contrato da atração!
+          </div>
+        )}
 
         <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '20px', maxWidth: '780px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
@@ -104,9 +124,10 @@ export function Wf028AttractionFinancialConfig({ mode = 'condicoes' }) {
 export function Wf030ExpensesSummary() {
   const [showRepasseModal, setShowRepasseModal] = useState(true);
   const [valorRepasse, setValorRepasse] = useState('10.000,00');
+  const [expandedRow, setExpandedRow] = useState('opera');
 
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="attraction" activeMenu="fin-despesas" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
@@ -126,8 +147,8 @@ export function Wf030ExpensesSummary() {
                 </tr>
               </thead>
               <tbody>
-                <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
-                  <td style={{ padding: '14px' }}>⌃</td>
+                <tr style={{ borderBottom: '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setExpandedRow(expandedRow === 'opera' ? null : 'opera')}>
+                  <td style={{ padding: '14px' }}>{expandedRow === 'opera' ? '⌃' : '⌄'}</td>
                   <td style={{ padding: '14px', display: 'flex', alignItems: 'center', gap: 10 }}>
                     <img src={OFFICIAL_LOGO} alt="" style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #475467', padding: 2 }} />
                     <strong>Opera de Arame</strong>
@@ -135,46 +156,48 @@ export function Wf030ExpensesSummary() {
                   <td style={{ padding: '14px' }}><WfStatusPill status="Aguardando Liberação" /></td>
                   <td style={{ padding: '14px' }}>02/12/2026 16:44:22</td>
                   <td style={{ padding: '14px', fontWeight: 700 }}>88.000,00</td>
-                  <td style={{ padding: '14px' }}>
+                  <td style={{ padding: '14px' }} onClick={(e) => e.stopPropagation()}>
                     <button onClick={() => setShowRepasseModal(true)} style={{ padding: '6px 14px', borderRadius: 99, border: 'none', backgroundColor: '#f59e0b', color: '#fff', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>Solicitar Repasse</button>
                   </td>
                 </tr>
-                <tr>
-                  <td colSpan={6} style={{ padding: '0 0 16px 36px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
-                      <thead>
-                        <tr style={{ backgroundColor: '#eef1f5', textAlign: 'left' }}>
-                          <th style={{ padding: 10 }}>Nome ↕</th>
-                          <th style={{ padding: 10 }}>Valor ↕</th>
-                          <th style={{ padding: 10 }}>Tipo ↕</th>
-                          <th style={{ padding: 10 }}>Status ↕</th>
-                          <th style={{ padding: 10 }}>Observações ↕</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[
-                          { nome: 'Ingressos', valor: '100.000,00', tipo: 'Receita', status: 'Recebido', obs: '------------' },
-                          { nome: 'Comissão Agentes', valor: '1.000,00', tipo: 'Despesas', status: 'Pendente', obs: '------------' },
-                          { nome: 'Repasse', valor: '9.000,00', tipo: 'Despesas', status: 'Bloqueio Financeiro', obs: 'Cliente com bloqueio' },
-                          { nome: 'Encargos', valor: '900,00', tipo: 'Despesas', status: 'Pendente', obs: '------------' }
-                        ].map((row, idx) => (
-                          <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
-                            <td style={{ padding: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <img src={OFFICIAL_LOGO} alt="" style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #475467', padding: 1 }} />
-                              <strong>{row.nome}</strong>
-                            </td>
-                            <td style={{ padding: 12 }}>{row.valor}</td>
-                            <td style={{ padding: 12 }}><WfStatusPill status={row.tipo} /></td>
-                            <td style={{ padding: 12 }}><WfStatusPill status={row.status} /></td>
-                            <td style={{ padding: 12 }}>{row.obs}</td>
+                {expandedRow === 'opera' && (
+                  <tr>
+                    <td colSpan={6} style={{ padding: '0 0 16px 36px' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                        <thead>
+                          <tr style={{ backgroundColor: '#eef1f5', textAlign: 'left' }}>
+                            <th style={{ padding: 10 }}>Nome ↕</th>
+                            <th style={{ padding: 10 }}>Valor ↕</th>
+                            <th style={{ padding: 10 }}>Tipo ↕</th>
+                            <th style={{ padding: 10 }}>Status ↕</th>
+                            <th style={{ padding: 10 }}>Observações ↕</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
-                  <td style={{ padding: '14px' }}>⌄</td>
+                        </thead>
+                        <tbody>
+                          {[
+                            { nome: 'Ingressos', valor: '100.000,00', tipo: 'Receita', status: 'Recebido', obs: '------------' },
+                            { nome: 'Comissão Agentes', valor: '1.000,00', tipo: 'Despesas', status: 'Pendente', obs: '------------' },
+                            { nome: 'Repasse', valor: '9.000,00', tipo: 'Despesas', status: 'Bloqueio Financeiro', obs: 'Cliente com bloqueio' },
+                            { nome: 'Encargos', valor: '900,00', tipo: 'Despesas', status: 'Pendente', obs: '------------' }
+                          ].map((row, idx) => (
+                            <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
+                              <td style={{ padding: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <img src={OFFICIAL_LOGO} alt="" style={{ width: 26, height: 26, borderRadius: '50%', border: '1px solid #475467', padding: 1 }} />
+                                <strong>{row.nome}</strong>
+                              </td>
+                              <td style={{ padding: 12 }}>{row.valor}</td>
+                              <td style={{ padding: 12 }}><WfStatusPill status={row.tipo} /></td>
+                              <td style={{ padding: 12 }}><WfStatusPill status={row.status} /></td>
+                              <td style={{ padding: 12 }}>{row.obs}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                )}
+                <tr style={{ borderBottom: '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setExpandedRow(expandedRow === 'musica' ? null : 'musica')}>
+                  <td style={{ padding: '14px' }}>{expandedRow === 'musica' ? '⌃' : '⌄'}</td>
                   <td style={{ padding: '14px', display: 'flex', alignItems: 'center', gap: 10 }}>
                     <img src={OFFICIAL_LOGO} alt="" style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #475467', padding: 2 }} />
                     <strong>Rua da Música</strong>
@@ -182,7 +205,7 @@ export function Wf030ExpensesSummary() {
                   <td style={{ padding: '14px' }}><WfStatusPill status="Aguardando Liberação" /></td>
                   <td style={{ padding: '14px' }}>02/12/2026 16:44:22</td>
                   <td style={{ padding: '14px', fontWeight: 700 }}>88.000,00</td>
-                  <td style={{ padding: '14px' }}>
+                  <td style={{ padding: '14px' }} onClick={(e) => e.stopPropagation()}>
                     <button onClick={() => setShowRepasseModal(true)} style={{ padding: '6px 14px', borderRadius: 99, border: 'none', backgroundColor: '#f59e0b', color: '#fff', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>Solicitar Repasse</button>
                   </td>
                 </tr>
@@ -219,7 +242,7 @@ export function Wf031ValidateTickets({ store }) {
   const [feedback, setFeedback] = useState(null);
   const [cameraActive, setCameraActive] = useState(false);
   const videoRef = useRef(null);
-  const vouchers = store.liveVouchers || [];
+  const vouchers = store?.liveVouchers || [];
 
   useEffect(() => {
     let stream = null;
@@ -248,11 +271,25 @@ export function Wf031ValidateTickets({ store }) {
     setCode('');
   };
 
+  const allRows = [
+    { id: '279827982798', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Validado', data: '02/07/2026 16:44:22', por: 'João da Silva' },
+    { id: '279827982799', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Validado', data: '02/07/2026 16:44:22', por: 'João da Silva' },
+    { id: '279827982800', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Erro de leitura', data: '02/07/2026 16:44:22', por: 'João da Silva' },
+    { id: '279827982801', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Cancelado', data: '02/07/2026 16:44:22', por: 'João da Silva' },
+    ...vouchers.slice(0, 3).map((v) => ({ id: v.codigo, nome: v.turista, email: v.email, status: v.status === 'Vendido' ? 'Validado' : v.status, data: v.dataHora, por: 'João da Silva' }))
+  ];
+
+  const filteredRows = allRows.filter((row) => {
+    if (tab === 'Validados') return row.status === 'Validado';
+    if (tab === 'Cancelados') return row.status === 'Cancelado' || row.status === 'Erro de leitura';
+    return true;
+  });
+
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="attraction" activeMenu="validar" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Validar Ingressos</h1>
             <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Histórico de ingressos validados</p>
@@ -305,13 +342,7 @@ export function Wf031ValidateTickets({ store }) {
             </tr>
           </thead>
           <tbody>
-            {[
-              { id: '279827982798', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Validado', data: '02/07/2026 16:44:22', por: 'João da Silva' },
-              { id: '279827982799', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Validado', data: '02/07/2026 16:44:22', por: 'João da Silva' },
-              { id: '279827982800', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Erro de leitura', data: '02/07/2026 16:44:22', por: 'João da Silva' },
-              { id: '279827982801', nome: 'Darlene Robertson', email: 'Darlene.Robertson@gmail.com', status: 'Cancelado', data: '02/07/2026 16:44:22', por: 'João da Silva' },
-              ...vouchers.slice(0, 3).map((v) => ({ id: v.codigo, nome: v.turista, email: v.email, status: v.status === 'Vendido' ? 'Validado' : v.status, data: v.dataHora, por: 'João da Silva' }))
-            ].map((row, idx) => (
+            {filteredRows.map((row, idx) => (
               <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1' }}>
                 <td style={{ padding: '14px' }}>📋 {row.id}</td>
                 <td style={{ padding: '14px' }}>
@@ -336,20 +367,25 @@ export function Wf031ValidateTickets({ store }) {
 // ============================================================================
 export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', activeMenu = 'fin-vendas', isPdf = false, isBordero = false, pdfSlug = '' }) {
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [selectedAgent, setSelectedAgent] = useState('Todos');
+  const [startDate, setStartDate] = useState('01/01/2026');
+  const [endDate, setEndDate] = useState('31/12/2026');
 
-  const rows = [
-    { cat: 'Adulto', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' },
-    { cat: 'Morador Curitiba Adulto', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' },
-    { cat: 'Estudante', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' },
-    { cat: 'Doador', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' }
+  const allRows = [
+    { cat: 'Adulto', qtd: 2798, unit: 'R$ 17,50', total: 'R$ 48.965,00' },
+    { cat: 'Morador Curitiba Adulto', qtd: 2798, unit: 'R$ 17,50', total: 'R$ 48.965,00' },
+    { cat: 'Estudante', qtd: 2798, unit: 'R$ 17,50', total: 'R$ 48.965,00' },
+    { cat: 'Doador', qtd: 2798, unit: 'R$ 17,50', total: 'R$ 48.965,00' }
   ];
+
+  const rows = selectedCategory === 'Todos' ? allRows : allRows.filter((r) => r.cat === selectedCategory);
 
   // LAYOUT PDF (WF-033, WF-035, WF-037, WF-039, WF-041, WF-043, WF-045, WF-047)
   if (isPdf) {
     return (
-      <div style={{ backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', padding: '36px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div className="notranslate" translate="no" style={{ backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)', padding: '36px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
-          {/* Cabeçalho oficial do PDF com a Logo Oficial do Curitiba 360° */}
           <div style={{
             border: '1.5px solid #94a3b8',
             borderRadius: '4px',
@@ -374,15 +410,15 @@ export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', ac
           <div style={{ display: 'flex', gap: '16px', marginBottom: '28px', flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontSize: '12px', color: '#64748b', marginBottom: 4 }}>Período</div>
-              <div style={{ border: '1.5px solid #475467', borderRadius: 8, padding: '10px 14px', fontSize: '13.5px' }}>📅 01/01/2026 - 31/12/2026</div>
+              <div style={{ border: '1.5px solid #475467', borderRadius: 8, padding: '10px 14px', fontSize: '13.5px' }}>📅 {startDate} - {endDate}</div>
             </div>
             <div>
               <div style={{ fontSize: '12px', color: '#64748b', marginBottom: 4 }}>Categoria</div>
-              <div style={{ border: '1.5px solid #475467', borderRadius: 8, padding: '10px 14px', fontSize: '13.5px' }}>⊞ Todos</div>
+              <div style={{ border: '1.5px solid #475467', borderRadius: 8, padding: '10px 14px', fontSize: '13.5px' }}>⊞ {selectedCategory}</div>
             </div>
             <div>
               <div style={{ fontSize: '12px', color: '#64748b', marginBottom: 4 }}>Agente</div>
-              <div style={{ border: '1.5px solid #475467', borderRadius: 8, padding: '10px 14px', fontSize: '13.5px' }}>👤 Todos</div>
+              <div style={{ border: '1.5px solid #475467', borderRadius: 8, padding: '10px 14px', fontSize: '13.5px' }}>👤 {selectedAgent}</div>
             </div>
             <div>
               <div style={{ fontSize: '12px', color: '#64748b', marginBottom: 4 }}>Tipo de Ingresso</div>
@@ -409,10 +445,10 @@ export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', ac
                 </tr>
               ))}
               <tr style={{ backgroundColor: '#eef1f5', fontWeight: 800 }}>
-                <td style={{ padding: '14px 16px' }}>Quantidade: 4</td>
-                <td style={{ padding: '14px 16px' }}>11.192</td>
-                <td style={{ padding: '14px 16px' }}>R$ 70,00</td>
-                <td style={{ padding: '14px 16px' }}>Total: R$ 195.860</td>
+                <td style={{ padding: '14px 16px' }}>Quantidade: {rows.length}</td>
+                <td style={{ padding: '14px 16px' }}>{(rows.length * 2798).toLocaleString('pt-BR')}</td>
+                <td style={{ padding: '14px 16px' }}>R$ 17,50</td>
+                <td style={{ padding: '14px 16px' }}>Total: R$ {(rows.length * 48965).toLocaleString('pt-BR')}</td>
               </tr>
             </tbody>
           </table>
@@ -442,7 +478,7 @@ export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', ac
 
   // LAYOUT TELA DE RELATÓRIO DA ATRAÇÃO (WF-032, WF-034, WF-036, WF-038, WF-040, WF-042, WF-044, WF-046)
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="attraction" activeMenu={activeMenu} />
       <div style={{ flex: 1, padding: '28px 36px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: 12 }}>
@@ -486,25 +522,35 @@ export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', ac
           <div style={{ fontWeight: 700, fontSize: '13px', color: '#3b4758', marginBottom: '8px' }}>Filtros</div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div>
-              <div style={{ fontSize: 11.5, color: '#64748b', marginBottom: 4 }}>Todo do período ☑</div>
+              <div style={{ fontSize: 11.5, color: '#64748b', marginBottom: 4 }}>Todo o período ☑</div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <input defaultValue="01/01/2026" style={{ width: '115px', padding: '9px 12px', borderRadius: 8, border: '1.5px solid #475467' }} />
-                <input defaultValue="31/12/2026" style={{ width: '115px', padding: '9px 12px', borderRadius: 8, border: '1.5px solid #475467' }} />
+                <input value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{ width: '115px', padding: '9px 12px', borderRadius: 8, border: '1.5px solid #475467' }} />
+                <input value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ width: '115px', padding: '9px 12px', borderRadius: 8, border: '1.5px solid #475467' }} />
               </div>
             </div>
             <div>
               <div style={{ fontSize: 11.5, color: '#64748b', marginBottom: 4 }}>Categoria</div>
-              <select style={{ padding: '9px 14px', borderRadius: 8, border: '1.5px solid #475467' }}><option>⊞ Todos</option></select>
+              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} style={{ padding: '9px 14px', borderRadius: 8, border: '1.5px solid #475467' }}>
+                <option value="Todos">⊞ Todos</option>
+                <option value="Adulto">Adulto</option>
+                <option value="Morador Curitiba Adulto">Morador Curitiba Adulto</option>
+                <option value="Estudante">Estudante</option>
+                <option value="Doador">Doador</option>
+              </select>
             </div>
             <div>
               <div style={{ fontSize: 11.5, color: '#64748b', marginBottom: 4 }}>Agente</div>
-              <select style={{ padding: '9px 14px', borderRadius: 8, border: '1.5px solid #475467' }}><option>👤 Todos</option></select>
+              <select value={selectedAgent} onChange={(e) => setSelectedAgent(e.target.value)} style={{ padding: '9px 14px', borderRadius: 8, border: '1.5px solid #475467' }}>
+                <option value="Todos">👤 Todos</option>
+                <option value="Hotel Pestana">Hotel Pestana Curitiba</option>
+                <option value="Agencia Silva">Agência Silva</option>
+              </select>
             </div>
             <div>
               <div style={{ fontSize: 11.5, color: '#64748b', marginBottom: 4 }}>Tipo de Ingresso</div>
-              <select style={{ padding: '9px 14px', borderRadius: 8, border: '1.5px solid #475467' }}><option>🎟 Todos</option></select>
+              <select style={{ padding: '9px 14px', borderRadius: 8, border: '1.5px solid #475467' }}><option>🎟 Todos</option><option>Inteira</option><option>Meia / Morador</option></select>
             </div>
-            <button style={{ padding: '10px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Adicionar Campo ⊕</button>
+            <button onClick={() => setSelectedCategory('Todos')} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Limpar Filtros ↺</button>
           </div>
         </div>
 
@@ -527,10 +573,10 @@ export function Wf032AttractionReport({ reportTitle = 'Relatório de Vendas', ac
               </tr>
             ))}
             <tr style={{ backgroundColor: '#eef1f5', fontWeight: 800 }}>
-              <td style={{ padding: '14px' }}>Quantidade: 4</td>
-              <td style={{ padding: '14px' }}>11.192</td>
-              <td style={{ padding: '14px' }}>R$ 70,00</td>
-              <td style={{ padding: '14px' }}>Total: R$ 195.860</td>
+              <td style={{ padding: '14px' }}>Quantidade: {rows.length}</td>
+              <td style={{ padding: '14px' }}>{(rows.length * 2798).toLocaleString('pt-BR')}</td>
+              <td style={{ padding: '14px' }}>R$ 17,50</td>
+              <td style={{ padding: '14px' }}>Total: R$ {(rows.length * 48965).toLocaleString('pt-BR')}</td>
             </tr>
           </tbody>
         </table>
