@@ -1160,51 +1160,189 @@ export function Wf063GlobalFinancialReports() {
   const navigate = useNavigate();
   const [subTab, setSubTab] = useState('Vendas');
 
+  const tabData = {
+    Vendas: {
+      kpis: [
+        { label: 'Total de vendas brutas', val: 'R$ 513.145,00', sub: '↑+14,2%' },
+        { label: 'Ingressos vendidos', val: '18.420', sub: '↑+9,4%' },
+        { label: 'Ticket médio global', val: 'R$ 27,85', sub: '↑+3,1%' },
+        { label: 'Atrações no escopo', val: '24', sub: '↑Todas ativas' }
+      ],
+      rows: [
+        { cat: 'Adulto (Inteira)', qtd: '7.420', unit: 'R$ 35,00', total: 'R$ 259.700,00' },
+        { cat: 'Morador Curitiba Adulto (50%)', qtd: '6.840', unit: 'R$ 17,50', total: 'R$ 119.700,00' },
+        { cat: 'Estudante / Meia-Entrada', qtd: '2.960', unit: 'R$ 17,50', total: 'R$ 51.800,00' },
+        { cat: 'Passaporte Curitiba 360° (Combo)', qtd: '1.200', unit: 'R$ 68,28', total: 'R$ 81.945,00' }
+      ]
+    },
+    'Abandono de Carrinho': {
+      kpis: [
+        { label: 'Volume abandonado', val: 'R$ 28.450,00', sub: '342 carrinhos' },
+        { label: 'Recuperados via WhatsApp/E-mail', val: 'R$ 9.120,00', sub: '32% conversão' },
+        { label: 'Tempo médio no checkout', val: '4m 18s', sub: 'PIX 30min' },
+        { label: 'Taxa de abandono', val: '11,4%', sub: '↓-2,1% melhora' }
+      ],
+      rows: [
+        { cat: 'Expiração QR Code PIX (30 min)', qtd: '142', unit: 'R$ 35,00', total: 'R$ 4.970,00' },
+        { cat: 'Validação Cadastro Morador CWB', qtd: '98', unit: 'R$ 17,50', total: 'R$ 1.715,00' },
+        { cat: 'Cartão Recusado pelo Emissor', qtd: '64', unit: 'R$ 17,50', total: 'R$ 1.120,00' },
+        { cat: 'Abandono na Seleção de Data', qtd: '38', unit: 'R$ 70,00', total: 'R$ 2.660,00' }
+      ]
+    },
+    'Ingresso Detalhado': {
+      kpis: [
+        { label: 'Bilhetes emitidos (QR)', val: '18.420', sub: '100% antifraude' },
+        { label: 'Lotes ativos', val: '42', sub: 'Em 24 atrações' },
+        { label: 'Transferências de titular', val: '186', sub: 'Dentro do limite' },
+        { label: 'Cancelados / Estornados', val: '94', sub: '0,51% do total' }
+      ],
+      rows: [
+        { cat: 'Lote 001 • Ópera de Arame & Vale da Música', qtd: '5.840', unit: 'R$ 35,00', total: 'R$ 204.400,00' },
+        { cat: 'Lote 001 • Parque Jaime Lerner (Rua da Música)', qtd: '4.920', unit: 'R$ 25,00', total: 'R$ 123.000,00' },
+        { cat: 'Lote 002 • Jardim Botânico Galeria 360°', qtd: '4.560', unit: 'R$ 22,50', total: 'R$ 102.600,00' },
+        { cat: 'Lote 001 • Museu Oscar Niemeyer (MON)', qtd: '3.100', unit: 'R$ 26,82', total: 'R$ 83.145,00' }
+      ]
+    },
+    Categorias: {
+      kpis: [
+        { label: 'Categorias ativas', val: '8', sub: 'Regras municipais' },
+        { label: 'Maior volume', val: 'Morador CWB', sub: '41% das emissões' },
+        { label: 'Maior receita', val: 'Adulto Inteira', sub: '50,6% do GMV' },
+        { label: 'Meia-entrada legal', val: '22,4%', sub: 'Validado documento' }
+      ],
+      rows: [
+        { cat: 'Adulto Inteira', qtd: '7.420', unit: 'R$ 35,00', total: 'R$ 259.700,00' },
+        { cat: 'Morador Curitiba Adulto', qtd: '6.840', unit: 'R$ 17,50', total: 'R$ 119.700,00' },
+        { cat: 'Estudante', qtd: '2.960', unit: 'R$ 17,50', total: 'R$ 51.800,00' },
+        { cat: 'Idoso / Doador de Sangue / PCD', qtd: '1.200', unit: 'R$ 17,50', total: 'R$ 21.000,00' }
+      ]
+    },
+    'Cortesias Emitidas': {
+      kpis: [
+        { label: 'Total de cortesias', val: '655', sub: '3,4% das emissões' },
+        { label: 'Valor de face isento', val: 'R$ 17.325,00', sub: 'Cota contratual' },
+        { label: 'Guias Cadastur', val: '140', sub: 'Acesso acompanhante' },
+        { label: 'Gratuidade Infantil (<6a)', val: '320', sub: 'Lei Municipal' }
+      ],
+      rows: [
+        { cat: 'Imprensa & Influenciadores Oficiais', qtd: '85', unit: 'R$ 0,00', total: 'R$ 2.975,00 (Isento)' },
+        { cat: 'Guias de Turismo Cadastur PR', qtd: '140', unit: 'R$ 0,00', total: 'R$ 4.900,00 (Isento)' },
+        { cat: 'Cota Institucional Prefeitura / Instituto', qtd: '110', unit: 'R$ 0,00', total: 'R$ 3.850,00 (Isento)' },
+        { cat: 'Crianças até 6 anos', qtd: '320', unit: 'R$ 0,00', total: 'R$ 5.600,00 (Isento)' }
+      ]
+    },
+    Validação: {
+      kpis: [
+        { label: 'Ingressos validados', val: '16.940', sub: '91,9% comparecimento' },
+        { label: 'No-show (não utilizados)', val: '1.480', sub: '8,1% do total' },
+        { label: 'Tentativas duplicadas bloqueadas', val: '34', sub: 'Alerta catraca' },
+        { label: 'Tempo médio de leitura QR', val: '0,4s', sub: 'WebRTC / Laser' }
+      ],
+      rows: [
+        { cat: 'Catracas Ópera de Arame & Vale da Música', qtd: '5.410', unit: 'R$ 35,00', total: 'R$ 189.350,00' },
+        { cat: 'Catracas Parque Jaime Lerner', qtd: '4.680', unit: 'R$ 25,00', total: 'R$ 117.000,00' },
+        { cat: 'Catracas Jardim Botânico', qtd: '4.150', unit: 'R$ 22,50', total: 'R$ 93.375,00' },
+        { cat: 'Catracas Museu Oscar Niemeyer', qtd: '2.700', unit: 'R$ 26,82', total: 'R$ 72.414,00' }
+      ]
+    },
+    Comissões: {
+      kpis: [
+        { label: 'Vendas via Agências & Hotéis', val: 'R$ 192.400,00', sub: '37,5% do GMV' },
+        { label: 'Comissões B2B apuradas', val: 'R$ 19.240,00', sub: 'Média 10%' },
+        { label: 'Comissões já pagas', val: 'R$ 14.820,00', sub: 'Via PIX B2B' },
+        { label: 'Pendentes de fechamento', val: 'R$ 4.420,00', sub: 'Ciclo dia 05' }
+      ],
+      rows: [
+        { cat: 'Serra Verde Express Receptivo', qtd: '2.140', unit: 'R$ 3,50', total: 'R$ 7.490,00' },
+        { cat: 'Hotel Pestana Curitiba 5★ (QR Concierge)', qtd: '1.280', unit: 'R$ 3,50', total: 'R$ 4.480,00' },
+        { cat: 'Curitiba Sightseeing Turismo', qtd: '1.190', unit: 'R$ 3,50', total: 'R$ 4.165,00' },
+        { cat: 'Rede de Agentes Comerciais Credenciados', qtd: '887', unit: 'R$ 3,50', total: 'R$ 3.105,00' }
+      ]
+    },
+    'Venda por Pagamentos': {
+      kpis: [
+        { label: 'Pagamentos via PIX', val: 'R$ 318.150,00', sub: '62% das vendas' },
+        { label: 'Cartão de Crédito', val: 'R$ 159.075,00', sub: '31% das vendas' },
+        { label: 'Cartão de Débito / Carteira', val: 'R$ 35.920,00', sub: '7% das vendas' },
+        { label: 'Custo Médio MDR / Gateway', val: '1,18%', sub: 'Conciliado' }
+      ],
+      rows: [
+        { cat: 'PIX Instantâneo (Banco Central / QR Dinâmico)', qtd: '11.420', unit: 'R$ 27,85', total: 'R$ 318.150,00' },
+        { cat: 'Cartão de Crédito à Vista (1x)', qtd: '3.680', unit: 'R$ 27,85', total: 'R$ 102.488,00' },
+        { cat: 'Cartão de Crédito Parcelado (2x a 6x)', qtd: '2.032', unit: 'R$ 27,85', total: 'R$ 56.587,00' },
+        { cat: 'Cartão de Débito & Carteira Digital CWB 360', qtd: '1.288', unit: 'R$ 27,88', total: 'R$ 35.920,00' }
+      ]
+    },
+    'Borderô Resumido': {
+      kpis: [
+        { label: 'Faturamento Bruto (GMV)', val: 'R$ 513.145,00', sub: '100% conciliado' },
+        { label: 'Taxa Curitiba 360° (10%)', val: 'R$ 51.314,50', sub: 'Receita plataforma' },
+        { label: 'Comissões B2B + MDR', val: 'R$ 25.295,00', sub: '4,93% deduções' },
+        { label: 'Repasse Líquido Parceiros', val: 'R$ 436.535,50', sub: '85,07% líquido' }
+      ],
+      rows: [
+        { cat: '(+) Receita Bruta Total de Ingressos', qtd: '18.420', unit: 'R$ 27,85', total: 'R$ +513.145,00' },
+        { cat: '(-) Retenção Taxa Administrativa Curitiba 360°', qtd: '18.420', unit: '10,0%', total: 'R$ -51.314,50' },
+        { cat: '(-) Comissões Agências, Hotéis & Agentes B2B', qtd: '5.497', unit: '10,0%', total: 'R$ -19.240,00' },
+        { cat: '(=) Saldo Líquido Repassado às Atrações', qtd: '24 Atrações', unit: 'Líquido', total: 'R$ 436.535,50' }
+      ]
+    }
+  };
+
+  const currentData = tabData[subTab] || tabData.Vendas;
+
   return (
-    <div style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
+    <div className="notranslate" translate="no" style={{ display: 'flex', backgroundColor: '#ffffff', minHeight: 'calc(100vh - 45px)' }}>
       <WfSidebar mode="admin" activeMenu="relatorios" />
       <div style={{ flex: 1, padding: '28px 36px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Relatórios Financeiros Globais</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#3b4758', margin: 0 }}>Relatórios Financeiros Globais — {subTab}</h1>
+            <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Fechamento consolidado multi-atração, split de pagamentos, comissões B2B e borderô geral</p>
+          </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={() => window.print()} style={{ padding: '9px 16px', borderRadius: 8, border: '1.5px solid #475467', backgroundColor: '#fff', fontWeight: 700, cursor: 'pointer' }}>Imprimir 🖨</button>
             <button
               onClick={() => downloadExcelCsv(
-                'relatorio-financeiro-global-curitiba360.csv',
-                ['Categoria', 'Quantidade', 'Valor Unitario', 'Valor Total'],
-                [
-                  ['Adulto', '2798', 'R$ 17,50', 'R$ 48.965,00'],
-                  ['Morador Curitiba Adulto', '2798', 'R$ 17,50', 'R$ 48.965,00'],
-                  ['Estudante', '2798', 'R$ 17,50', 'R$ 48.965,00'],
-                  ['Doador', '2798', 'R$ 17,50', 'R$ 48.965,00']
-                ]
+                `relatorio-financeiro-global-${subTab.toLowerCase().replace(/\s+/g, '-')}-curitiba360.csv`,
+                ['Categoria / Item', 'Quantidade', 'Valor Unitario', 'Valor Total'],
+                currentData.rows.map((r) => [r.cat, r.qtd, r.unit, r.total])
               )}
               style={{ padding: '9px 16px', borderRadius: 8, border: 'none', backgroundColor: '#eef1f5', fontWeight: 700, cursor: 'pointer' }}
             >
               Download XLSX 📊
             </button>
-            <button onClick={() => navigate('/tela/wf-033-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas')} style={{ padding: '9px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Download PDF 📄</button>
+            <button onClick={() => navigate('/tela/wf-047-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-bordero-resumido')} style={{ padding: '9px 18px', borderRadius: 8, border: 'none', backgroundColor: '#4e5a6b', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Download PDF 📄</button>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '14px', borderBottom: '1px solid #cbd5e1', paddingBottom: '10px', marginBottom: '20px', fontSize: '12.5px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '10px', borderBottom: '1px solid #cbd5e1', paddingBottom: '10px', marginBottom: '20px', fontSize: '12.5px', flexWrap: 'wrap' }}>
           {['Vendas', 'Abandono de Carrinho', 'Ingresso Detalhado', 'Categorias', 'Cortesias Emitidas', 'Validação', 'Comissões', 'Venda por Pagamentos', 'Borderô Resumido'].map((t) => (
-            <button key={t} onClick={() => setSubTab(t)} style={{ padding: '6px 10px', borderRadius: 6, border: 'none', backgroundColor: subTab === t ? '#eef1f5' : 'transparent', fontWeight: subTab === t ? 800 : 500, color: '#3b4758', cursor: 'pointer' }}>{t}</button>
+            <button
+              key={t}
+              onClick={() => setSubTab(t)}
+              style={{
+                padding: '7px 12px',
+                borderRadius: 8,
+                border: subTab === t ? '1.5px solid #3b4758' : '1px solid #cbd5e1',
+                backgroundColor: subTab === t ? '#4e5a6b' : '#eef1f5',
+                fontWeight: 700,
+                color: subTab === t ? '#ffffff' : '#3b4758',
+                cursor: 'pointer'
+              }}
+            >
+              {t}
+            </button>
           ))}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '22px' }}>
-          {[
-            { label: 'Total de vendas', val: 'R$ 195.860', sub: '↑+12%' },
-            { label: 'Ingressos vendidos', val: '11.192', sub: '↑+8%' },
-            { label: 'Ticket médio', val: 'R$ 17,50', sub: '↑+3%' },
-            { label: 'Atrações no escopo', val: '24', sub: '↑Todas' }
-          ].map((k, idx) => (
+          {currentData.kpis.map((k, idx) => (
             <div key={idx} style={{ backgroundColor: '#eef1f5', border: '1.5px solid #64748b', borderRadius: '12px', padding: '14px' }}>
               <div style={{ fontSize: '13px', fontWeight: 700, color: '#3b4758', marginBottom: '10px' }}>{k.label}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <strong style={{ fontSize: '22px', color: '#3b4758' }}>{k.val}</strong>
-                <span style={{ fontSize: '11.5px', color: '#475569' }}>{k.sub}</span>
+                <span style={{ fontSize: '11.5px', color: '#d97706', fontWeight: 700 }}>{k.sub}</span>
               </div>
             </div>
           ))}
@@ -1213,19 +1351,14 @@ export function Wf063GlobalFinancialReports() {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px' }}>
           <thead>
             <tr style={{ backgroundColor: '#eef1f5', color: '#3b4758', textAlign: 'left' }}>
-              <th style={{ padding: '12px 14px' }}>Categoria ↕</th>
+              <th style={{ padding: '12px 14px' }}>Descrição / Categoria ({subTab}) ↕</th>
               <th style={{ padding: '12px 14px' }}>Quantidade ↕</th>
-              <th style={{ padding: '12px 14px' }}>Unitário ↕</th>
-              <th style={{ padding: '12px 14px' }}>Total ↕</th>
+              <th style={{ padding: '12px 14px' }}>Unitário / Taxa ↕</th>
+              <th style={{ padding: '12px 14px' }}>Total Consolidado ↕</th>
             </tr>
           </thead>
           <tbody>
-            {[
-              { cat: 'Adulto', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' },
-              { cat: 'Morador Curitiba Adulto', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' },
-              { cat: 'Estudante', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' },
-              { cat: 'Doador', qtd: '2798', unit: 'R$ 17,50', total: 'R$ 48.965,00' }
-            ].map((r, i) => (
+            {currentData.rows.map((r, i) => (
               <tr key={i} style={{ borderBottom: '1px solid #cbd5e1' }}>
                 <td style={{ padding: '14px', fontWeight: 700 }}>{r.cat}</td>
                 <td style={{ padding: '14px' }}>{r.qtd}</td>
@@ -1233,12 +1366,6 @@ export function Wf063GlobalFinancialReports() {
                 <td style={{ padding: '14px', fontWeight: 700 }}>{r.total}</td>
               </tr>
             ))}
-            <tr style={{ backgroundColor: '#eef1f5', fontWeight: 800 }}>
-              <td style={{ padding: '14px' }}>Quantidade: 4</td>
-              <td style={{ padding: '14px' }}>11.192</td>
-              <td style={{ padding: '14px' }}>R$ 70,00</td>
-              <td style={{ padding: '14px' }}>Total: R$ 195.860</td>
-            </tr>
           </tbody>
         </table>
         <WfPagination />

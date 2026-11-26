@@ -135,9 +135,9 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
   const [finOpen, setFinOpen] = useState(true);
   const [relOpen, setRelOpen] = useState(true);
   const [negOpen, setNegOpen] = useState(true);
-  const [cmsOpen, setCmsOpen] = useState(true);
-  const [atrSubOpen, setAtrSubOpen] = useState(true);
-  const [comSubOpen, setComSubOpen] = useState(true);
+  const [cmsOpen, setCmsOpen] = useState(false);
+  const [atrSubOpen, setAtrSubOpen] = useState(false);
+  const [comSubOpen, setComSubOpen] = useState(false);
 
   useEffect(() => {
     return backofficeStore.subscribe((next) => setStore(next));
@@ -387,58 +387,125 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
               <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Users size={16} /> <span>Usuários</span></span>
             </Link>
 
-            {/* Submenu Gestão Financeira da Atração */}
+            {/* Submenu Gestão Financeira da Atração (Painel Geral + 8 Relatórios + 8 PDFs + Negociação + Despesas) */}
             <div>
-              <button type="button" style={linkStyle(activeMenu.startsWith('fin-'))} onClick={() => setFinOpen(!finOpen)}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><DollarSign size={16} /> <span>Gestão Financeira</span></span>
-                {finOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Link
+                  to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas"
+                  onClick={() => setFinOpen(true)}
+                  style={{ ...linkStyle(activeMenu.startsWith('fin-')), flex: 1, borderRadius: '8px 0 0 8px' }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <DollarSign size={16} /> <span>Gestão Financeira</span>
+                  </span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setFinOpen(!finOpen)}
+                  title="Expandir / Recolher Gestão Financeira"
+                  style={{
+                    padding: '9px 10px',
+                    borderRadius: '0 8px 8px 0',
+                    border: 'none',
+                    backgroundColor: activeMenu.startsWith('fin-') ? '#eef1f5' : 'transparent',
+                    color: '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {finOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                </button>
+              </div>
               {finOpen && (
-                <div style={{ paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '2px' }}>
-                  <button type="button" style={subLinkStyle(false)} onClick={() => setRelOpen(!relOpen)}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><PieChart size={14} /> <span>Relatórios da Atração</span></span>
-                    {relOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
-                  </button>
+                <div style={{ paddingLeft: '10px', borderLeft: '2px solid #cbd5e1', marginLeft: '12px', display: 'flex', flexDirection: 'column', gap: '3px', marginTop: '4px', marginBottom: '6px' }}>
+                  <Link
+                    to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas"
+                    style={subLinkStyle(activeMenu === 'fin-despesas')}
+                  >
+                    <span>💰 Resumo das Despesas & Repasse (WF-030)</span>
+                  </Link>
+
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Link
+                      to="/tela/wf-028-detalhes-da-atracao-gestao-financeira-negociacao-financeira-condicoes-comerciais"
+                      onClick={() => setNegOpen(true)}
+                      style={{ ...subLinkStyle(activeMenu === 'fin-condicoes' || activeMenu === 'fin-info'), flex: 1 }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><DollarSign size={13} /> <span>Negociação Financeira</span></span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setNegOpen(!negOpen)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', padding: '4px 6px' }}
+                    >
+                      {negOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                    </button>
+                  </div>
+                  {negOpen && (
+                    <div style={{ paddingLeft: '10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <Link to="/tela/wf-028-detalhes-da-atracao-gestao-financeira-negociacao-financeira-condicoes-comerciais" style={subLinkStyle(activeMenu === 'fin-condicoes')}>
+                        <span>▣ Condições Comerciais (WF-028)</span>
+                      </Link>
+                      <Link to="/tela/wf-029-detalhes-da-atracao-gestao-financeira-negociacao-financeira-informacoes-financeiras" style={subLinkStyle(activeMenu === 'fin-info')}>
+                        <span>▣ Informações Financeiras (WF-029)</span>
+                      </Link>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Link
+                      to="/tela/wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas"
+                      onClick={() => setRelOpen(true)}
+                      style={{ ...subLinkStyle(false), flex: 1 }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><PieChart size={13} /> <span>Relatórios da Atração (16)</span></span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setRelOpen(!relOpen)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', padding: '4px 6px' }}
+                    >
+                      {relOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                    </button>
+                  </div>
                   {relOpen && (
-                    <div style={{ paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <div style={{ paddingLeft: '10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                       {[
-                        { key: 'fin-vendas', label: 'Vendas', slug: 'wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas' },
-                        { key: 'fin-abandono', label: 'Abandono de Carrinho', slug: 'wf-034-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-abandono-de-carrinho' },
-                        { key: 'fin-detalhado', label: 'Ingresso Detalhado', slug: 'wf-036-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-ingresso-detalhado' },
-                        { key: 'fin-categorias', label: 'Categorias', slug: 'wf-038-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-categorias' },
-                        { key: 'fin-cortesias', label: 'Cortesias Emitidas', slug: 'wf-040-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-cortesias-emitidas' },
-                        { key: 'fin-validacoes', label: 'Validação', slug: 'wf-042-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-validacoes' },
-                        { key: 'fin-comissoes', label: 'Comissões', slug: 'wf-044-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-comissoes' },
-                        { key: 'fin-bordero', label: 'Borderô Resumido', slug: 'wf-046-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-bordero-resumido' }
+                        { key: 'fin-vendas', label: 'Vendas (WF-032)', slug: 'wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas', pdfSlug: 'wf-033-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas' },
+                        { key: 'fin-abandono', label: 'Abandono Carrinho (WF-034)', slug: 'wf-034-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-abandono-de-carrinho', pdfSlug: 'wf-035-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-abandono-de-carrinho' },
+                        { key: 'fin-detalhado', label: 'Ingresso Detalhado (WF-036)', slug: 'wf-036-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-ingresso-detalhado', pdfSlug: 'wf-037-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-ingresso-detalhado' },
+                        { key: 'fin-categorias', label: 'Categorias (WF-038)', slug: 'wf-038-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-categorias', pdfSlug: 'wf-039-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-categorias' },
+                        { key: 'fin-cortesias', label: 'Cortesias Emitidas (WF-040)', slug: 'wf-040-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-cortesias-emitidas', pdfSlug: 'wf-041-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-cortesias-emitidas' },
+                        { key: 'fin-validacoes', label: 'Validações (WF-042)', slug: 'wf-042-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-validacoes', pdfSlug: 'wf-043-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-validacoes' },
+                        { key: 'fin-comissoes', label: 'Comissões (WF-044)', slug: 'wf-044-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-comissoes', pdfSlug: 'wf-045-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-comissoes' },
+                        { key: 'fin-bordero', label: 'Borderô Resumido (WF-046)', slug: 'wf-046-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-bordero-resumido', pdfSlug: 'wf-047-pdf-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-bordero-resumido' }
                       ].map((sub) => (
-                        <Link
-                          key={sub.key}
-                          to={`/tela/${sub.slug}`}
-                          style={subLinkStyle(activeMenu === sub.key)}
-                        >
-                          <span>▣ {sub.label}</span>
-                        </Link>
+                        <div key={sub.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+                          <Link
+                            to={`/tela/${sub.slug}`}
+                            style={{ ...subLinkStyle(activeMenu === sub.key), flex: 1, padding: '5px 8px' }}
+                          >
+                            <span>▣ {sub.label}</span>
+                          </Link>
+                          <Link
+                            to={`/tela/${sub.pdfSlug}`}
+                            title="Abrir versão PDF oficial"
+                            style={{ fontSize: '10px', fontWeight: 700, padding: '2px 6px', borderRadius: 4, backgroundColor: '#eef1f5', color: '#3b4758', textDecoration: 'none' }}
+                          >
+                            PDF
+                          </Link>
+                        </div>
                       ))}
                     </div>
                   )}
 
-                  <button type="button" style={subLinkStyle(false)} onClick={() => setNegOpen(!negOpen)}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><DollarSign size={14} /> <span>Negociação Financeira</span></span>
-                    {negOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
-                  </button>
-                  {negOpen && (
-                    <div style={{ paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                      <Link to="/tela/wf-028-detalhes-da-atracao-gestao-financeira-negociacao-financeira-condicoes-comerciais" style={subLinkStyle(activeMenu === 'fin-condicoes')}>
-                        <span>▣ Condições Comerciais</span>
-                      </Link>
-                      <Link to="/tela/wf-029-detalhes-da-atracao-gestao-financeira-negociacao-financeira-informacoes-financeiras" style={subLinkStyle(activeMenu === 'fin-info')}>
-                        <span>▣ Informações Financeiras</span>
-                      </Link>
-                    </div>
-                  )}
-
-                  <Link to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas" style={subLinkStyle(activeMenu === 'fin-despesas')}>
-                    <span>▣ Resumo das Despesas</span>
+                  <Link to="/tela/wf-063-relatorios-financeiros-globais" style={subLinkStyle(activeMenu === 'relatorios')}>
+                    <span>📊 Relatórios Globais (WF-063)</span>
+                  </Link>
+                  <Link to="/tela/wf-052-comissionamento-agencia" style={subLinkStyle(activeMenu === 'comissionamento')}>
+                    <span>🏦 Comissionamento B2B (WF-052)</span>
+                  </Link>
+                  <Link to="/tela/wf-053-fila-de-reembolsos" style={subLinkStyle(activeMenu === 'reembolsos')}>
+                    <span>↩️ Fila de Reembolsos (WF-053)</span>
                   </Link>
                 </div>
               )}
@@ -558,6 +625,80 @@ export function WfSidebar({ mode = 'admin', activeMenu = 'dashboard', attraction
             <Link to="/tela/wf-061-gestao-de-pacotes-de-ingressos" style={linkStyle(activeMenu === 'pacotes')}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><Layers size={16} /> <span>Gestão de Pacotes</span></span>
             </Link>
+
+            {/* Grupo Gestão Financeira Completo no Menu Administrador */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Link
+                  to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas"
+                  onClick={() => setFinOpen(true)}
+                  style={{ ...linkStyle(activeMenu.startsWith('fin-') || activeMenu === 'relatorios' || activeMenu === 'reembolsos' || activeMenu === 'comissionamento'), flex: 1, borderRadius: '8px 0 0 8px' }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><DollarSign size={16} /> <span>Gestão Financeira</span></span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setFinOpen(!finOpen)}
+                  style={{
+                    padding: '9px 10px',
+                    borderRadius: '0 8px 8px 0',
+                    border: 'none',
+                    backgroundColor: activeMenu.startsWith('fin-') ? '#eef1f5' : 'transparent',
+                    color: '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {finOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                </button>
+              </div>
+              {finOpen && (
+                <div style={{ paddingLeft: '12px', borderLeft: '2px solid #cbd5e1', marginLeft: '12px', display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '4px', marginBottom: '6px' }}>
+                  <Link to="/tela/wf-030-detalhes-da-atracao-gestao-financeira-negociacao-financeira-resumo-das-despesas" style={subLinkStyle(activeMenu === 'fin-despesas')}>
+                    <span>💰 Resumo das Despesas & Repasse (WF-030)</span>
+                  </Link>
+                  <Link to="/tela/wf-028-detalhes-da-atracao-gestao-financeira-negociacao-financeira-condicoes-comerciais" style={subLinkStyle(activeMenu === 'fin-condicoes')}>
+                    <span>▣ Condições Comerciais (WF-028)</span>
+                  </Link>
+                  <Link to="/tela/wf-029-detalhes-da-atracao-gestao-financeira-negociacao-financeira-informacoes-financeiras" style={subLinkStyle(activeMenu === 'fin-info')}>
+                    <span>▣ Informações Financeiras (WF-029)</span>
+                  </Link>
+                  <Link to="/tela/wf-032-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-vendas" style={subLinkStyle(activeMenu === 'fin-vendas')}>
+                    <span>📈 Relatório de Vendas (WF-032/033)</span>
+                  </Link>
+                  <Link to="/tela/wf-034-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-abandono-de-carrinho" style={subLinkStyle(activeMenu === 'fin-abandono')}>
+                    <span>🛒 Abandono de Carrinho (WF-034/035)</span>
+                  </Link>
+                  <Link to="/tela/wf-036-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-ingresso-detalhado" style={subLinkStyle(activeMenu === 'fin-detalhado')}>
+                    <span>🎟️ Ingresso Detalhado (WF-036/037)</span>
+                  </Link>
+                  <Link to="/tela/wf-038-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-categorias" style={subLinkStyle(activeMenu === 'fin-categorias')}>
+                    <span>🏷️ Vendas por Categorias (WF-038/039)</span>
+                  </Link>
+                  <Link to="/tela/wf-040-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-cortesias-emitidas" style={subLinkStyle(activeMenu === 'fin-cortesias')}>
+                    <span>🎁 Cortesias Emitidas (WF-040/041)</span>
+                  </Link>
+                  <Link to="/tela/wf-042-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-validacoes" style={subLinkStyle(activeMenu === 'fin-validacoes')}>
+                    <span>✅ Relatório de Validações (WF-042/043)</span>
+                  </Link>
+                  <Link to="/tela/wf-044-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-comissoes" style={subLinkStyle(activeMenu === 'fin-comissoes')}>
+                    <span>🤝 Relatório de Comissões (WF-044/045)</span>
+                  </Link>
+                  <Link to="/tela/wf-046-detalhes-da-atracao-gestao-financeira-relatorios-da-atracao-bordero-resumido" style={subLinkStyle(activeMenu === 'fin-bordero')}>
+                    <span>📑 Borderô Resumido & PDF (WF-046/047)</span>
+                  </Link>
+                  <Link to="/tela/wf-052-comissionamento-agencia" style={subLinkStyle(activeMenu === 'comissionamento')}>
+                    <span>🏦 Comissionamento Agência (WF-052)</span>
+                  </Link>
+                  <Link to="/tela/wf-053-fila-de-reembolsos" style={subLinkStyle(activeMenu === 'reembolsos')}>
+                    <span>↩️ Fila de Reembolsos (WF-053)</span>
+                  </Link>
+                  <Link to="/tela/wf-063-relatorios-financeiros-globais" style={subLinkStyle(activeMenu === 'relatorios')}>
+                    <span>📊 Relatórios Financeiros Globais (WF-063)</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <Link to="/tela/wf-053-fila-de-reembolsos" style={linkStyle(activeMenu === 'reembolsos')}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}><FileText size={16} /> <span>Fila de Reembolsos</span></span>
             </Link>
